@@ -112,6 +112,7 @@ lazy val examples = project
 val CoreConfig = config("scalajs-react-core")
 val VDOMConfig = config("scalajs-react-vdom")
 val FabricConfig = config("scalajs-react-fabric")
+val ReduxConfig = config("scalajs-react-redux")
 
 lazy val docs = project
   .settings(buildSettings)
@@ -137,6 +138,8 @@ lazy val docs = project
       mappings in (Compile, packageDoc) in `scalajs-react-vdom`, "api/scalajs-react-vdom"),
     SiteScaladocPlugin.scaladocSettings(FabricConfig,
       mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-fabric"),
+    SiteScaladocPlugin.scaladocSettings(ReduxConfig,
+      mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-redux"),
   )
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")

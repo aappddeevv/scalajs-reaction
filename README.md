@@ -1,3 +1,5 @@
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org)
+
 A react library for scala written in the spirit of ReasonReact, a react library for an OCaml dialect known as reason (sponsored by facebook). ReasonReact documentation is located [here](https://reasonml.github.io/reason-react/docs) and provides a good description of how this library works since the API is very similar. While more advanced scala functionality could have been used, the scala.js implemetation was kept intentionally similar to ReasonReact so that the documentation would apply.
 
 The facade library is small and provides an opionated API for creating components. JSX is not provided in the scala.js implementation.
