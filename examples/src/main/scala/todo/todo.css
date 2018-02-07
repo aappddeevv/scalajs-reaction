@@ -1,0 +1,22 @@
+/** ToDo example */
+
+:root {
+    --label-width: 250px;
+}
+
+.dataEntry {
+    display: flex;
+    & :global(.ms-TextField) {
+        width: var(--label-width);
+        margin-right: 10px;
+    }
+}
+
+.todo {
+    display: flex;
+    margin-bottom: 10px;
+    & .title {
+        width: var(--label-width);
+        margin-right: 10px;
+    }
+}

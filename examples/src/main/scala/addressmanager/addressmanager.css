@@ -1,0 +1,13 @@
+/** addressmanager css */
+
+.component {
+    display: flex;
+    & .master {
+        flex-basis: 50%;
+    }
+    & .detail {
+        flex-basis: 50%;
+        display: flex;
+        flex-direction: column;
+    }
+}

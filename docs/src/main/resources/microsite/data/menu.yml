@@ -1,0 +1,12 @@
+options:
+  - title: Creating scala.js Components 
+    url: docs/creating.html
+
+  - title: Importing Components From Javascript
+    url: docs/importing.htmt
+
+  - title: Exporting Components to Javascript
+    url: docs/exporting.html
+
+  - title: Styling
+    url: docs/styling.html
