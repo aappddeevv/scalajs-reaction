@@ -1,0 +1,11 @@
+name: scalajs-react
+baseurl: /scalajs-react
+description: A react integration library for scala.js in the spirit of ReasonReact
+highlighter: rouge
+docs: true
+collections:
+  tut:
+    output: true
+version: 0.1.0-M1
+org: ttg
+markdown: kramdown
