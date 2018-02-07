@@ -109,17 +109,23 @@ lazy val examples = project
   .dependsOn(`scalajs-react-fabric`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
 
-val CoreConfig = config("scalajs-react-core")
-val VDOMConfig = config("scalajs-react-vdom")
-val FabricConfig = config("scalajs-react-fabric")
-val ReduxConfig = config("scalajs-react-redux")
+// val CoreConfig = config("scalajs-react-core")
+// val VDOMConfig = config("scalajs-react-vdom")
+// val FabricConfig = config("scalajs-react-fabric")
+// val ReduxConfig = config("scalajs-react-redux")
 
 lazy val docs = project
   .settings(buildSettings)
   .settings(noPublishSettings)
-  .enablePlugins(MicrositesPlugin, SiteScaladocPlugin)
-  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`, `scalajs-react-fabric`).
-  settings(
+  .enablePlugins(MicrositesPlugin)
+  .enablePlugins(ScalaUnidocPlugin)
+  //.enablePlugins(SiteScaladocPlugin)
+  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
+    `scalajs-react-fabric`, `scalajs-react-redux`)
+  .settings(
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples)
+  )
+  .settings(
     micrositeName := "scalajs-react",
     micrositeDescription := "A react integration library for scala.js in the spirit of ReasonReact",
     micrositeBaseUrl := "/scalajs-react",
@@ -132,14 +138,16 @@ lazy val docs = project
     micrositePushSiteWith := GitHub4s
   )
   .settings(
-    SiteScaladocPlugin.scaladocSettings(CoreConfig,
-      mappings in (Compile, packageDoc) in `scalajs-react-core`, "api/scalajs-react-core"),
-    SiteScaladocPlugin.scaladocSettings(VDOMConfig,
-      mappings in (Compile, packageDoc) in `scalajs-react-vdom`, "api/scalajs-react-vdom"),
-    SiteScaladocPlugin.scaladocSettings(FabricConfig,
-      mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-fabric"),
-    SiteScaladocPlugin.scaladocSettings(ReduxConfig,
-      mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-redux"),
+    siteSubdirName in ScalaUnidoc := "api",
+    addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
+    // SiteScaladocPlugin.scaladocSettings(CoreConfig,
+    //   mappings in (Compile, packageDoc) in `scalajs-react-core`, "api/scalajs-react-core"),
+    // SiteScaladocPlugin.scaladocSettings(VDOMConfig,
+    //   mappings in (Compile, packageDoc) in `scalajs-react-vdom`, "api/scalajs-react-vdom"),
+    // SiteScaladocPlugin.scaladocSettings(FabricConfig,
+    //   mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-fabric"),
+    // SiteScaladocPlugin.scaladocSettings(ReduxConfig,
+    //   mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-redux"),
   )
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")

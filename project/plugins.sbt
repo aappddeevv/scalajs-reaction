@@ -9,4 +9,4 @@ addSbtPlugin("com.47deg"  % "sbt-microsites" % "0.7.15")
 addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.3.1")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "4.0.0")
 // not using this yet, still using per-project docs
-//addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.1")
+addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.1")

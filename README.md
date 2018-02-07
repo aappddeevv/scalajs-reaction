@@ -31,7 +31,9 @@ You can define a class like so:
 import ttg.react._
 import ttg.react.elements._
 import ttg.react.reactdom._
-import ttg.react.fabric._
+import ttg.react.fabric
+import fabric._
+import fabric.components._
 import ttg.react.Converters._
 import vdom.prefix_<^._
 
@@ -107,13 +109,10 @@ In the example above, you would need to ensure webpack has an alias to the Examp
 # Documentation
 
 Client:
-* [client](http://aappddeevv.github.io/scalajs-react)
+* [user](http://aappddeevv.github.io/scalajs-react)
 
-API documentation:
-* [core](api/scalajs-react-core/index.html)
-* [vdom](api/scalajs-react-vdom/index.html)
-* [fabric](api/scalajs-react-fabric/index.html)
-* [redux integration](api/scalajs-react-redux/index.html)
+Integrated API documentation:
+* [all modules](https://aappddeevv.github.io/scalajs-react/api/ttg)
 
 # Motivation
 I was looking for a react facade that rethought reactive interactions. Many of the existing facades are straight adaptions of the standard react library and make it quite easy to program react in a scala environment. 
