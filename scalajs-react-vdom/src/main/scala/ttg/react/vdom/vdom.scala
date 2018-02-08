@@ -12,6 +12,8 @@ package object vdom extends vdom.Events with VDOMSyntax {
 
   import scala.language.implicitConversions
 
+  val noAttributes = Attrs.zero
+
   /** For now, style attributes are just attributes. */
   val Style = Attrs
 

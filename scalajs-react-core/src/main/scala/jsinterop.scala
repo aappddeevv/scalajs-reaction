@@ -31,17 +31,18 @@ object PrettyJson extends js.Object {
 
 // https://github.com/chandu0101/sri/blob/a5fb8db2cc666299ecc863d6421994cce5d304e6/core/src/main/scala/sri/core/React.scala
 @js.native
-trait JSReact extends js.Object {
+private[react] trait JSReact extends js.Object {
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
   def createElement[P](el: js.Any | String, props: UndefOr[P], children: ReactNode*): ReactDOMElement = js.native
-  def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement =
-    js.native
+  def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
+  // symbol or number depending on browser/environment support for symbols
+  val Fragment: js.Any = js.native
 }
 
 @js.native
 @JSImport("react", JSImport.Namespace)
-object JSReact extends JSReact
+private[react] object JSReact extends JSReact
 
 object React {
   def createElement(
@@ -64,6 +65,16 @@ object React {
   def createElement(
       c: ReactClass
   ): ReactDOMElement = JSReact.createElement(c, js.undefined)
+
+  /**
+    * Create a react fragment. Fragments are created as an "element" with a specific
+    * tag (symbol or number) vs say, the string "div".
+    */
+  def createFragment(key: Option[String], children: ReactNode*): ReactDOMElement = {
+    val props = js.Dictionary.empty[js.Any]
+    key.foreach(props("key") = _)
+    JSReact.createElement(JSReact.Fragment, props, children: _*)
+  }
 }
 
 /**

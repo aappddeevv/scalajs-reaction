@@ -112,7 +112,7 @@ Client:
 * [user](http://aappddeevv.github.io/scalajs-react)
 
 Integrated API documentation:
-* [all modules](https://aappddeevv.github.io/scalajs-react/api/ttg)
+* [all modules](https://aappddeevv.github.io/scalajs-react/api/ttg/react)
 
 # Motivation
 I was looking for a react facade that rethought reactive interactions. Many of the existing facades are straight adaptions of the standard react library and make it quite easy to program react in a scala environment. 

@@ -47,6 +47,7 @@ object FabricNS extends js.Object {
   val DetailsList: ReactClass = js.native
   val CommandBar: ReactClass = js.native
   val Spinner: ReactClass = js.native
+  def Selection[T <: js.Object]: Selection[T] = js.native
 }
 
 /**
@@ -64,15 +65,19 @@ object components {
 
   def PrimaryButton(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.PrimaryButton, new Attrs(props).toJs, children: _*)
   def DefaultButton(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.DefaultButton, new Attrs(props).toJs, children: _*)
-  def Pivot(props: js.UndefOr[PivotProps])(children: ReactNode*) = wrapJsForScala(FabricNS.Pivot, props.getOrElse(noProps), children: _*)
+
+  def Pivot(props: js.UndefOr[PivotProps] = js.undefined)(children: ReactNode*) = wrapJsForScala(FabricNS.Pivot, props.getOrElse(noProps), children: _*)
   def PivotItem(props: js.UndefOr[PivotItemProps])(children: ReactNode*) = wrapJsForScala(FabricNS.PivotItem, props.getOrElse(noProps), children: _*)
-  def DetailsList(props: js.UndefOr[IDetailsListProps])(children: ReactNode*) = wrapJsForScala(FabricNS.DetailsList, props.getOrElse(noProps), children: _*)
+
+  def DetailsList[T <: js.Object](props: js.UndefOr[IDetailsListProps[T]] = js.undefined)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.DetailsList, props.getOrElse(noProps), children: _*)
 
   def CommandBar(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.CommandBar, new Attrs(props).toJs, children: _*)
-  def CommandBar(props: js.UndefOr[ICommandBarProps])(children: ReactNode*) = wrapJsForScala(FabricNS.CommandBar, props.getOrElse(noProps), children: _*)
+  def CommandBar(props: js.UndefOr[ICommandBarProps] = js.undefined)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.CommandBar, props.getOrElse(noProps), children: _*)
   //def CommandBar(props: js.UndefOr[js.Dynamic])(children: ReactNode*) =  wrapJsForScala(FabricNS.CommandBar, props.getOrElse(noProps), children: _*)
 
-  def Spinner(props: js.UndefOr[ISpinnerProps])(children: ReactNode*) = wrapJsForScala(FabricNS.Spinner, props.getOrElse(noProps), children: _*)
+  def Spinner(props: js.UndefOr[ISpinnerProps] = js.undefined)(children: ReactNode*) = wrapJsForScala(FabricNS.Spinner, props.getOrElse(noProps), children: _*)
 }
 @js.native
 trait Focusable extends js.Object {
@@ -131,13 +136,15 @@ object IColumn {
   def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
 }
 
-trait IDetailsListProps extends js.Object {
+trait IDetailsListProps[T <: js.Object] extends js.Object {
   val componentRef: js.UndefOr[IDetailsList => Unit] = js.undefined
   val setKey: js.UndefOr[String] = js.undefined
   val className: js.UndefOr[String] = js.undefined
   val columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] = js.undefined
-  val items: js.Array[js.Object]
+  val items: js.Array[T]
   val listProps: js.UndefOr[js.Dynamic] = js.undefined
+  val getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
+  val selection: js.UndefOr[ISelection[T]] = js.undefined
 }
 
 trait IContextualMenuProps extends KeyAndRef {
@@ -187,4 +194,47 @@ object SpinnerSize {
   val small = 1
   val medium = 2
   val large = 3
+}
+
+@js.native
+trait IObjectWithKey extends js.Object {
+  val key: String = js.native
+}
+
+trait ISelection[T <: js.Object] extends js.Object {
+  val count: Int
+  def getItems(): js.Array[T]
+  def setItems(items: js.Array[T], shouldClear: Boolean): Unit
+  def setKeySelected(key: String, isSelected: Boolean, shouldAnchor: Boolean): Unit
+  def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean]): Unit
+  def toggleAllSelected(): Unit
+  def setModal(isModal: Boolean): Unit
+  def isModel(): Boolean
+  def getSelection(): js.Array[T]
+}
+
+object SelectionMode {
+  val none = 0
+  val single = 1
+  val multiple = 2
+}
+
+trait ISelectionOptions[T <: js.Object] extends js.Object {
+  val getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
+  val selectionMode: js.UndefOr[Int] = js.undefined
+  val onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
+}
+
+@js.native
+@JSImport("office-ui-fabric-react/lib/utilities/selection", "Selection")
+class Selection[T <: js.Object](options: js.UndefOr[ISelectionOptions[T]] = js.undefined) extends js.Object with ISelection[T] {
+  val count: Int = js.native
+  def getItems(): js.Array[T] = js.native
+  def setItems(items: js.Array[T], shouldClear: Boolean): Unit = js.native
+  def setKeySelected(key: String, isSelected: Boolean, shouldAnchor: Boolean): Unit = js.native
+  def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean]): Unit = js.native
+  def toggleAllSelected(): Unit = js.native
+  def setModal(isModal: Boolean): Unit = js.native
+  def isModel(): Boolean = js.native
+  def getSelection(): js.Array[T] = js.native
 }

@@ -45,7 +45,7 @@ case class ComponentSpec[S, RP, A, SLF](
     render: SLF => ReactNode,
     /** Retained props. This can change??? Is this mutable? */
     retainedProps: Option[RP] = None,
-    initialState: Option[Unit => Option[S]] = None,
+    initialState: Option[() => Option[S]] = None,
     didMount: Option[(SLF, ReducerResult[S, SLF]) => ReducerResult[S, SLF]#UpdateType] = None,
     willUnmount: Option[SLF => Unit] = None,
     willReceiveProps: Option[SLF => Option[S]] = None,
@@ -60,7 +60,9 @@ case class ComponentSpec[S, RP, A, SLF](
     contextTypes: Option[js.Object] = None,
     didCatch: Option[(SLF, js.Error, ErrorInfo) => Unit] = None
 ) { self =>
-  def withInitialState(is: Unit => Option[S]) =
+  type Self = SLF
+
+  def withInitialState(is: () => Option[S]) =
     this.copy(initialState = Some(is))
   def withDidMount(f: (SLF, ReducerResult[S, SLF]) => ReducerResult[S, SLF]#UpdateType) =
     this.copy(didMount = Some(f))
@@ -98,7 +100,7 @@ case class ComponentSpec[S, RP, A, SLF](
     * Impl note: It will appear in `JsComponentThis` by attaching it to the
     * prototype of reactClassInternal.
     */
-  def wrapScalaForJs(jsPropsToScala: js.Object => ComponentSpec[S, RP, A, _]): ReactClass = {
+  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec[S, RP, A, _]): ReactClass = {
     val dyn = this.reactClassInternal.asInstanceOf[js.Dynamic]
     dyn.prototype.jsPropsToScala = jsPropsToScala.asInstanceOf[js.Any]
     this.reactClassInternal
@@ -457,7 +459,7 @@ object elements {
     val getInitialState = thisJs => {
       val component =
         convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
-      val x = mkState(component.initialState.flatMap(_(())), 1, 1, Seq())
+      val x = mkState(component.initialState.flatMap(_()), 1, 1, Seq())
 
       //println(s"$debugName:getInitialState ${PrettyJson.render(x)}, ${component.initialState.flatMap(_())}")
       x
@@ -707,4 +709,8 @@ object elements {
 
   /** Turn a ReactRef to a js.Dynamic so you can call class methods directly. */
   def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
+
+  /** Create a fragment element. Per the API, you are only allowed an optional key. */
+  def fragmentElement(key: Option[String] = None)(children: ReactNode*) =
+    React.createFragment(key, children: _*)
 }

@@ -2,17 +2,21 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package examples
+package ttg.react.examples
 package addressmanager
 
 import scala.scalajs.js
 import js.annotation._
 
 trait Address extends js.Object {
-  val customeraddressid: String
+  val customeraddressid: js.UndefOr[String] = js.undefined
   val name: js.UndefOr[String] = js.undefined
   val city: js.UndefOr[String] = js.undefined
-  val stateorprovnce: js.UndefOr[String] = js.undefined
+  val stateorprovince: js.UndefOr[String] = js.undefined
   val createdon: js.UndefOr[String] = js.undefined
+}
+
+trait AddressDAO extends js.Object {
+  val fetch: js.Function1[String, js.Promise[AddressList]]
+  val add: js.Function1[Address, js.Promise[String]]
 }

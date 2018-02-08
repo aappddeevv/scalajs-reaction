@@ -108,6 +108,11 @@ lazy val examples = project
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(
+    libraryDependencies ++= Seq(
+      //"org.typelevel" %% "cats-core_sjs0.6" % "1.0.1",
+      //"org.typelevel" %% "cats-effect_sjs0.6" % "0.5",
+    ))
 
 // val CoreConfig = config("scalajs-react-core")
 // val VDOMConfig = config("scalajs-react-vdom")
@@ -175,7 +180,7 @@ npmElectron := {
 
 // must run publish and release separately
 // don't forget bintray & unpublish
-// checkout packagedArtifacts to build artifacts in each project's target
-// bintray then bintrayRelease (to release them)
+// use packagedArtifacts to build artifacts in each project's target
+// to release: bintray then bintrayRelease (to release them)
 bintrayReleaseOnPublish in ThisBuild := false
 bintrayPackageLabels := Seq("scala.js", "react", "office")

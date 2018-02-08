@@ -2,8 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package examples
+package ttg.react.examples
 package todo
 
 import scala.scalajs.js
@@ -118,7 +117,7 @@ object AppC {
               .getOrElse(gen.skip)
         }
       })
-      .withInitialState(_ => Some(State(todos, None)))
+      .withInitialState(() => Some(State(todos, None)))
       .withRender { self =>
         <.div(^.className := styles.component.todoApp)(
           Label()(s"""App: ${title.getOrElse("The To Do List")}"""),

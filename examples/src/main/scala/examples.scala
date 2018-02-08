@@ -2,8 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package examples
+package ttg.react.examples
 
 import scala.scalajs.js
 import js.annotation._
@@ -20,8 +19,6 @@ import ttg.react.fabric
 import fabric._
 import fabric.components._
 
-import ttg.examples
-
 object Pages {
 
   import todo._
@@ -32,21 +29,21 @@ object Pages {
     override val linkText = "To Do"
     override val itemKey = "todo"
   })(
-    todo.AppC.make(Some("Your To Do List"), todo.Main.initialToDos).toEl
+    todo.AppC.make(Some("Your To Do List"), todo.Main.initialToDos)
   ).toEl
 
   val helloWorldPage = PivotItem(new PivotItemProps {
     override val linkText = "Hello World"
     override val itemKey = "helloworld"
   })(
-    helloworld.HelloWorldC.make().toEl
+    helloworld.HelloWorldC.make()
   ).toEl
 
   val addressPage = PivotItem(new PivotItemProps {
     override val linkText = "Address Manager"
     override val itemKey = "addressmanager"
   })(
-    addressmanager.AddressManagerC.make().toEl
+    addressmanager.AddressManagerC.make(addressmanager.fakedata.addressDAO)
   ).toEl
 }
 

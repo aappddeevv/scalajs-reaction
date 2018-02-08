@@ -2,8 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package examples
+package ttg.react.examples
 package helloworld
 
 import scala.scalajs.js
