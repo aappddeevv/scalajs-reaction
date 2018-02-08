@@ -153,6 +153,8 @@ lazy val docs = project
     //   mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-fabric"),
     // SiteScaladocPlugin.scaladocSettings(ReduxConfig,
     //   mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-redux"),
+      // you need this if you use SiteScaladocPlugin so that the push uses gh-pages vs GitHub4s
+      //micrositePushSiteWith := GHPagesPlugin
   )
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")
@@ -184,3 +186,5 @@ npmElectron := {
 // to release: bintray then bintrayRelease (to release them)
 bintrayReleaseOnPublish in ThisBuild := false
 bintrayPackageLabels := Seq("scala.js", "react", "office")
+bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")
+bintrayRepository := "maven"

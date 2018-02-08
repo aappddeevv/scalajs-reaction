@@ -9,6 +9,9 @@ import js.|
 import js.UndefOr
 import js.JSConverters._
 
+/**
+ * A scalajs. facade for facebook's react in the spirit of ReasonReact.
+ */
 package object react {
 
   /** Opaque type returned from a ref callback. */

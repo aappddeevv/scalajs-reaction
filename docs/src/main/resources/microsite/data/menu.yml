@@ -1,12 +1,19 @@
 options:
+  - title: Getting Started
+    url: docs/index.html
+    
   - title: Creating scala.js Components 
     url: docs/creating.html
 
-  - title: Importing Components From Javascript
-    url: docs/importing.htmt
+  - title: Importing from JS
+    url: docs/importing.html
 
-  - title: Exporting Components to Javascript
+  - title: Exporting to JS
     url: docs/exporting.html
 
-  - title: Styling
+  - title: Styling Suggestions
     url: docs/styling.html
+
+  - title: Virtual DOM
+    url: docs/vdom.html
+    
