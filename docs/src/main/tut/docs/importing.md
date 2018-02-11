@@ -6,20 +6,21 @@ Importing a component javascript means you need to create a "Component" in scala
 
 ```scala
 // import a react component exported as part of a namespace export
+// perhaps mark the import private
 @js.native
 @JSImport("some-lib", JSImport.Namespace)
 object SomeLibNS {
-  val YourComponent1: ReactClass = js.native
-  val YourComponent2: ReactClass = js.native
+  val YourComponent1: ReactJSComponent = js.native
+  val YourComponent2: ReactJSComponent = js.native
 }
 
 // create a proxy component for it
 object SomeLib {
   import ttg.react.elements._
-  def YourComponent1(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomeLibNS, new Attrs(props).toJs, children:_*)
+  def YourComponent1(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomeLibNS.YourComponent1, new Attrs(props).toJs, children:_*)
 }
 ```
-A component, declared as a react class, should be typed as a `ReactClass`. scalajs-react does not currently support importing functions as components.
+A component, declared as a react class, should be typed as a `ReactJSComponent`.
 
 How you hook up attributes and children values to your component is up to you. The definition in SomeLib is what you want it to be. In typescript, it is common to define an interface that declares the allowed properties to be passed in. The equivalent in scala.js are JS traits. You will want to make them non-native JS traits so you can instantiate them.
 ```scala
@@ -31,7 +32,7 @@ Then you can define:
 ```scala
 object SomeLib {
   import ttg.react.elements._
-  def YourComponent1(props: js.UndefOr[YourComonent1Props] = js.undefined)(children: ReactNode*) = wrapJsForScala(SomeLibNS, new Attrs(props).toJs, children:_*)
+  def YourComponent1(props: js.UndefOr[YourComponent1Props] = js.undefined)(children: ReactNode*) = wrapJsForScala(SomeLibNS, new Attrs(props).toJs, children:_*)
 }
 ```
 You can use more fancy approaches to consolidating your imported component's properties into a js.Object, it's up to you.

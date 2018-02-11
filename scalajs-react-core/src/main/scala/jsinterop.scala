@@ -12,27 +12,9 @@ import js._
 
 import org.scalajs.dom
 
-@js.native
-@JSImport("source-map-support", JSImport.Namespace)
-object SourceMapSupport extends js.Object {
-  def install(): Unit = js.native
-}
-
-class PrettyJsonOptions(
-    val noColor: js.UndefOr[Boolean] = js.undefined
-) extends js.Object
-
-@js.native
-@JSImport("prettyjson", JSImport.Namespace)
-object PrettyJson extends js.Object {
-  def render(data: js.Object | js.Dynamic, options: js.UndefOr[PrettyJsonOptions] = js.undefined): String =
-    js.native
-}
-
 // https://github.com/chandu0101/sri/blob/a5fb8db2cc666299ecc863d6421994cce5d304e6/core/src/main/scala/sri/core/React.scala
 @js.native
 private[react] trait JSReact extends js.Object {
-
   /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
   def createElement[P](el: js.Any | String, props: UndefOr[P], children: ReactNode*): ReactDOMElement = js.native
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
@@ -45,22 +27,32 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
-  def createElement(
-      tag: String,
-      props: js.UndefOr[js.Object],
-      children: Seq[ReactNode]
-  ): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
+  def createElement[P <: js.Object](tag: String,  props: P)
+    (children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children:_*)
 
-  def createElement(
-      tag: String,
-      children: Seq[ReactNode]
-  ): ReactDOMElement = JSReact.createElement(tag, js.undefined, children: _*)
+  def createElement(tag: ReactClass, props: js.Object)
+    (children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children:_*)
 
-  def createElement[P](
-      c: ReactClass,
-      props: P,
-      children: Seq[ReactNode]
-  ): ReactDOMElement = JSReact.createElement(c, props, children: _*)
+  def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
+    JSReact.createElement(tag, js.undefined, children:_*)
+
+  // def createElement(
+  //   tag: ReactClass,
+  //   props: js.Object,
+  //   children: Seq[ReactNode]
+  // ): ReactDOMElement = JSReact.createElement(tag, props, children:_*)
+
+  // def createElement[P <: js.Object](
+  //     c: ReactClass,
+  //     props: P,
+  //     children: Seq[ReactNode]
+  // ): ReactDOMElement = JSReact.createElement(c, props, children: _*)
+
+  // def createElement[P <: js.Object](
+  //     c: ReactClass,
+  //     props: js.UndefOr[P],
+  //     children: Seq[ReactNode]
+  // ): ReactDOMElement = JSReact.createElement(c, props, children: _*)
 
   def createElement(
       c: ReactClass
@@ -68,7 +60,7 @@ object React {
 
   /**
     * Create a react fragment. Fragments are created as an "element" with a specific
-    * tag (symbol or number) vs say, the string "div".
+    * tag (symbol or number if target does not support symbol) vs say, the string "div".
     */
   def createFragment(key: Option[String], children: ReactNode*): ReactDOMElement = {
     val props = js.Dictionary.empty[js.Any]

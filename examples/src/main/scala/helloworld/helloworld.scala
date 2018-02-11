@@ -16,23 +16,37 @@ import ttg.react.implicits._
 import vdom._
 import prefix_<^._
 
+/**
+ * Demonstrates converting js side props to scala props. `make` could also take
+ * HelloWorldProps as well directly but then you have to handle conversions
+ * inside the `make` function.
+ */
 object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
-  def make() =
+  def make(name: Option[String] = None) =
     HelloWorld
       .withRender { self =>
         <.div()(
-          "hello world"
+          "hello world" + name.map(" and welcome " + _).getOrElse("")
         )
       }
-}
 
-object helloworld_example {
-
-  @JSExportTopLevel("helloworld")
-  def helloworld(): Unit = {
-    SourceMapSupport.install()
-    renderToElementWithId(HelloWorldC.make().toEl, "container")
+  trait HelloWorldProps extends js.Object {
+    val name: js.UndefOr[String] = js.undefined
   }
 
+  // Exported to javascript world
+  @JSExportTopLevel("HelloWorld")
+  private val exported =
+    HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
+
+  // Alternative scala `make` definition, render must convert to scala objects if needed
+  // and internal scala code would need to create a HelloWorldProps object.
+  def make2(props: HelloWorldProps) =
+    HelloWorld
+      .withRender{ self =>
+        <.div()(
+          "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
+        )
+      }
 }

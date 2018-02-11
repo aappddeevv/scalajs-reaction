@@ -16,4 +16,9 @@ options:
 
   - title: Virtual DOM
     url: docs/vdom.html
-    
+
+  - title: Redux
+    url: docs/redux.html
+
+  - title: Project Structure Mixed Project
+    url: docs/mixedproject.html

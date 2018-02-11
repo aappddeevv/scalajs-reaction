@@ -3,12 +3,12 @@ layout: home
 ---
 # What is scalajs-react?
 
-A scala.js facade over reactjs that provides a more functional API in the spirit of ReasonReact.
+A scala.js facade over reactjs that provides a functional API in the spirit of ReasonReact.
 
-The library is designed to be used and consume other react components fairly seamlessly.
+The library is designed to create components that can be used and consumed by other react components in javascript and scala fairly seamlessly.
 
 # ReasonReact
-The scalajs-react interface is built on the model provided by [ReasonReact](https://reasonml.github.io/reason-react). You can apply the same concept to this API.
+The scalajs-react interface is built on the model provided by [ReasonReact](https://reasonml.github.io/reason-react). You can apply the same concepts in that library to this API.
 
 # API Documentation
 

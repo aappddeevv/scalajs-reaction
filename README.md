@@ -26,57 +26,53 @@ Do not forget to include the react libraries in your execution environment. For 
 * react-dom
 * create-react-class
 
-You can define a class like so:
+You can quickly create a component and export it for use in javascript:
 ```scala
-import ttg.react._
-import ttg.react.elements._
-import ttg.react.reactdom._
-import ttg.react.fabric
-import fabric._
-import fabric.components._
-import ttg.react.Converters._
-import vdom.prefix_<^._
+object HelloWorldC {
+  val HelloWorld = statelessComponent("HelloWorld")
+  def make(name: Option[String]) =
+    HelloWorld
+      .withRender { self =>
+        <.div()(
+          "hello world" + name.map(" and welcome " + _).getOrElse("")
+        )
+      }
 
-// You can use individual props or a trait or a scala object.
-// It's often convenient to use a subtype of js.Object
-// non-native JS trait
-trait ToDoProps extends js.Object {
-  val todo: ToDo // has property "name"
-  val remove: Unit => Unit
-}
+  trait HelloWorldProps extends js.Object {
+    var name: js.UndefOr[String] = js.undefined
+  }
 
-object ToDoC {
-  val ToDo = statelessComponent("ToDo")
-  // def make(todo: ToDo, remove: Unit => Unit) =
-  // or bundle them together into a trait
-  def make(props: ToDoProps) =
-    ToDo.
-      withRender(self => {
-        <.div(^.style := Style("display" := "flex"))(
-          Label()("Item:"),
-          Label()(props.todo.name),
-          defaultButton(
-            F.text := "Remove",
-            ^.onClick ==> ((_: ReactEvent) => props.remove(())))().toEl)})
+  // Exported to javascript world
+  @JSExportTopLevel("HelloWorld")
+  private val exported =
+    HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
+
+  // Alternative scala `make` definition, render must convert to scala objects if needed
+  // and internal scala code would need to create a HelloWorldProps object.
+  def make2(props: HelloWorldProps) =
+    HelloWorld
+      .withRender{ self =>
+        <.div()(
+          "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
+        )
+      }
 }
 ```
-You can export the class for use in reactjs as follows:
-```scala
-@JSExportTopLevel("ToDo")
-val exportedToDo = ToDo.wrapScalaForJs((jsProps: ToDoProps) => make(jsProps))
-```
-Most times the interop has to deal with optional parameters and the conversion from jsPropsp to `make` parameters is much more messy.
+
+Most times the javascript interop has to deal with optional parameters and the conversion
+from jsProps to `make` parameters is much more messy. If you do not need to use
+the class in javascript, you can use standard scala parameters conventions as in `make`.
 
 If you need to import a javascript class, you can use the standard scala.js machinery to import it:
 ```scala
 @js.native
 @JSImport("some-package", JSImport.Namespace)
 object SomePackageNS extends js.Object {
-  val label: ReactClass = js.native
+  val label: ReactJsComponent = js.native
 }
 object SomePackage {
   import ttg.react.elements._
-  def Label(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomePackageNS, new Atrs(props).toJs, children:_*)
+  def Label(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomePackageNS, new Attrs(props).toJs, children:_*)
 }
   // or...
   def Label(props: js.UndefOr[LabelProps])(children: ReactNode*) = wrapJsForScala(SomePackageNS.Label, props.getOrElse(noProps), children:_*)
@@ -84,6 +80,10 @@ object SomePackage {
   trait LabelProps extends HTMLAttrbutes[dom.html.Label] { // optionally extend HTMLAttributes[]
    // ...
   }
+  
+  // or
+  def Label(someProp: String)(children: ReactNode*) = wrapJsForScala(SomePackageNS, createProps(someProp), children:_*)
+  // createProps a function you write to convert the single scala someProp parameter to a js.Object.
 ```
 You need to call `wrapJsForScala` at some point. You are free to use the model above for attributes and children or you can use a dedicated non-native JS trait or use whatever suits your application for scala-side API. You could also define the component to take `Attr*` props, a non-native JS trait or even `js.Dynamic`.
 

@@ -47,4 +47,4 @@ object MyExporter {
      component.wrapScalaForJs(component, writer.toJs _)
 }
 ```
-It's not clear how much value this adds overall but there are many scala ways to define a function wrapper e.g. a Kleisli, that could be useful.
+The reason it may not be worth it to be too fancy is that the conversion between props is not shared between components. If something in your props is common across scala components, then you can create a function to convert that part of the data.

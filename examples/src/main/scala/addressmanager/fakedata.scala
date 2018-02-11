@@ -9,22 +9,29 @@ package ttg.react.examples
 package addressmanager
 
 import scala.scalajs.js
+import scala.concurrent.duration._
 
 object fakedata {
 
   object addressDAO extends AddressDAO {
-
     private var counter = 0
     private val addresses = defaultAddresses.jsSlice(0)
-
-    override val fetch = (id: String) => js.Promise.resolve[AddressList](addresses)
-
-    override val add = (address: Address) => {
+    override val fetch = (id: Id) => {
+      delayPromise(scala.util.Random.nextInt(1000).millis)(addresses)
+    }
+    override val add = address => {
       addresses.concat(js.Array(address))
       counter = counter + 1
       js.Promise.resolve[String](s"$counter")
     }
+    override val remove = address => js.Promise.resolve[Unit](())
+    override val update = address => js.Promise.resolve[Unit](())
+  }
 
+  object addressesVM extends AddressesViewModel {
+    private var selectedIds: IdList = js.Array()
+    def setSelectedIds(ids: IdList): Unit = { selectedIds = ids }
+    def getSelectedIds(): IdList = selectedIds
   }
 
   val defaultAddresses = js.Array[Address](
@@ -43,4 +50,8 @@ object fakedata {
     }
   )
 
+  /** Delay (ms) resolution. */
+  def delayPromise[A](delay: FiniteDuration): A => js.Promise[A] = 
+    data => new js.Promise[A]((res, rej) => js.timers.setTimeout(delay){ res(data)})
 }
+

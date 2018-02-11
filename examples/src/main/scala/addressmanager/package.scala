@@ -11,13 +11,12 @@ import scala.scalajs.js
 import js.|
 
 package object addressmanager {
-
+  type Id = String
   type AddressList = js.Array[Address]
+  type IdList = js.Array[String]
   type Result = Either[String, AddressList]
+  type CRUDResult = Either[String, Unit]
   val emptyAddressList = js.Array[Address]()
-
   import ttg.react.fabric.IObjectWithKey
-
   val getAddressKey: js.Function1[Address, String] = (item: Address) => item.customeraddressid.getOrElse("")
-
 }

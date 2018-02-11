@@ -1,0 +1,24 @@
+{
+    "sourceMaps": true,
+    "presets": [
+        [
+            "env",
+            {
+                "targets": {
+                    "browsers": [
+                        "last 4 Chrome versions"
+                    ]
+                }
+            }
+        ],
+        "react",
+        "stage-2"
+    ],
+    "plugins": [
+        "transform-runtime",
+        "transform-decorators",
+        "transform-object-rest-spread",
+        "transform-es2015-modules-commonjs",
+        "dynamic-import-node",
+    ]
+}

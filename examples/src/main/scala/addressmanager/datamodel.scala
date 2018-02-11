@@ -14,9 +14,19 @@ trait Address extends js.Object {
   val city: js.UndefOr[String] = js.undefined
   val stateorprovince: js.UndefOr[String] = js.undefined
   val createdon: js.UndefOr[String] = js.undefined
+  val postalcode: js.UndefOr[String] = js.undefined
+  val country: js.UndefOr[String] = js.undefined
 }
 
 trait AddressDAO extends js.Object {
-  val fetch: js.Function1[String, js.Promise[AddressList]]
-  val add: js.Function1[Address, js.Promise[String]]
+  val fetch: js.Function1[Id, js.Promise[AddressList]]
+  val add: js.Function1[Address, js.Promise[Id]]
+  val remove: js.Function1[String, js.Promise[Unit]]
+  val update: js.Function1[Address, js.Promise[Unit]],
+}
+
+/** Manage data access and selection state. */
+trait AddressesViewModel extends js.Object {
+  def setSelectedIds(ids: js.Array[Id]): Unit
+  def getSelectedIds(): js.Array[Id]
 }

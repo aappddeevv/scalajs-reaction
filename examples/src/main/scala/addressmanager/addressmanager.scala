@@ -16,6 +16,7 @@ import ttg.react.elements._
 import ttg.react.reactdom._
 import ttg.react.implicits._
 import ttg.react.fabric
+import ttg.react.redux
 import vdom._
 import prefix_<^._
 import fabric._
@@ -35,6 +36,7 @@ sealed trait Actions
 case object FetchRequest extends Actions
 case class FetchResult(result: Result) extends Actions
 case class SelectionChanged(selection: ISelection[Address]) extends Actions
+case object Refresh extends Actions
 
 object AddressDetailC {
   val AddressDetail = statelessComponent("AddressDetail")
@@ -44,13 +46,11 @@ object AddressDetailC {
         <.div(
           ^.className := amstyles.detail,
         )(
-          fragmentElement()(
-            Label()("Name"),
-            Label()("City"),
-          ),
-          Label()("State/Province"),
-          Label()("Zipcode"),
-          Label()("Country"),
+          Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
+          Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
+          Label()(s"""State/Province: ${address.flatMap(_.stateorprovince.toOption).getOrElse("")}"""),
+          Label()(s"""Zipcode: ${address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
+          Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
         )
       }
 }
@@ -64,14 +64,16 @@ object AddressListC {
   )
 
   val AddressList = statelessComponent("AddressList")
+
   def make(sel: ISelection[Address], addresses: AddressList = emptyAddressList) =
     AddressList
       .withRender { self =>
         val listopts = new IDetailsListProps[Address] {
-          override val columns = icolumns
           val items = addresses.toJSArray
-          override val getKey = getAddressKey
-          override val selection = sel
+          selectionPreservedOnEmptyClick = true
+          columns = icolumns
+          getKey = getAddressKey
+          selection = sel
         }
         <.div(
           ^.className := amstyles.master,
@@ -82,46 +84,64 @@ object AddressListC {
 object AddressManagerC {
 
   private[addressmanager] case class State(
-      fetching: Boolean = false,
-      message: Option[String] = None,
-      addresses: js.Array[Address] = js.Array(),
-      selection: ISelection[Address] = null,
-      selectedKey: Option[String] = None,
+    fetching: Boolean = false,
+    message: Option[String] = None,
+    addresses: AddressList = emptyAddressList,
+    selectedAddress: Option[Address] = None,
+    selection: ISelection[Address] = null // its a js thing
   )
 
   val AddressManager = reducerComponentWithRetainedProps[State, NoRetainedProps, Actions]("AddressManager")
 
   def cbopts(self: AddressManager.Self) = new ICommandBarProps {
+    val isFetching = self.state.map(_.fetching).getOrElse(false)
     val items = js.Array(
       new IContextualMenuItem {
         val key = "new"
-        override val name = "New"
-        override val disabled = false
-        override val iconProps = lit("iconName" -> "Add")
+        name = "New"
+        disabled = isFetching
+        iconProps = lit("iconName" -> "Add")
       },
       new IContextualMenuItem {
         val key = "delete"
-        override val name = "Delete"
-        override val disabled = false
-        override val iconProps = lit("iconName" -> "Delete")
+        name = "Delete"
+        disabled = isFetching
+        iconProps = lit("iconName" -> "Delete")
       },
     )
-    val farItems = js.Array(
-      new IContextualMenuItem {
-        val key = "refresh"
-        override val name = "Refresh"
-        override val disabled = false
-        override val onClick = (() => println("refresh me!")): js.Function0[Unit]
-        override val iconProps = lit("iconName" -> "Refresh")
-      },
+    farItems = js.Array(
+      if(self.state.map(_.fetching).getOrElse(false))
+        new IContextualMenuItem {
+          val key = "refresh"
+          name = "Fetching..."
+        }
+        else
+        new IContextualMenuItem {
+          val key = "refresh"
+          name = "Refresh"
+          onClick = { ()=> self.send(Refresh) } : OC0
+          iconProps = lit("iconName" -> "Refresh")
+        }
     )
   }
 
-  def make(dao: AddressDAO) =
+  def applyData(addresses: AddressList, ids: IdList, sel: ISelection[Address]): Unit = {
+    println(s"appling selection ${ids}")
+    sel.setItems(addresses, true)
+    sel.setChangeEvents(false)
+    ids.foreach(id => sel.setKeySelected(id, true, false))
+    sel.setChangeEvents(true)
+  }
+
+  def fetchData(self: AddressManager.Self, dao: AddressDAO): Unit = {
+    self.send(FetchRequest)
+    dao.fetch("no id")
+      .then[Unit] { addresses => self.send(FetchResult(Right(addresses))) }
+  }
+
+  def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String]) =
     AddressManager
-      .withInitialState { () =>
-        Some(State())
-      }
+      .withInitialState { () => Some(State()) }
       .withReducer { (action, sopt, gen) =>
         action match {
           case FetchRequest =>
@@ -136,63 +156,84 @@ object AddressManagerC {
                   .getOrElse(gen.skip)
               case Right(addresses) =>
                 sopt
-                  .map(state => gen.update(Some(state.copy(fetching = false, addresses = addresses))))
+                  .map{state =>
+                    gen.updateAndEffect(Some(state.copy(fetching = false, addresses = addresses)),
+                      _ => applyData(addresses, vm.getSelectedIds(), state.selection))
+                  }
                   .getOrElse(gen.skip)
             }
           case SelectionChanged(sel) =>
             val selections = sel.getSelection()
-            if (selections.length == 1 && selections(0).customeraddressid.isDefined)
-              sopt
-                .map(state => gen.update(Some(state.copy(selectedKey = Some(selections(0).customeraddressid.get)))))
-                .getOrElse(gen.skip)
+            val stateUpdate = if (selections.length == 1 && selections(0).customeraddressid.isDefined)
+              sopt.map(state => gen.updateAndEffect(Some(state.copy(selectedAddress = Some(selections(0)))),
+                _ => vm.setSelectedIds(selections.map(address => address.customeraddressid.get))))
             else
-              sopt
-                .map(state => gen.update(Some(state.copy(selectedKey = None))))
-                .getOrElse(gen.skip)
-          case _ =>
-            gen.skip
+              sopt.map(state => gen.updateAndEffect(Some(state.copy(selectedAddress = None)),
+                _ => vm.setSelectedIds(js.Array())))
+            stateUpdate.getOrElse(gen.skip)
+          case Refresh =>
+            // clear the address cache, not selection, fetch data
+            gen.updateAndEffect(
+              sopt.map(state => state.copy(addresses = emptyAddressList)),
+              fetchData(_, dao))
         }
       }
+  // self is needed to init the full state since "selection" requires a callback
+  // so we do it in mount vs initialState
       .withDidMount { (self, gen) =>
         val cb = () =>
           self.handle { cbself =>
             cbself.state.foreach(state => self.send(SelectionChanged(state.selection)))
-        }
-        val sopt = Some(State(selection = new Selection(new ISelectionOptions[Address] {
-          override val selectionMode = SelectionMode.single
-          override val onSelectionChanged = js.defined(cb)
-        })))
-        gen.updateAndEffect(sopt, { cbself =>
-          cbself.send(FetchRequest)
-          dao.fetch("no id").then[Unit] { addresses =>
-            cbself.send(FetchResult(Right(addresses)))
           }
-        })
+        val selection = new Selection(js.defined(new ISelectionOptions[Address] {
+            getKey = getAddressKey
+            selectionMode = SelectionMode.single
+            onSelectionChanged = js.defined(cb)
+        }))
+        val sopt = self.state.map(state => state.copy(selection = selection))
+        gen.updateAndEffect(sopt, fetchData(_, dao))
       }
       .withRender { self =>
-        val selAddrOpt = for {
-          state <- self.state
-          id <- state.selectedKey
-        } yield state.addresses.find(_.customeraddressid == id).head
         <.div()(
           CommandBar(cbopts(self))(
             ),
           <.div(
             ^.className := amstyles.component
           )(
-            AddressListC.make(self.state.map(_.selection).get, self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList)),
-            AddressDetailC.make(selAddrOpt),
+            Label()(label.getOrElse[String]("no redux label provided")),
+            AddressListC.make(self.state.map(_.selection).get,
+              self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList)),
+            AddressDetailC.make(self.state.flatMap(_.selectedAddress)),
           )
         )
       }
 
   trait AddressManagerProps extends js.Object {
-    val dao: js.UndefOr[AddressDAO]
+    val dao: AddressDAO
+    val viewModel: AddressesViewModel
   }
 
   @JSExportTopLevel("AddressManager")
-  val exportedComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerProps) =>
-    require(jsProps.dao.isDefined)
-    make(jsProps.dao.get)
+  private val exportedComponent = AddressManager.wrapScalaForJs { (jsProps: ReduxAddressManagerProps) =>
+    make(jsProps.dao, jsProps.viewModel, jsProps.reduxLabel.toOption)
   }
+
+  // component that has been connected to redux
+  val AddressManagerReduxJSComponent = {
+    val msp = (state: js.Object, nextProps: js.Object) => {
+      val stated = state.asInstanceOf[js.Dynamic]
+      lit("reduxLabel" -> stated.view.label)
+    }
+    redux.connect(AddressManager, Some(msp))
+  }
+
+  trait ReduxAddressManagerProps extends AddressManagerProps {
+    var reduxLabel: js.UndefOr[String] = js.undefined
+   }
+
+  // While you could set the redux part of the "props" they will get automatically
+  // filled in by react-redux.
+  def makeWithRedux(props: ReduxAddressManagerProps) =
+    wrapJsForScala(AddressManagerReduxJSComponent, props)
+
 }

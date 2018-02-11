@@ -193,11 +193,34 @@ trait SetInnerHTML extends js.Object {
   * Mostly handlers for DOM nodes.
   */
 trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
-  val children: js.UndefOr[ReactNode] = js.undefined
-  val dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
+  /** react specific */
+  var children: js.UndefOr[ReactNode] = js.undefined
+  /** react specific */
+  var dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
 
   // keyboard events
-  def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
+  //val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
+  val onKeyDown: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
+  val onKeyPress: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
+  val onKeyPressCapture: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
+  val onKeyUp: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
+  val onKeyUpCapture: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
+
+  // mouse events
+  val onClick: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onClickCapture: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onDoubleClick: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onDoubleClickCapture: js.UndefOr[MouseEventHandler[_]] = js.undefined
+
+  val onMouseDown: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onMouseEnter: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onMouseLeave: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onMouseMove: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onMouseOut: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onMouseOver: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onMouseUp: js.UndefOr[MouseEventHandler[_]] = js.undefined
+/*
+  //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
   def onKeyPress[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
   def onKeyPressCapture[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
   def onKeyUp[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
@@ -216,73 +239,75 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   def onMouseOut[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
   def onMouseOver[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
   def onMouseUp[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-
+ */
   // lots more to type...
 }
 
 trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
-  // react specific
-  val defaultChecked: js.UndefOr[Boolean] = js.undefined
-  val defaultValue: js.UndefOr[String | js.Array[String]] = js.undefined
-  val suppressContentEditableWarning: js.UndefOr[Boolean] = js.undefined
+  /** react specific */
+  var defaultChecked: js.UndefOr[Boolean] = js.undefined
+  /** react specific */
+  var defaultVarue: js.UndefOr[String | js.Array[String]] = js.undefined
+  /** react specific */
+  var suppressContentEditableWarning: js.UndefOr[Boolean] = js.undefined
 
-  val accessKey: js.UndefOr[String] = js.undefined
-  val className: js.UndefOr[String] = js.undefined
-  val contentEditable: js.UndefOr[Boolean] = js.undefined
-  val dir: js.UndefOr[String] = js.undefined
-  val draggable: js.UndefOr[Boolean] = js.undefined
-  val hidden: js.UndefOr[Boolean] = js.undefined
-  val id: js.UndefOr[String] = js.undefined
-  val lang: js.UndefOr[String] = js.undefined
-  val slot: js.UndefOr[String] = js.undefined
-  val spellCheck: js.UndefOr[Boolean] = js.undefined
+  var accessKey: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var contentEditable: js.UndefOr[Boolean] = js.undefined
+  var dir: js.UndefOr[String] = js.undefined
+  var draggable: js.UndefOr[Boolean] = js.undefined
+  var hidden: js.UndefOr[Boolean] = js.undefined
+  var id: js.UndefOr[String] = js.undefined
+  var lang: js.UndefOr[String] = js.undefined
+  var slot: js.UndefOr[String] = js.undefined
+  var spellCheck: js.UndefOr[Boolean] = js.undefined
   // should be js.Object|js.Dynamic or other
-  val style: js.UndefOr[js.Any] = js.undefined
-  val tabIndex: js.UndefOr[Int] = js.undefined
-  val title: js.UndefOr[String] = js.undefined
+  var style: js.UndefOr[js.Any] = js.undefined
+  var tabIndex: js.UndefOr[Int] = js.undefined
+  var title: js.UndefOr[String] = js.undefined
 
-  val inputMode: js.UndefOr[String] = js.undefined
-  val is: js.UndefOr[String] = js.undefined
-  val radioGroup: js.UndefOr[String] = js.undefined
+  var inputMode: js.UndefOr[String] = js.undefined
+  var is: js.UndefOr[String] = js.undefined
+  var radioGroup: js.UndefOr[String] = js.undefined
 
   // WAI-ARIA
-  val role: js.UndefOr[String] = js.undefined
+  var role: js.UndefOr[String] = js.undefined
 
   // non-standard
-  val autoCapitalize: js.UndefOr[String] = js.undefined
-  val autoCorrect: js.UndefOr[String] = js.undefined
-  val autoSave: js.UndefOr[String] = js.undefined
-  val color: js.UndefOr[String] = js.undefined
-  val itemProp: js.UndefOr[String] = js.undefined
-  val itemScope: js.UndefOr[Boolean] = js.undefined
-  val itemType: js.UndefOr[String] = js.undefined
-  val itemID: js.UndefOr[String] = js.undefined
-  val itemRef: js.UndefOr[String] = js.undefined
+  var autoCapitalize: js.UndefOr[String] = js.undefined
+  var autoCorrect: js.UndefOr[String] = js.undefined
+  var autoSave: js.UndefOr[String] = js.undefined
+  var color: js.UndefOr[String] = js.undefined
+  var itemProp: js.UndefOr[String] = js.undefined
+  var itemScope: js.UndefOr[Boolean] = js.undefined
+  var itemType: js.UndefOr[String] = js.undefined
+  var itemID: js.UndefOr[String] = js.undefined
+  var itemRef: js.UndefOr[String] = js.undefined
   // or Number?
-  val results: js.UndefOr[Int] = js.undefined
-  val security: js.UndefOr[String] = js.undefined
-  val nselectable: js.UndefOr[Boolean] = js.undefined
+  var results: js.UndefOr[Int] = js.undefined
+  var security: js.UndefOr[String] = js.undefined
+  var nselectable: js.UndefOr[Boolean] = js.undefined
 }
 
 trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   // Standard HTML Attributes
-  val accept: js.UndefOr[String] = js.undefined
-  val acceptCharset: js.UndefOr[String] = js.undefined
-  val action: js.UndefOr[String] = js.undefined
-  val allowFullScreen: js.UndefOr[Boolean] = js.undefined
-  val allowTransparency: js.UndefOr[Boolean] = js.undefined
-  val alt: js.UndefOr[String] = js.undefined
-  val as: js.UndefOr[String] = js.undefined
-  val async: js.UndefOr[Boolean] = js.undefined
-  val autComplete: js.UndefOr[String] = js.undefined
-  val autoFocus: js.UndefOr[Boolean] = js.undefined
-  val autoPlay: js.UndefOr[Boolean] = js.undefined
-  val capture: js.UndefOr[Boolean] = js.undefined
+  var accept: js.UndefOr[String] = js.undefined
+  var acceptCharset: js.UndefOr[String] = js.undefined
+  var action: js.UndefOr[String] = js.undefined
+  var allowFullScreen: js.UndefOr[Boolean] = js.undefined
+  var allowTransparency: js.UndefOr[Boolean] = js.undefined
+  var alt: js.UndefOr[String] = js.undefined
+  var as: js.UndefOr[String] = js.undefined
+  var async: js.UndefOr[Boolean] = js.undefined
+  var autComplete: js.UndefOr[String] = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var autoPlay: js.UndefOr[Boolean] = js.undefined
+  var capture: js.UndefOr[Boolean] = js.undefined
 
-  val content: js.UndefOr[String] = js.undefined
-  val height: js.UndefOr[String | Int] = js.undefined
+  var content: js.UndefOr[String] = js.undefined
+  var height: js.UndefOr[String | Int] = js.undefined
 
-  val width: js.UndefOr[String | Int] = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
 
   /*
         accept?: string;
@@ -395,37 +420,37 @@ trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 }
 
 trait AnchorHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  val download: js.UndefOr[js.Any] = js.undefined
-  val href: js.UndefOr[String] = js.undefined
-  val hrefLang: js.UndefOr[String] = js.undefined
-  val media: js.UndefOr[String] = js.undefined
-  val rel: js.UndefOr[String] = js.undefined
-  val target: js.UndefOr[String] = js.undefined
-  val `type`: js.UndefOr[String] = js.undefined
-  val as: js.UndefOr[String] = js.undefined
+  var download: js.UndefOr[js.Any] = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var hrefLang: js.UndefOr[String] = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var as: js.UndefOr[String] = js.undefined
 }
 
 trait ButtonHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  val autoFocus: js.UndefOr[Boolean] = js.undefined
-  val disabled: js.UndefOr[Boolean] = js.undefined
-  val form: js.UndefOr[String] = js.undefined
-  val formAction: js.UndefOr[String] = js.undefined
-  val formEncType: js.UndefOr[String] = js.undefined
-  val formMethod: js.UndefOr[String] = js.undefined
-  val formNoValidate: js.UndefOr[Boolean] = js.undefined
-  val formTarget: js.UndefOr[String] = js.undefined
-  val name: js.UndefOr[String] = js.undefined
-  val `type`: js.UndefOr[String] = js.undefined
-  val value: js.UndefOr[String | js.Array[String] | Int] = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var formAction: js.UndefOr[String] = js.undefined
+  var formEncType: js.UndefOr[String] = js.undefined
+  var formMethod: js.UndefOr[String] = js.undefined
+  var formNoVaridate: js.UndefOr[Boolean] = js.undefined
+  var formTarget: js.UndefOr[String] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var varue: js.UndefOr[String | js.Array[String] | Int] = js.undefined
 }
 
 trait HtmlHTMLAtributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  val mainfest: js.UndefOr[String] = js.undefined
+  var mainfest: js.UndefOr[String] = js.undefined
 }
 
 trait LabelHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  val form: js.UndefOr[String] = js.undefined
-  val htmlFor: js.UndefOr[String] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var htmlFor: js.UndefOr[String] = js.undefined
 }
 
 /*

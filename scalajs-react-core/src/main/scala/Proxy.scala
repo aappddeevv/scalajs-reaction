@@ -54,7 +54,7 @@ trait Proxy[S, RP, A] extends js.Object {
   /** Subscription "unmount" callbacks. */
   var subscriptions: Seq[() => Unit]
 
-  /** react js method. */
+  /** react js method. @deprecated */
   val getInitialState: js.ThisFunction0[ThisSelf, State]
 
   /** react js method. */
@@ -72,7 +72,7 @@ trait Proxy[S, RP, A] extends js.Object {
   /** react js method. */
   val shouldComponentUpdate: js.ThisFunction2[ThisSelf, ThisSelfProps, State, Boolean]
 
-  /** React js method. */
+  /** React js method. @deprecated */
   val componentWillUpdate: js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]
 
   /** react js method. */

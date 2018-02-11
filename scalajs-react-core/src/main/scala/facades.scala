@@ -60,6 +60,10 @@ case class ComponentSpec[S, RP, A, SLF](
     contextTypes: Option[js.Object] = None,
     didCatch: Option[(SLF, js.Error, ErrorInfo) => Unit] = None
 ) { self =>
+  /** 
+   * Use this type for your component e.g. YourComponent.Self for your functions
+   * external to the callback methods to help your organize your code.
+   */
   type Self = SLF
 
   def withInitialState(is: () => Option[S]) =
@@ -97,8 +101,8 @@ case class ComponentSpec[S, RP, A, SLF](
     * from the js-side easier, or not, it's up to you. The returned value should
     * be exported from scala-world so that js-world can see it.
     *
-    * Impl note: It will appear in `JsComponentThis` by attaching it to the
-    * prototype of reactClassInternal.
+    * Note: jsPropsToScala will appear in reactsj's 'this' because its attached
+    * to the prototype of reactClassInternal.
     */
   def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec[S, RP, A, _]): ReactClass = {
     val dyn = this.reactClassInternal.asInstanceOf[js.Dynamic]
@@ -175,7 +179,7 @@ trait JsComponentThis[JsProps, JsState, NewComponent] extends js.Object {
 /**
   * js-side this.state proxy. We keep it as js-object so you can still
   * manipulate it from javascript if you need to.
-  */
+30  */
 trait TotalState[S, RP, A, SLF] extends js.Object {
 
   /** Actual client provided state. */
@@ -263,7 +267,7 @@ object elements {
     component.jsElementWrapped match {
       case Some(func) => func(key, ref)
       case _ =>
-        val props = js.Dictionary.empty[Any] // not js.Any!
+        val props = js.Dictionary.empty[Any] // not js.Any! why?
         key.foreach(k => props("key") = k)
         ref.foreach(refcb => props("ref") = refcb)
         props("scalaProps") = component.asInstanceOf[js.Any]
@@ -607,7 +611,6 @@ object elements {
       //println(s"$debugName:CreateClassOpts.render: cur scala state ${self.state}")
       component.render(self)
     }
-
   }
 
   /**
@@ -622,7 +625,10 @@ object elements {
     * proxy. The shim/proxy react lifecycle/mangement functions call the
     * scala-side client visible API. Since you customize what "self" is for the
     * scala client side API, this function also defines how to create the API
-    * "self" value from the underlying javascript "this" pointer.
+    * "self" value from the underlying javascript "this" pointer. The only
+    * reason that each component needs its own "react class" proxy is because
+    * debugName is unique to a component. Having said that, the number of
+    * "classes" is not large in an application.
     */
   def basicComponent[S, RP, A](debugNameArg: String) = {
     class BasicProxy[S, RP, A] extends StandardProxy[S, RP, A] {
@@ -703,7 +709,7 @@ object elements {
     * react class using standard scala.js import mechanisms and write a "make"
     * function to create your props from "make" parameters.
     */
-  def wrapJsForScala[P <: js.Object](reactClass: ReactClass, props: P, children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _] = {
+  def wrapJsForScala[P <: js.Object](reactClass: ReactJSComponent, props: P, children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _] = {
     WrapProps.wrapJsForScala(reactClass, props, children: _*)
   }
 

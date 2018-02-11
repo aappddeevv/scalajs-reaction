@@ -84,18 +84,18 @@ trait AppPropsJs extends js.Object {
   val todos: js.UndefOr[js.Array[js.Object]] = js.undefined
 }
 
-object AppC {
+object ToDosC {
   var idCounter: Int = -1
   def mkId(): Int = { idCounter = idCounter + 1; idCounter }
   case class State(todos: Seq[ToDo] = Seq(), input: Option[String] = None, textFieldRef: Option[ITextField] = None)
   case class RP(title: Option[String] = None)
-  val App = reducerComponentWithRetainedProps[State, RP, ToDoAction]("App")
+  val ToDos = reducerComponentWithRetainedProps[State, RP, ToDoAction]("ToDos")
 
   def remove(id: Int)(self: Self[State, RP, ToDoAction]): Unit = self.send(Remove(id))
   def inputChanged(e: Option[String])(self: Self[State, RP, ToDoAction]): Unit = self.send(InputChanged(e))
 
   def make(title: Option[String] = None, todos: Seq[ToDo] = Seq()) =
-    App
+    ToDos
       .withRetainedProps(RP(title))
       .withReducer((action, sopt, gen) => {
         action match {
@@ -150,20 +150,24 @@ object AppC {
         )
       }
 
-  @JSExportTopLevel("App")
-  val exportedApp = App.wrapScalaForJs((jsProps: js.Object) => make())
+  @JSExportTopLevel("ToDos")
+  val exportedApp = ToDos.wrapScalaForJs((jsProps: js.Object) => make())
 }
 
-object Main {
-
+object fakedata {
   val initialToDos = Seq(
-    ToDo(AppC.mkId(), "Call Fred")
+    ToDo(ToDosC.mkId(), "Call Fred")
   )
+}
+
+object ToDoApp {
+
   @JSExportTopLevel("todos")
   def todos(): Unit = {
     println("Running todos...")
-    SourceMapSupport.install()
-
-    renderToElementWithId(Fabric()(AppC.make(Some("My To Do List"), Seq(ToDo(AppC.mkId(), "Call Fred"))).toEl).toEl, "container")
+    renderToElementWithId(Fabric()(
+      ToDosC.make(Some("My To Do List"),
+        Seq(ToDo(ToDosC.mkId(), "Call Fred"))).toEl),
+      "container")
   }
 }

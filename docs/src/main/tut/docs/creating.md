@@ -16,8 +16,8 @@ Here's a simple example that uses a non-native JS trait for the props:
 // It's often convenient to use a subtype of js.Object
 // non-native JS trait
 trait ToDoProps extends js.Object {
-  val todo: ToDo // has property "name"
-  val remove: Unit => Unit
+  var todo: ToDo // has property "name"
+  var remove: Unit => Unit
   // look no children on this props...
 }
 
@@ -49,6 +49,30 @@ def make(props: ToDoPropsp, children: ReactNode*) =
   ToDo
     .withRendedr{self => 
     }
+```
+## Attributes
+Notice that you can define your make function to take either a list of attributes or an object that bundles the attributes together. You can choose how you want to define the make parameters.
+
+In scala if you define your non-native JS traits (you cannot instantiate a trait annotated with @js.native), then you can create them without having to use "override val" syntax:
+```scala
+trait MyOpts extends js.Object {
+  var prop1: js.UndefOr[String] = js.undefined
+  var prop2: js.UndefOr[String] = js.undefined
+}
+```
+Then you can do:
+```scala
+new MyOpts { 
+  prop1 = "foo",
+  prop2 = "bar"
+}
+```
+instead of:
+```scala
+new MyOpts {
+  override val prop1 = "foo"
+  override val prop2 = "bar"
+}
 ```
 
 ## Children

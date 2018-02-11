@@ -49,6 +49,13 @@ package object react {
   @js.native
   trait ReactClass extends js.Object
 
+  /** 
+   * A type used only to annoate imported javascript side components. It should *only*
+   * be used to annotated a component imported from javascript.
+   */
+  @js.native
+  trait ReactJSComponent extends js.Object
+
   /** Alias for internal use. @deprecated */
   type ReactClassInternal = ReactClass
 

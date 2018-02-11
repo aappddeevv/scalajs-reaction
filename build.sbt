@@ -6,6 +6,7 @@ import scala.sys.process._
 resolvers += Resolver.sonatypeRepo("releases")
 resolvers += Resolver.jcenterRepo
 autoCompilerPlugins := true
+scalafmtVersion in ThisBuild := "1.3.0"
 
 lazy val licenseSettings = Seq(
   headerMappings := headerMappings.value +
@@ -38,7 +39,7 @@ val commonScalacOptions = Seq(
     "-encoding", "UTF-8",
     "-feature",
     "-language:_",
-    "-unchecked",
+  "-unchecked",
     "-Yno-adapted-args",
     "-Ywarn-numeric-widen",
     "-Xfuture",
@@ -64,7 +65,8 @@ lazy val root = project.in(file("."))
   .settings(libsettings)
   .settings(noPublishSettings)
   .settings(name := "scalajs-react")
-  .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`, `scalajs-react-vdom`, docs)
+  .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
+    `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
 
 lazy val `scalajs-react-core` = project
@@ -86,11 +88,11 @@ lazy val `scalajs-react-vdom` = project
 
 lazy val `scalajs-react-redux` = project
   .settings(libsettings)
-  .settings(publishSettings)
+  .settings(noPublishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`)
   .settings(
-    description := "Connect to external redux store to drive updates.",
+    description := "Connect to redux store to drive rendering.",
   )
 
 lazy val `scalajs-react-fabric` = project
@@ -100,13 +102,12 @@ lazy val `scalajs-react-fabric` = project
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
   .settings(
     description := "scala.js react facade support for microsoft office-ui-fabric",
-
   )
 
 lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
-  .dependsOn(`scalajs-react-fabric`)
+  .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(
     libraryDependencies ++= Seq(
@@ -160,24 +161,13 @@ lazy val docs = project
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")
 npmBuild := {
   (fullOptJS in (examples, Compile)).value
-  "npm run afterScalaJSFull" !
+  "npm run examples" !
 }
 
 val npmBuildFast = taskKey[Unit]("fastOptJS then webpack")
 npmBuildFast := {
   (fastOptJS in (examples, Compile)).value
-  "npm run afterScalaJSFast" !
-}
-
-val npmTest = taskKey[Unit]("scala testing fastOptJS then webpack")
-npmTest := {
-  (fastOptJS in (examples, Compile)).value
-  "npm run scala" !
-}
-val npmElectron = taskKey[Unit]("scala then electron build")
-npmElectron := {
-  (fastOptJS in (examples, Compile)).value
-  "npm run electron" !
+  "npm run examples:dev" !
 }
 
 // must run publish and release separately

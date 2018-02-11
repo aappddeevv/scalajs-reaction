@@ -1,0 +1,35 @@
+{
+	"compilerOptions": {
+		"jsx": "preserve",
+		"strictNullChecks": true,
+		"allowJs": true,
+		"importHelpers": true,
+		"noEmitHelpers": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": false,
+		  //"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"inlineSourceMap": false,
+		"sourceMap": true,
+		"noEmitOnError": false,
+		"preserveSymlinks": false,
+		"moduleResolution": "node",
+		"target": "esnext",
+		"module": "commonjs",
+		"baseUrl": ".",
+		"paths": {
+			"ScalaJS": [
+				"examples/target/scala-2.12/examples-fastopt.js"
+			],
+		}
+	},
+	"exclude": [
+		"src/**/*.spec.ts",
+		"src/**/*.test.ts",
+		"src/**/*.spec.js",
+		"src/**/*.test.js"
+	],
+	"include": [
+		"examples/src/main/assets/*"
+	]
+}

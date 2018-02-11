@@ -37,16 +37,16 @@ object uifabric_icons extends js.Object {
 @js.native
 @JSImport("office-ui-fabric-react", JSImport.Namespace)
 object FabricNS extends js.Object {
-  val Fabric: ReactClass = js.native
-  val TextField: ReactClass = js.native
-  val Label: ReactClass = js.native
-  val PrimaryButton: ReactClass = js.native
-  val DefaultButton: ReactClass = js.native
-  val Pivot: ReactClass = js.native
-  val PivotItem: ReactClass = js.native
-  val DetailsList: ReactClass = js.native
-  val CommandBar: ReactClass = js.native
-  val Spinner: ReactClass = js.native
+  val Fabric: ReactJSComponent = js.native
+  val TextField: ReactJSComponent = js.native
+  val Label: ReactJSComponent = js.native
+  val PrimaryButton: ReactJSComponent = js.native
+  val DefaultButton: ReactJSComponent = js.native
+  val Pivot: ReactJSComponent = js.native
+  val PivotItem: ReactJSComponent = js.native
+  val DetailsList: ReactJSComponent = js.native
+  val CommandBar: ReactJSComponent = js.native
+  val Spinner: ReactJSComponent = js.native
   def Selection[T <: js.Object]: Selection[T] = js.native
 }
 
@@ -85,38 +85,38 @@ trait Focusable extends js.Object {
 }
 
 trait KeyAndRef extends js.Object {
-  val key: js.UndefOr[String] = js.undefined
-  val ref: js.UndefOr[RefCb] = js.undefined
+  var key: js.UndefOr[String] = js.undefined
+  var ref: js.UndefOr[RefCb] = js.undefined
 }
 
 // trait
 trait LabelProps extends LabelHTMLAttributes[dom.html.Label] {
-  val componentRef: js.UndefOr[js.Any] = js.undefined
-  val disabled: js.UndefOr[Boolean] = js.undefined
-  val theme: js.UndefOr[js.Any] = js.undefined
+  var componentRef: js.UndefOr[js.Any] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var theme: js.UndefOr[js.Any] = js.undefined
 }
 
 // class, but only some vars are easy
 class LabelProps2(
-    val disabled: js.UndefOr[Boolean] = js.undefined
+    var disabled: js.UndefOr[Boolean] = js.undefined
 ) extends LabelHTMLAttributes[dom.html.Label]
 
 trait PivotItemProps extends HTMLAttributes[dom.html.Div] {
-  val linkText: js.UndefOr[String] = js.undefined
-  val itemKey: js.UndefOr[String] = js.undefined
-  val itemCount: js.UndefOr[Int] = js.undefined
+  var linkText: js.UndefOr[String] = js.undefined
+  var itemKey: js.UndefOr[String] = js.undefined
+  var itemCount: js.UndefOr[Int] = js.undefined
 }
 
 trait PivotProps extends js.Object {
-  val initialSelectedKey: js.UndefOr[String] = js.undefined
-  val initialSelectedIndex: js.UndefOr[Int] = js.undefined
-  val selectedKey: js.UndefOr[String] = js.undefined
-  val onLinkClick: js.UndefOr[((js.Object, js.UndefOr[ReactMouseEvent[dom.html.Element]]) => Unit) |(() => Unit)] = js.undefined
+  var initialSelectedKey: js.UndefOr[String] = js.undefined
+  var initialSelectedIndex: js.UndefOr[Int] = js.undefined
+  var selectedKey: js.UndefOr[String] = js.undefined
+  var onLinkClick: js.UndefOr[((js.Object, js.UndefOr[ReactMouseEvent[dom.html.Element]]) => Unit) |(() => Unit)] = js.undefined
 }
 
 @js.native
 trait ITextField extends ReactRef with Focusable {
-  val value: js.UndefOr[String] = js.native
+  var value: js.UndefOr[String] = js.native
 }
 
 @js.native
@@ -125,11 +125,11 @@ trait IDetailsList extends js.Object {
 }
 
 trait IColumn extends js.Object {
-  val key: String
-  val name: String
-  val fieldName: String
-  val minWidth: Int
-  val data: js.UndefOr[scala.Any] = js.undefined
+  var key: String
+  var name: String
+  var fieldName: String
+  var minWidth: Int
+  var data: js.UndefOr[scala.Any] = js.undefined
 }
 
 object IColumn {
@@ -137,76 +137,87 @@ object IColumn {
 }
 
 trait IDetailsListProps[T <: js.Object] extends js.Object {
-  val componentRef: js.UndefOr[IDetailsList => Unit] = js.undefined
-  val setKey: js.UndefOr[String] = js.undefined
-  val className: js.UndefOr[String] = js.undefined
-  val columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] = js.undefined
   val items: js.Array[T]
-  val listProps: js.UndefOr[js.Dynamic] = js.undefined
-  val getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
-  val selection: js.UndefOr[ISelection[T]] = js.undefined
+  var componentRef: js.UndefOr[IDetailsList => Unit] = js.undefined
+  var setKey: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] = js.undefined
+  var listProps: js.UndefOr[js.Dynamic] = js.undefined
+  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
+  var selection: js.UndefOr[ISelection[T]] = js.undefined
+  var selectionPreservedOnEmptyClick: js.UndefOr[Boolean] = js.undefined
 }
 
 trait IContextualMenuProps extends KeyAndRef {
-  val items: js.Array[IContextualMenuItem]
+  var items: js.Array[IContextualMenuItem]
 }
 
 trait IIconProps extends js.Object {
-  val iconName: js.UndefOr[String] = js.undefined
+  var iconName: js.UndefOr[String] = js.undefined
 }
 
 trait IContextualMenuItem extends js.Object {
   val key: String
-  val name: js.UndefOr[String] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
 
   /** 1 => divider, 0 => normal */
-  val itemType: js.UndefOr[Int] = js.undefined
-  val disabled: js.UndefOr[Boolean] = js.undefined
-  val onClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.UndefOr[IContextualMenuItem], Unit] | js.Function0[Unit]] = js.undefined
-  val subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
-  val iconProps: js.UndefOr[IIconProps | js.Dynamic] = js.undefined
+  var itemType: js.UndefOr[Int] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], js.UndefOr[IContextualMenuItem], Unit]
+  type OC0 = js.Function0[Unit]
+  var onClick: js.UndefOr[OC2|OC0] = js.undefined
+  var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
+  var iconProps: js.UndefOr[IIconProps | js.Dynamic] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var title: js.UndefOr[String] = js.undefined
+  // cast your func to this to make it easier
+  type RF2 = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
+  // cast your func to this to make it easier
+  type RF0 = js.Function0[ReactNode]  
+  var onRender: js.UndefOr[RF2|RF0] = js.undefined
 }
 
 @js.native
 trait ICommandBar extends Focusable {}
 
 trait ICommandBarProps extends js.Object {
-  val componentRef: js.UndefOr[ICommandBar => Unit] = js.undefined
-  val isSearchBoxVisble: js.UndefOr[Boolean] = js.undefined
-  val searchBoxPlaceholderText: js.UndefOr[String] = js.undefined
+  var componentRef: js.UndefOr[ICommandBar => Unit] = js.undefined
+  var isSearchBoxVisble: js.UndefOr[Boolean] = js.undefined
+  var searchBoxPlaceholderText: js.UndefOr[String] = js.undefined
   val items: js.Array[IContextualMenuItem]
-  val farItems: js.Array[IContextualMenuItem]
+  var farItems: js.UndefOr[js.Array[IContextualMenuItem]] = js.undefined
 }
 
 @js.native
 trait ISpinner extends js.Object {}
 
 trait ISpinnerProps extends KeyAndRef {
-  val componentRef: js.UndefOr[ISpinner => Unit] = js.undefined
-  val size: js.UndefOr[Int] = js.undefined
-  val label: js.UndefOr[String] = js.undefined
-  val className: js.UndefOr[String] = js.undefined
-  val ariaLabel: js.UndefOr[String] = js.undefined
+  var componentRef: js.UndefOr[ISpinner => Unit] = js.undefined
+  var size: js.UndefOr[Int] = js.undefined
+  var label: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
 }
 
 object SpinnerSize {
-  val xSmall = 0
-  val small = 1
-  val medium = 2
-  val large = 3
+  var xSmall = 0
+  var small = 1
+  var medium = 2
+  var large = 3
 }
 
 @js.native
 trait IObjectWithKey extends js.Object {
-  val key: String = js.native
+  var key: String = js.native
 }
 
+@js.native
 trait ISelection[T <: js.Object] extends js.Object {
   val count: Int
   def getItems(): js.Array[T]
   def setItems(items: js.Array[T], shouldClear: Boolean): Unit
   def setKeySelected(key: String, isSelected: Boolean, shouldAnchor: Boolean): Unit
-  def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean]): Unit
+  def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean] = js.undefined): Unit
   def toggleAllSelected(): Unit
   def setModal(isModal: Boolean): Unit
   def isModel(): Boolean
@@ -220,9 +231,9 @@ object SelectionMode {
 }
 
 trait ISelectionOptions[T <: js.Object] extends js.Object {
-  val getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
-  val selectionMode: js.UndefOr[Int] = js.undefined
-  val onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
+  var selectionMode: js.UndefOr[Int] = js.undefined
+  var onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
 }
 
 @js.native
@@ -232,7 +243,7 @@ class Selection[T <: js.Object](options: js.UndefOr[ISelectionOptions[T]] = js.u
   def getItems(): js.Array[T] = js.native
   def setItems(items: js.Array[T], shouldClear: Boolean): Unit = js.native
   def setKeySelected(key: String, isSelected: Boolean, shouldAnchor: Boolean): Unit = js.native
-  def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean]): Unit = js.native
+  def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   def toggleAllSelected(): Unit = js.native
   def setModal(isModal: Boolean): Unit = js.native
   def isModel(): Boolean = js.native
