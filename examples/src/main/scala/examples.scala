@@ -85,6 +85,15 @@ object Pages {
       examples.changereduxstate.ChangeReduxStateC.make()
     )
   }
+
+  def readme() = {
+    PivotItem(new IPivotItemProps {
+      linkText = "README"
+      itemKey = "readme"
+    })(
+      ReactMarkdownC.make(new ReactMarkdownProps { source = examples.readmetext })
+    )
+  }
 }
 
 object Main {
@@ -113,6 +122,7 @@ object Main {
           className = estyles.root.asString
         })(
           Pivot()(
+            readme(),
             addressPage(addressDAO),
             todoPage,
             helloWorldPage,

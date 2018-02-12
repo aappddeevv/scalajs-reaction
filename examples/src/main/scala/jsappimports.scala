@@ -2,9 +2,12 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg
+package react
+package examples
 
 import scala.scalajs.js
+import js.|
 import js.annotation._
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
@@ -44,3 +47,32 @@ object ActionsNS extends js.Object {
   val AddressManagerActions: js.Dynamic = js.native
   val Actions: js.Dynamic = js.native
 }
+
+
+@js.native
+@JSImport("react-markdown", JSImport.Default)
+object ReactMarkdown extends ReactJsComponent
+
+trait ReactMarkdownProps extends js.Object {
+  var source: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+}
+
+object ReactMarkdownC {
+  def make(props: ReactMarkdownProps = noProps()) = wrapJsForScala(ReactMarkdown, props)
+}
+
+class PrettyJsonOptions(
+  val noColor: js.UndefOr[Boolean] = js.undefined
+) extends js.Object
+
+@js.native
+@JSImport("prettyjson", JSImport.Namespace)
+object PrettyJson extends js.Object {
+  def render(data: js.Object | js.Dynamic, options: js.UndefOr[PrettyJsonOptions] = js.undefined): String =
+    js.native
+}
+
+@js.native
+@JSImport("Examples/README.md", JSImport.Default)
+object ReadmeText extends js.Object

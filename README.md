@@ -39,11 +39,28 @@ object HelloWorldC {
           "hello world" + name.map(" and welcome " + _).getOrElse("")
         )
       }
+}
 
+object MyWebApp {
+   def app() = {
+     ReactDom.renderToElementId(
+      HelloWorldC.make(Some("John")),
+      "container"
+      )
+   }
+}
+```
+If you want to use it javascript or have a different "make" interface, just define it:
+```scala
+object HelloWorld {
+
+  ...
+  
+  // optionally define a trait to make it easier to typecheck component parameters
   trait HelloWorldProps extends js.Object {
     var name: js.UndefOr[String] = js.undefined
   }
-
+  
   // Exported to javascript world: <HelloWorld name={"John"} />
   @JSExportTopLevel("HelloWorld")
   private val exported =
@@ -58,7 +75,10 @@ object HelloWorldC {
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )
       }
-}
+```
+then use it like below. Attributes are type checked properly and restricted to what you specified:
+```scala
+  HelloWorldC.make2(new HelloWorldProps { name = "John" })
 ```
 
 Most times the javascript interop has to deal with optional parameters and the conversion
@@ -115,6 +135,9 @@ Client:
 
 Integrated API documentation:
 * [all modules](https://aappddeevv.github.io/scalajs-react/api/ttg/react)
+
+# Demo
+There is a demo app that is not integrated into the documentation site yet. If you run `sbt npmBuild` it will build the demo in the "dist" directory using fastOptJS. Just load "dist/index.html" into your browser to see the demo.
 
 # Motivation
 I was looking for a react facade that rethought reactive interactions. Many of the existing facades are straight adaptions of the standard react library and make it quite easy to program react in a scala environment. 

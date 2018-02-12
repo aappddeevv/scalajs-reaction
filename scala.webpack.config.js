@@ -113,6 +113,10 @@ const common = (scalapath) => ({
                 use: ["source-map-loader"],
                 enforce: "pre",
                 exclude: [/node_modules/],
+            },
+            {
+                test: /\.md$/,
+                use: "raw-loader"
             }
         ]
     },
