@@ -1,28 +1,77 @@
+---
+layout: docs
+title: Redux
+---
 # redux
 
-The scalajs-react integration is not designed to create or write middleware in scalajs-react. There are some other scala.js libraries that can provide full access to the redux API. For example see [https://github.com/eldis/scalajs-redux](https://github.com/eldis/scalajs-redux) or [https://github.com/shogowada/scalajs-reactjs](https://github.com/shogowada/scalajs-reactjs). Both of these contain redux and full scala.js react integration layers. For example, you can define a redux store in scala using those libraries.
+The scalajs-react integration is not designed to create or write middleware in
+scalajs-react. There are some other scala.js libraries that can provide full
+access to the redux API. Two projects in particular are:
 
-In its simplest, `react-redux`, the react integration layer with redux, creates an intermediate component that obtains the store from the context (or props if they are passed down with the name "store" or it finds the storeKey), calls mapStateToProps (with the redux state and your component's  props) and calls mapDispatchToProps (dispatch func and your component's props) then calls your component's render method with the merged set of props. The magic is that react-redux tries to memoize the results so that it reduces the number of renders in your component if the state changes but those changes do not change the merged set of props.
+* [https://github.com/eldis/scalajs-redux](https://github.com/eldis/scalajs-redux)
+* [https://github.com/shogowada/scalajs-reactjs](https://github.com/shogowada/scalajs-reactjs)
 
-Memoizing a function means that a function remembers (stores) its previous input and on the next function call if the input has not changed, it returns the same result. Of course, this means the function stores state and potentially hold onto large amounts of "input" data as well as previousu results--all of which inflates memory usage.
+Both of these contain redux and full scala.js react integration layers. For
+example, you can define a redux store in scala using those libraries.
 
-`react-redux` also uses a Subscription object to subscribe to events hold a link to their parent subscription and managed the unsubscribe process in the correct order (parent to child).
+At its core, `react-redux`, the react integration layer with redux, creates
+an intermediate component that:
+1. Obtains the store from the context (or props if
+they are passed down with the name "store" or it finds the storeKey).
+1. Calls mapStateToProps (with the redux state and your component's props)  calls
+mapDispatchToProps (dispatch func and your component's props) .
+1. Sets the the state of the wrapper component (called Connect) that `react-redux` creates. It uses a dummy state. The setState call in Connect forces it and its children to render.
 
-It's pretty clear that if we are emphasizing two way integration (parent and child) of components in scalajs-react, we need to use `react-redux` so that sub-components of scala components that are using redux continue to work correctly both in production and for hot reload.
+The magic is that react-redux tries to memoize the results so that it reduces
+the number of renders in your component if the state changes but those changes
+do not change the merged set of props.
 
-There are 2 approaches to integrating a scala defined react component. You can create more advanced integration model using more clever scala features for wrapping and unwrapping the javascript props, but its probably best to keep it simple and explicit while leaving the ability to employ more advanced constructs.
+Memoizing a function means that a function remembers (stores) its previous input
+and on the next function call if the input has not changed, it returns the same
+result. Of course, this means the function stores state and potentially holds
+onto large amounts of "input" data as well as previousu results--all of which
+inflates memory usage.
 
-* javascript side: You have a scala component and wish to use it in javascript or scala connected to redux.
+`react-redux` also uses a Subscription object to subscribe to events hold a link
+to their parent subscription and managed the unsubscribe process in the correct
+order (child to parent).
+
+It's pretty clear that if we are emphasizing two way integration of components
+in scalajs-react, we need to use `react-redux` so that sub-components of scala
+components that are using redux continue to work correctly both in production
+and for hot reload.
+
+There are 2 approaches to integrating a scala defined react component. You can
+create a more advanced integration model using more clever scala features for
+wrapping and unwrapping the javascript props but its probably best to keep it
+simple and explicit while leaving the ability to employ more advanced
+constructs.
+
+* scala side integration: You have a scala component and wish to use it in javascript or scala connected to redux
+   * scala: create the scala component then create your "make" function as usual
+   * scala: export the component using `Component.wrapScalaForJs`. This creates a ReactJsComponent usable by javascript because it maps a general js.Object to the "make" function.
+   * scala: connect the result from the previous step using `redux.connect`. Like `connect` in javascript, you pass in a "component" an get a "component."
+   * scala: Using the connected ReactJsComponent, wrap it using `elements.wrapJsForScala`. The rationale is that the "connect" call creates another javascript component, so you just need to wrap it up for use.
+   * javascript: use the exported connected component if you want to.
+* javascript side inttegration: You have a scala component and wish to use it in javascript or scala connected to redux.
    * scala: create the scala component
+   * scala: export it using the description in the "Exporting" section
    * javascript: define a proxy wrapper
    * javascript: use the new proxied component
-   * scala: import the proxied component and use it
-* scala side: You have a scala component and wish to use it in javascript or scala connected to redux
-   * scala: create the scala component
-   * scala: connect the component to the redux store
-   * scala: use the connected component
-   * scala: export the new connected component
-   * javascript: use the exported connected component
+   * scala: import the proxied component (since it's a javascript component) and use it
+
+We show both ways below. Its significantly easier to do all of this on the scala
+side.
+
+The easy way to think about this is that if you are going to use existing
+infrastucture like `react-redux` you need to define a component usable in
+javascript. Then, since "connect" is a HOC, you need to make the result of
+calling the HOC usable in scala again.
+
+You could easily define more clever Reader/Writer typeclasses to do this, but in
+scalajs-react we keep them as simple functions you define directly in order to
+allow you flexibility to define the API for make as appropriate for your
+application.
 
 ## scala side
 To preserve integration on the scala side, you have to do the same type of
@@ -40,31 +89,42 @@ around the actual component.
 import ttg.react.redux
 
 object MyScalaComponentC {
-  val MyScalaComponent = statelessComponent("MyComponent")
+  private val MyScalaComponent = statelessComponent("MyComponent")
   
-  // non-native JS trait so we can use create it and use it for jsinterop
+  // non-native JS trait, we use a "javascript" object for the arguments
+  // although that is not necessary, it does make it easier for components
+  // that need to integrate with javascript infrastructure.
   trait Props extends js.Object {
     val prop1: Int // e.g. required attribute
     // redux props
     var propFromRedux: js.UndefOr[String] = js.undefined
   }
   
+  // standard make function. Remove "private" if you want to expose this
+  // make for clients that want to use a version of your component not hooked
+  // up to redux.
   private def _make(props: Props) = MyScalaComponent.withRender{ self => ... }
 
-  def mapStateToProps(reduxState: js.Dynamic, ownProps: js.Dynamic): js.Object { ... }
+  // you could @JSExportTopLevel this component but it would not receive redux props
+  private val jsComponent = c.wrapScalaForJs { (jsProps: Props) => ...; _make(jsProps) }
 
-  def mapDispatchTopProps(dispatch: redux.Dispatch, ownProps: js.Dynamic): js.Object { ... }
+  private def mapStateToProps(reduxState: js.Dynamic, ownProps: js.Dynamic): js.Object { ... }
+  private def mapDispatchTopProps(dispatch: redux.Dispatch, ownProps: js.Dynamic): js.Object { ... }
 
-  // connect returns another new component that wraps the component we pass in
-  val MyScalaComponentRedux = redux.connect(MyScalaComponent, mapStateToProps, mapDispatchToProps)
+  // connect returns another new "js component" that wraps the "js component" we pass in
+  // you could @JSExportTopLevel this component or javascript usage and it would receive redux props
+  private val reduxJsComponent = redux.connect(MyScalaComponent, mapStateToProps, mapDispatchToProps)
   
+  // Clients use this object uses the redux version.
   def make(scalaProp1: Int) = {
     // you do not need to fill in the redux properties
     val props = new Props { val prop1 = scalaProp1 }
-    wrapJsForScala(MyScalaComponentRedux, props, children:_*)
+    wrapJsForScala(reduxJsComponent, props)
   }
 }
 ```
+That's all you need to do. Just like with importing, if you choose your props carefully, you can reduce your API data swizzling work significantly but its up to you. Also, note that the `make` function takes no children. If it had, we would have added a second parameter list (or to the first parameter list) or added children explicitly to the `Props` trait and then added the children to the `wrapJsForScala` function call. It's up to you on how you want to structure your internal API.
+
 ## javascript side
 This approach just has you create a connected component from the scala exported component. You must ensure that whatever props you expect to come from redux are reflecting in the scala mapping in its wrapper function as defined in "yourComponent.wrapScalaForJs". You can even pass in the dispatch function to the scala side if you want.
 
@@ -83,7 +143,7 @@ object MyScalaComponentC {
   
   // Import the connected component, import location depends on the javascript "bundler"
   @js.native
-  @JSImport("ExportModule.js", "MyScalaComponentRedux")
+  @JSImport("ExportModule", "MyScalaComponentRedux") // in ExportModule.js
   object ExportModuleNS extends js.Object {
      val MyScalaComponentRedux: ReactJSComponent = js.native
   }
@@ -135,4 +195,5 @@ Now, `MyScalaComponent` can be used in javascript or "re-imported" into scala
 using scalajs-react's import capability.
 
 You may find that creating the mapping in javascript is more convenient than
-defining the mapping in scala.
+defining the mapping in scala for complex property mappings but use the scala
+side version until you reach that point of complexity.

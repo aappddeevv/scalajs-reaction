@@ -1,11 +1,19 @@
 import * as React from "react"
 import { Address } from "./datamodel"
+import cx = require("classnames")
 
-/** Summarize address. Hardcoded css className. */
-export const AddressSummary: React.SFC<Address> = (address: Address) => {
+export interface Props {
+    className?: string | null
+    address?: Address | null
+}
+
+/** Summarize address. */
+export const AddressSummary: React.SFC<Address> = (props?: Props) => {
+    props = props || {}
+    const name = (props && props.address && props.address.name) || "<unnamed address>"
     return (
-        <div className="addressSummary">
-            Address: {address.name || "noname"}
+        <div className={cx("addressSummary", props.className)}>
+            Typescript sourced: Address Summary: {name}
         </div>
     )
 }

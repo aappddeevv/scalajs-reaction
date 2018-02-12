@@ -15,7 +15,9 @@ libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-react-core" % scalaJsReactVersion,
     "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
     // optional but includes a Microsoft UI component set
-    "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion)
+    "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
+    // optional unless you want to connect to redux state
+    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion)
 ```
 
 Then use the following imports to import functionality you need:
@@ -68,4 +70,14 @@ import ttg.react.instances.all._
 // imports both conversions and syntax
 import ttg.react.implicits._
 ```
+
+## npm and js packages
+Based on the scala libraries you use, you will need to bundle the appropriate packages. All of the scala.js imports underneath in the interop layer convert to CJS `require` calls.
+
+* core: react, react-dom, create-react-class
+* vdom: no js dependencies
+* fabric: office-ui-fabric-react
+* redux: react-redux
+
+Generally, if you include these in your package.json as runtime dependencies you should be all set. If you use `scalajs-bundler` you would need to add these to your build.sbt file.
 

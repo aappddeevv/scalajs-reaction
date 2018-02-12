@@ -27,7 +27,8 @@ lazy val buildSettings = Seq(
 lazy val noPublishSettings = Seq(
   skip in publish := true, // this did not seem to work
   publish := {},
-  publishLocal :={}
+  publishLocal :={},
+  publishArtifact := false 
 )
 
 lazy val publishSettings = Seq(
@@ -88,7 +89,7 @@ lazy val `scalajs-react-vdom` = project
 
 lazy val `scalajs-react-redux` = project
   .settings(libsettings)
-  .settings(noPublishSettings)
+  .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`)
   .settings(

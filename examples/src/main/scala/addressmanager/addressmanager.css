@@ -2,12 +2,20 @@
 
 .component {
     display: flex;
-    & .master {
-        flex-basis: 50%;
-    }
-    & .detail {
-        flex-basis: 50%;
+    flex-direction: column;
+    & .masterAndDetail {
         display: flex;
-        flex-direction: column;
+        align-items: stretch;
+        & .master {
+            flex-basis: 50%;
+        }
+        & .detail {
+            flex-basis: 50%;
+            display: flex;
+            flex-direction: column;
+        }
+        & .footer {
+            margin-top: auto; /* push to bottom */
+        }
     }
 }

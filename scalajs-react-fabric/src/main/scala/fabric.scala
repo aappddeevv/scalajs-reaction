@@ -2,8 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package react
+package ttg.react
 package fabric
 
 import scala.scalajs.js
@@ -37,16 +36,16 @@ object uifabric_icons extends js.Object {
 @js.native
 @JSImport("office-ui-fabric-react", JSImport.Namespace)
 object FabricNS extends js.Object {
-  val Fabric: ReactJSComponent = js.native
-  val TextField: ReactJSComponent = js.native
-  val Label: ReactJSComponent = js.native
-  val PrimaryButton: ReactJSComponent = js.native
-  val DefaultButton: ReactJSComponent = js.native
-  val Pivot: ReactJSComponent = js.native
-  val PivotItem: ReactJSComponent = js.native
-  val DetailsList: ReactJSComponent = js.native
-  val CommandBar: ReactJSComponent = js.native
-  val Spinner: ReactJSComponent = js.native
+  val Fabric: ReactJsComponent = js.native
+  val TextField: ReactJsComponent = js.native
+  val Label: ReactJsComponent = js.native
+  val PrimaryButton: ReactJsComponent = js.native
+  val DefaultButton: ReactJsComponent = js.native
+  val Pivot: ReactJsComponent = js.native
+  val PivotItem: ReactJsComponent = js.native
+  val DetailsList: ReactJsComponent = js.native
+  val CommandBar: ReactJsComponent = js.native
+  val Spinner: ReactJsComponent = js.native
   def Selection[T <: js.Object]: Selection[T] = js.native
 }
 
@@ -60,25 +59,26 @@ object components {
   def TextField(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.TextField, new Attrs(props).toJs, children: _*)
 
   def Label(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.Label, new Attrs(props).toJs, children: _*)
-  def Label(props: js.UndefOr[LabelProps])(children: ReactNode*) = wrapJsForScala(FabricNS.Label, props.getOrElse(noProps), children: _*)
+  def Label(props: LabelProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Label, props, children: _*)
   def Label(props: LabelProps2)(children: ReactNode*) = wrapJsForScala(FabricNS.Label, props, children: _*)
 
   def PrimaryButton(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.PrimaryButton, new Attrs(props).toJs, children: _*)
   def DefaultButton(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.DefaultButton, new Attrs(props).toJs, children: _*)
 
-  def Pivot(props: js.UndefOr[PivotProps] = js.undefined)(children: ReactNode*) = wrapJsForScala(FabricNS.Pivot, props.getOrElse(noProps), children: _*)
-  def PivotItem(props: js.UndefOr[PivotItemProps])(children: ReactNode*) = wrapJsForScala(FabricNS.PivotItem, props.getOrElse(noProps), children: _*)
+  def Pivot(props: PivotProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Pivot, props, children: _*)
+  def PivotItem(props: PivotItemProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.PivotItem, props, children: _*)
 
-  def DetailsList[T <: js.Object](props: js.UndefOr[IDetailsListProps[T]] = js.undefined)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.DetailsList, props.getOrElse(noProps), children: _*)
+  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = noProps())(children: ReactNode*) =
+    wrapJsForScala(FabricNS.DetailsList, props, children: _*)
 
   def CommandBar(props: Attr*)(children: ReactNode*) = wrapJsForScala(FabricNS.CommandBar, new Attrs(props).toJs, children: _*)
-  def CommandBar(props: js.UndefOr[ICommandBarProps] = js.undefined)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.CommandBar, props.getOrElse(noProps), children: _*)
+  def CommandBar(props: ICommandBarProps = noProps())(children: ReactNode*) =
+    wrapJsForScala(FabricNS.CommandBar, props, children: _*)
   //def CommandBar(props: js.UndefOr[js.Dynamic])(children: ReactNode*) =  wrapJsForScala(FabricNS.CommandBar, props.getOrElse(noProps), children: _*)
 
-  def Spinner(props: js.UndefOr[ISpinnerProps] = js.undefined)(children: ReactNode*) = wrapJsForScala(FabricNS.Spinner, props.getOrElse(noProps), children: _*)
+  def Spinner(props: ISpinnerProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Spinner, props, children: _*)
 }
+
 @js.native
 trait Focusable extends js.Object {
   def focus(): Unit = js.native
@@ -105,6 +105,9 @@ trait PivotItemProps extends HTMLAttributes[dom.html.Div] {
   var linkText: js.UndefOr[String] = js.undefined
   var itemKey: js.UndefOr[String] = js.undefined
   var itemCount: js.UndefOr[Int] = js.undefined
+  var itemIcon: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var onRenderItemLink: js.UndefOr[IRenderFunction[PivotItemProps]] = js.undefined
 }
 
 trait PivotProps extends js.Object {

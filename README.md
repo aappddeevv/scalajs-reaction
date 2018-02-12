@@ -19,7 +19,9 @@ libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-react-core" % scalaJsReactVersion,
     "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
     // optional but includes a Microsoft UI component set
-    "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion)
+    "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
+    // if you integrate with redux
+    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion)
 ```
 Do not forget to include the react libraries in your execution environment. For react 16+, the libraries have been split out into multiple libraries, listed below. For 15.x, only the core, monolithic library `react` is needed.
 * react 
@@ -42,14 +44,14 @@ object HelloWorldC {
     var name: js.UndefOr[String] = js.undefined
   }
 
-  // Exported to javascript world
+  // Exported to javascript world: <HelloWorld name={"John"} />
   @JSExportTopLevel("HelloWorld")
   private val exported =
     HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
 
   // Alternative scala `make` definition, render must convert to scala objects if needed
   // and internal scala code would need to create a HelloWorldProps object.
-  def make2(props: HelloWorldProps) =
+  def make2(props: HelloWorldProps = noProps()) =
     HelloWorld
       .withRender{ self =>
         <.div()(
@@ -104,7 +106,7 @@ object styles {
 
 // use: styles.component.root
 ```
-In the example above, you would need to ensure webpack has an alias to the Examples directory and that you have setup your CSS processors correctly. post-css is quite popular when using webpack.
+In the example above, you would need to ensure webpack has an alias to the Examples directory and that you have setup your CSS processors correctly. post-css is quite popular when using webpack. Since a Dynamics was used, this is not type safe.
 
 # Documentation
 

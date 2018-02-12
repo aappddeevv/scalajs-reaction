@@ -45,16 +45,21 @@ package object react {
     def props: UndefOr[js.Object] = js.native
   }
 
-  /** A js-object that is returned from create-react-class. We treat as opaque. */
+  /** 
+   * A js-object that is returned from create-react-class. Represents class
+   * component that can be passed to the javascript React.createElement
+   * function.
+   */
   @js.native
   trait ReactClass extends js.Object
 
   /** 
-   * A type used only to annoate imported javascript side components. It should *only*
-   * be used to annotated a component imported from javascript.
+   * A type used only to imported javascript side components. Typically this is
+   * used to annotate a type imported from javascript or created via other
+   * js-interop mechanisms such as redux integration.
    */
   @js.native
-  trait ReactJSComponent extends js.Object
+  trait ReactJsComponent extends js.Object
 
   /** Alias for internal use. @deprecated */
   type ReactClassInternal = ReactClass
@@ -96,6 +101,12 @@ package object react {
   /** A subscription called after mount and after unmount. */
   type Subscription = () => (() => Unit)
 
-  /** Indicates no props for createDomElement. */
-  val noProps = new js.Object()
+  /** 
+   * Constant val of a single, empty js.Object. Use carefully since js mutates and
+   * this will be a shared instance. Prefer noProps.
+   */
+  val noPropsVal: js.Object = new js.Object()
+
+  /** Type inferring empty js object. A new object is created with each call. */
+  def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
 }

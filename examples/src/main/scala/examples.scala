@@ -43,11 +43,8 @@ object Pages {
     helloworld.HelloWorldC.make()
   )
 
-  import addressmanager._
-  import AddressManagerC._
-
   def addressPage(adao: AddressDAO, vm: AddressesViewModel) = {
-    val opts = new ReduxAddressManagerProps {
+    val opts = new AddressManagerProps {
       val dao = adao
       val viewModel = vm
     }
@@ -56,27 +53,23 @@ object Pages {
       itemKey = "addressmanager"
     })(
       Label()("Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes."),
-      addressmanager.AddressManagerC.makeWithRedux(opts))
-    }
+      AddressManagerC.makeWithRedux(opts)
+    )
+  }
+
+  def changeReduxStatePage() = {
+    PivotItem(new PivotItemProps {
+      linkText = "Change Redux State"
+      itemKey = "changeReduxState"
+    })(
+      examples.changereduxstate.ChangeReduxStateC.make()
+    )
+  }
 }
 
 object Main {
   import Pages._
   import addressmanager.fakedata._
-
-  @js.native
-  @JSImport("JSExamples/store", JSImport.Namespace)
-  object Store extends js.Object {
-    val store: redux.Store = js.native
-  }
-
-  @js.native
-  @JSImport("JSExamples/actions", JSImport.Namespace)
-  object ActionsNS extends js.Object {
-    val ViewActions: js.Dynamic = js.native
-    val AddressManagerActions: js.Dynamic = js.native
-    val Actions: js.Dynamic = js.native
-  }
 
   /** 
    * This will be exported from the ES module that scala.js outputs.  How you
@@ -90,18 +83,20 @@ object Main {
     uifabric_icons.initializeIcons()
 
     // init message for store, although it does not do anything :-)
-    Store.store.dispatch(ActionsNS.Actions.View.init())
+    StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     renderToElementWithId(
       React.createElement(
         redux.ReactRedux.Provider,
-        new redux.ProviderProps { store = Store.store })
+        new redux.ProviderProps { store = StoreNS.store })
         (Fabric()(
           Pivot()(
             addressPage(addressDAO, addressesVM),
             todoPage,
             helloWorldPage,
-          ))),
+            changeReduxStatePage(),
+        )// 
+        )),
       "container")
   }
 }

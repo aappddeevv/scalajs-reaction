@@ -6,6 +6,7 @@ package ttg
 package react
 package vdom
 
+import scala.annotation.unchecked.{uncheckedVariance => uv}
 import scalajs.js
 import js.|
 import org.scalajs.dom
@@ -198,48 +199,30 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   /** react specific */
   var dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
 
-  // keyboard events
-  //val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
-  val onKeyDown: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
-  val onKeyPress: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
-  val onKeyPressCapture: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
-  val onKeyUp: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
-  val onKeyUpCapture: js.UndefOr[KeyboardEventHandler[_]] = js.undefined
+  // keyboard events val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
+  val onKeyDown: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  val onKeyPress: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  val onKeyPressCapture: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  val onKeyUp: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  val onKeyUpCapture: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
 
   // mouse events
-  val onClick: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onClickCapture: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onDoubleClick: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onDoubleClickCapture: js.UndefOr[MouseEventHandler[_]] = js.undefined
+  val onClick: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onDoubleClick: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onDoubleClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
 
-  val onMouseDown: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onMouseEnter: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onMouseLeave: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onMouseMove: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onMouseOut: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onMouseOver: js.UndefOr[MouseEventHandler[_]] = js.undefined
-  val onMouseUp: js.UndefOr[MouseEventHandler[_]] = js.undefined
-/*
+  val onMouseDown: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onMouseMove: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onMouseOut: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onMouseOver: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  val onMouseUp: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+
+  // this won't work because once it's a val we can't put in type bounds
   //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
-  def onKeyPress[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
-  def onKeyPressCapture[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
-  def onKeyUp[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
-  def onKeyUpCapture[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
 
-  // mouse events
-  def onClick[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onClickCapture[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onDoubleClick[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onDoubleClickCapture[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-
-  def onMouseDown[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onMouseEnter[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onMouseLeave[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onMouseMove[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onMouseOut[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onMouseOver[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
-  def onMouseUp[U >: T <: dom.EventTarget]: js.UndefOr[MouseEventHandler[U]] = js.undefined
- */
   // lots more to type...
 }
 

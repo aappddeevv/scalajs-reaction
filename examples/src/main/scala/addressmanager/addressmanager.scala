@@ -55,6 +55,13 @@ object AddressDetailC {
       }
 }
 
+trait AddressManagerProps extends js.Object {
+  val dao: AddressDAO
+  val viewModel: AddressesViewModel
+  // from redux state
+  var reduxLabel: js.UndefOr[String] = js.undefined
+}
+
 object AddressListC {
   import IColumn.toCol
 
@@ -65,6 +72,7 @@ object AddressListC {
 
   val AddressList = statelessComponent("AddressList")
 
+  /** If you call this, the component is not connected to redux. */
   def make(sel: ISelection[Address], addresses: AddressList = emptyAddressList) =
     AddressList
       .withRender { self =>
@@ -91,9 +99,9 @@ object AddressManagerC {
     selection: ISelection[Address] = null // its a js thing
   )
 
-  val AddressManager = reducerComponentWithRetainedProps[State, NoRetainedProps, Actions]("AddressManager")
+  private val AddressManager = reducerComponentWithRetainedProps[State, NoRetainedProps, Actions]("AddressManager")
 
-  def cbopts(self: AddressManager.Self) = new ICommandBarProps {
+  private def cbopts(self: AddressManager.Self) = new ICommandBarProps {
     val isFetching = self.state.map(_.fetching).getOrElse(false)
     val items = js.Array(
       new IContextualMenuItem {
@@ -125,7 +133,7 @@ object AddressManagerC {
     )
   }
 
-  def applyData(addresses: AddressList, ids: IdList, sel: ISelection[Address]): Unit = {
+  private def applyData(addresses: AddressList, ids: IdList, sel: ISelection[Address]): Unit = {
     println(s"appling selection ${ids}")
     sel.setItems(addresses, true)
     sel.setChangeEvents(false)
@@ -133,13 +141,13 @@ object AddressManagerC {
     sel.setChangeEvents(true)
   }
 
-  def fetchData(self: AddressManager.Self, dao: AddressDAO): Unit = {
+  private def fetchData(self: AddressManager.Self, dao: AddressDAO): Unit = {
     self.send(FetchRequest)
     dao.fetch("no id")
       .then[Unit] { addresses => self.send(FetchResult(Right(addresses))) }
   }
 
-  def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String]) =
+  private def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String]) =
     AddressManager
       .withInitialState { () => Some(State()) }
       .withReducer { (action, sopt, gen) =>
@@ -194,46 +202,38 @@ object AddressManagerC {
         gen.updateAndEffect(sopt, fetchData(_, dao))
       }
       .withRender { self =>
-        <.div()(
-          CommandBar(cbopts(self))(
-            ),
-          <.div(
-            ^.className := amstyles.component
-          )(
-            Label()(label.getOrElse[String]("no redux label provided")),
+        <.div(^.className := amstyles.component)(
+          CommandBar(cbopts(self))(),
+          <.div(^.className := amstyles.masterAndDetail)(
+
             AddressListC.make(self.state.map(_.selection).get,
               self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList)),
             AddressDetailC.make(self.state.flatMap(_.selectedAddress)),
-          )
+          ),
+          AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, None),
+          Label()("Redux sourced label: " +
+            label.getOrElse[String]("<no redux label provided>")),
         )
       }
 
-  trait AddressManagerProps extends js.Object {
-    val dao: AddressDAO
-    val viewModel: AddressesViewModel
-  }
-
   @JSExportTopLevel("AddressManager")
-  private val exportedComponent = AddressManager.wrapScalaForJs { (jsProps: ReduxAddressManagerProps) =>
+  private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerProps) =>
     make(jsProps.dao, jsProps.viewModel, jsProps.reduxLabel.toOption)
   }
 
   // component that has been connected to redux
-  val AddressManagerReduxJSComponent = {
-    val msp = (state: js.Object, nextProps: js.Object) => {
-      val stated = state.asInstanceOf[js.Dynamic]
-      lit("reduxLabel" -> stated.view.label)
-    }
-    redux.connect(AddressManager, Some(msp))
+  private val reduxJsComponent = {
+    // we could also cast as AddressManagerProps, but here we just use a literal
+    val mapStateToProps = (rstate: js.Object, nextProps: js.Object) => lit("reduxLabel" -> rstate.asDyn.view.label)
+    redux.connect(jsComponent, Some(mapStateToProps))
   }
 
-  trait ReduxAddressManagerProps extends AddressManagerProps {
-    var reduxLabel: js.UndefOr[String] = js.undefined
-   }
-
-  // While you could set the redux part of the "props" they will get automatically
-  // filled in by react-redux.
-  def makeWithRedux(props: ReduxAddressManagerProps) =
-    wrapJsForScala(AddressManagerReduxJSComponent, props)
+  /**
+   * Using this "make" will us the component connected to redux. While you could set the redux 
+   * part of the "props" they will get automatically filled in by redux. You can set
+   * the non-redux parts to pass them through.
+   */
+  def makeWithRedux(props: AddressManagerProps = noProps()) =
+    wrapJsForScala(reduxJsComponent, props)
 
 }

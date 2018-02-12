@@ -7,7 +7,7 @@ export interface State {
 }
 
 const initialState  = {
-    label: "redux label",
+    label: "yes, this label was sourced from redux state",
     selectedTabKey: null,
 }
 

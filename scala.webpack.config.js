@@ -7,7 +7,7 @@ const webpack = require("webpack"),
 function libraryOutput(dest) {
     return {
         output: {
-            path: path.resolve(__dirname, dest),
+            path: dest,
             filename: "[name].js",
             library: "[name]",
             libraryTarget: "var",
@@ -137,9 +137,9 @@ module.exports = function (env) {
     const isProd = env && env.BUILD_KIND && env.BUILD_KIND==="production"
     const scalapath = "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js")
     const staticAssets = copies(path.join(__dirname, "dist"))
-    const output = libraryOutput("dist")
-    const globals = (ne) => ({
-        "process.env": { "NODE_ENV": JSON.stringify(ne || "development") }
+    const output = libraryOutput(path.join(__dirname, "dist"))
+    const globals = (nodeEnv) => ({
+        "process.env": { "NODE_ENV": JSON.stringify(nodeEnv || "development") }
     })
     if (isProd) {
         console.log("Production build")

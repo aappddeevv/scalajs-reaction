@@ -104,10 +104,10 @@ case class ComponentSpec[S, RP, A, SLF](
     * Note: jsPropsToScala will appear in reactsj's 'this' because its attached
     * to the prototype of reactClassInternal.
     */
-  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec[S, RP, A, _]): ReactClass = {
+  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec[S, RP, A, _]): ReactJsComponent = {
     val dyn = this.reactClassInternal.asInstanceOf[js.Dynamic]
     dyn.prototype.jsPropsToScala = jsPropsToScala.asInstanceOf[js.Any]
-    this.reactClassInternal
+    this.reactClassInternal.asInstanceOf[ReactJsComponent]
   }
 }
 
@@ -241,9 +241,10 @@ object elements {
       case (Some(jsprops), _) => jsprops
       case (None, Some(toScalaProps)) => toScalaProps(props)
       case (None, None) =>
+        //js.Dynamic.global.console.log("object in error", props.asInstanceOf[js.Any])
         throw new IllegalStateException(
           s"A JS component called scala component $debugName " +
-            "which did not implement the JS->Scala React props conversion.")
+            "which does not implement the JS->Scala React props conversion.")
     }
   }
 
@@ -709,7 +710,7 @@ object elements {
     * react class using standard scala.js import mechanisms and write a "make"
     * function to create your props from "make" parameters.
     */
-  def wrapJsForScala[P <: js.Object](reactClass: ReactJSComponent, props: P, children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _] = {
+  def wrapJsForScala[P <: js.Object](reactClass: ReactJsComponent, props: P, children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _] = {
     WrapProps.wrapJsForScala(reactClass, props, children: _*)
   }
 

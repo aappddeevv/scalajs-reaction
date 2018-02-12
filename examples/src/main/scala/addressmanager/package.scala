@@ -18,5 +18,6 @@ package object addressmanager {
   type CRUDResult = Either[String, Unit]
   val emptyAddressList = js.Array[Address]()
   import ttg.react.fabric.IObjectWithKey
-  val getAddressKey: js.Function1[Address, String] = (item: Address) => item.customeraddressid.getOrElse("")
+  val getAddressKey: js.Function1[Address, String] =
+    (item: Address) => item.customeraddressid.getOrElse("")
 }
