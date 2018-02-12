@@ -28,7 +28,7 @@ Do not forget to include the react libraries in your execution environment. For 
 * react-dom
 * create-react-class
 
-You can quickly create a component and export it for use in javascript:
+You can quickly create a component and render it:
 ```scala
 object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
@@ -50,7 +50,7 @@ object MyWebApp {
    }
 }
 ```
-If you want to use it javascript or have a different "make" interface, just define it:
+If you want to use it in javascript or have a different "make" interface, define the export and map the properties:
 ```scala
 object HelloWorld {
 
@@ -65,7 +65,9 @@ object HelloWorld {
   @JSExportTopLevel("HelloWorld")
   private val exported =
     HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
-
+```
+You can also define your own "make" API to be whatever suits you:
+```scala
   // Alternative scala `make` definition, render must convert to scala objects if needed
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps = noProps()) =
@@ -76,7 +78,7 @@ object HelloWorld {
         )
       }
 ```
-then use it like below. Attributes are type checked properly and restricted to what you specified:
+Attributes are type checked properly and restricted to what you specified. Here's how you would use it:
 ```scala
   HelloWorldC.make2(new HelloWorldProps { name = "John" })
 ```
