@@ -15,31 +15,39 @@ package object redux {
   type Unsubscriber = js.Function0[Unit]
   type Dispatcher = js.Function1[js.Object|js.Dynamic, Unit]
 
-  /** mapStateToProps */
-  private type MSTP = js.Function2[js.Object, js.Object, js.Object]
-  /** mapDispatchToProps */
-  private type MDTP = js.Function2[Dispatcher, js.Object, js.Object]
-  /** mergeProps */
-  private type MP = js.Function3[js.Object, js.Object, js.Object, js.Object]
+  /** drive type inference */
+  type MSTP[RS, P] = (RS, P) => P
+  /** drive type inference */
+  type MDTP[P] = (Dispatcher, P) => P
+  /** drive type inference */
+  type MP[P] = (P, P, P) => P
 
-  def connect(
+  /**
+   * @tparam RS redux state shape
+   * @tparam P shape of component props
+   */
+  def connect[RS <: js.Object, P <: js.Object](
     jsComponent: ReactJsComponent,
-    mapStateToProps: Option[(js.Object, js.Object) => js.Object]=None,
-    mapDispatchToProps: Option[(Dispatcher, js.Object) => js.Object] = None,
-    mergeProps: Option[(js.Object, js.Object, js.Object) => js.Object] = None,
+    mapStateToProps: Option[(RS, P) => P]=None,
+    mapDispatchToProps: Option[(Dispatcher, P) => P] = None,
+    mergeProps: Option[(P, P, P) => P] = None,
     connectOpts: Option[ConnectOpts] = None): ReactJsComponent = {
 
+    type MSTP[RS <: js.Object, P <: js.Object] = js.Function2[RS, P, P]
+    type MDTP[RS <: js.Object, P <: js.Object] = js.Function2[Dispatcher, P, P]
+    type MP[P<: js.Object] = js.Function3[P, P, P, P]
+
     // convert to js functions via scala.js implicit conversions, I'm lazy
-    val mstp: js.UndefOr[MSTP] = mapStateToProps.map{f =>
-      val x: MSTP = f
+    val mstp: js.UndefOr[MSTP[RS, P]] = mapStateToProps.map{f =>
+      val x: MSTP[RS, P] = f
       x
     }.orUndefined
-    val mdtp: js.UndefOr[MDTP] = mapDispatchToProps.map {f =>
-      val x: MDTP = f
+    val mdtp: js.UndefOr[MDTP[RS, P]] = mapDispatchToProps.map {f =>
+      val x: MDTP[RS, P] = f
       x
     }.orUndefined
-    val mp: js.UndefOr[MP]= mergeProps.map{ f =>
-      val x: MP = f
+    val mp: js.UndefOr[MP[P]]= mergeProps.map{ f =>
+      val x: MP[P] = f
       x
     }.orUndefined
 
@@ -47,4 +55,3 @@ package object redux {
     ReactRedux.connect(mstp, mdtp, mp, connectOpts.orUndefined)(jsComponent)
   }
 }
-

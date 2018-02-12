@@ -714,9 +714,6 @@ object elements {
     WrapProps.wrapJsForScala(reactClass, props, children: _*)
   }
 
-  /** Turn a ReactRef to a js.Dynamic so you can call class methods directly. */
-  def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
-
   /** Create a fragment element. Per the API, you are only allowed an optional key. */
   def fragmentElement(key: Option[String] = None)(children: ReactNode*) =
     React.createFragment(key, children: _*)

@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (and 0.6.22)
 
 A react library for scala written in the spirit of ReasonReact, a react library for an OCaml dialect known as reason (sponsored by facebook). ReasonReact documentation is located [here](https://reasonml.github.io/reason-react/docs) and provides a good description of how this library works since the API is very similar. While more advanced scala functionality could have been used, the scala.js implemetation was kept intentionally similar to ReasonReact so that the documentation would apply.
 
@@ -140,7 +140,7 @@ The facades differ in their facade approach but many recreate all of the API par
 
 In theory, all of these can "export" a scala.js component to be used in javascript environments. However, various libraries that go deep into scala-land means that they are harder to use from javascript land often because they wrap the javascript props and state objects in a way that makes them less usable from the javascript world. Most, if not all, libraries allow you to use javascript defined components fairly directly via some type of adoption or import process.
 
-This library [https://github.com/ThoughtWorksInc/Binding.scala] isn't react but it is reactive. It uses a new binding framework for scala. Works on jvm and js. The binding framework is at a individual element level like mobx. You can use xml syntax as well. The binding approach is called "precise" binding.
+This library [https://github.com/ThoughtWorksInc/Binding.scala] isn't react but it is reactive. It uses a new binding framework for scala. Works on jvm and js. The binding framework is at a individual element level like mobx. You can use xml syntax as well. The binding approach is called "precise" binding. [udash](https://udash.io/) is another reactive framework that is not react based, but reactive.
 
 I have not mentioned many other libraries out there that help with react-like development including [diode](https://github.com/suzaku-io/diode).
 

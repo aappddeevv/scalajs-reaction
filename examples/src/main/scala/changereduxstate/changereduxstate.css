@@ -1,0 +1,8 @@
+/** changereduxstate css */
+
+.component {
+    & .label {
+        width: 400px;
+    }
+    
+}

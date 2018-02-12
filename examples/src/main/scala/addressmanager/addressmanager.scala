@@ -17,6 +17,7 @@ import ttg.react.reactdom._
 import ttg.react.implicits._
 import ttg.react.fabric
 import ttg.react.redux
+import redux._
 import vdom._
 import prefix_<^._
 import fabric._
@@ -55,11 +56,24 @@ object AddressDetailC {
       }
 }
 
+/**
+ * A props trait. We actually don't use this in the "make" to show how one needs
+ * to break out parameters if your "make" does not take an unified props object.
+ * But having this trait makes writing some interop a little easier.
+ */
 trait AddressManagerProps extends js.Object {
   val dao: AddressDAO
-  val viewModel: AddressesViewModel
-  // from redux state
+  // derived from redux
   var reduxLabel: js.UndefOr[String] = js.undefined
+  // derived from redux if not provided
+  var viewModel: js.UndefOr[AddressesViewModel] = js.undefined
+}
+
+// helper trait for some redux fiddling
+private [addressmanager] trait AddressManagerPropsRedux extends AddressManagerProps {
+  var rstate: js.UndefOr[js.Dynamic] = js.undefined
+  // added by default to props unless mapDispatchToProps is provided
+  var dispatch: js.UndefOr[Dispatcher] = js.undefined
 }
 
 object AddressListC {
@@ -147,6 +161,10 @@ object AddressManagerC {
       .then[Unit] { addresses => self.send(FetchResult(Right(addresses))) }
   }
 
+  /**
+   * Instead of a non-native JS trait, we use explicit parameters. Our interop wrappers
+   * must take this into account.
+   */
   private def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String]) =
     AddressManager
       .withInitialState { () => Some(State()) }
@@ -171,6 +189,7 @@ object AddressManagerC {
                   .getOrElse(gen.skip)
             }
           case SelectionChanged(sel) =>
+            // we need to change the selection object and inform the view model
             val selections = sel.getSelection()
             val stateUpdate = if (selections.length == 1 && selections(0).customeraddressid.isDefined)
               sopt.map(state => gen.updateAndEffect(Some(state.copy(selectedAddress = Some(selections(0)))),
@@ -217,15 +236,27 @@ object AddressManagerC {
       }
 
   @JSExportTopLevel("AddressManager")
-  private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerProps) =>
-    make(jsProps.dao, jsProps.viewModel, jsProps.reduxLabel.toOption)
+  private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerPropsRedux) =>
+    //println("making props to call make")
+    val viewModel = jsProps.viewModel.getOrElse {
+      //js.Dynamic.global.console.log("making view model from redux sourced data", jsProps)
+      mkReduxAddressesViewModel(jsProps.rstate.get.asJsObj, jsProps.dispatch.get)
+    }
+    make(jsProps.dao, viewModel, jsProps.reduxLabel.toOption)
   }
 
   // component that has been connected to redux
   private val reduxJsComponent = {
     // we could also cast as AddressManagerProps, but here we just use a literal
-    val mapStateToProps = (rstate: js.Object, nextProps: js.Object) => lit("reduxLabel" -> rstate.asDyn.view.label)
-    redux.connect(jsComponent, Some(mapStateToProps))
+    val mapStateToProps: MSTP[js.Object, AddressManagerPropsRedux] =
+      (rstate, nextProps) => {
+      //js.Dynamic.global.console.log("mapStateToProps", rstate, nextProps)
+      lit(
+        "reduxLabel" -> rstate.asDyn.view.label,
+        "rstate" -> rstate
+      ).asJsObjSub[AddressManagerPropsRedux]
+    }
+    redux.connect[js.Object, AddressManagerPropsRedux](jsComponent, Some(mapStateToProps))
   }
 
   /**

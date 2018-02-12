@@ -12,6 +12,24 @@ import js.Dynamic.{literal => lit}
 import ttg.react._
 import ttg.react.implicits._
 import ttg.react.redux
+import elements._
+
+trait LabelAndChildProps extends js.Object {
+  var label: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+}
+
+@js.native
+@JSImport("JSExamples/LabelAndChild", JSImport.Namespace)
+object LabelAndChildNS extends js.Object {
+  val LabelAndChild: ReactJsComponent = js.native
+}
+
+object JSAppImports {
+  def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
+    wrapJsForScala(LabelAndChildNS.LabelAndChild, props, children:_*)
+}
+
 
 @js.native
 @JSImport("JSExamples/store", JSImport.Namespace)

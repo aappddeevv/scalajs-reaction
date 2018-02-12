@@ -1,6 +1,6 @@
 import { combineReducers } from "redux"
 import { reducer as ViewReducer, State as ViewState } from "./view"
-import { reducer as AMReducer, State as AMState } from "./view"
+import { reducer as AMReducer, State as AMState } from "./addressmanager"
 
 export const reducers = combineReducers({
     view: ViewReducer,

@@ -14,7 +14,9 @@ import js.JSConverters._
  */
 package object react {
 
-  /** Opaque type returned from a ref callback. */
+  /** 
+   * Opaque type returned from a ref callback. It's really a js component.
+   */
   trait ReactRef extends js.Object
 
   /**
@@ -109,4 +111,10 @@ package object react {
 
   /** Type inferring empty js object. A new object is created with each call. */
   def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
+
+  /** 
+   * Turn a ReactRef to a js.Dynamic so you can call "component" methods
+   * directly.  Most notably "select" or "value" or "focus()".
+   */
+  def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
 }

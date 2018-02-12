@@ -6,6 +6,7 @@ package ttg.react.examples
 package changereduxstate
 
 import scala.scalajs.js
+import js.annotation._
 
 import ttg.react._
 import elements._
@@ -15,6 +16,16 @@ import prefix_<^._
 import redux._
 import fabric._
 import fabric.components._
+import prefix_F._
+
+@js.native
+@JSImport("Examples/changereduxstate/changereduxstate.css", JSImport.Namespace)
+private object componentStyles extends js.Object
+
+object styles {
+  val cstyles = componentStyles.asInstanceOf[js.Dynamic]
+}
+import styles._
 
 object ChangeReduxStateC {
   private val c = statelessComponent("ChangeReduxState")
@@ -28,8 +39,14 @@ object ChangeReduxStateC {
   private def _make(props: ChangeReduxProps) =
     c.
       withRender{self =>
-        <.div(^.className := "blah")(
-          props.label.getOrElse[String]("no redux label")
+        <.div(^.className := cstyles.component)(
+          Label()("Redux Label"),
+          TextField(new ITextFieldProps {
+            className = cstyles.label.asString
+            onChanged = js.defined((v: String) =>
+              props.onLabelChange.foreach(h => self.handle(_ => h(v))))
+            value = props.label.getOrElse[String]("no redux label")
+          })()
         )
       }
 
@@ -38,11 +55,11 @@ object ChangeReduxStateC {
   }
   private val reduxJsComponent = {
     val mapStateToProps =
-      (state: js.Object, ownProps: js.Object) => new ChangeReduxProps {
+      (state: js.Object, ownProps: ChangeReduxProps) => new ChangeReduxProps {
         label = state.asDyn.view.label.asUndefOr
       }
     val mapDispatchToProps =
-      (dispatch: Dispatcher, ownProps: js.Object) => new ChangeReduxProps {
+      (dispatch: Dispatcher, ownProps: ChangeReduxProps) => new ChangeReduxProps {
         onLabelChange = js.defined((label: String) => dispatch(ActionsNS.ViewActions.setLabel(label)))
       }
     redux.connect(jsComponent, Some(mapStateToProps), Some(mapDispatchToProps))

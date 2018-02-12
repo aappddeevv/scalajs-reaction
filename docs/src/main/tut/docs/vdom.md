@@ -24,4 +24,4 @@ The funny symbol `<.` is meant to look like an element since scalajs-react does 
 
 The attributes in a list are automatically converted to a js.Object behind the scenes. Attributes that result in a js.undefined value are removed from the javascript object automatically.
 
-You should note that the list style use of attributes does not allow for type safety in terms of the attributes themselves. You could add an attribute that is not recognized by react. We'll add the non-native JS trait version of these vdom elements shortly.
+In its current form, the attributes are a list converted to a props, which is not really typesafe from the perspective the attributes or the props "set of attributes." To improve this we need to use non-native JS traits which I have not provided, then provide the functions to use the props as well as perhaps the list of attributes. The non-native JS trait versions of these vdom elements will be added shortly.

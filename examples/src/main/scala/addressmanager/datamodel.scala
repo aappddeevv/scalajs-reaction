@@ -27,6 +27,6 @@ trait AddressDAO extends js.Object {
 
 /** Manage data access and selection state. */
 trait AddressesViewModel extends js.Object {
-  def setSelectedIds(ids: js.Array[Id]): Unit
-  def getSelectedIds(): js.Array[Id]
+  def setSelectedIds(ids: IdList): Unit
+  def getSelectedIds(): IdList
 }

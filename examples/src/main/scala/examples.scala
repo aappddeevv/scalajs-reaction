@@ -21,14 +21,34 @@ import ttg.react.fabric
 import fabric._
 import fabric.components._
 
+@js.native
+@JSImport("Examples/examples.css", JSImport.Namespace)
+private object componentStyles extends js.Object
+
+object styles {
+  val estyles = componentStyles.asInstanceOf[js.Dynamic]
+}
+
+import styles._
+
 object Pages {
 
+  import JSAppImports._
   import todo._
   import addressmanager._
 
   val defaultTodos = Seq(ToDo(1, "Call Fred"))
 
-  val todoPage = PivotItem(new PivotItemProps {
+  def labelAndChild(name: String, c: Component[_,_,_,_]) = {
+    PivotItem(new IPivotItemProps {
+      linkText = s"$name"
+      itemKey = s"$name-tab"
+    })(
+      LabelAndChild(new LabelAndChildProps { label = "Wrapped in typescript" })(c)
+    )
+  }
+
+  val todoPage = PivotItem(new IPivotItemProps {
     linkText = "To Do"
     itemKey = "todo"
   })(
@@ -36,19 +56,19 @@ object Pages {
     todo.ToDosC.make(Some("Your To Do List"), todo.fakedata.initialToDos)
   )
 
-  val helloWorldPage = PivotItem(new PivotItemProps {
+  val helloWorldPage = PivotItem(new IPivotItemProps {
     linkText = "Hello World"
     itemKey = "helloworld"
   })(
     helloworld.HelloWorldC.make()
   )
 
-  def addressPage(adao: AddressDAO, vm: AddressesViewModel) = {
+  // the view model will come from redux to illustrate how it can be split up.
+  def addressPage(adao: AddressDAO) = {
     val opts = new AddressManagerProps {
       val dao = adao
-      val viewModel = vm
     }
-    PivotItem(new PivotItemProps {
+    PivotItem(new IPivotItemProps {
       linkText = "Address Manager"
       itemKey = "addressmanager"
     })(
@@ -58,7 +78,7 @@ object Pages {
   }
 
   def changeReduxStatePage() = {
-    PivotItem(new PivotItemProps {
+    PivotItem(new IPivotItemProps {
       linkText = "Change Redux State"
       itemKey = "changeReduxState"
     })(
@@ -89,12 +109,15 @@ object Main {
       React.createElement(
         redux.ReactRedux.Provider,
         new redux.ProviderProps { store = StoreNS.store })
-        (Fabric()(
+        (Fabric(new IFabricProps {
+          className = estyles.root.asString
+        })(
           Pivot()(
-            addressPage(addressDAO, addressesVM),
+            addressPage(addressDAO),
             todoPage,
             helloWorldPage,
             changeReduxStatePage(),
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
         )// 
         )),
       "container")

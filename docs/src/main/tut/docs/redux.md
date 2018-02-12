@@ -49,11 +49,11 @@ constructs.
 
 * scala side integration: You have a scala component and wish to use it in javascript or scala connected to redux
    * scala: create the scala component then create your "make" function as usual
-   * scala: export the component using `Component.wrapScalaForJs`. This creates a ReactJsComponent usable by javascript because it maps a general js.Object to the "make" function.
+   * scala: Wrap the component using `Component.wrapScalaForJs`. This creates a ReactJsComponent usable by javascript because it maps a general js.Object to the "make" function. You can export this component for use in javascript however it would not receive redux props.
    * scala: connect the result from the previous step using `redux.connect`. Like `connect` in javascript, you pass in a "component" an get a "component."
-   * scala: Using the connected ReactJsComponent, wrap it using `elements.wrapJsForScala`. The rationale is that the "connect" call creates another javascript component, so you just need to wrap it up for use.
+   * scala: Using the connected ReactJsComponent from above, wrap it using `elements.wrapJsForScala`. The rationale is that the "connect" call creates another javascript component, so you just need to wrap it for use just like an "imported" javascript component.
    * javascript: use the exported connected component if you want to.
-* javascript side inttegration: You have a scala component and wish to use it in javascript or scala connected to redux.
+* javascript side integration: You have a scala component and wish to use it in javascript or scala connected to redux.
    * scala: create the scala component
    * scala: export it using the description in the "Exporting" section
    * javascript: define a proxy wrapper
@@ -63,15 +63,15 @@ constructs.
 We show both ways below. Its significantly easier to do all of this on the scala
 side.
 
-The easy way to think about this is that if you are going to use existing
-infrastucture like `react-redux` you need to define a component usable in
-javascript. Then, since "connect" is a HOC, you need to make the result of
+The easy way to think about connected to redux is that if you are going to use
+existing infrastucture like `react-redux`, you need to define a component usable
+in javascript. Then, since "connect" is a HOC, you need to make the result of
 calling the HOC usable in scala again.
 
-You could easily define more clever Reader/Writer typeclasses to do this, but in
-scalajs-react we keep them as simple functions you define directly in order to
-allow you flexibility to define the API for make as appropriate for your
-application.
+You could easily define more clever Reader/Writer typeclasses and macros to do
+this, but in scalajs-react we keep them as simple functions you define directly
+in order to allow you flexibility to define the API for make as appropriate for
+your application.
 
 ## scala side
 To preserve integration on the scala side, you have to do the same type of
@@ -93,7 +93,9 @@ object MyScalaComponentC {
   
   // non-native JS trait, we use a "javascript" object for the arguments
   // although that is not necessary, it does make it easier for components
-  // that need to integrate with javascript infrastructure.
+  // that need to integrate with javascript infrastructure. note the usage
+  // of props throughout this object. We can do this only because it is a
+  // non-native JS trait.
   trait Props extends js.Object {
     val prop1: Int // e.g. required attribute
     // redux props
@@ -108,14 +110,17 @@ object MyScalaComponentC {
   // you could @JSExportTopLevel this component but it would not receive redux props
   private val jsComponent = c.wrapScalaForJs { (jsProps: Props) => ...; _make(jsProps) }
 
-  private def mapStateToProps(reduxState: js.Dynamic, ownProps: js.Dynamic): js.Object { ... }
-  private def mapDispatchTopProps(dispatch: redux.Dispatch, ownProps: js.Dynamic): js.Object { ... }
-
   // connect returns another new "js component" that wraps the "js component" we pass in
   // you could @JSExportTopLevel this component or javascript usage and it would receive redux props
-  private val reduxJsComponent = redux.connect(MyScalaComponent, mapStateToProps, mapDispatchToProps)
+  private val reduxJsComponent = {
+    // or use defs...
+    val mapStateToProps = (reduxState: js.Dynamic, ownProps: Props): Props = { ... }
+    val mapDispatchTopProps = (dispatch: redux.Dispatch, ownProps: Props): Props = { ... }
+    redux.connect(MyScalaComponent, mapStateToProps, mapDispatchToProps)
+  }
   
-  // Clients use this object uses the redux version.
+  // This "make" creates a component that receives redux props. You
+  // have many choices on how to structure your "make" API.
   def make(scalaProp1: Int) = {
     // you do not need to fill in the redux properties
     val props = new Props { val prop1 = scalaProp1 }

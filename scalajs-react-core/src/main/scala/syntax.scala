@@ -64,8 +64,10 @@ final case class JsDynamicOps(val jsdyn: js.Dynamic) {
   def asBoolean: Boolean          = jsdyn.asInstanceOf[Boolean]
   /** @deprecated use asJsObj */
   def asJSObj: js.Object          = jsdyn.asInstanceOf[js.Object]
+  // was just asJsObj does the cast help? can we remove asJsObjSub
   def asJsObj: js.Object          = jsdyn.asInstanceOf[js.Object]
   def asDict[A]: js.Dictionary[A] = jsdyn.asInstanceOf[js.Dictionary[A]]
+  // variance annotation needed?
   def asUndefOr[A]: js.UndefOr[A] = jsdyn.asInstanceOf[js.UndefOr[A]]
   def asJsObjSub[A <: js.Object]  = jsdyn.asInstanceOf[A] // assumes its there!
   def asJsArray[A <: js.Object]   = jsdyn.asInstanceOf[js.Array[A]]

@@ -45,8 +45,11 @@ object ToDoC {
   def make(todo: ToDo, remove: Unit => Unit) =
     ToDo.withRender(self => {
       <.div(^.className := styles.component.todo)(
-        Label(^.className := styles.component.title)(todo.name).toEl,
-        DefaultButton(F.text := "Remove", ^.onClick ==> ((_: ReactEvent[_]) => remove(())))().toEl)
+        Label(new LabelProps { className = styles.component.title.asString})(todo.name).toEl,
+        DefaultButton(new IButtonProps {
+          text = "Remove"
+          onClick = js.defined(_ => remove(()))
+        })().toEl)
     })
 }
 
@@ -123,25 +126,23 @@ object ToDosC {
           Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
           <.div(^.className := styles.component.dataEntry)(
             TextField(
-              F.componentRef ==> ((r: ITextField) => self.state.foreach(s => self.send(SetTextFieldRef(r)))),
-              F.onChanged ==> ((e: String) => self.handle(inputChanged(Option(e)))),
-              ^.value := self.state.flatMap(_.input).getOrElse[String]("")
-            )(),
-            PrimaryButton(
-              "text" := "Add",
-              F.disabled := self.state.flatMap(_.input).map(_.size == 0).getOrElse[Boolean](true),
+              new ITextFieldProps {
+                componentRef = js.defined((r: ITextField) => self.state.foreach(s => self.send(SetTextFieldRef(r))))
+                onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
+                value = self.state.flatMap(_.input).getOrElse[String]("")
+              })(),
+            PrimaryButton( new IButtonProps {
+              text ="Add"
+              disabled = self.state.flatMap(_.input).map(_.size == 0).getOrElse[Boolean](true)
               // demonstrates inline callback
-              ^.onClick ==> { (e: ReactEvent[_]) => // could be _ => since we don't use 'e'
+              onClick = js.defined{ (e: ReactEvent[_]) => // could be _ => since we don't use 'e'
                 // if have state, add todo and refocus
                 self.state.flatMap(_.input).foreach { i =>
                   self.handle { s =>
                     s.send(Add(ToDo(mkId(), i)))
                     s.state.flatMap(_.textFieldRef).foreach(ref => refToJs(ref).focus())
-                  }
-                }
-
-              }
-            )()
+                  }}}
+            })()
           ),
           self.state
             .map(s => ToDoListC.make(s.todos.length, s.todos, (id: Int) => self.handle(remove(id))))

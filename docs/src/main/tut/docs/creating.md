@@ -74,6 +74,13 @@ new MyOpts {
   override val prop2 = "bar"
 }
 ```
+In order to allow your props to contain other attributes, such as those from div, just have your props inherit from the appropriate attributes trait that is provided:
+```scala
+trait MyOpts extends HTMLAttributes[dom.html.div] {
+   // your extra traits
+}
+```
+You may need to filter your props so you can access only your attributes. See office-ui-fabric-react for an example of a function that can do that filtering. There are many approaches to supporting this.
 
 ## Children
 Children in scalajs-react are ReactNode or ReactElement (subclass of ReactNode). Whatever you do, you need to take your imported react components, your scalajs-react components and convert them to a ReactNode in order to use them as children in other scalajs-react components. You have a few ways of doing this.
