@@ -45,10 +45,21 @@ trait Proxy[S, RP, A] extends js.Object {
     */
   def transitionNextTotalState(curTotalState: State, scalaStateUpdate: StateUpdate[S, SLF]): State
 
-  /** Send an action. */
+  /**
+    * Send an action and update state if the reducer says to.
+    *
+    * Runs the action through the reducer immediately inside a reactjs.setState
+    * call. If the reducer returns "NoResult" or the scala state version is not
+    * changed, then no reactjs state is updated and no render request occurs.
+    */
   def sendMethod(self: ThisSelf, action: A): Unit
 
-  /** Handle a callback. Curry your component's callback method to accept only `this`. */
+  /**
+    * Handle a callback. Curry your component's callback method to accept only `this`.  Runs
+    * the callback immediately and there is no reactjs state update. The callback is called
+    * with the latest constructed self when the handle is executed. It is expected that
+    * the callback may send an action to the component.
+    */
   def handleMethod(self: ThisSelf, cb: SLF => Unit): Unit
 
   /** Subscription "unmount" callbacks. */

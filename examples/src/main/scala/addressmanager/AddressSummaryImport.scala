@@ -27,4 +27,3 @@ object AddressSummaryC {
     elements.wrapJsForScala(AddressSummaryNS.AddressSummary, props)
   }
 }
-

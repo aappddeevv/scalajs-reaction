@@ -4,6 +4,7 @@
 
 package ttg.react.vdom
 
+/** Incomplete list. Define your own if you need to. */
 trait HtmlAttrs {
   final lazy val className = attr("className")
   final lazy val href = attr("href")

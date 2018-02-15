@@ -10,4 +10,4 @@ import js.annotation._
 
 package object examples {
   val readmetext = ReadmeText.asInstanceOf[String]
-} 
+}

@@ -38,7 +38,9 @@ const devServer = {
     contentBase: "dist",
     compress: true,
     hot: true,
+    open: true,
     https: true,
+    watchContentBase: true,
     headers: {
         'Access-Control-Allow-Origin': '*'
     }
@@ -47,7 +49,7 @@ const devServer = {
 // scalapath: relative path from topdir to scala output .js file
 const common = (scalapath) => ({
     entry: {
-        "Scala": path.join(__dirname, scalapath)
+        "Scala": scalapath,
     },
     target: "web",
     resolve: {
@@ -125,7 +127,7 @@ const common = (scalapath) => ({
 
 function copies(dest) {
     return [
-        { from: "examples/src/main/public/*", to: dest },
+        { from: "examples/src/main/public/*.html", to: dest, flatten: true },
     ]
 }
 
@@ -139,12 +141,20 @@ const prod = {
 
 module.exports = function (env) {
     const isProd = env && env.BUILD_KIND && env.BUILD_KIND==="production"
-    const scalapath = "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js")
+    const scalapath = path.join(__dirname, "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js"))
     const staticAssets = copies(path.join(__dirname, "dist"))
     const output = libraryOutput(path.join(__dirname, "dist"))
     const globals = (nodeEnv) => ({
         "process.env": { "NODE_ENV": JSON.stringify(nodeEnv || "development") }
     })
+    const copyplugin = new CopyWebpackPlugin(staticAssets)
+    console.log("isProd: ", isProd)
+    console.log("scalapath: ", scalapath)
+    console.log("globals: ", globals)
+    const prodCopy = new CopyWebpackPlugin([
+        {from: "dist/*", to: path.join(__dirname, "docs/src/main/resources/microsite/static/demo")}
+    ])
+    
     if (isProd) {
         console.log("Production build")
         return merge(output, common(scalapath), prod, {
@@ -156,7 +166,8 @@ module.exports = function (env) {
                     sourceMap: true,
                     uglifyOptions: { ecma: 5, compress: true }
                 }),
-                new CopyWebpackPlugin(staticAssets),
+                copyplugin, // must be first
+                prodCopy
             ]
         })
     }
@@ -166,7 +177,7 @@ module.exports = function (env) {
             plugins: [
                 new webpack.HotModuleReplacementPlugin(),
                 new webpack.DefinePlugin(globals()),
-                new CopyWebpackPlugin(staticAssets),
+                copyplugin,
             ]
         })
     }

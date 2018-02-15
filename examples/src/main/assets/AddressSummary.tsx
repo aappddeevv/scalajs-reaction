@@ -13,7 +13,7 @@ export const AddressSummary: React.SFC<Address> = (props?: Props) => {
     const name = (props && props.address && props.address.name) || "<unnamed address>"
     return (
         <div className={cx("addressSummary", props.className)}>
-            Typescript sourced: Address Summary: {name}
+            Typescript component: Address Summary: {name}
         </div>
     )
 }

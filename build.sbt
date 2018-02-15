@@ -44,7 +44,7 @@ val commonScalacOptions = Seq(
     "-Yno-adapted-args",
     "-Ywarn-numeric-widen",
     "-Xfuture",
-    "-Ypartial-unification"
+  "-Ypartial-unification",
   )
 
 //scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
@@ -105,11 +105,17 @@ lazy val `scalajs-react-fabric` = project
     description := "scala.js react facade support for microsoft office-ui-fabric",
   )
 
+// Watch non-scala assets as well, we add this to root project even
+// though its only relevant to examples project.
+watchSources += baseDirectory.value / "examples/src/main/assets"
+
 lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  // rebuilds if these non-scala sources change...????
+  //.settings(unmanagedResourceDirectories in Compile += baseDirectory.value / "examples/src/main/assets")
   .settings(
     libraryDependencies ++= Seq(
       //"org.typelevel" %% "cats-core_sjs0.6" % "1.0.1",
@@ -169,6 +175,12 @@ val npmBuildFast = taskKey[Unit]("fastOptJS then webpack")
 npmBuildFast := {
   (fastOptJS in (examples, Compile)).value
   "npm run examples:dev" !
+}
+
+val npmRunDemo = taskKey[Unit]("fastOptJS then run webpack server")
+npmRunDemo := {
+  (fastOptJS in (examples, Compile)).value
+  "npm run examples:dev-start" !
 }
 
 // must run publish and release separately

@@ -39,7 +39,7 @@ object Pages {
 
   val defaultTodos = Seq(ToDo(1, "Call Fred"))
 
-  def labelAndChild(name: String, c: Component[_,_,_,_]) = {
+  def labelAndChild(name: String, c: ComponentAny) = {
     PivotItem(new IPivotItemProps {
       linkText = s"$name"
       itemKey = s"$name-tab"
@@ -86,12 +86,12 @@ object Pages {
     )
   }
 
-  def readme() = {
+  def readme(text: String) = {
     PivotItem(new IPivotItemProps {
       linkText = "README"
       itemKey = "readme"
     })(
-      ReactMarkdownC.make(new ReactMarkdownProps { source = examples.readmetext })
+      ReactMarkdownC.make(new ReactMarkdownProps { source = text })
     )
   }
 }
@@ -100,12 +100,12 @@ object Main {
   import Pages._
   import addressmanager.fakedata._
 
-  /** 
-   * This will be exported from the ES module that scala.js outputs.  How you
-   *  access it depends on your bundler. webpack can be configured to output a
-   *  "library", say named, "Scala" so you would call this function as
-   *  `Scala.App()`.
-   */
+  /**
+    * This will be exported from the ES module that scala.js outputs.  How you
+    *  access it depends on your bundler. webpack can be configured to output a
+    *  "library", say named, "Scala" so you would call this function as
+    *  `Scala.App()`.
+    */
   @JSExportTopLevel("App")
   def App(): Unit = {
     println("Running examples app")
@@ -115,21 +115,20 @@ object Main {
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     renderToElementWithId(
-      React.createElement(
-        redux.ReactRedux.Provider,
-        new redux.ProviderProps { store = StoreNS.store })
-        (Fabric(new IFabricProps {
+      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps { store = StoreNS.store })(
+        Fabric(new IFabricProps {
           className = estyles.root.asString
         })(
           Pivot()(
-            readme(),
+            readme(examples.readmetext),
             addressPage(addressDAO),
             todoPage,
             helloWorldPage,
             changeReduxStatePage(),
             labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
-        )// 
+          ) //
         )),
-      "container")
+      "container"
+    )
   }
 }

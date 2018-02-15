@@ -21,6 +21,22 @@ trait ErrorInfo extends js.Object {
 }
 
 /**
+  * The "self" used in the methods do not always have the same capabilities. These types
+  * are not fully constrained yet -- future work.
+  */
+trait ComponentSpecTypes {
+
+  /** Full self, which may or may not have state. */
+  type Self
+
+  /** Self used for willUnmount which should not have send/handle since they don't work at that point. */
+  type SelfWithoutMethods
+
+  /** Self used to obtain the initial state. In a stateful component, obviously, this would not have the state. */
+  type SelfInitialState
+}
+
+/**
   * A component in scala world is a simple immutable data structure. Currently,
   * many of these are wrapped in Option since everything but render is really
   * optional. A scala object is used so that you can use more advanced
@@ -29,14 +45,19 @@ trait ErrorInfo extends js.Object {
   *
   * You can use `with*` functions syntax to build up the spec incrementally.
   *
-  * @todo Maybe drop Option allocations to reduce memory allocation. Perhaps use null.
+  * Messages sent (using send) in willUnmount will not be processed. Use
+  * subscriptions instead. The self types will be changed in the future so that
+  * those methods do not appear in the callback.
+  *
+  * @todo Maybe drop Option allocations to reduce memory allocation. Perhaps use
+  * null.
   *
   * @tparam S State
   * @tparam RP Retained props.
   * @tparam A Action type for in-component reducer.
-  * @tparam SLF The "self" parameter passed into the lifecycle/management functions.
+  * @tparam SLF The "self" parameter passed into most lifecycle/management functions.
   */
-case class ComponentSpec[S, RP, A, SLF](
+case class ComponentSpec[S, RP, A, SLF, SLFW, SLFI](
     /** Component name. Also pushed down into the js side. */
     debugName: String,
     /** Value returned by scalareact.createClass. Internal use only. */
@@ -45,11 +66,11 @@ case class ComponentSpec[S, RP, A, SLF](
     render: SLF => ReactNode,
     /** Retained props. This can change??? Is this mutable? */
     retainedProps: Option[RP] = None,
-    initialState: Option[() => Option[S]] = None,
+    initialState: Option[SLFI => Option[S]] = None,
     didMount: Option[(SLF, ReducerResult[S, SLF]) => ReducerResult[S, SLF]#UpdateType] = None,
-    willUnmount: Option[SLF => Unit] = None,
+    willUnmount: Option[SLFW => Unit] = None,
     willReceiveProps: Option[SLF => Option[S]] = None,
-    /** State management via reducer concept. */
+    /** State management via reducer concept. This is dependent typing. */
     reducer: (A, Option[S], ReducerResult[S, SLF]) => ReducerResult[S, SLF]#UpdateType = (_: A, _: Option[S], _: ReducerResult[S, SLF]) => NoUpdate[S, SLF](),
     /** Only used when we wrap a js-side element inside of scala. */
     jsElementWrapped: Option[JsElementWrapped] = None,
@@ -59,17 +80,21 @@ case class ComponentSpec[S, RP, A, SLF](
     subscriptions: SLF => Seq[Subscription] = (_: SLF) => Seq(),
     contextTypes: Option[js.Object] = None,
     didCatch: Option[(SLF, js.Error, ErrorInfo) => Unit] = None
-) { self =>
-  /** 
-   * Use this type for your component e.g. YourComponent.Self for your functions
-   * external to the callback methods to help your organize your code.
-   */
-  type Self = SLF
+) extends ComponentSpecTypes { self =>
 
-  def withInitialState(is: () => Option[S]) =
+  /**
+    * Use this type for your component e.g. YourComponent.Self for your functions
+    * external to the callback methods to help your organize your code.
+    */
+  type Self = SLF
+  type SelfWithoutMethods = SLFW
+  type SelfInitialState = SLFI
+
+  def withInitialState(is: SLF => Option[S]) =
     this.copy(initialState = Some(is))
   def withDidMount(f: (SLF, ReducerResult[S, SLF]) => ReducerResult[S, SLF]#UpdateType) =
     this.copy(didMount = Some(f))
+  def withWillUnmount(f: SLF => Unit) = this.copy(willUnmount = Some(f))
   def withRender(f: SLF => ReactNode) = this.copy(render = f)
   def withWillReceiveProps(f: SLF => Option[S]) =
     this.copy(willReceiveProps = Some(f))
@@ -104,11 +129,30 @@ case class ComponentSpec[S, RP, A, SLF](
     * Note: jsPropsToScala will appear in reactsj's 'this' because its attached
     * to the prototype of reactClassInternal.
     */
-  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec[S, RP, A, _]): ReactJsComponent = {
+  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec[S, RP, A, _, _, _]): ReactJsComponent = {
     val dyn = this.reactClassInternal.asInstanceOf[js.Dynamic]
     dyn.prototype.jsPropsToScala = jsPropsToScala.asInstanceOf[js.Any]
     this.reactClassInternal.asInstanceOf[ReactJsComponent]
   }
+}
+
+trait SelfWithRP[RP] {
+
+  /** Retained props. */
+  def retainedProps: Option[RP]
+
+  /** Hidden attribute used for future extensions. */
+  private[ttg] var ptr: js.Any = null
+}
+
+trait SelfWithoutState[RP, A] extends SelfWithRP[RP] {
+  type HandleArg <: SelfWithoutState[RP, A]
+
+  /** Execute an action in the component's reducer. Should this be wrapped in an effect? */
+  def send(a: A): Unit
+
+  /** Callback handling. Curry your function down to accept just a single "self" arg. */
+  def handle(cb: HandleArg => Unit): Unit
 }
 
 /**
@@ -117,20 +161,11 @@ case class ComponentSpec[S, RP, A, SLF](
   * parameter. You can extend it to add additional content if you create
   * your own "component creation" API.
   */
-trait Self[S, RP, A] {
+trait Self[S, RP, A] extends SelfWithoutState[RP, A] {
   type HandleArg <: Self[S, RP, A]
 
   /** Component state. */
   def state: Option[S]
-
-  /** Retained props. */
-  def retainedProps: Option[RP]
-
-  /** Execute an action in the component's reducer. Should this be wrapped in an effect? */
-  def send(a: A): Unit
-
-  /** Callback handling. Curry your function down to accept just a single "self" arg. */
-  def handle(cb: HandleArg => Unit): Unit
 }
 
 /** Allows prev/next comparisons. */
@@ -206,12 +241,15 @@ case class SilentUpdateWithSideEffects[S, SLF](s: Option[S], effect: SLF => Unit
   * Instead of exposing the ADT to the client, we use a smart constructor at the
   * cost of an extra object allocation. Now we can change the ADT over time. Use
   * `ReducerResult[S, SLF]#UpdateType` for the type when you need to refer to
-  * the ADT type.
+  * the ADT type. Side effects are run after the state update so use the
+  * self parameter to the side effect to obtain the most current state and not the
+  * self parameter to the function that you call the methods from.
   */
 case class ReducerResult[S, SLF]() {
 
-  type UpdateType = StateUpdate[S, SLF]
+  /** Use this type in client code to create an effect. */
   type UpdateEffect = SLF => Unit
+  type UpdateType = StateUpdate[S, SLF]
 
   lazy val skip: UpdateType = NoUpdate()
   def update(s: Option[S]): UpdateType = Update(s)
@@ -264,7 +302,7 @@ object elements {
     *
     * Since we return an untyped value, the types of the component are not important.
     */
-  def element(component: Component[_, _, _, _], key: Option[String] = None, ref: Option[RefCb] = None): ReactElement = {
+  def element(component: Component[_, _, _, _, _, _], key: Option[String] = None, ref: Option[RefCb] = None): ReactElement = {
     component.jsElementWrapped match {
       case Some(func) => func(key, ref)
       case _ =>
@@ -277,7 +315,7 @@ object elements {
   }
 
   /** The long-named version of `element`. */
-  def createElement(component: Component[_, _, _, _], key: Option[String] = None, ref: Option[RefCb] = None) = element(component, key, ref)
+  def createElement(component: Component[_, _, _, _, _, _], key: Option[String] = None, ref: Option[RefCb] = None) = element(component, key, ref)
 
   /** Convert *anything* to what you assert is a js.Any value. Very dangerous. */
   private[this] def toAny(o: scala.Any): js.Any = o.asInstanceOf[js.Any]
@@ -297,7 +335,7 @@ object elements {
     */
   abstract class StandardProxy[S, RP, A] extends Proxy[S, RP, A] {
     type SLF <: Self[S, RP, A]
-    type TheComponent = ComponentSpec[S, RP, A, SLF]
+    type TheComponent = ComponentSpec[S, RP, A, SLF, SLF, SLF]
     type PropsType = TheComponent
     type ThisSelfProps = JsComponentThisProps[PropsType]
     type State = TotalState[S, RP, A, SLF]
@@ -319,6 +357,43 @@ object elements {
     // use null to avoid allocation
     var subscriptions: Seq[() => Unit] = null
 
+    /*
+ switch reasonStateUpdate {
+        | NoUpdate => curTotalState
+        | Update(nextReasonState) => {
+            "reasonState": nextReasonState,
+            "reasonStateVersion": curTotalState##reasonStateVersion + 1,
+            "reasonStateVersionUsedToComputeSubelements": curTotalState##reasonStateVersionUsedToComputeSubelements,
+            "sideEffects": curTotalState##sideEffects
+          }
+        | SilentUpdate(nextReasonState) => {
+            "reasonState": nextReasonState,
+            "reasonStateVersion": curTotalState##reasonStateVersion + 1,
+            "reasonStateVersionUsedToComputeSubelements":
+              curTotalState##reasonStateVersionUsedToComputeSubelements + 1,
+            "sideEffects": curTotalState##sideEffects
+          }
+        | SideEffects(performSideEffects) => {
+            "reasonState": curTotalState##reasonState,
+            "reasonStateVersion": curTotalState##reasonStateVersion + 1,
+            "reasonStateVersionUsedToComputeSubelements":
+              curTotalState##reasonStateVersionUsedToComputeSubelements + 1,
+            "sideEffects": [performSideEffects, ...curTotalState##sideEffects]
+          }
+        | UpdateWithSideEffects(nextReasonState, performSideEffects) => {
+            "reasonState": nextReasonState,
+            "reasonStateVersion": curTotalState##reasonStateVersion + 1,
+            "reasonStateVersionUsedToComputeSubelements": curTotalState##reasonStateVersionUsedToComputeSubelements,
+            "sideEffects": [performSideEffects, ...curTotalState##sideEffects]
+          }
+        | SilentUpdateWithSideEffects(nextReasonState, performSideEffects) => {
+            "reasonState": nextReasonState,
+            "reasonStateVersion": curTotalState##reasonStateVersion + 1,
+            "reasonStateVersionUsedToComputeSubelements":
+              curTotalState##reasonStateVersionUsedToComputeSubelements + 1,
+            "sideEffects": [performSideEffects, ...curTotalState##sideEffects]
+          }
+     */
     // adding sideeffects to start of list is significant in the processing algorithm
     def transitionNextTotalState(curTotalState: State, scalaStateUpdate: StateUpdate[S, SLF]): State = {
       scalaStateUpdate match {
@@ -437,6 +512,9 @@ object elements {
       }
     }
 
+    // allocate just once...
+    val reducerResult = ReducerResult[S, SLF]()
+
     val componentDidMount = thisJs => {
       //println(s"$debugName:CreateClassOpts.componentDidMount")
       val component =
@@ -446,27 +524,30 @@ object elements {
       val self = mkSelf(thisJs, curScalaState, component.retainedProps)
 
       // call subscriptions
-      //println(s"calling subscriptions ${component.subscriptions}, ${component.subscriptions}")
       subscriptions = component.subscriptions(self).map(_())
 
       component.didMount match {
         case Some(dm) =>
-          val scalaStateUpdate = dm(self, ReducerResult())
+          val scalaStateUpdate = dm(self, reducerResult)
+          // can we check for NoUpdate() as well and skip the transition!
           val nextTotalState =
             transitionNextTotalState(curTotalState, scalaStateUpdate)
-          //println(s"$debugName:CreateClassOpts.componentDidMount:\nnext: ${PrettyJson.render(nextTotalState)},\ncurrent: ${PrettyJson.render(curTotalState)}")
           if (nextTotalState.scalaStateVersion != curTotalState.scalaStateVersion)
             thisJs.setState(_ => nextTotalState)
         case _ => // do nothing!
       }
     }
 
+    // modified to take a this but with None as state, to get access to handlers...
     val getInitialState = thisJs => {
       val component =
         convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
-      val x = mkState(component.initialState.flatMap(_()), 1, 1, Seq())
 
-      //println(s"$debugName:getInitialState ${PrettyJson.render(x)}, ${component.initialState.flatMap(_())}")
+      // not in reasonreact API.
+      val curTotalState = thisJs.state
+      val self = mkSelf(thisJs, None, component.retainedProps)
+
+      val x = mkState(component.initialState.flatMap(_(self)), 1, 1, Seq())
       x
     }
 
@@ -579,7 +660,7 @@ object elements {
         val curScalaState = curTotalState.scalaState
         val scalaStateUpdate =
           component.reducer(action, curScalaState, ReducerResult())
-        if (scalaStateUpdate == NoUpdate()) null
+        if (scalaStateUpdate == NoUpdate()) null // reactjs sees setState(null) so no update
         else {
           val nextTotalState =
             transitionNextTotalState(curTotalState, scalaStateUpdate)
@@ -641,11 +722,12 @@ object elements {
         val retainedProps = popt
         def send(a: A) = sendMethod(thisJs, a)
         def handle(cb: HandleArg => Unit) = handleMethod(thisJs, cb)
+        ptr = thisJs.asInstanceOf[js.Any] // future hack!
       }
       val contextTypes = js.undefined
     }
     val proxy = new BasicProxy[S, RP, A]()
-    ComponentSpec[S, RP, A, proxy.SLF](
+    ComponentSpec[S, RP, A, proxy.SLF, proxy.SLF, proxy.SLF](
       debugName = debugNameArg,
       reactClassInternal = reactCreateClass(proxy),
       render = _ => stringToElement("Not Implemented"),
@@ -670,12 +752,13 @@ object elements {
           def send(a: A) = sendMethod(thisJs, a)
           def handle(cb: HandleArg => Unit) = handleMethod(thisJs, cb)
           val context = thisJs.asInstanceOf[js.Dynamic].context.asInstanceOf[js.UndefOr[C]].toOption
+          ptr = thisJs.asInstanceOf[js.Any] // future hack!
         }
       // the cast on this should not be needed
       val contextTypes = contextTypes.fold(js.undefined.asInstanceOf[js.UndefOr[js.Object]])(x => x)
     }
     val proxy = new BasicProxy[S, RP, A, C]()
-    ComponentSpec[S, RP, A, proxy.SLF](
+    ComponentSpec[S, RP, A, proxy.SLF, proxy.SLF, proxy.SLF](
       debugName = debugNameArg,
       reactClassInternal = reactCreateClass(proxy),
       render = _ => stringToElement("Not Implemented"),
@@ -710,7 +793,10 @@ object elements {
     * react class using standard scala.js import mechanisms and write a "make"
     * function to create your props from "make" parameters.
     */
-  def wrapJsForScala[P <: js.Object](reactClass: ReactJsComponent, props: P, children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _] = {
+  def wrapJsForScala[P <: js.Object](
+      reactClass: ReactJsComponent,
+      props: P,
+      children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _, _, _] = {
     WrapProps.wrapJsForScala(reactClass, props, children: _*)
   }
 

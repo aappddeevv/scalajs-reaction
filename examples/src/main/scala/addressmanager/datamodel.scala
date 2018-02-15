@@ -6,6 +6,7 @@ package ttg.react.examples
 package addressmanager
 
 import scala.scalajs.js
+import js.|
 import js.annotation._
 
 trait Address extends js.Object {
@@ -27,6 +28,9 @@ trait AddressDAO extends js.Object {
 
 /** Manage data access and selection state. */
 trait AddressesViewModel extends js.Object {
-  def setSelectedIds(ids: IdList): Unit
-  def getSelectedIds(): IdList
+  // address can be null value explicitly per plain old scala
+  def setActive(id: Id, address: Address): Unit
+  def activeId: Id
+  // per the typescript documentation, Address|null in the redux state
+  def active: Address
 }

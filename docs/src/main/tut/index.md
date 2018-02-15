@@ -16,3 +16,6 @@ The scalajs-react interface is built on the model provided by [ReasonReact](http
 
 The scalajs-react redux integration focuses on allowing you to connect your component to an existing redux store. It does not try to provide access to the full redux API. It is essentially the scala.js side version for scalajs-react much like the project `react-redux`.
 
+# Demo
+A WIP demo is here:
+[Demo](static/index.html)

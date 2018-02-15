@@ -14,7 +14,7 @@ package object vdom extends vdom.Events with VDOMSyntax {
 
   val noAttributes = Attrs.zero
 
-  /** For now, style attributes are just attributes. */
+  /** For now, style attributes are just attributes so fake it out. */
   val Style = Attrs
 
   /**

@@ -20,5 +20,11 @@ options:
   - title: Redux
     url: docs/redux.html
 
-  - title: Project Structure Mixed Project
+  - title: Data interop
+    url: docs/datainterop.html
+
+  - title: office-fabric-ui-react
+    url: docs/fabric.html
+
+  - title: Mixed Projects
     url: docs/mixedproject.html

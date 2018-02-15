@@ -45,11 +45,12 @@ object ToDoC {
   def make(todo: ToDo, remove: Unit => Unit) =
     ToDo.withRender(self => {
       <.div(^.className := styles.component.todo)(
-        Label(new LabelProps { className = styles.component.title.asString})(todo.name).toEl,
+        Label(new LabelProps { className = styles.component.title.asString })(todo.name).toEl,
         DefaultButton(new IButtonProps {
           text = "Remove"
           onClick = js.defined(_ => remove(()))
-        })().toEl)
+        })().toEl
+      )
     })
 }
 
@@ -79,12 +80,6 @@ object ToDoListC {
         println(s"ToDoList: willReceiveProps: retained props ${self.retainedProps}")
         self.state
       })
-}
-
-@js.native
-trait AppPropsJs extends js.Object {
-  val title: js.UndefOr[String] = js.undefined
-  val todos: js.UndefOr[js.Array[js.Object]] = js.undefined
 }
 
 object ToDosC {
@@ -120,28 +115,29 @@ object ToDosC {
               .getOrElse(gen.skip)
         }
       })
-      .withInitialState(() => Some(State(todos, None)))
+      .withInitialState(_ => Some(State(todos, None)))
       .withRender { self =>
         <.div(^.className := styles.component.todoApp)(
           Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
           <.div(^.className := styles.component.dataEntry)(
-            TextField(
-              new ITextFieldProps {
-                componentRef = js.defined((r: ITextField) => self.state.foreach(s => self.send(SetTextFieldRef(r))))
-                onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
-                value = self.state.flatMap(_.input).getOrElse[String]("")
-              })(),
-            PrimaryButton( new IButtonProps {
-              text ="Add"
+            TextField(new ITextFieldProps {
+              componentRef = js.defined((r: ITextField) => self.state.foreach(s => self.send(SetTextFieldRef(r))))
+              onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
+              value = self.state.flatMap(_.input).getOrElse[String]("")
+            })(),
+            PrimaryButton(new IButtonProps {
+              text = "Add"
               disabled = self.state.flatMap(_.input).map(_.size == 0).getOrElse[Boolean](true)
               // demonstrates inline callback
-              onClick = js.defined{ (e: ReactEvent[_]) => // could be _ => since we don't use 'e'
+              onClick = js.defined { (e: ReactEvent[_]) => // could be _ => since we don't use 'e'
                 // if have state, add todo and refocus
                 self.state.flatMap(_.input).foreach { i =>
                   self.handle { s =>
                     s.send(Add(ToDo(mkId(), i)))
                     s.state.flatMap(_.textFieldRef).foreach(ref => refToJs(ref).focus())
-                  }}}
+                  }
+                }
+              }
             })()
           ),
           self.state
@@ -166,9 +162,6 @@ object ToDoApp {
   @JSExportTopLevel("todos")
   def todos(): Unit = {
     println("Running todos...")
-    renderToElementWithId(Fabric()(
-      ToDosC.make(Some("My To Do List"),
-        Seq(ToDo(ToDosC.mkId(), "Call Fred"))).toEl),
-      "container")
+    renderToElementWithId(Fabric()(ToDosC.make(Some("My To Do List"), Seq(ToDo(ToDosC.mkId(), "Call Fred"))).toEl), "container")
   }
 }

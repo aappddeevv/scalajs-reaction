@@ -6,6 +6,10 @@ The facade library is small and provides an opionated API for creating component
 
 Of course, you can code a react interface without using any of these facades since scala.js supports non-native JS class definitions. scala.js's JS class support is extensive and well thought out. One of the reasons I liked the ReasonReact model is that it rethought the abstractions and API. Instead of trying to copy the reactjs API it provides something smaller and simpler and emphasizes benefits in just a few dimensions of the reactive user interface problem--almost the very definition of "disruptive."
 
+scalajs-react emphasizes integration into an existing project by making it easy to export and import components and fit into existing global state-managed solutions, such as redux. At the same time it allows you to build your entire interface in scalajs-react if you wish. As long as your front-end solution can absorb the monolithic bundling aspect of scala.js in general, you should consider scalajs-react for your solution.
+
+[Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
+
 ## Usage
 Include the library in your build:
 ```scala
@@ -139,7 +143,7 @@ Integrated API documentation:
 * [all modules](https://aappddeevv.github.io/scalajs-react/api/ttg/react)
 
 # Demo
-There is a demo app that is not integrated into the documentation site yet. If you run `sbt npmBuild` it will build the demo in the "dist" directory using fastOptJS. Just load "dist/index.html" into your browser to see the demo.
+There is a demo app that is not integrated into the documentation site yet. You can start the demo if you run `sbt npmRunDemo`. A browser page should open. If not, point your browser to [https://localhost:8080](https://localhost:8080).
 
 # Motivation
 I was looking for a react facade that rethought reactive interactions. Many of the existing facades are straight adaptions of the standard react library and make it quite easy to program react in a scala environment. 

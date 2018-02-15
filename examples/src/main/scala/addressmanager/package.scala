@@ -14,6 +14,7 @@ import js.|
 
 import react.implicits._
 import redux.Dispatcher
+import js.JSConverters._
 
 package object addressmanager {
   type Id = String
@@ -22,22 +23,25 @@ package object addressmanager {
   type Result = Either[String, AddressList]
   type CRUDResult = Either[String, Unit]
   val emptyAddressList = js.Array[Address]()
+  val emptyIdList = js.Array[Id]()
   import ttg.react.fabric.IObjectWithKey
   val getAddressKey: js.Function1[Address, String] =
     (item: Address) => item.customeraddressid.getOrElse("")
 
-  /** 
-   * View model backed by redux dispatcher. Note that react-redux separates
-   * property getting from dispach setting for some reason make integrated view
-   * models more difficult.
-   * 
-   * @param getState Return the overall redux state.
-   */
+  /**
+    * View model backed by redux dispatcher. Note that react-redux separates
+    * property getting from dispach setting for some reason make integrated view
+    * models more difficult.
+    *
+    * @param getState Return the global redux state.
+    * @param dispatch Redux dispatcher.
+    */
   def mkReduxAddressesViewModel(getState: => js.Object, dispatch: Dispatcher) = {
     new AddressesViewModel {
-      def getSelectedIds() = getState.asDyn.addressManager.selectedIds.asInstanceOf[IdList]
-      def setSelectedIds(ids: IdList): Unit = dispatch(ActionsNS.AddressManagerActions.setSelectedIds(ids))
+      def activeId = getState.asDyn.addressManager.activeId.asInstanceOf[Id]
+      def setActive(id: Id, active: Address): Unit =
+        dispatch(ActionsNS.AddressManagerActions.setActive(id, active))
+      def active: Address = getState.asDyn.addressManager.active.asInstanceOf[Address]
     }
   }
-
 }

@@ -8,31 +8,32 @@ package redux
 import scala.scalajs.js
 import js.annotation._
 
-/** 
- * This trait does not include the full set of options.
- */
+/**
+  * This trait does not include the full set of options.
+  */
 trait ConnectOpts extends js.Object {
   val pure: js.UndefOr[Boolean] = js.undefined
   val storeKey: js.UndefOr[String] = js.undefined
 }
 
 /**
- * Create the store in javascript, import it as js.Any then you can set the
- * store in these props.
- */
+  * Create the store in javascript, import it as js.Any then you can set the
+  * store in these props.
+  */
 trait ProviderProps extends js.Object {
   var store: js.UndefOr[js.Any] = js.undefined
 }
 
 /**
- * Client can obtain the state directly or dispatch an event directly
- * off a store.
- */
+  * Client can obtain the state directly or dispatch an event directly
+  * off a store.
+  */
 @js.native
 trait Store extends js.Object {
   def getState[S <: js.Any](): S = js.native
   val dispatch: Dispatcher = js.native
   val subscribe: js.Function1[Listener, Unsubscriber] = js.native
+
   /** The reducer replacement is untyped. */
   val replaceReducer: js.Function1[js.Any, Unit] = js.native
 }
@@ -47,8 +48,8 @@ object ReactRedux extends js.Object {
   val Provider: ReactClass = js.native
 
   def connect(
-    mapStateToProps: js.UndefOr[js.Any] = js.undefined,
-    mapDispatchToProps: js.UndefOr[js.Any] = js.undefined,
-    mergeProps: js.UndefOr[js.Any] = js.undefined,
-    connectOpts: js.UndefOr[ConnectOpts] = js.undefined): js.Function1[ReactJsComponent, ReactJsComponent] = js.native
+      mapStateToProps: js.UndefOr[js.Any] = js.undefined,
+      mapDispatchToProps: js.UndefOr[js.Any] = js.undefined,
+      mergeProps: js.UndefOr[js.Any] = js.undefined,
+      connectOpts: js.UndefOr[ConnectOpts] = js.undefined): js.Function1[ReactJsComponent, ReactJsComponent] = js.native
 }

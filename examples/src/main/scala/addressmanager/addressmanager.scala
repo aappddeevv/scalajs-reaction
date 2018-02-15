@@ -36,7 +36,7 @@ import styles._
 sealed trait Actions
 case object FetchRequest extends Actions
 case class FetchResult(result: Result) extends Actions
-case class SelectionChanged(selection: ISelection[Address]) extends Actions
+case class ActiveChanged(active: Option[(String, Address)]) extends Actions
 case object Refresh extends Actions
 
 object AddressDetailC {
@@ -57,10 +57,10 @@ object AddressDetailC {
 }
 
 /**
- * A props trait. We actually don't use this in the "make" to show how one needs
- * to break out parameters if your "make" does not take an unified props object.
- * But having this trait makes writing some interop a little easier.
- */
+  * A props trait. We actually don't use this in the "make" to show how one needs
+  * to break out parameters if your "make" does not take an unified props object.
+  * But having this trait makes writing some interop a little easier.
+  */
 trait AddressManagerProps extends js.Object {
   val dao: AddressDAO
   // derived from redux
@@ -69,11 +69,15 @@ trait AddressManagerProps extends js.Object {
   var viewModel: js.UndefOr[AddressesViewModel] = js.undefined
 }
 
-// helper trait for some redux fiddling
-private [addressmanager] trait AddressManagerPropsRedux extends AddressManagerProps {
+// helper trait for some redux fiddling, we don't expose these to the world though or should we?
+private[addressmanager] trait AddressManagerPropsRedux extends AddressManagerProps {
   var rstate: js.UndefOr[js.Dynamic] = js.undefined
   // added by default to props unless mapDispatchToProps is provided
   var dispatch: js.UndefOr[Dispatcher] = js.undefined
+  var address: js.UndefOr[Address] = js.undefined
+
+  /** could be null */
+  var lastActiveAddressId: Id
 }
 
 object AddressListC {
@@ -87,7 +91,7 @@ object AddressListC {
   val AddressList = statelessComponent("AddressList")
 
   /** If you call this, the component is not connected to redux. */
-  def make(sel: ISelection[Address], addresses: AddressList = emptyAddressList) =
+  def make(sel: ISelection[Address], addresses: AddressList = emptyAddressList, activeCB: Option[Address] => Unit) =
     AddressList
       .withRender { self =>
         val listopts = new IDetailsListProps[Address] {
@@ -95,7 +99,13 @@ object AddressListC {
           selectionPreservedOnEmptyClick = true
           columns = icolumns
           getKey = getAddressKey
+          //initialFocusedIndex = 1 //ifx.orUndefined
+          onActiveItemChanged = { (aundef, _, _) =>
+            activeCB(aundef.toNonNullOption)
+          }: OAIC
           selection = sel
+          layoutMode = DetailsListLayoutMode.fixedColumns
+          constrainMode = ConstrainMode.horizontalConstrained
         }
         <.div(
           ^.className := amstyles.master,
@@ -106,11 +116,13 @@ object AddressListC {
 object AddressManagerC {
 
   private[addressmanager] case class State(
-    fetching: Boolean = false,
-    message: Option[String] = None,
-    addresses: AddressList = emptyAddressList,
-    selectedAddress: Option[Address] = None,
-    selection: ISelection[Address] = null // its a js thing
+      /** ignore selection changes. */
+      var ignoreChanges: Boolean = false,
+      fetching: Boolean = false,
+      message: Option[String] = None,
+      addresses: AddressList = emptyAddressList,
+      /** instance var, so make mutable, might as well */
+      var selection: ISelection[Address] = null // its a js thing
   )
 
   private val AddressManager = reducerComponentWithRetainedProps[State, NoRetainedProps, Actions]("AddressManager")
@@ -132,106 +144,137 @@ object AddressManagerC {
       },
     )
     farItems = js.Array(
-      if(self.state.map(_.fetching).getOrElse(false))
+      if (self.state.map(_.fetching).getOrElse(false))
         new IContextualMenuItem {
           val key = "refresh"
           name = "Fetching..."
-        }
-        else
+        } else
         new IContextualMenuItem {
           val key = "refresh"
           name = "Refresh"
-          onClick = { ()=> self.send(Refresh) } : OC0
+          onClick = { () =>
+            self.send(Refresh)
+          }: OC0
           iconProps = lit("iconName" -> "Refresh")
         }
     )
   }
 
-  private def applyData(addresses: AddressList, ids: IdList, sel: ISelection[Address]): Unit = {
-    println(s"appling selection ${ids}")
-    sel.setItems(addresses, true)
-    sel.setChangeEvents(false)
-    ids.foreach(id => sel.setKeySelected(id, true, false))
-    sel.setChangeEvents(true)
-  }
-
   private def fetchData(self: AddressManager.Self, dao: AddressDAO): Unit = {
     self.send(FetchRequest)
-    dao.fetch("no id")
-      .then[Unit] { addresses => self.send(FetchResult(Right(addresses))) }
+    dao
+      .fetch("no id")
+      .then[Unit] { addresses =>
+        self.send(FetchResult(Right(addresses)))
+      }
+  }
+
+  // safely change the selection without triggering a cycle
+  private def silentlyChangeSelection(state: State, selection: ISelection[Address])(thunk: ISelection[Address] => Unit) = {
+    try {
+      state.ignoreChanges = true
+      selection.setChangeEvents(false)
+      thunk(selection)
+      selection.setChangeEvents(true)
+    } finally {
+      state.ignoreChanges = false
+    }
   }
 
   /**
-   * Instead of a non-native JS trait, we use explicit parameters. Our interop wrappers
-   * must take this into account.
-   */
-  private def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String]) =
+    * Instead of a non-native JS trait, we use explicit parameters. Our interop wrappers
+    * must take this into account.
+    */
+  private def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String], lastActiveAddressId: Option[Id]) =
     AddressManager
-      .withInitialState { () => Some(State()) }
+      .withInitialState { self =>
+        val selcb = () => {
+          self.handle { cbself =>
+            // should probably do something with the selection
+            //cbself.state.foreach(state => cbself.send(SelectionChanged(state.selection)))
+          }
+        }
+        val selection = new Selection(js.defined(new ISelectionOptions[Address] {
+          getKey = getAddressKey
+          selectionMode = SelectionMode.single
+          onSelectionChanged = js.defined(selcb)
+        }))
+        Some(State(selection = selection))
+      }
+      .withSubscriptions { self =>
+        Seq(() => () => vm.setActive(null, null))
+      }
       .withReducer { (action, sopt, gen) =>
+        //println(s"withReducer: ${action}, ${sopt}")
         action match {
-          case FetchRequest =>
-            sopt
-              .map(state => gen.update(Some(state.copy(fetching = true))))
-              .getOrElse(gen.skip)
-          case FetchResult(result) =>
+          case FetchRequest if (sopt.isDefined) =>
+            gen.update(Some(sopt.get.copy(fetching = true)))
+
+          case FetchResult(result) if (sopt.isDefined) =>
             result match {
               case Left(msg) =>
-                sopt
-                  .map(state => gen.update(Some(state.copy(fetching = false, message = Some(msg)))))
-                  .getOrElse(gen.skip)
+                println(s"fetch failed $msg")
+                gen.update(Some(sopt.get.copy(fetching = false, addresses = emptyAddressList, message = Some(msg))))
               case Right(addresses) =>
-                sopt
-                  .map{state =>
-                    gen.updateAndEffect(Some(state.copy(fetching = false, addresses = addresses)),
-                      _ => applyData(addresses, vm.getSelectedIds(), state.selection))
+                gen.updateAndEffect(
+                  Some(sopt.get.copy(fetching = false, addresses = addresses)),
+                  self => {
+                    silentlyChangeSelection(sopt.get, sopt.get.selection) { s =>
+                      println("setting active after data fetch, but may not be the right time!")
+                      js.Dynamic.global.console.log("active id", vm.activeId, addresses)
+                      s.setItems(addresses, true)
+                    //vm.getSelectedIds().foreach(id => s.setKeySelected(id, true, false))
+                    }
                   }
-                  .getOrElse(gen.skip)
+                )
             }
-          case SelectionChanged(sel) =>
-            // we need to change the selection object and inform the view model
-            val selections = sel.getSelection()
-            val stateUpdate = if (selections.length == 1 && selections(0).customeraddressid.isDefined)
-              sopt.map(state => gen.updateAndEffect(Some(state.copy(selectedAddress = Some(selections(0)))),
-                _ => vm.setSelectedIds(selections.map(address => address.customeraddressid.get))))
-            else
-              sopt.map(state => gen.updateAndEffect(Some(state.copy(selectedAddress = None)),
-                _ => vm.setSelectedIds(js.Array())))
-            stateUpdate.getOrElse(gen.skip)
+          case ActiveChanged(p) =>
+            p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
+              .getOrElse(gen.effect(_ => vm.setActive(null, null)))
+
           case Refresh =>
-            // clear the address cache, not selection, fetch data
-            gen.updateAndEffect(
-              sopt.map(state => state.copy(addresses = emptyAddressList)),
-              fetchData(_, dao))
+            // refresh data, clear active object
+            gen.updateAndEffect(sopt.map(state => state.copy(addresses = emptyAddressList)), eslf => {
+              //vm.setSelection(emptyIdList, null)
+              vm.setActive(null, null)
+              fetchData(eslf, dao)
+            })
+
+          case _ =>
+            gen.skip
         }
       }
-  // self is needed to init the full state since "selection" requires a callback
-  // so we do it in mount vs initialState
+      // self is needed to init the full state since "selection" requires a callback
+      // so we do it in mount vs initialState
       .withDidMount { (self, gen) =>
-        val cb = () =>
-          self.handle { cbself =>
-            cbself.state.foreach(state => self.send(SelectionChanged(state.selection)))
-          }
-        val selection = new Selection(js.defined(new ISelectionOptions[Address] {
-            getKey = getAddressKey
-            selectionMode = SelectionMode.single
-            onSelectionChanged = js.defined(cb)
-        }))
-        val sopt = self.state.map(state => state.copy(selection = selection))
-        gen.updateAndEffect(sopt, fetchData(_, dao))
+        gen.effect(fetchData(_, dao))
       }
       .withRender { self =>
+        // get the first selected index
+        //val firstId = vm.getSelectedIds().headOption
+        val initialFocusedIndex = None
+        // val initialFocusedIndex = for {
+        //   id <- firstId
+        //   addresses <- self.state.map(_.addresses)
+        // } yield addresses.indexWhere(addr =>
+        //   addr.customeraddressid.map(_ == id).getOrElse[Boolean](false))
+        //println(s"initial focused index: ids: ${vm.getSelectedIds()}, index opt: ${initialFocusedIndex}")
+        val selAddrOpt = Option(vm.active)
+
+        val activecb = (address: Option[Address]) => {
+          self.handle { cbself =>
+            cbself.send(ActiveChanged(address.map(a => (a.customeraddressid.get, a))))
+          }
+        }
+
         <.div(^.className := amstyles.component)(
           CommandBar(cbopts(self))(),
           <.div(^.className := amstyles.masterAndDetail)(
-
-            AddressListC.make(self.state.map(_.selection).get,
-              self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList)),
-            AddressDetailC.make(self.state.flatMap(_.selectedAddress)),
+            AddressListC.make(self.state.map(_.selection).get, self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList), activecb),
+            AddressDetailC.make(selAddrOpt),
           ),
-          AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, None),
-          Label()("Redux sourced label: " +
-            label.getOrElse[String]("<no redux label provided>")),
+          AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
+          Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
         )
       }
 
@@ -239,10 +282,9 @@ object AddressManagerC {
   private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerPropsRedux) =>
     //println("making props to call make")
     val viewModel = jsProps.viewModel.getOrElse {
-      //js.Dynamic.global.console.log("making view model from redux sourced data", jsProps)
       mkReduxAddressesViewModel(jsProps.rstate.get.asJsObj, jsProps.dispatch.get)
     }
-    make(jsProps.dao, viewModel, jsProps.reduxLabel.toOption)
+    make(jsProps.dao, viewModel, jsProps.reduxLabel.toOption, toSafeOption(jsProps.lastActiveAddressId))
   }
 
   // component that has been connected to redux
@@ -250,20 +292,23 @@ object AddressManagerC {
     // we could also cast as AddressManagerProps, but here we just use a literal
     val mapStateToProps: MSTP[js.Object, AddressManagerPropsRedux] =
       (rstate, nextProps) => {
-      //js.Dynamic.global.console.log("mapStateToProps", rstate, nextProps)
-      lit(
-        "reduxLabel" -> rstate.asDyn.view.label,
-        "rstate" -> rstate
-      ).asJsObjSub[AddressManagerPropsRedux]
-    }
+        lit(
+          // everything is redundent with tis included, but for illustration purposes
+          "rstate" -> rstate,
+          "reduxLabel" -> rstate.asDyn.view.label,
+          "lastActiveAddressId" -> rstate.asDyn.addressManager.lastActiveAddressId,
+        ).asJsObjSub[AddressManagerPropsRedux]
+      }
     redux.connect[js.Object, AddressManagerPropsRedux](jsComponent, Some(mapStateToProps))
   }
 
   /**
-   * Using this "make" will us the component connected to redux. While you could set the redux 
-   * part of the "props" they will get automatically filled in by redux. You can set
-   * the non-redux parts to pass them through.
-   */
+    * Using this "make" will us the component connected to redux. While you could
+    * set the redux part of the "props" they will get automatically filled in by
+    * redux so we only expose the base trait. You can set the non-redux parts to
+    * pass them through. Here, we only expose the non-redux parts of the props
+    * interface.
+    */
   def makeWithRedux(props: AddressManagerProps = noProps()) =
     wrapJsForScala(reduxJsComponent, props)
 

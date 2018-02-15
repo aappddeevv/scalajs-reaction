@@ -44,6 +44,7 @@ trait Events {
   type MouseEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticMouseEvent[T]]
   type KeyboardEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticKeyboardEvent[T]]
   type UIEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticUIEvent[T]]
+  type ChangeEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticChangeEvent[T]]
 }
 
 @js.native
@@ -190,12 +191,22 @@ trait SetInnerHTML extends js.Object {
   val __html: js.UndefOr[String] = js.undefined
 }
 
+trait Attributes extends js.Object {
+  var key: js.UndefOr[String] = js.undefined
+}
+
+trait ClassAttributes[E] extends Attributes {
+  var ref: js.UndefOr[RefCbE[E]] = js.undefined
+}
+
 /**
   * Mostly handlers for DOM nodes.
   */
 trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
+
   /** react specific */
   var children: js.UndefOr[ReactNode] = js.undefined
+
   /** react specific */
   var dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
 
@@ -227,10 +238,13 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
 }
 
 trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
+
   /** react specific */
   var defaultChecked: js.UndefOr[Boolean] = js.undefined
+
   /** react specific */
   var defaultVarue: js.UndefOr[String | js.Array[String]] = js.undefined
+
   /** react specific */
   var suppressContentEditableWarning: js.UndefOr[Boolean] = js.undefined
 
@@ -244,8 +258,8 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var lang: js.UndefOr[String] = js.undefined
   var slot: js.UndefOr[String] = js.undefined
   var spellCheck: js.UndefOr[Boolean] = js.undefined
-  // should be js.Object|js.Dynamic or other
-  var style: js.UndefOr[js.Any] = js.undefined
+  // was js.Any, but use js.Object|js.Dynamic or other, can use StyleAttr here!
+  var style: js.UndefOr[js.Object | js.Dynamic] = js.undefined
   var tabIndex: js.UndefOr[Int] = js.undefined
   var title: js.UndefOr[String] = js.undefined
 
@@ -282,124 +296,104 @@ trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var alt: js.UndefOr[String] = js.undefined
   var as: js.UndefOr[String] = js.undefined
   var async: js.UndefOr[Boolean] = js.undefined
-  var autComplete: js.UndefOr[String] = js.undefined
+  var autoComplete: js.UndefOr[String] = js.undefined
   var autoFocus: js.UndefOr[Boolean] = js.undefined
   var autoPlay: js.UndefOr[Boolean] = js.undefined
   var capture: js.UndefOr[Boolean] = js.undefined
-
+  var cellPadding: js.UndefOr[String | Int] = js.undefined
+  var cellSpacing: js.UndefOr[String | Int] = js.undefined
+  var charSet: js.UndefOr[String] = js.undefined
+  var challenge: js.UndefOr[String] = js.undefined
+  var checked: js.UndefOr[Boolean] = js.undefined
+  var cite: js.UndefOr[String] = js.undefined
+  var classID: js.UndefOr[String] = js.undefined
+  var cols: js.UndefOr[Int] = js.undefined
+  var colSpan: js.UndefOr[Int] = js.undefined
   var content: js.UndefOr[String] = js.undefined
-  var height: js.UndefOr[String | Int] = js.undefined
-
+  var controls: js.UndefOr[Boolean] = js.undefined
+  var coords: js.UndefOr[String] = js.undefined
+  var crosOrigin: js.UndefOr[String] = js.undefined
+  var data: js.UndefOr[String] = js.undefined
+  var dataTime: js.UndefOr[String] = js.undefined
+  var default: js.UndefOr[Boolean] = js.undefined
+  var defer: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var download: js.UndefOr[js.Any] = js.undefined
+  var encType: js.UndefOr[String] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var formAction: js.UndefOr[String] = js.undefined
+  var formEncType: js.UndefOr[String] = js.undefined
+  var formMethod: js.UndefOr[String] = js.undefined
+  var formNoValidate: js.UndefOr[Boolean] = js.undefined
+  var formTarget: js.UndefOr[String] = js.undefined
+  var frameBorder: js.UndefOr[String | Int] = js.undefined
+  var headers: js.UndefOr[String] = js.undefined
+  var height: js.UndefOr[Int | String] = js.undefined
+  var high: js.UndefOr[Int] = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var hrefLang: js.UndefOr[String] = js.undefined
+  var htmlFor: js.UndefOr[String] = js.undefined
+  var httpEquiv: js.UndefOr[String] = js.undefined
+  var integrity: js.UndefOr[String] = js.undefined
+  var keyParams: js.UndefOr[String] = js.undefined
+  var keyType: js.UndefOr[String] = js.undefined
+  var kind: js.UndefOr[String] = js.undefined
+  var label: js.UndefOr[String] = js.undefined
+  var list: js.UndefOr[String] = js.undefined
+  var loop: js.UndefOr[Boolean] = js.undefined
+  var low: js.UndefOr[Int] = js.undefined
+  var manifest: js.UndefOr[String] = js.undefined
+  var marginHeight: js.UndefOr[Int] = js.undefined
+  var marginWidth: js.UndefOr[Int] = js.undefined
+  var max: js.UndefOr[Int | String] = js.undefined
+  var maxLength: js.UndefOr[Int] = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var mediaGroup: js.UndefOr[String] = js.undefined
+  var method: js.UndefOr[String] = js.undefined
+  var min: js.UndefOr[Int | String] = js.undefined
+  var minLength: js.UndefOr[Int] = js.undefined
+  var multiple: js.UndefOr[Boolean] = js.undefined
+  var muted: js.UndefOr[Boolean] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var nonce: js.UndefOr[String] = js.undefined
+  var noValidate: js.UndefOr[Boolean] = js.undefined
+  var open: js.UndefOr[Boolean] = js.undefined
+  var optimum: js.UndefOr[Int] = js.undefined
+  var pattern: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var playsInline: js.UndefOr[Boolean] = js.undefined
+  var poster: js.UndefOr[String] = js.undefined
+  var preload: js.UndefOr[String] = js.undefined
+  var readOnly: js.UndefOr[Boolean] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var reversed: js.UndefOr[Boolean] = js.undefined
+  var rows: js.UndefOr[Int] = js.undefined
+  var rowSpan: js.UndefOr[Int] = js.undefined
+  var sandbox: js.UndefOr[String] = js.undefined
+  var scope: js.UndefOr[String] = js.undefined
+  var scoped: js.UndefOr[String] = js.undefined
+  var scrolling: js.UndefOr[String] = js.undefined
+  var seamless: js.UndefOr[Boolean] = js.undefined
+  var selected: js.UndefOr[Boolean] = js.undefined
+  var shape: js.UndefOr[String] = js.undefined
+  var size: js.UndefOr[Int] = js.undefined
+  var sizes: js.UndefOr[String] = js.undefined
+  var span: js.UndefOr[Int] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var srcDoc: js.UndefOr[String] = js.undefined
+  var srcLang: js.UndefOr[String] = js.undefined
+  var srcSet: js.UndefOr[String] = js.undefined
+  var start: js.UndefOr[Int] = js.undefined
+  var step: js.UndefOr[Int | String] = js.undefined
+  var summary: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var useMap: js.UndefOr[String] = js.undefined
+  var value: js.UndefOr[String | Array[String] | Int] = js.undefined
   var width: js.UndefOr[String | Int] = js.undefined
-
-  /*
-        accept?: string;
-        acceptCharset?: string;
-        action?: string;
-        allowFullScreen?: boolean;
-        allowTransparency?: boolean;
-        alt?: string;
-        as?: string;
-        async?: boolean;
-        autoComplete?: string;
-        autoFocus?: boolean;
-        autoPlay?: boolean;
-        capture?: boolean;
-        cellPadding?: number | string;
-        cellSpacing?: number | string;
-        charSet?: string;
-        challenge?: string;
-        checked?: boolean;
-        cite?: string;
-        classID?: string;
-        cols?: number;
-        colSpan?: number;
-        content?: string;
-        controls?: boolean;
-        coords?: string;
-        crossOrigin?: string;
-        data?: string;
-        dateTime?: string;
-        default?: boolean;
-        defer?: boolean;
-        disabled?: boolean;
-        download?: any;
-        encType?: string;
-        form?: string;
-        formAction?: string;
-        formEncType?: string;
-        formMethod?: string;
-        formNoValidate?: boolean;
-        formTarget?: string;
-        frameBorder?: number | string;
-        headers?: string;
-        height?: number | string;
-        high?: number;
-        href?: string;
-        hrefLang?: string;
-        htmlFor?: string;
-        httpEquiv?: string;
-        integrity?: string;
-        keyParams?: string;
-        keyType?: string;
-        kind?: string;
-        label?: string;
-        list?: string;
-        loop?: boolean;
-        low?: number;
-        manifest?: string;
-        marginHeight?: number;
-        marginWidth?: number;
-        max?: number | string;
-        maxLength?: number;
-        media?: string;
-        mediaGroup?: string;
-        method?: string;
-        min?: number | string;
-        minLength?: number;
-        multiple?: boolean;
-        muted?: boolean;
-        name?: string;
-        nonce?: string;
-        noValidate?: boolean;
-        open?: boolean;
-        optimum?: number;
-        pattern?: string;
-        placeholder?: string;
-        playsInline?: boolean;
-        poster?: string;
-        preload?: string;
-        readOnly?: boolean;
-        rel?: string;
-        required?: boolean;
-        reversed?: boolean;
-        rows?: number;
-        rowSpan?: number;
-        sandbox?: string;
-        scope?: string;
-        scoped?: boolean;
-        scrolling?: string;
-        seamless?: boolean;
-        selected?: boolean;
-        shape?: string;
-        size?: number;
-        sizes?: string;
-        span?: number;
-        src?: string;
-        srcDoc?: string;
-        srcLang?: string;
-        srcSet?: string;
-        start?: number;
-        step?: number | string;
-        summary?: string;
-        target?: string;
-        type?: string;
-        useMap?: string;
-        value?: string | string[] | number;
-        width?: number | string;
-        wmode?: string;
-        wrap?: string;
- */
+  var wmode: js.UndefOr[String] = js.undefined
+  var wrap: js.UndefOr[String] = js.undefined
 }
 
 trait AnchorHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
@@ -452,58 +446,64 @@ trait LabelHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
         srcDoc?: string;
         width?: number | string;
     }
+ */
 
-    interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
-        accept?: string;
-        alt?: string;
-        autoComplete?: string;
-        autoFocus?: boolean;
-        capture?: boolean; // https://www.w3.org/TR/html-media-capture/#the-capture-attribute
-        checked?: boolean;
-        crossOrigin?: string;
-        disabled?: boolean;
-        form?: string;
-        formAction?: string;
-        formEncType?: string;
-        formMethod?: string;
-        formNoValidate?: boolean;
-        formTarget?: string;
-        height?: number | string;
-        list?: string;
-        max?: number | string;
-        maxLength?: number;
-        min?: number | string;
-        minLength?: number;
-        multiple?: boolean;
-        name?: string;
-        pattern?: string;
-        placeholder?: string;
-        readOnly?: boolean;
-        required?: boolean;
-        size?: number;
-        src?: string;
-        step?: number | string;
-        type?: string;
-        value?: string | string[] | number;
-        width?: number | string;
+trait InputHTMLAttirbutes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+  var accept: js.UndefOr[String] = js.undefined
+  var alt: js.UndefOr[String] = js.undefined
+  var autoComplete: js.UndefOr[String] = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var capture: js.UndefOr[Boolean] = js.undefined
+  var checked: js.UndefOr[Boolean] = js.undefined
+  var crossOrigin: js.UndefOr[String] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var formAction: js.UndefOr[String] = js.undefined
+  var formEncType: js.UndefOr[String] = js.undefined
+  var formNoValidate: js.UndefOr[Boolean] = js.undefined
+  var formTarget: js.UndefOr[String] = js.undefined
+  var height: js.UndefOr[String | Int] = js.undefined
+  var list: js.UndefOr[String] = js.undefined
+  var max: js.UndefOr[Int | String] = js.undefined
+  var maxLength: js.UndefOr[Int] = js.undefined
+  var min: js.UndefOr[Int | String] = js.undefined
+  var minLength: js.UndefOr[Int] = js.undefined
+  var multiple: js.UndefOr[Boolean] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var pattern: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var readOnly: js.UndefOr[Boolean] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var size: js.UndefOr[Int] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var step: js.UndefOr[String | Int] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var value: js.UndefOr[String | Array[String] | Int] = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
+  var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
+}
 
-        onChange?: ChangeEventHandler<T>;
-    }
+trait InputHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+  var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
+}
 
-    interface LinkHTMLAttributes<T> extends HTMLAttributes<T> {
-        as?: string;
-        crossOrigin?: string;
-        href?: string;
-        hrefLang?: string;
-        integrity?: string;
-        media?: string;
-        rel?: string;
-        sizes?: string;
-        type?: string;
-    }
-    interface MenuHTMLAttributes<T> extends HTMLAttributes<T> {
-        type?: string;
-    }
+trait LinkHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+  var as: js.UndefOr[String] = js.undefined
+  var crossOrigin: js.UndefOr[String] = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var hrefLang: js.UndefOr[String] = js.undefined
+  var integrity: js.UndefOr[String] = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var sizes: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+}
+
+trait MenuHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+  var `type`: js.UndefOr[String] = js.undefined
+}
+
+/*
     interface ScriptHTMLAttributes<T> extends HTMLAttributes<T> {
         async?: boolean;
         charSet?: string;
@@ -514,7 +514,8 @@ trait LabelHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
         src?: string;
         type?: string;
     }
-
+ */
+/*
     interface SelectHTMLAttributes<T> extends HTMLAttributes<T> {
         autoFocus?: boolean;
         disabled?: boolean;
@@ -526,46 +527,52 @@ trait LabelHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
         value?: string | string[] | number;
         onChange?: ChangeEventHandler<T>;
     }
+ */
+/*
     interface StyleHTMLAttributes<T> extends HTMLAttributes<T> {
         media?: string;
         nonce?: string;
         scoped?: boolean;
         type?: string;
     }
-
+ */
+/*
     interface TableHTMLAttributes<T> extends HTMLAttributes<T> {
         cellPadding?: number | string;
         cellSpacing?: number | string;
         summary?: string;
     }
+ */
 
-    interface TextareaHTMLAttributes<T> extends HTMLAttributes<T> {
-        autoComplete?: string;
-        autoFocus?: boolean;
-        cols?: number;
-        dirName?: string;
-        disabled?: boolean;
-        form?: string;
-        maxLength?: number;
-        minLength?: number;
-        name?: string;
-        placeholder?: string;
-        readOnly?: boolean;
-        required?: boolean;
-        rows?: number;
-        value?: string | string[] | number;
-        wrap?: string;
+trait TextAreaHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+  var autoComplete: js.UndefOr[String] = js.undefined
+  var autoFocus: js.UndefOr[String] = js.undefined
+  var cols: js.UndefOr[Int] = js.undefined
+  var dirName: js.UndefOr[String] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var maxLength: js.UndefOr[Int] = js.undefined
+  var minLength: js.UndefOr[Int] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var readOnly: js.UndefOr[Boolean] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var rows: js.UndefOr[Int] = js.undefined
+  var value: js.UndefOr[String | Array[String] | Int] = js.undefined
+  var wrap: js.UndefOr[String] = js.undefined
+  var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
+}
 
-        onChange?: ChangeEventHandler<T>;
-    }
-
+/*
     interface TdHTMLAttributes<T> extends HTMLAttributes<T> {
         colSpan?: number;
         headers?: string;
         rowSpan?: number;
         scope?: string;
     }
+ */
 
+/*
     interface ThHTMLAttributes<T> extends HTMLAttributes<T> {
         colSpan?: number;
         headers?: string;

@@ -10,13 +10,13 @@ import js.UndefOr
 import js.JSConverters._
 
 /**
- * A scalajs. facade for facebook's react in the spirit of ReasonReact.
- */
+  * A scalajs. facade for facebook's react in the spirit of ReasonReact.
+  */
 package object react {
 
-  /** 
-   * Opaque type returned from a ref callback. It's really a js component.
-   */
+  /**
+    * Opaque type returned from a ref callback. It's really a js component.
+    */
   trait ReactRef extends js.Object
 
   /**
@@ -47,19 +47,19 @@ package object react {
     def props: UndefOr[js.Object] = js.native
   }
 
-  /** 
-   * A js-object that is returned from create-react-class. Represents class
-   * component that can be passed to the javascript React.createElement
-   * function.
-   */
+  /**
+    * A js-object that is returned from create-react-class. Represents class
+    * component that can be passed to the javascript React.createElement
+    * function.
+    */
   @js.native
   trait ReactClass extends js.Object
 
-  /** 
-   * A type used only to imported javascript side components. Typically this is
-   * used to annotate a type imported from javascript or created via other
-   * js-interop mechanisms such as redux integration.
-   */
+  /**
+    * A type used only to imported javascript side components. Typically this is
+    * used to annotate a type imported from javascript or created via other
+    * js-interop mechanisms such as redux integration.
+    */
   @js.native
   trait ReactJsComponent extends js.Object
 
@@ -69,11 +69,11 @@ package object react {
   /** Return a "non render" element. */
   val nullElement = null.asInstanceOf[ReactNode]
 
-  def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
+  @inline def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
 
-  def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
+  @inline def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
 
-  def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
+  @inline def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
   /**
     * Hidden field for scala components that are based directly on a js component.
@@ -82,7 +82,13 @@ package object react {
   type JsElementWrapped = (Option[String], Option[RefCb]) => ReactElement
 
   /** Simplified ComponentSpec. */
-  type Component[S, RP, A, SLF] = ComponentSpec[S, RP, A, SLF]
+  type Component[S, RP, A, SLF, SLFW, SLFI] = ComponentSpec[S, RP, A, SLF, SLFW, SLFI]
+
+  /** Component type where only S, RP and A are specified, you don't care about selfs. */
+  type ComponentNoSelf[S, RP, A] = ComponentSpec[S, RP, A, _, _, _]
+
+  /** Component type where you don't care about the type parameters at all. */
+  type ComponentAny = ComponentSpec[_, _, _, _, _, _]
 
   type NoRetainedProps = Unit
   type Stateless = Unit
@@ -90,6 +96,8 @@ package object react {
 
   /** Callback for react ref. Pure string refs are not supported. */
   type RefCb = js.Function1[ReactElement, Unit]
+
+  type RefCbE[E] = js.Function1[E, Unit]
 
   /** noop ref callback */
   val noopRefCb = () => ()
@@ -103,18 +111,54 @@ package object react {
   /** A subscription called after mount and after unmount. */
   type Subscription = () => (() => Unit)
 
-  /** 
-   * Constant val of a single, empty js.Object. Use carefully since js mutates and
-   * this will be a shared instance. Prefer noProps.
-   */
+  /**
+    * Constant val of a single, empty js.Object. Use carefully since js mutates and
+    * this will be a shared instance. Prefer noProps.
+    */
   val noPropsVal: js.Object = new js.Object()
 
   /** Type inferring empty js object. A new object is created with each call. */
-  def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
+  @inline def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
 
-  /** 
-   * Turn a ReactRef to a js.Dynamic so you can call "component" methods
-   * directly.  Most notably "select" or "value" or "focus()".
-   */
-  def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
+  /**
+    * Turn a ReactRef to a js.Dynamic so you can call "component" methods
+    * directly.  Most notably "select", "value" or "focus()".
+    */
+  @inline def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
+
+  /**
+    * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
+    */
+  @inline def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
+    val result = js.Dictionary.empty[Any]
+    for (source <- objs) {
+      for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+        result(key) = value
+    }
+    result.asInstanceOf[js.Dynamic]
+  }
+
+  /** Safely wrap a value which could be undefined or null -> None, otherwise Some. */
+  def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
+    if (js.isUndefined(t)) None
+    else Option(t.asInstanceOf[T])
+  }
+
+  // this does not work really well...but it does print the object
+  object console {
+    import js.Dynamic.{global => g}
+    import js.DynamicImplicits._
+
+    // only way to get the spread to work, w/o using apply/call
+    @js.native
+    trait JsConsole extends js.Object {
+      def log(xs: js.Any*) = js.native
+      def error(xs: js.Any*) = js.native
+    }
+    // private val _c = g.console.asInstanceOf[JsConsole]
+    // def log(v: js.Any*) = _c.log(v:_*)
+    // def error(v: js.Any*) = _c.error(v:_*)
+    def log(v: js.Any*) = g.console.log.apply(null, v.toJSArray)
+  }
+
 }

@@ -15,6 +15,7 @@ import org.scalajs.dom
 // https://github.com/chandu0101/sri/blob/a5fb8db2cc666299ecc863d6421994cce5d304e6/core/src/main/scala/sri/core/React.scala
 @js.native
 private[react] trait JSReact extends js.Object {
+
   /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
   def createElement[P](el: js.Any | String, props: UndefOr[P], children: ReactNode*): ReactDOMElement = js.native
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
@@ -27,14 +28,12 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
-  def createElement[P <: js.Object](tag: String,  props: P)
-    (children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children:_*)
+  def createElement[P <: js.Object](tag: String, props: P)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
 
-  def createElement(tag: ReactClass, props: js.Object)
-    (children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children:_*)
+  def createElement(tag: ReactClass, props: js.Object)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
 
   def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
-    JSReact.createElement(tag, js.undefined, children:_*)
+    JSReact.createElement(tag, js.undefined, children: _*)
 
   // def createElement(
   //   tag: ReactClass,

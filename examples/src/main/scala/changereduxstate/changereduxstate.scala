@@ -37,30 +37,30 @@ object ChangeReduxStateC {
   }
 
   private def _make(props: ChangeReduxProps) =
-    c.
-      withRender{self =>
-        <.div(^.className := cstyles.component)(
-          Label()("Redux Label"),
-          TextField(new ITextFieldProps {
-            className = cstyles.label.asString
-            onChanged = js.defined((v: String) =>
-              props.onLabelChange.foreach(h => self.handle(_ => h(v))))
-            value = props.label.getOrElse[String]("no redux label")
-          })()
-        )
-      }
+    c.withRender { self =>
+      <.div(^.className := cstyles.component)(
+        Label()("Redux Label"),
+        TextField(new ITextFieldProps {
+          className = cstyles.label.asString
+          onChanged = js.defined((v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
+          value = props.label.getOrElse[String]("no redux label")
+        })()
+      )
+    }
 
   private val jsComponent = c.wrapScalaForJs { (jsProps: ChangeReduxProps) =>
     _make(jsProps)
   }
   private val reduxJsComponent = {
     val mapStateToProps =
-      (state: js.Object, ownProps: ChangeReduxProps) => new ChangeReduxProps {
-        label = state.asDyn.view.label.asUndefOr
+      (state: js.Object, ownProps: ChangeReduxProps) =>
+        new ChangeReduxProps {
+          label = state.asDyn.view.label.asUndefOr
       }
     val mapDispatchToProps =
-      (dispatch: Dispatcher, ownProps: ChangeReduxProps) => new ChangeReduxProps {
-        onLabelChange = js.defined((label: String) => dispatch(ActionsNS.ViewActions.setLabel(label)))
+      (dispatch: Dispatcher, ownProps: ChangeReduxProps) =>
+        new ChangeReduxProps {
+          onLabelChange = js.defined((label: String) => dispatch(ActionsNS.ViewActions.setLabel(label)))
       }
     redux.connect(jsComponent, Some(mapStateToProps), Some(mapDispatchToProps))
   }

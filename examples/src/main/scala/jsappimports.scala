@@ -30,10 +30,8 @@ object LabelAndChildNS extends js.Object {
 
 object JSAppImports {
   def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
-    wrapJsForScala(LabelAndChildNS.LabelAndChild, props, children:_*)
+    wrapJsForScala(LabelAndChildNS.LabelAndChild, props, children: _*)
 }
-
-
 @js.native
 @JSImport("JSExamples/store", JSImport.Namespace)
 object StoreNS extends js.Object {
@@ -47,8 +45,6 @@ object ActionsNS extends js.Object {
   val AddressManagerActions: js.Dynamic = js.native
   val Actions: js.Dynamic = js.native
 }
-
-
 @js.native
 @JSImport("react-markdown", JSImport.Default)
 object ReactMarkdown extends ReactJsComponent
@@ -63,7 +59,7 @@ object ReactMarkdownC {
 }
 
 class PrettyJsonOptions(
-  val noColor: js.UndefOr[Boolean] = js.undefined
+    val noColor: js.UndefOr[Boolean] = js.undefined
 ) extends js.Object
 
 @js.native

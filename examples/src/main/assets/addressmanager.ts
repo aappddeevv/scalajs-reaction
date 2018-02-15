@@ -1,45 +1,64 @@
 import { Action, ActionCreator } from "redux"
 import update = require("immutability-helper")
+import { Address } from "./datamodel"
 
 type Id = string
 
 export interface State {
-    selectedIds: Array<Id>
+    activeId: Id | null
+    /** This is really a cache for the active item, since it could be derived again. */
+    active: Address | null // should not be undefined, must be explicit
+    lastActiveAddressId: Id | null
 }
 
-const initialState  = {
-    selectedIds: []
+const initialState = {
+    activeId: null,
+    active: null,
+    lastActiveAddressId: null,
 }
 
 export enum TypeKeys {
-    SET_IDS = "am.setIds",
+    SET_ACTIVE = "am.active"
 }
 
 export interface AddressManagerAction extends Action {
     type: TypeKeys
 }
 
-interface SetSelectedIdsAction extends AddressManagerAction {
-    type: TypeKeys.SET_IDS
-    selectedIds: Array<Id>
+interface SetActiveAction extends AddressManagerAction {
+    type: TypeKeys.SET_ACTIVE
+    activeId: Id | null
+    active: Address | null
 }
 
-type AllActions = SetSelectedIdsAction
+type AllActions = SetActiveAction
 
-export function setSelectedIds(selectedIds: Array<Id>): SetSelectedIdsAction {
+export const setActive = (activeId: Id | null,
+    active: Address | null): SetActiveAction => {
     return {
-        type: TypeKeys.SET_IDS,
-        selectedIds
+        type: TypeKeys.SET_ACTIVE,
+        activeId,
+        active
     }
 }
 
-export const Actions = { setSelectedIds }
+export const Actions = {
+    setActive
+}
 
 export function reducer(state: State = initialState,
-                        action: AllActions): State {
-    switch(action.type) {
-        case TypeKeys.SET_IDS: {
-            return { ...state, selectedIds: action.selectedIds }
+    action: AllActions): State {
+    switch (action.type) {
+        case TypeKeys.SET_ACTIVE: {
+            console.log("Typescript SET_ACTIVE: id", action.activeId, "action: ", action)
+            const last = action.activeId ? { lastActiveAddressId: state.activeId } : {}
+            return {
+                ...state,
+                activeId: action.activeId ? action.activeId : null,
+                active: action.active ? action.active : null,
+                // no update if the new active id is null
+                ...last,
+            }
         }
         default:
             return state

@@ -13,5 +13,5 @@ package object fabric {
   /** Return a node including potentially a nullElement. */
   type IRenderFunction[P <: js.Object] =
     js.Function2[P, js.UndefOr[js.Function1[P, ReactNode]], ReactNode]
-  
+
 }

@@ -17,10 +17,10 @@ import vdom._
 import prefix_<^._
 
 /**
- * Demonstrates converting js side props to scala props. `make` could also take
- * HelloWorldProps as well directly but then you have to handle conversions
- * inside the `make` function.
- */
+  * Demonstrates converting js side props to scala props. `make` could also take
+  * HelloWorldProps as well directly but then you have to handle conversions
+  * inside the `make` function.
+  */
 object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
   def make(name: Option[String] = None) =
@@ -44,7 +44,7 @@ object HelloWorldC {
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps) =
     HelloWorld
-      .withRender{ self =>
+      .withRender { self =>
         <.div()(
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )

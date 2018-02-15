@@ -11,8 +11,7 @@ import js.JSConverters._
 object WrapProps {
 
   /** Curry given basic react js creation args. */
-  private[this] def wrapProps[P <: js.Object](reactComponent: ReactJsComponent, props: P,
-    children: ReactNode*): JsElementWrapped =
+  private[this] def wrapProps[P <: js.Object](reactComponent: ReactJsComponent, props: P, children: ReactNode*): JsElementWrapped =
     (key: Option[String], ref: Option[RefCb]) => {
       val newProps = js.Dictionary.empty[scala.Any]
       ref.foreach(r => newProps("ref") = r)
@@ -32,11 +31,13 @@ object WrapProps {
     * an existing js component, only allow valid js values i.e. no scala object
     * leakage. `reactComponent` must be imported into scala using `@JSImport`.
     */
-  def wrapJsForScala[P <: js.Object](reactComponent: ReactJsComponent, props: P,
-    children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _] = {
+  def wrapJsForScala[P <: js.Object](
+      reactComponent: ReactJsComponent,
+      props: P,
+      children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _, _, _] = {
     val jsElementWrapped = wrapProps(reactComponent, props, children: _*)
     dummyInteropComponent
       .copy(jsElementWrapped = Some(jsElementWrapped))
-      .asInstanceOf[Component[Stateless, NoRetainedProps, Actionless, _]]
+      .asInstanceOf[Component[Stateless, NoRetainedProps, Actionless, _, _, _]]
   }
 }
