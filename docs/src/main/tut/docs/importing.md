@@ -1,7 +1,8 @@
 ---
 layout: docs
-title: Importing from Js
+title: Importing from JS
 ---
+# Importing from JS
 Importing a component javascript means you need to create a "Component" in scala. There is a simple function call to do that for you. You still need to perform the scala.js `@JSImport`.
 
 ```scala

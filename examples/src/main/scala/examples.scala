@@ -2,7 +2,9 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg
+package react
+package examples
 
 import scala.scalajs.js
 import js.annotation._
@@ -100,6 +102,8 @@ object Main {
   import Pages._
   import addressmanager.fakedata._
 
+  val portalElementId = "portalContainer"
+
   /**
     * This will be exported from the ES module that scala.js outputs.  How you
     *  access it depends on your bundler. webpack can be configured to output a
@@ -125,8 +129,9 @@ object Main {
             todoPage,
             helloWorldPage,
             changeReduxStatePage(),
-            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
-          ) //
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make())
+          ),
+          HeaderC.make("header", portalElementId)
         )),
       "container"
     )

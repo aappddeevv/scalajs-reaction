@@ -2,7 +2,7 @@
 
 The apps are powered by a both scala.js and typescript (javascript). Redux is used to store some, but not all, of the application state for testing purposes. Switching tabs remounts the component being displayed. You would never structure an application like this demo program but the demo program is designed to test different aspects of the scalajs-react library.
 
-If you run the demo from a web server, you can use react devtools (browser extension) to see the actions and state changes.
+If you run the demo from a web server, you can use redux devtools (a browser extension) to see the actions and state changes as with any redux-based application.
 
 ## To Do
 Simple to do app. It uses all locally managed state using the scalajs-react reducer built into every component. The state is reset whenever you change tabs so any todos you added or removed are lost. fabric's Pivot unmounts the component when the tab changes.

@@ -9,7 +9,7 @@ package vdom
 import scala.scalajs.js
 import js.|
 
-object style {
+object styling {
 
   /** Merge styles left to right. Right takes higher precedence. */
   @inline def merge(styles: StyleAttr*): StyleAttr = {

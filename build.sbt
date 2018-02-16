@@ -69,6 +69,7 @@ lazy val root = project.in(file("."))
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .disablePlugins(BintrayPlugin)
 
 lazy val `scalajs-react-core` = project
   .settings(libsettings)
@@ -114,6 +115,7 @@ lazy val examples = project
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .disablePlugins(BintrayPlugin)
   // rebuilds if these non-scala sources change...????
   //.settings(unmanagedResourceDirectories in Compile += baseDirectory.value / "examples/src/main/assets")
   .settings(
@@ -132,6 +134,7 @@ lazy val docs = project
   .settings(noPublishSettings)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
+  .disablePlugins(BintrayPlugin)
   //.enablePlugins(SiteScaladocPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
     `scalajs-react-fabric`, `scalajs-react-redux`)
@@ -186,7 +189,7 @@ npmRunDemo := {
 // must run publish and release separately
 // don't forget bintray & unpublish
 // use packagedArtifacts to build artifacts in each project's target
-// to release: bintray then bintrayRelease (to release them)
+// to release: publish then bintrayRelease (to release them)
 bintrayReleaseOnPublish in ThisBuild := false
 bintrayPackageLabels := Seq("scala.js", "react", "office")
 bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")

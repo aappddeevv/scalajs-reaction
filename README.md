@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (and 0.6.22)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (and 0.6.22, react v16.x)
 
 A react library for scala written in the spirit of ReasonReact, a react library for an OCaml dialect known as reason (sponsored by facebook). ReasonReact documentation is located [here](https://reasonml.github.io/reason-react/docs) and provides a good description of how this library works since the API is very similar. While more advanced scala functionality could have been used, the scala.js implemetation was kept intentionally similar to ReasonReact so that the documentation would apply.
 
@@ -27,7 +27,7 @@ libraryDependencies ++= Seq(
     // if you integrate with redux
     "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion)
 ```
-Do not forget to include the react libraries in your execution environment. For react 16+, the libraries have been split out into multiple libraries, listed below. For 15.x, only the core, monolithic library `react` is needed.
+Do not forget to include the react libraries in your execution environment. For react 16+, the libraries have been split out into multiple libraries, listed below (react v15 had mostly a monolithic library):
 * react 
 * react-dom
 * create-react-class

@@ -38,15 +38,16 @@ object uifabric_icons extends js.Object {
 object FabricNS extends js.Object {
   val Fabric: ReactJsComponent = js.native
   val TextField: ReactJsComponent = js.native
-  val Label: ReactJsComponent = js.native
   val BaseButton: ReactJsComponent = js.native
   val Button: ReactJsComponent = js.native
-  val PrimaryButton: ReactJsComponent = js.native
+  val CommandBar: ReactJsComponent = js.native
+  val DetailsList: ReactJsComponent = js.native
   val DefaultButton: ReactJsComponent = js.native
+  val Label: ReactJsComponent = js.native
+  val List: ReactJsComponent = js.native
   val Pivot: ReactJsComponent = js.native
   val PivotItem: ReactJsComponent = js.native
-  val DetailsList: ReactJsComponent = js.native
-  val CommandBar: ReactJsComponent = js.native
+  val PrimaryButton: ReactJsComponent = js.native
   val Spinner: ReactJsComponent = js.native
   def Selection[T <: js.Object]: Selection[T] = js.native
   val ScrollablePane: ReactJsComponent = js.native
@@ -74,6 +75,7 @@ object components {
   def Spinner(props: ISpinnerProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Spinner, props, children: _*)
   def ScrollablePane(props: IScrollablePane = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.ScrollablePane, props, children: _*)
   def Sticky(props: IScrollablePane = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Sticky, props, children: _*)
+  def List[T <: js.Object](props: IListProps[T] = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.List, props, children: _*)
 }
 
 //
@@ -82,6 +84,10 @@ object components {
 @js.native
 trait Focusable extends js.Object {
   def focus(): Unit = js.native
+}
+
+trait IWithViewportProps extends js.Object {
+  var skipViewportMeasures: js.UndefOr[Boolean] = js.undefined
 }
 
 trait KeyAndRef extends js.Object {
@@ -169,7 +175,12 @@ trait ITextFieldProps extends WithIconProps with ComponentRef[ITextField] with D
 }
 
 @js.native
-trait IDetailsList extends js.Object {
+trait IList extends js.Object {
+  def scrollToIndex(index: Int, measureItem: js.UndefOr[js.Function1[Int, Int]]): Unit = js.native
+}
+
+@js.native
+trait IDetailsList extends IList {
   def forceUpdate(): Unit = js.native
 }
 
@@ -250,6 +261,42 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
   type OCHC = js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
   var onColumnHeaderClick: js.UndefOr[OCHC] = js.undefined
 }
+
+trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[IDetailsList] {
+  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] = js.undefined
+  val items: js.Array[T]
+  var setKey: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var initialFocusedIndex: js.UndefOr[Int] = js.undefined
+  // do the groups thing
+  var selection: js.UndefOr[ISelection[T]] = js.undefined
+  var selectionMode: js.UndefOr[Int] = js.undefined
+  var selectionPreservedOnEmptyClick: js.UndefOr[Boolean] = js.undefined
+  var layoutMode: js.UndefOr[Int] = js.undefined
+  // checkbox visibility....
+  var isHeaderVisible: js.UndefOr[Boolean] = js.undefined
+  var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] = js.undefined
+  var constrainMode: js.UndefOr[Int] = js.undefined
+
+  type OII = js.Function3[js.UndefOr[T], js.UndefOr[Int], js.UndefOr[SyntheticFocusEvent[dom.html.Element]],Unit]
+  var onItemInvoked: js.UndefOr[OII] = js.undefined
+
+  var onRenderRow: js.UndefOr[IRenderFunction[IDetailsRowProps]] = js.undefined
+  var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]] = js.undefined
+  var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]] = js.undefined
+
+  type OAIC = js.Function3[js.UndefOr[T], js.UndefOr[Int], js.UndefOr[SyntheticFocusEvent[dom.html.Element]], Unit]
+  var onActiveItemChanged: js.UndefOr[OAIC] = js.undefined
+  type OCHC = js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
+  var onColumnHeaderClick: js.UndefOr[OCHC] = js.undefined
+
+  var maximumPixelsForDrag: js.UndefOr[Int] = js.undefined
+  var compact: js.UndefOr[Boolean] = js.undefined
+  var checkboxCellClassName: js.UndefOr[String] = js.undefined
+  var enterModelSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
+  var usePageCache: js.UndefOr[Boolean] = js.undefined
+}
+
 
 trait IContextualMenuProps extends KeyAndRef {
   var items: js.Array[IContextualMenuItem]

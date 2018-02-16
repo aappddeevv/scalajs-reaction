@@ -97,5 +97,7 @@ trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
     AttrValue(attrs.toJs)
   @inline implicit def cvtDynamicToAttrValue(attrs: js.Dynamic): AttrValue =
     AttrValue(attrs)
+  //@inline implicit def cvtJsObjectToAttrValue(attrs: js.Object): AttrValue = AttrValue(attrs)
+
   @inline def tag(name: String): Tag = new Tag(name)
 }

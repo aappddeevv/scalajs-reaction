@@ -28,3 +28,6 @@ options:
 
   - title: Mixed Projects
     url: docs/mixedproject.html
+
+  - title: React Interop
+    url: docs/reactinterop.html

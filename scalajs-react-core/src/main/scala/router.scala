@@ -64,4 +64,5 @@ object router {
   def unwatchUrl(watcherId: WatcherId): Unit =
     dom.window.removeEventListener("popstate", watcherId.asInstanceOf[CB])
 
+  def dangerouslyGetUrl() = url()
 }

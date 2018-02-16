@@ -50,7 +50,9 @@ trait ComponentSpecTypes {
   * those methods do not appear in the callback.
   *
   * @todo Maybe drop Option allocations to reduce memory allocation. Perhaps use
-  * null.
+  * null. Also, we could easily make this a non-native JS trait that just stores
+  * the different user functions and values in it and an easy "copy" function
+  * just like a case class but with lower overhead.
   *
   * @tparam S State
   * @tparam RP Retained props.
@@ -83,8 +85,9 @@ case class ComponentSpec[S, RP, A, SLF, SLFW, SLFI](
 ) extends ComponentSpecTypes { self =>
 
   /**
-    * Use this type for your component e.g. YourComponent.Self for your functions
-    * external to the callback methods to help your organize your code.
+    * Use this type for your component e.g. YourComponent.Self for your
+    * functions external to the declarations of the ecallback methods to help
+    * your organize your code.
     */
   type Self = SLF
   type SelfWithoutMethods = SLFW
@@ -113,7 +116,8 @@ case class ComponentSpec[S, RP, A, SLF, SLFW, SLFI](
 
   /**
     * Escape hatch. We need to remove this, it represents props *not* coming in
-    * not through "make" parameters.
+    * not through "make" parameters, just like redux stuff. The new contexts
+   * interface makes it explicitly a function thing.
     */
   def withContextTypes(ct: js.Object) = this.copy(contextTypes = Some(ct))
 

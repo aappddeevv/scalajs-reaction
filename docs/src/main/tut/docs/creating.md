@@ -2,6 +2,7 @@
 layout: docs
 title: Creating Components
 ---
+# Creating Components
 Creating react components in scalajs-react uses a "builder" type pattern. 
 
 In scala.js, Component is just a "data structure" (a record really) that holds a few values and functions. A proxy is setup on the javascript side that forwards the react calls to the scala side Component. You can create the Component almost anyway you want but some functions are provided for convenience. It's important to realize that the type parameters you provide are very different than those provided to other scala.js react facades as the API is very different as well. For example, scalajs-react includes a simple router in every component. There is also no `setState` API. Instead this has been replaced by a fine state machine.

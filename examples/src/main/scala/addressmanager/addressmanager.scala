@@ -90,8 +90,10 @@ object AddressListC {
 
   val AddressList = statelessComponent("AddressList")
 
-  /** If you call this, the component is not connected to redux. */
-  def make(sel: ISelection[Address], addresses: AddressList = emptyAddressList, activeCB: Option[Address] => Unit) =
+  def make(sel: ISelection[Address],
+    addresses: AddressList = emptyAddressList,
+    activeCB: Option[Address] => Unit,
+    ifx: Option[Int] = None) =
     AddressList
       .withRender { self =>
         val listopts = new IDetailsListProps[Address] {
@@ -99,10 +101,15 @@ object AddressListC {
           selectionPreservedOnEmptyClick = true
           columns = icolumns
           getKey = getAddressKey
-          //initialFocusedIndex = 1 //ifx.orUndefined
+          initialFocusedIndex = ifx.orUndefined
+          onActiveItemChanged = js.defined({ (aundef, _, _) =>
+            activeCB(aundef.toNonNullOption)
+          })
+          /* or 
           onActiveItemChanged = { (aundef, _, _) =>
             activeCB(aundef.toNonNullOption)
           }: OAIC
+           */
           selection = sel
           layoutMode = DetailsListLayoutMode.fixedColumns
           constrainMode = ConstrainMode.horizontalConstrained
@@ -250,16 +257,12 @@ object AddressManagerC {
         gen.effect(fetchData(_, dao))
       }
       .withRender { self =>
-        // get the first selected index
-        //val firstId = vm.getSelectedIds().headOption
-        val initialFocusedIndex = None
-        // val initialFocusedIndex = for {
-        //   id <- firstId
-        //   addresses <- self.state.map(_.addresses)
-        // } yield addresses.indexWhere(addr =>
-        //   addr.customeraddressid.map(_ == id).getOrElse[Boolean](false))
-        //println(s"initial focused index: ids: ${vm.getSelectedIds()}, index opt: ${initialFocusedIndex}")
-        val selAddrOpt = Option(vm.active)
+        val initialFocusedIndex = for {
+          id <- lastActiveAddressId
+          addresses <- self.state.map(_.addresses)
+        } yield addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse[Boolean](false))
+        println(s"initial focused index opt: ${initialFocusedIndex}")
+        val selAddrOpt = toSafeOption(vm.active)
 
         val activecb = (address: Option[Address]) => {
           self.handle { cbself =>
@@ -270,7 +273,11 @@ object AddressManagerC {
         <.div(^.className := amstyles.component)(
           CommandBar(cbopts(self))(),
           <.div(^.className := amstyles.masterAndDetail)(
-            AddressListC.make(self.state.map(_.selection).get, self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList), activecb),
+            AddressListC.make(
+              self.state.map(_.selection).get,
+              self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList),
+              activecb,
+            initialFocusedIndex),
             AddressDetailC.make(selAddrOpt),
           ),
           AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),

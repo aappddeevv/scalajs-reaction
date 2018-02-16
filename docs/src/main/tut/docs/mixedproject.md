@@ -2,6 +2,7 @@
 layout: docs
 title: Mixed Projects
 ---
+# Mixed Projects
 
 You can create your project structure any way you want. Traditional scala
 project structures do not easily match javascript project structures. javascript

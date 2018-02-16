@@ -2,6 +2,7 @@
 layout: docs
 title: Exporting Components to Javascript
 ---
+# Exporting
 Exporting a component for use in javascript environments requires you to map the props interface in scalajs-react to javascript. By providing a function like `jsProps: js.Object => Component`, you can map your components.
 
 The interface to export your component is actually quite simple although you can create your own "mapping" framework if you want to make your mapping process easier. For example, you could create a set of "Write" typeclasses.
