@@ -1,0 +1,217 @@
+<html><head><title>scalajs-react: Redux</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="aappddeevv" /><meta name="description" content="A react integration library for scala.js in the spirit of ReasonReact" /><meta name="og:image" content="/scalajs-react/img/poster.png" /><meta name="og:title" content="scalajs-react: Redux" /><meta name="og:site_name" content="scalajs-react" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="A react integration library for scala.js in the spirit of ReasonReact" /><link rel="icon" type="image/png" href="/scalajs-react/img/favicon.png" /><meta name="twitter:title" content="scalajs-react: Redux" /><meta name="twitter:image" content="img/poster.png" /><meta name="twitter:description" content="A react integration library for scala.js in the spirit of ReasonReact" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/scalajs-react/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/scalajs-react/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/scalajs-react/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/scalajs-react/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/scalajs-react/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/scalajs-react/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/scalajs-react/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/scalajs-react/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/scalajs-react/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/scalajs-react/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/scalajs-react/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/scalajs-react/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/scalajs-react/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/scalajs-react/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/scalajs-react/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/scalajs-react/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/scalajs-react/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/scalajs-react/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/scalajs-react/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/scalajs-react/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/scalajs-react/highlight/styles/default.css" /><link rel="stylesheet" href="/scalajs-react/css/style.css" /><link rel="stylesheet" href="/scalajs-react/css/palette.css" /><link rel="stylesheet" href="/scalajs-react/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/scalajs-react/" class="brand"><div class="brand-wrapper"><span>scalajs-react</span></div></a></li> <li><a href="/scalajs-react/docs/index.html" class="">Getting Started</a></li> <li><a href="/scalajs-react/docs/creating.html" class="">Creating scala.js Components</a></li> <li><a href="/scalajs-react/docs/importing.html" class="">Importing from JS</a></li> <li><a href="/scalajs-react/docs/exporting.html" class="">Exporting to JS</a></li> <li><a href="/scalajs-react/docs/styling.html" class="">Styling Suggestions</a></li> <li><a href="/scalajs-react/docs/vdom.html" class="">Virtual DOM</a></li> <li><a href="/scalajs-react/docs/redux.html" class=" active ">Redux</a></li> <li><a href="/scalajs-react/docs/datainterop.html" class="">Data interop</a></li> <li><a href="/scalajs-react/docs/fabric.html" class="">office-fabric-ui-react</a></li> <li><a href="/scalajs-react/docs/mixedproject.html" class="">Mixed Projects</a></li> <li><a href="/scalajs-react/docs/reactinterop.html" class="">React Interop</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/aappddeevv/scalajs-react"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/aappddeevv/scalajs-react"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('scalajs-react A react integration library for scala.js in the spirit of ReasonReact');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('scalajs-react A react integration library for scala.js in the spirit of ReasonReact');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="aappddeevv" data-github-repo="scalajs-react"><div class="content-wrapper"><section><h1 id="redux">redux</h1>
+
+<p>The scalajs-react integration is not designed to create or write middleware in
+scalajs-react. There are some other scala.js libraries that can provide full
+access to the redux API. Two projects in particular are:</p>
+
+<ul>
+  <li><a href="https://github.com/eldis/scalajs-redux">https://github.com/eldis/scalajs-redux</a></li>
+  <li><a href="https://github.com/shogowada/scalajs-reactjs">https://github.com/shogowada/scalajs-reactjs</a></li>
+</ul>
+
+<p>Both of these contain redux and full scala.js react integration layers. For
+example, you can define a redux store in scala using those libraries.</p>
+
+<p>At its core, <code class="highlighter-rouge">react-redux</code>, the react integration layer with redux, creates
+an intermediate component that:</p>
+<ol>
+  <li>Obtains the store from the context (or props if
+they are passed down with the name “store” or it finds the storeKey).</li>
+  <li>Calls mapStateToProps (with the redux state and your component’s props)  calls
+mapDispatchToProps (dispatch func and your component’s props) .</li>
+  <li>Sets the the state of the wrapper component (called Connect) that <code class="highlighter-rouge">react-redux</code> creates. It uses a dummy state. The setState call in Connect forces it and its children to render.</li>
+</ol>
+
+<p>The magic is that react-redux tries to memoize the results so that it reduces
+the number of renders in your component if the state changes but those changes
+do not change the merged set of props.</p>
+
+<p>Memoizing a function means that a function remembers (stores) its previous input
+and on the next function call if the input has not changed, it returns the same
+result. Of course, this means the function stores state and potentially holds
+onto large amounts of “input” data as well as previousu results–all of which
+inflates memory usage.</p>
+
+<p><code class="highlighter-rouge">react-redux</code> also uses a Subscription object to subscribe to events hold a link
+to their parent subscription and managed the unsubscribe process in the correct
+order (child to parent).</p>
+
+<p>It’s pretty clear that if we are emphasizing two way integration of components
+in scalajs-react, we need to use <code class="highlighter-rouge">react-redux</code> so that sub-components of scala
+components that are using redux continue to work correctly both in production
+and for hot reload.</p>
+
+<p>There are 2 approaches to integrating a scala defined react component. You can
+create a more advanced integration model using more clever scala features for
+wrapping and unwrapping the javascript props but its probably best to keep it
+simple and explicit while leaving the ability to employ more advanced
+constructs.</p>
+
+<ul>
+  <li>scala side integration: You have a scala component and wish to use it in javascript or scala connected to redux
+    <ul>
+      <li>scala: create the scala component then create your “make” function as usual</li>
+      <li>scala: Wrap the component using <code class="highlighter-rouge">Component.wrapScalaForJs</code>. This creates a ReactJsComponent usable by javascript because it maps a general js.Object to the “make” function. You can export this component for use in javascript however it would not receive redux props.</li>
+      <li>scala: connect the result from the previous step using <code class="highlighter-rouge">redux.connect</code>. Like <code class="highlighter-rouge">connect</code> in javascript, you pass in a “component” an get a “component.”</li>
+      <li>scala: Using the connected ReactJsComponent from above, wrap it using <code class="highlighter-rouge">elements.wrapJsForScala</code>. The rationale is that the “connect” call creates another javascript component, so you just need to wrap it for use just like an “imported” javascript component.</li>
+      <li>javascript: use the exported connected component if you want to.</li>
+    </ul>
+  </li>
+  <li>javascript side integration: You have a scala component and wish to use it in javascript or scala connected to redux.
+    <ul>
+      <li>scala: create the scala component</li>
+      <li>scala: export it using the description in the “Exporting” section</li>
+      <li>javascript: define a proxy wrapper</li>
+      <li>javascript: use the new proxied component</li>
+      <li>scala: import the proxied component (since it’s a javascript component) and use it</li>
+    </ul>
+  </li>
+</ul>
+
+<p>We show both ways below. Its significantly easier to do all of this on the scala
+side.</p>
+
+<p>The easy way to think about connected to redux is that if you are going to use
+existing infrastucture like <code class="highlighter-rouge">react-redux</code>, you need to define a component usable
+in javascript. Then, since “connect” is a HOC, you need to make the result of
+calling the HOC usable in scala again.</p>
+
+<p>You could easily define more clever Reader/Writer typeclasses and macros to do
+this, but in scalajs-react we keep them as simple functions you define directly
+in order to allow you flexibility to define the API for make as appropriate for
+your application.</p>
+
+<h2 id="scala-side">scala side</h2>
+<p>To preserve integration on the scala side, you have to do the same type of
+mapping from redux state to props. scalajs-react is explicit in that to create a
+component that takes props, you must go through a function (almost always called
+“make”) and statically know the parameters.</p>
+
+<p>Let’s assume that your component’s “make” function already has placeholders for
+the parameters that you want to pass in regardless of whether they are coming
+from the react state or the parent props. We need mapping functions and a way to
+connect. Like in javascript, the returned javascript component is a wrapper
+around the actual component.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>import ttg.react.redux
+
+object MyScalaComponentC {
+  private val MyScalaComponent = statelessComponent("MyComponent")
+  
+  // non-native JS trait, we use a "javascript" object for the arguments
+  // although that is not necessary, it does make it easier for components
+  // that need to integrate with javascript infrastructure. note the usage
+  // of props throughout this object. We can do this only because it is a
+  // non-native JS trait.
+  trait Props extends js.Object {
+    val prop1: Int // e.g. required attribute
+    // redux props
+    var propFromRedux: js.UndefOr[String] = js.undefined
+  }
+  
+  // standard make function. Remove "private" if you want to expose this
+  // make for clients that want to use a version of your component not hooked
+  // up to redux.
+  private def _make(props: Props) = MyScalaComponent.withRender{ self =&gt; ... }
+
+  // you could @JSExportTopLevel this component but it would not receive redux props
+  private val jsComponent = c.wrapScalaForJs { (jsProps: Props) =&gt; ...; _make(jsProps) }
+
+  // connect returns another new "js component" that wraps the "js component" we pass in
+  // you could @JSExportTopLevel this component or javascript usage and it would receive redux props
+  private val reduxJsComponent = {
+    // or use defs...
+    val mapStateToProps = (reduxState: js.Dynamic, ownProps: Props): Props = { ... }
+    val mapDispatchTopProps = (dispatch: redux.Dispatch, ownProps: Props): Props = { ... }
+    redux.connect(MyScalaComponent, mapStateToProps, mapDispatchToProps)
+  }
+  
+  // This "make" creates a component that receives redux props. You
+  // have many choices on how to structure your "make" API.
+  def make(scalaProp1: Int) = {
+    // you do not need to fill in the redux properties
+    val props = new Props { val prop1 = scalaProp1 }
+    wrapJsForScala(reduxJsComponent, props)
+  }
+}
+</code></pre>
+</div>
+<p>That’s all you need to do. Just like with importing, if you choose your props carefully, you can reduce your API data swizzling work significantly but its up to you. Also, note that the <code class="highlighter-rouge">make</code> function takes no children. If it had, we would have added a second parameter list (or to the first parameter list) or added children explicitly to the <code class="highlighter-rouge">Props</code> trait and then added the children to the <code class="highlighter-rouge">wrapJsForScala</code> function call. It’s up to you on how you want to structure your internal API.</p>
+
+<h2 id="javascript-side">javascript side</h2>
+<p>This approach just has you create a connected component from the scala exported component. You must ensure that whatever props you expect to come from redux are reflecting in the scala mapping in its wrapper function as defined in “yourComponent.wrapScalaForJs”. You can even pass in the dispatch function to the scala side if you want.</p>
+
+<p>In scala</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">MyScalaComponentC</span> <span class="o">{</span>
+  <span class="c1">// you can mark these private
+</span>  <span class="k">val</span> <span class="nc">_MyScalaComponent</span> <span class="k">=</span> <span class="n">statelessComponent</span><span class="o">(</span><span class="s">"MyScalaComponent"</span><span class="o">)</span>
+  <span class="k">def</span> <span class="n">makeScala</span><span class="o">(...)</span> <span class="k">=</span> <span class="nc">_MyScalaComponent</span><span class="o">.</span><span class="n">withRender</span><span class="o">(...)</span>
+
+  <span class="c1">// Export component so its visible in javascript. The jsProps should be
+</span>  <span class="c1">// the props from the parent and redux and their manipulation should 
+</span>  <span class="c1">// reflect what's needed to call makeScala.
+</span>  <span class="nd">@JSExportTopLevel</span><span class="o">(</span><span class="s">"MyScalaComponent"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="n">exportedComponent</span> <span class="k">=</span> <span class="nc">MyScalaComponent</span><span class="o">.</span><span class="n">wrapScalaForJS</span><span class="o">(</span><span class="n">jsProps</span> <span class="k">=&gt;</span> <span class="n">makeScala</span><span class="o">(...))</span>
+  
+  <span class="c1">// Import the connected component, import location depends on the javascript "bundler"
+</span>  <span class="nd">@js</span><span class="o">.</span><span class="n">native</span>
+  <span class="nd">@JSImport</span><span class="o">(</span><span class="s">"ExportModule"</span><span class="o">,</span> <span class="s">"MyScalaComponentRedux"</span><span class="o">)</span> <span class="c1">// in ExportModule.js
+</span>  <span class="k">object</span> <span class="nc">ExportModuleNS</span> <span class="k">extends</span> <span class="n">js</span><span class="o">.</span><span class="nc">Object</span> <span class="o">{</span>
+     <span class="k">val</span> <span class="nc">MyScalaComponentRedux</span><span class="k">:</span> <span class="kt">ReactJSComponent</span> <span class="o">=</span> <span class="n">js</span><span class="o">.</span><span class="n">native</span>
+  <span class="o">}</span>
+   
+  <span class="c1">// Create the standard make, use a scala-side signature you prefer
+</span>  <span class="k">def</span> <span class="n">make</span><span class="o">(</span><span class="n">aprop</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">children</span><span class="k">:</span> <span class="kt">ReactNode*</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+     <span class="k">val</span> <span class="n">theprops</span> <span class="k">=</span> <span class="o">...</span>
+     <span class="n">wrapJsForScala</span><span class="o">(</span><span class="nc">ExportModuleNS</span><span class="o">.</span><span class="nc">MyScalaComponentRedux</span><span class="o">,</span> <span class="n">theprops</span><span class="o">,</span> <span class="n">children</span><span class="k">:_</span><span class="kt">*</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p>Here’s the javascript (typescript) side.</p>
+<div class="language-typescript highlighter-rouge"><pre class="highlight"><code><span class="c1">// ExportModule.js </span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">MyScalaComponent</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"scala"</span> <span class="c1">// adjust based on your javascript bundler</span>
+
+<span class="c1">// passing null instead of this function means you do not get updates</span>
+<span class="c1">// when the store changes</span>
+<span class="kd">function</span> <span class="nx">mapStateToProps</span><span class="p">(</span><span class="nx">state</span><span class="p">,</span> <span class="nx">ownProps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+     <span class="na">somevar</span><span class="p">:</span> <span class="nx">state</span><span class="p">.</span><span class="nx">somevar</span><span class="p">,</span>
+     <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// If you skip this, the dispatch function is passed to the child automatically.</span>
+<span class="c1">// If you pass in ownProps, this function gets called more frequently since</span>
+<span class="c1">// the output *could* change so drop it if you can.</span>
+<span class="kd">function</span> <span class="nx">mapDispatchToProps</span><span class="p">(</span><span class="nx">dispatch</span><span class="p">,</span> <span class="nx">ownProps</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="p">{</span>
+    <span class="na">onWidgetClick</span><span class="p">:</span> <span class="p">(</span><span class="na">widgetData</span><span class="p">:</span> <span class="kr">any</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">dispatch</span><span class="p">(</span><span class="nx">someActionCreator</span><span class="p">(</span><span class="nx">widgetData</span><span class="p">)),</span>
+    <span class="c1">// ...</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">MyScalaComponentRedux</span> <span class="o">=</span> 
+    <span class="nx">connect</span><span class="p">(</span><span class="nx">mapStateToProps</span><span class="p">,</span> <span class="nx">mapDispatchToProps</span><span class="p">)(</span><span class="nx">MyScalaComponent</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>At some point, whether scala.js or javascript, you have to map the redux state
+to props that eventually reach your child component. In order to preserve
+compatibility, you do not have much of a choice regardless of integration
+method.</p>
+
+<p><code class="highlighter-rouge">react-redux</code> connect actually just composes functions in a redux specific way
+to call your component’s render method. That’s really all its doing.</p>
+
+<p>Now, <code class="highlighter-rouge">MyScalaComponent</code> can be used in javascript or “re-imported” into scala
+using scalajs-react’s import capability.</p>
+
+<p>You may find that creating the mapping in javascript is more convenient than
+defining the mapping in scala for complex property mappings but use the scala
+side version until you reach that point of complexity.</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/scalajs-react/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/scalajs-react/js/main.js"></script></body></html>
