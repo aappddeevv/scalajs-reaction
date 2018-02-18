@@ -103,7 +103,7 @@ object AddressListC {
             selectionPreservedOnEmptyClick = true
             columns = icolumns
             getKey = getAddressKey
-            initialFocusedIndex = ifx.orUndefined
+            //initialFocusedIndex = ifx.orUndefined
             onActiveItemChanged = js.defined({ (aundef, _, _) =>
               activeCB(aundef.toNonNullOption)
             })
@@ -298,6 +298,7 @@ object AddressManagerC {
     // we could also cast as AddressManagerProps, but here we just use a literal
     val mapStateToProps: MSTP[js.Object, AddressManagerPropsRedux] =
       (rstate, nextProps) => {
+        //println(s"mapStateToProps (s,own): ${PrettyJson.render(rstate)}, ${PrettyJson.render(nextProps)}")
         lit(
           // everything is redundent with tis included, but for illustration purposes
           "rstate" -> rstate,

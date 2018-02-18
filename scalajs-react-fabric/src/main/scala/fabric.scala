@@ -44,6 +44,7 @@ object FabricNS extends js.Object {
   val DetailsList: ReactJsComponent = js.native
   val DefaultButton: ReactJsComponent = js.native
   val Label: ReactJsComponent = js.native
+  val Link: ReactJsComponent = js.native
   val List: ReactJsComponent = js.native
   val Pivot: ReactJsComponent = js.native
   val PivotItem: ReactJsComponent = js.native
@@ -63,6 +64,7 @@ object components {
   def Fabric(props: IFabricProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Fabric, props, children: _*)
   def TextField(props: ITextFieldProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.TextField, props, children: _*)
   def Label(props: LabelProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Label, props, children: _*)
+  def Link(props: ILinkProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Link, props, children: _*)
   def PrimaryButton(props: IButtonProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
   def DefaultButton(props: IButtonProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
   def Pivot(props: IPivotProps = noProps())(children: ReactNode*) = wrapJsForScala(FabricNS.Pivot, props, children: _*)
@@ -470,3 +472,9 @@ trait IButtonProps extends ComponentRef[IButton] with WithIconProps with AllHTML
   // note scala.Any not js.Any
   //var data: js.UndefOr[scala.Any] = js.undefined
 }
+
+@js.native
+trait ILink extends Focusable
+
+//export interface ILinkProps extends React.AllHTMLAttributes<HTMLAnchorElement | HTMLButtonElement | HTMLElement | Link>
+trait ILinkProps extends AllHTMLAttributes[dom.html.Anchor] with ComponentRef[ILink]

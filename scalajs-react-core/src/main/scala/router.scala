@@ -2,6 +2,9 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
+package ttg
+package react
+
 import scala.scalajs.js
 import org.scalajs.dom
 
@@ -46,10 +49,11 @@ object router {
   }
 
   def push(path: String): Unit = {
-    dom.window.history.pushState(dom.window.history, null, path)
+    dom.window.history.pushState(new js.Object(), "", path)
     dom.window.dispatchEvent(makeEvent("popstate"))
   }
 
+  /** path, hash, search */
   type CallbackArg = (Seq[String], String, String)
   type WatcherId = js.Any
 

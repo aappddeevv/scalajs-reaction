@@ -11,6 +11,7 @@
         "examples": "webpack --env.BUILD_KIND=production --config scala.webpack.config.js",
         "build": "cross-env NODE_ENV=production npm-run-all scala:prod examples",
         "demo": "npm-run-all scala:dev examples:dev-start",
+	"start": "npm run examples:dev-start",
         "test": "jest",
         "compile": "npx tsc --outDir dist-test",
         "test:watch": "jest --watch"

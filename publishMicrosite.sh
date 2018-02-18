@@ -4,7 +4,8 @@ rm -rf ./dist
 mkdir -p docs/src/main/resources/microsite/static
 
 # build scala code in prod
-SCALAJS_VERSION="1.0.0-M3" sbt clean fullOptJS
+#SCALAJS_VERSION="1.0.0-M3" sbt clean fullOptJS
+sbt clean fullOptJS
 
 # bundle the example into ./dist
 npm run examples

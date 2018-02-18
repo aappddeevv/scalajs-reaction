@@ -13,6 +13,7 @@ import implicits._
 import vdom._
 import prefix_<^._
 import elements._
+import components._
 
 object HeaderC {
 
@@ -23,7 +24,7 @@ object HeaderC {
     backgroundColor = "gray"
     color = "white"
     textAlign = "center"
-    fontSize = "14px"
+    fontSize = "18px"
   }
 
   import header.ops._
@@ -33,18 +34,13 @@ object HeaderC {
       render = js.defined { self =>
         reactdom.createPortalInElementWithId(
           <.div(^.className := className, ^.style := hstyle)(
-            "scalajs-react Examples (header via createPortal, inlines styles)"
+            "scalajs-react Examples (header via createPortal, inlines styles)",
+            Link(new ILinkProps {
+              style = new StyleAttr{ marginRight = "10px" }
+              onClick = js.defined{_ => router.push("#todo")}
+            })("Route to ToDos")
           ),
           target)
       }
     })
-  //def make(className: String, target: String) =
-  // component.
-  //   withRender{self =>
-  //     reactdom.createPortalInElementWithId(
-  //       <.div(^.className := className, ^.style := hstyle)(
-  //         "scalajs-react Examples (header via createPortal, inlines styles)"
-  //       ),
-  //       target)
-  //   }
 }

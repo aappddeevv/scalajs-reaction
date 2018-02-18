@@ -106,3 +106,18 @@ def renderFooter(self: Self, ...): ReactNode = { ... }
 If you use state or retained props, it contains `S` and `RP` as well.
 
 These types will *not* work anywhere else but for this component. Another component will have another "Self" type...this way you cannot mix things up accidently.
+
+When you create a component, you indicate whether it takes retainded props or initial state. You are forced to create those when you perform the copy by having to use a "val" in your "methods" definitions. Optional parameters can be specified just using "name=value". Functions have to be wrapped in "js.defined" due to some scala.js needs for type resolution but the initial state or retained prop values do not need that:
+```scala
+case class MyState(...)
+val c = reducerComponent[MyState]("component")
+import c.ops._
+
+def make(...) = c.copy(new methods {
+    // stateful component so you *must* define initialState
+    val initialState = MyState()
+    // render and most everything else is optional, default render returns null
+    render = js.defined{self => ... }
+})
+
+```

@@ -90,6 +90,7 @@ import ttg.react.redux
 
 object MyScalaComponentC {
   private val MyScalaComponent = statelessComponent("MyComponent")
+  import MyScalaComponent.ops._
   
   // non-native JS trait, we use a "javascript" object for the arguments
   // although that is not necessary, it does make it easier for components
@@ -105,7 +106,7 @@ object MyScalaComponentC {
   // standard make function. Remove "private" if you want to expose this
   // make for clients that want to use a version of your component not hooked
   // up to redux.
-  private def _make(props: Props) = MyScalaComponent.withRender{ self => ... }
+  private def _make(props: Props) = MyScalaComponent.copy(new methods { render = ... })
 
   // you could @JSExportTopLevel this component but it would not receive redux props
   private val jsComponent = c.wrapScalaForJs { (jsProps: Props) => ...; _make(jsProps) }
@@ -138,7 +139,8 @@ In scala
 object MyScalaComponentC {
   // you can mark these private
   val _MyScalaComponent = statelessComponent("MyScalaComponent")
-  def makeScala(...) = _MyScalaComponent.withRender(...)
+  import _MyScalaComponent.ops._
+  def makeScala(...) = _MyScalaComponent.copy(new methods { ... })
 
   // Export component so its visible in javascript. The jsProps should be
   // the props from the parent and redux and their manipulation should 

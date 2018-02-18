@@ -60,6 +60,7 @@ You can quickly create a component and render it:
 ```scala
 object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
+  import HelloWorld.ops._
   def make(name: Option[String]) =
     HelloWorld
       .withRender { self =>

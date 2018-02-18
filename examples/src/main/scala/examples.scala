@@ -98,11 +98,33 @@ object Pages {
   }
 }
 
-object Main {
-  import Pages._
-  import addressmanager.fakedata._
+import Pages._
+import addressmanager.fakedata._
 
+object Examples {
+  val c = statelessComponent("Examples")
+  import c.ops._
+  def make(headerTarget: String) =
+    c.copy(new methods {
+      render = js.defined{ self =>
+        fragmentElement()(
+          Pivot()(
+            readme(examples.readmetext),
+            addressPage(addressDAO),
+            todoPage,
+            helloWorldPage,
+            changeReduxStatePage(),
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make())
+          ),
+          HeaderC.make("header", headerTarget)
+        )
+      }
+    })
+}
+
+object Main {
   val portalElementId = "portalContainer"
+  val container = "container"
 
   /**
     * This will be exported from the ES module that scala.js outputs.  How you
@@ -122,15 +144,7 @@ object Main {
       React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps { store = StoreNS.store })(Fabric(new IFabricProps {
         className = estyles.root.asString
       })(
-        Pivot()(
-          readme(examples.readmetext),
-          addressPage(addressDAO),
-          todoPage,
-          helloWorldPage,
-          changeReduxStatePage(),
-          labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make())
-        ),
-        HeaderC.make("header", portalElementId)
+        ExamplesApp.make()
       )),
       "container"
     )
