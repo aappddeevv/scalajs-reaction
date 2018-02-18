@@ -8,90 +8,47 @@ package react
 import scala.scalajs.js
 
 /**
-  * Data structure used to create js side react class. It's only used once in
-  * scalareact.createClass. Most of the methods below recover the scala side
-  * "element" (the component spec) and then forwards the call on this "class" to
-  * the scala side "element." Thees methods are only called by the proxy/shim object
-  * to hook up the internal API.
+  * Data structure used to create js side react class. These are the lifecycle
+  * react APIs that we do use.  Most of the methods below recover the scala side
+  * "element" (the component spec) and then forwards the respective call to the
+  * scala side "element."
   */
-trait Proxy[S, RP, A] extends js.Object {
-
-  /** The type of SLF to provide to the scala-side, client visible API. */
-  type SLF
-
-  /** The object stored in reactjs this.state. */
-  type State <: TotalState[S, RP, A, SLF]
-
-  /** The object stored in reactjs this.props.scalaProps. */
-  type PropsType
-
-  /** The object stored in reactjs this.props. */
-  type ThisSelfProps <: JsComponentThisProps[PropsType]
-
-  /** What scala sees as "this" when our scala-side component proxy is called from reactjs. */
-  type ThisSelf <: JsComponentThis[ThisSelfProps, State, PropsType]
-
+trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   val displayName: String
 
   /**
-    * Make a special record for the single parameter used when calling
-    * client-API lifecycle methods on the scala side.
+    * Subscription "unmount" callbacks. Mount callbacks are stored on the
+    * scala component.
     */
-  def mkSelf(self: ThisSelf, sopt: Option[S], popt: Option[RP]): SLF
-
-  /**
-    * Calculate the next TotalState given the current TotalState and a StateUpdate directive.
-    * This function could live almost anywhere and has no need for "this".
-    */
-  def transitionNextTotalState(curTotalState: State, scalaStateUpdate: StateUpdate[S, SLF]): State
-
-  /**
-    * Send an action and update state if the reducer says to.
-    *
-    * Runs the action through the reducer immediately inside a reactjs.setState
-    * call. If the reducer returns "NoResult" or the scala state version is not
-    * changed, then no reactjs state is updated and no render request occurs.
-    */
-  def sendMethod(self: ThisSelf, action: A): Unit
-
-  /**
-    * Handle a callback. Curry your component's callback method to accept only `this`.  Runs
-    * the callback immediately and there is no reactjs state update. The callback is called
-    * with the latest constructed self when the handle is executed. It is expected that
-    * the callback may send an action to the component.
-    */
-  def handleMethod(self: ThisSelf, cb: SLF => Unit): Unit
-
-  /** Subscription "unmount" callbacks. */
-  var subscriptions: Seq[() => Unit]
+  var subscriptions: js.UndefOr[Seq[() => Unit]] = js.undefined
 
   /** react js method. @deprecated */
-  val getInitialState: js.ThisFunction0[ThisSelf, State]
+  val getInitialState: js.UndefOr[js.ThisFunction0[ThisSelf, State]] = js.undefined
 
   /** react js method. */
   val render: js.ThisFunction0[ThisSelf, ReactNode]
 
   /** react js method. */
-  val componentWillReceiveProps: js.ThisFunction1[ThisSelf, ThisSelfProps, Unit]
+  val componentWillReceiveProps: js.UndefOr[js.ThisFunction1[ThisSelf, ThisSelfProps, Unit]] = js.undefined
 
   /** react js method. */
-  val componentWillUnmount: js.ThisFunction0[ThisSelf, Unit]
+  val componentWillUnmount: js.UndefOr[js.ThisFunction0[ThisSelf, Unit]] = js.undefined
 
   /** react js method. */
-  val componentDidMount: js.ThisFunction0[ThisSelf, Unit]
+  val componentDidMount: js.UndefOr[js.ThisFunction0[ThisSelf, Unit]] = js.undefined
 
   /** react js method. */
-  val shouldComponentUpdate: js.ThisFunction2[ThisSelf, ThisSelfProps, State, Boolean]
+  val shouldComponentUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Boolean]] = js.undefined
 
   /** React js method. @deprecated */
-  val componentWillUpdate: js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]
+  val componentWillUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]] = js.undefined
 
   /** react js method. */
-  val componentDidUpdate: js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]
+  val componentDidUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]] = js.undefined
 
   /** This should be removed. */
-  val contextTypes: js.UndefOr[js.Object]
+  val contextTypes: js.UndefOr[js.UndefOr[js.Object]] = js.undefined
 
   /** react js method. v16+ */
-  val componentDidCatch: js.ThisFunction2[ThisSelf, js.Error, ErrorInfo, Unit]
+  val componentDidCatch: js.UndefOr[js.ThisFunction2[ThisSelf, js.Error, ErrorInfo, Unit]] = js.undefined
 }

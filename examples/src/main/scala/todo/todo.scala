@@ -42,110 +42,115 @@ case class SetTextFieldRef(ref: ITextField) extends ToDoAction
 
 object ToDoC {
   val ToDo = statelessComponent("ToDoItem")
+  import ToDo.ops._
+
   def make(todo: ToDo, remove: Unit => Unit) =
-    ToDo.withRender(self => {
-      <.div(^.className := styles.component.todo)(
-        Label(new LabelProps { className = styles.component.title.asString })(todo.name).toEl,
-        DefaultButton(new IButtonProps {
-          text = "Remove"
-          onClick = js.defined(_ => remove(()))
-        })().toEl
-      )
+    ToDo.copy(new methods {
+      render = js.defined(self => {
+        <.div(^.className := styles.component.todo)(
+          Label(new LabelProps { className = styles.component.title.asString })(todo.name).toEl,
+          DefaultButton(new IButtonProps {
+            text = "Remove"
+            onClick = js.defined(_ => remove(()))
+          })().toEl
+        )
+      })
     })
 }
 
 object ToDoListHeader {
   val ToDoListHeader = statelessComponent("ToDoListheader")
+  import ToDoListHeader.ops._
+
   def make(length: Int) =
-    ToDoListHeader
-      .withRender { self =>
+    ToDoListHeader.copy(new methods {
+      render = js.defined { self =>
         <.div()(
           Label()(s"# To Dos - ${length}").toEl
         )
       }
+    })
 }
 
 object ToDoListC {
   val ToDoList = statelessComponentWithRetainedProps[Int]("ToDoList")
+  import ToDoList.ops._
+
   def make(length: Int, todos: Seq[ToDo], remove: Int => Unit) =
-    ToDoList
-      .withRetainedProps(length)
-      .withRender(self => {
+    ToDoList.copy(new methods {
+      val retainedProps = length
+      render = js.defined { self =>
         <.div()(
           ToDoListHeader.make(length).toEl,
           arrayToElement(todos.map(t => element(ToDoC.make(t, _ => remove(t.id)), key = Some(t.id.toString()))))
         )
-      })
-      .withWillReceiveProps(self => {
-        println(s"ToDoList: willReceiveProps: retained props ${self.retainedProps}")
-        self.state
-      })
+      }
+    })
 }
 
 object ToDosC {
   var idCounter: Int = -1
   def mkId(): Int = { idCounter = idCounter + 1; idCounter }
+
   case class State(todos: Seq[ToDo] = Seq(), input: Option[String] = None, textFieldRef: Option[ITextField] = None)
+
   case class RP(title: Option[String] = None)
   val ToDos = reducerComponentWithRetainedProps[State, RP, ToDoAction]("ToDos")
+  import ToDos.ops._
 
-  def remove(id: Int)(self: Self[State, RP, ToDoAction]): Unit = self.send(Remove(id))
-  def inputChanged(e: Option[String])(self: Self[State, RP, ToDoAction]): Unit = self.send(InputChanged(e))
+  def remove(id: Int)(self: ToDos.Self): Unit = self.send(Remove(id))
+  def inputChanged(e: Option[String])(self: ToDos.Self): Unit =
+    self.send(InputChanged(e))
 
   def make(title: Option[String] = None, todos: Seq[ToDo] = Seq()) =
-    ToDos
-      .withRetainedProps(RP(title))
-      .withReducer((action, sopt, gen) => {
+    ToDos.copy(new methods {
+      val retainedProps = RP(title)
+      reducer = js.defined((action, state, gen) => {
         action match {
           case Add(t) =>
-            sopt
-              .map(state => gen.update(Some(state.copy(todos = state.todos :+ t, input = None))))
-              .getOrElse(gen.skip)
+            gen.update(state.copy(todos = state.todos :+ t, input = None))
           case Remove(id) =>
-            sopt
-              .map(state => gen.updateAndEffect(Some(state.copy(todos = state.todos.filterNot(_.id == id)))))
-              .getOrElse(gen.skip)
+            gen.updateAndEffect(state.copy(todos = state.todos.filterNot(_.id == id)))
           case InputChanged(iopt) =>
-            sopt
-              .map(state => gen.updateAndEffect(Some(state.copy(input = iopt))))
-              .getOrElse(gen.skip)
+            gen.updateAndEffect(state.copy(input = iopt))
           case SetTextFieldRef(ref) =>
-            sopt
-              .map(state => gen.silent(Some(state.copy(textFieldRef = Some(ref)))))
-              .getOrElse(gen.skip)
+            gen.silent(state.copy(textFieldRef = Some(ref)))
+          case _ =>
+            gen.skip
         }
       })
-      .withInitialState(_ => Some(State(todos, None)))
-      .withRender { self =>
-        <.div(^.className := styles.component.todoApp)(
-          Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
-          <.div(^.className := styles.component.dataEntry)(
-            TextField(new ITextFieldProps {
-              componentRef = js.defined((r: ITextField) => self.state.foreach(s => self.send(SetTextFieldRef(r))))
-              onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
-              value = self.state.flatMap(_.input).getOrElse[String]("")
-            })(),
-            PrimaryButton(new IButtonProps {
-              text = "Add"
-              disabled = self.state.flatMap(_.input).map(_.size == 0).getOrElse[Boolean](true)
-              // demonstrates inline callback
-              onClick = js.defined { (e: ReactEvent[_]) => // could be _ => since we don't use 'e'
-                // if have state, add todo and refocus
-                self.state.flatMap(_.input).foreach { i =>
-                  self.handle { s =>
-                    s.send(Add(ToDo(mkId(), i)))
-                    s.state.flatMap(_.textFieldRef).foreach(ref => refToJs(ref).focus())
+      val initialState = _ => State(todos, None)
+      render = js.defined {
+        self =>
+          <.div(^.className := styles.component.todoApp)(
+            Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
+            <.div(^.className := styles.component.dataEntry)(
+              TextField(new ITextFieldProps {
+                placeholder = "enter new todo"
+                componentRef = js.defined((r: ITextField) => self.send(SetTextFieldRef(r)))
+                onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
+                value = self.state.input.getOrElse[String]("")
+              })(),
+              PrimaryButton(new IButtonProps {
+                text = "Add"
+                disabled = self.state.input.size == 0
+                // demonstrates inline callback
+                // could be _ => since we don't use 'e'
+                onClick = js.defined { (e: ReactEvent[_]) =>
+                  // if have state, add todo and refocus
+                  self.state.input.foreach { i =>
+                    self.handle { s =>
+                      s.send(Add(ToDo(mkId(), i)))
+                      s.state.textFieldRef.foreach(ref => refToJs(ref).focus())
+                    }
                   }
                 }
-              }
-            })()
-          ),
-          self.state
-            .map(s => ToDoListC.make(s.todos.length, s.todos, (id: Int) => self.handle(remove(id))))
-            .getOrElse(nullComponent)
-            .toEl
-        )
+              })()
+            ),
+            ToDoListC.make(self.state.todos.length, self.state.todos, (id: Int) => self.handle(remove(id)))
+          )
       }
+    })
 
   @JSExportTopLevel("ToDos")
   val exportedApp = ToDos.wrapScalaForJs((jsProps: js.Object) => make())

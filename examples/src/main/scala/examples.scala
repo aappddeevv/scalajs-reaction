@@ -41,7 +41,7 @@ object Pages {
 
   val defaultTodos = Seq(ToDo(1, "Call Fred"))
 
-  def labelAndChild(name: String, c: ComponentAny) = {
+  def labelAndChild(name: String, c: Component) = {
     PivotItem(new IPivotItemProps {
       linkText = s"$name"
       itemKey = s"$name-tab"
@@ -119,20 +119,19 @@ object Main {
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     renderToElementWithId(
-      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps { store = StoreNS.store })(
-        Fabric(new IFabricProps {
-          className = estyles.root.asString
-        })(
-          Pivot()(
-            readme(examples.readmetext),
-            addressPage(addressDAO),
-            todoPage,
-            helloWorldPage,
-            changeReduxStatePage(),
-            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make())
-          ),
-          HeaderC.make("header", portalElementId)
-        )),
+      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps { store = StoreNS.store })(Fabric(new IFabricProps {
+        className = estyles.root.asString
+      })(
+        Pivot()(
+          readme(examples.readmetext),
+          addressPage(addressDAO),
+          todoPage,
+          helloWorldPage,
+          changeReduxStatePage(),
+          labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make())
+        ),
+        HeaderC.make("header", portalElementId)
+      )),
       "container"
     )
   }

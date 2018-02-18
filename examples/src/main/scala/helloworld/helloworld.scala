@@ -23,13 +23,16 @@ import prefix_<^._
   */
 object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
+  import HelloWorld.ops._
+
   def make(name: Option[String] = None) =
-    HelloWorld
-      .withRender { self =>
+    HelloWorld.copy(new methods {
+      render = js.defined { self =>
         <.div()(
           "hello world" + name.map(" and welcome " + _).getOrElse("")
         )
       }
+    })
 
   trait HelloWorldProps extends js.Object {
     val name: js.UndefOr[String] = js.undefined
@@ -43,10 +46,11 @@ object HelloWorldC {
   // Alternative scala `make` definition, render must convert to scala objects if needed
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps) =
-    HelloWorld
-      .withRender { self =>
+    HelloWorld.copy(new methods {
+      render = js.defined { self =>
         <.div()(
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )
       }
+    })
 }

@@ -145,27 +145,28 @@ trait ITextField extends Focusable with ReactRef {
 }
 
 //export interface ITextFieldProps extends React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
-trait ITextFieldProps extends WithIconProps with ComponentRef[ITextField] with Disabled {
+// withDisabled
+trait ITextFieldProps extends WithIconProps with ComponentRef[ITextField] with AllHTMLAttributes[dom.html.Input] {
   var multiline: js.UndefOr[Boolean] = js.undefined
   var resizable: js.UndefOr[Boolean] = js.undefined
   var autoAdjustHeight: js.UndefOr[Boolean] = js.undefined
   var underlined: js.UndefOr[Boolean] = js.undefined
   var borderless: js.UndefOr[Boolean] = js.undefined
-  var label: js.UndefOr[String] = js.undefined
+  //var label: js.UndefOr[String] = js.undefined
   var onRenderLabel: js.UndefOr[IRenderFunction[ITextFieldProps]] = js.undefined
   var description: js.UndefOr[String] = js.undefined
   var addonString: js.UndefOr[String] = js.undefined
   var onRenderAddon: js.UndefOr[IRenderFunction[ITextFieldProps]] = js.undefined
   //var iconProps?: IIconProps;
   var defaultValue: js.UndefOr[String] = js.undefined
-  var value: js.UndefOr[String] = js.undefined
+  //var value: js.UndefOr[String] = js.undefined
   var errorMessage: js.UndefOr[String] = js.undefined
   var onChanged: js.UndefOr[js.Function1[String, Unit]] = js.undefined
   var onBeforeChange: js.UndefOr[js.Function1[String, Unit]] = js.undefined
   //onNotifyValidationResult?: (errorMessage: string, value: string | undefined) => void;
   //onGetErrorMessage?: (value: string) => string | PromiseLike<string> | undefined;
   var deferredValidationTime: js.UndefOr[Long] = js.undefined
-  var className: js.UndefOr[String] = js.undefined
+  //var className: js.UndefOr[String] = js.undefined
   var inputClassName: js.UndefOr[String] = js.undefined
   var ariaLabel: js.UndefOr[String] = js.undefined
   var validateOnFocusIn: js.UndefOr[Boolean] = js.undefined
@@ -278,7 +279,7 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
   var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] = js.undefined
   var constrainMode: js.UndefOr[Int] = js.undefined
 
-  type OII = js.Function3[js.UndefOr[T], js.UndefOr[Int], js.UndefOr[SyntheticFocusEvent[dom.html.Element]],Unit]
+  type OII = js.Function3[js.UndefOr[T], js.UndefOr[Int], js.UndefOr[SyntheticFocusEvent[dom.html.Element]], Unit]
   var onItemInvoked: js.UndefOr[OII] = js.undefined
 
   var onRenderRow: js.UndefOr[IRenderFunction[IDetailsRowProps]] = js.undefined
@@ -296,7 +297,6 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
   var enterModelSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
   var usePageCache: js.UndefOr[Boolean] = js.undefined
 }
-
 
 trait IContextualMenuProps extends KeyAndRef {
   var items: js.Array[IContextualMenuItem]

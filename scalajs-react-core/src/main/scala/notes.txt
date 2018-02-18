@@ -1,0 +1,349 @@
+  // copy down in bottom cake - refine!
+  protected abstract class ProxyLike extends super.ProxyLike {
+
+    // helper, make the self that Component uses.
+    def mkSelf(thisJs: ThisSelf, s: S, p: js.UndefOr[RP]): Self
+
+    /** helper, make "total state" used in the proxy/javacript side, component never sees this. */
+    def mkState(s: S, v: Int, sv: Int, e: Seq[Self => Unit]): State
+
+    // use null to avoid allocation
+    var subscriptions: Seq[() => Unit] = null
+
+    // adding sideeffects to start of list is significant in the processing algorithm
+    def transitionNextTotalState(curTotalState: State, scalaStateUpdate: StateUpdate[S, Self]): State = {
+      scalaStateUpdate match {
+        case NoUpdate() => curTotalState
+        case Update(nextScalaState) =>
+          mkState(nextScalaState, curTotalState.scalaStateVersion + 1, curTotalState.scalaStateVersionUsedToComputeSubelements, curTotalState.sideEffects)
+        case SilentUpdate(nextScalaState) =>
+          mkState(
+            nextScalaState,
+            curTotalState.scalaStateVersion + 1,
+            curTotalState.scalaStateVersionUsedToComputeSubelements + 1,
+            curTotalState.sideEffects
+          )
+        case SideEffects(effect) =>
+          mkState(
+            curTotalState.scalaState,
+            curTotalState.scalaStateVersion + 1,
+            curTotalState.scalaStateVersionUsedToComputeSubelements + 1,
+            Seq(effect) ++ curTotalState.sideEffects
+          )
+        case UpdateWithSideEffects(nextScalaState, effect) =>
+          mkState(
+            nextScalaState,
+            curTotalState.scalaStateVersion + 1,
+            curTotalState.scalaStateVersionUsedToComputeSubelements,
+            Seq(effect) ++ curTotalState.sideEffects
+          )
+        case SilentUpdateWithSideEffects(nextScalaState, effect) =>
+          mkState(
+            nextScalaState,
+            curTotalState.scalaStateVersion + 1,
+            curTotalState.scalaStateVersionUsedToComputeSubelements + 1,
+            Seq(effect) ++ curTotalState.sideEffects
+          )
+        case _ => curTotalState
+      }
+    }
+
+    //val componentWillUnmount: js.ThisFunction0[ThisSelf, State] = (thisJs: ThisSelf) => {
+    val componentWillUnmount = thisJs => {
+      val newConvertedScalaProps =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      val component = newConvertedScalaProps
+      val curState = thisJs.state
+      val curScalaState = curState.scalaState
+
+      component.willUnmount.toOption match {
+        case Some(wu) =>
+          val self = mkSelf(thisJs, curScalaState, component.retainedProps)
+          wu(self.asInstanceOf[SelfWithoutMethods])
+        case _ => // do nothing
+      }
+      // call unmount subscription callbacks
+      subscriptions.foreach(_())
+    }
+
+    val componentWillReceiveProps = (thisJs, nextProps) => {
+      //println(s"$displayName:CreateClassOpts.componentWillReceiveProps: nextProps ${PrettyJson.render(nextProps)}")
+      val newConvertedScalaProps =
+        convertProps(nextProps, thisJs.jsPropsToScala, displayName)
+      val newComponent = newConvertedScalaProps
+      newComponent.willReceiveProps.toOption match {
+        case Some(wrp) =>
+          val oldJsProps = thisJs.props
+          val oldConvertedScalaProps =
+            if (nextProps == oldJsProps) newConvertedScalaProps
+            else convertProps(oldJsProps, thisJs.jsPropsToScala, displayName)
+          val oldComponent = oldConvertedScalaProps
+          thisJs.setState(curTotalState => {
+            val curScalaState = curTotalState.scalaState
+            val curScalaStateVersion = curTotalState.scalaStateVersion
+            val os = mkSelf(thisJs, curScalaState, oldComponent.retainedProps)
+            val nextScalaState = wrp(os)
+            val nextScalaStateVersion =
+              if (nextScalaState != curScalaState) curScalaStateVersion + 1
+              else curScalaStateVersion
+            // figure out which TotalState to return
+            if (nextScalaStateVersion != curScalaStateVersion) {
+              mkState(
+                nextScalaState,
+                nextScalaStateVersion,
+                curTotalState.scalaStateVersionUsedToComputeSubelements,
+                //val sideEffects = nextScalaState.sideEffects // this is what .re had but sideEffects is on TotalState
+                curTotalState.sideEffects
+              )
+            } else {
+              curTotalState
+            }
+          })
+        case _ => // do nothing
+      }
+    }
+
+    val componentDidUpdate = (thisJs, prevProps, prevState) => {
+      //println(s"$debugName:CreateClassOpts.componentDidUpdate:\nprevProps ${PrettyJson.render(prevProps)}\nprevState: ${PrettyJson.render(prevState)}")
+      val newJsProps = thisJs.props
+      val curState = thisJs.state
+      val curScalaState = curState.scalaState
+      val newConvertedScalaProps =
+        convertProps(newJsProps, thisJs.jsPropsToScala, displayName)
+      val newComponent = newConvertedScalaProps
+
+      newComponent.didUpdate.toOption match {
+        case Some(du) =>
+          val oldComponent =
+            if (prevProps == newJsProps) newConvertedScalaProps
+            else convertProps(prevProps, thisJs.jsPropsToScala, displayName)
+          val prevScalaState = prevState.scalaState
+          val ns =
+            mkSelf(thisJs, curScalaState, newComponent.retainedProps)
+          val os =
+            mkSelf(thisJs, prevScalaState, oldComponent.retainedProps)
+          du(new OldNewSelf(os, ns))
+        case _ => // do nothing!
+      }
+    }
+
+    // allocate just once...
+    val reducerResult = ReducerResult[S, Self]()
+
+    val componentDidMount = thisJs => {
+      //println(s"$debugName:CreateClassOpts.componentDidMount")
+      val component =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      val curTotalState = thisJs.state
+      val curScalaState = curTotalState.scalaState
+      val self = mkSelf(thisJs, curScalaState, component.retainedProps)
+
+      // call subscriptions
+      subscriptions = component.subscriptions.map(_(self).map(_())).getOrElse(Seq())
+
+      component.didMount.toOption match {
+        case Some(dm) =>
+          val scalaStateUpdate = dm(self, reducerResult)
+          // can we check for NoUpdate() as well and skip the transition!
+          val nextTotalState =
+            transitionNextTotalState(curTotalState, scalaStateUpdate)
+          if (nextTotalState.scalaStateVersion != curTotalState.scalaStateVersion)
+            thisJs.setState(_ => nextTotalState)
+        case _ => // do nothing!
+      }
+    }
+
+    // modified to take a this but with None as state, to get access to handlers...
+    val getInitialState = thisJs => {
+      val component =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+
+      // passing in self is not in reasonreact API.
+      val curTotalState = thisJs.state
+      val self = mkSelf(thisJs, null.asInstanceOf[S], component.retainedProps)
+
+      val istate = component.initialState.map(_(self.asInstanceOf[SelfInitialState])).getOrElse(null.asInstanceOf[S])
+      mkState(istate, 1, 1, Seq())
+    }
+
+    val componentDidCatch = (thisJs, error, errorInfo) => {
+      val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      component.didCatch.toOption match {
+        case Some(dc) =>
+          val state = thisJs.state.scalaState
+          val self = mkSelf(thisJs, state, component.retainedProps)
+          dc(self, error, errorInfo)
+        case _ => // do nothing
+      }
+    }
+
+    val componentWillUpdate = (thisJs, nextProps, nextState) => {
+      //println(s"$debugName:CreateClassOpts.componentWillUpdate")
+      val newConvertedScalaProps =
+        convertProps(nextProps, thisJs.jsPropsToScala, displayName)
+      val newComponent = newConvertedScalaProps
+      newComponent.willUpdate.toOption match {
+        case Some(wu) =>
+          val oldJsProps = thisJs.props
+          /* Avoid converting again the props that are just the same as curProps. */
+          val oldConvertedScalaProps =
+            if (nextProps == oldJsProps) newConvertedScalaProps
+            else convertProps(oldJsProps, thisJs.jsPropsToScala, displayName)
+          val oldComponent = oldConvertedScalaProps
+          val curState = thisJs.state
+          val curScalaState = curState.scalaState
+          val nextScalaState = nextState.scalaState
+          val newSelf =
+            mkSelf(thisJs, nextScalaState, newComponent.retainedProps)
+          val oldSelf =
+            mkSelf(thisJs, curScalaState, oldComponent.retainedProps)
+          wu(new OldNewSelf(oldSelf, newSelf))
+        case _ => // do nothing
+      }
+    }
+
+    val shouldComponentUpdate = (thisJs, nextJsProps, nextState) => {
+      val curJsProps = thisJs.props
+      var propsWarrantRerender = nextJsProps != curJsProps
+      val oldConvertedScalaProps =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      val newConvertedScalaProps =
+        if (nextJsProps == curJsProps) oldConvertedScalaProps
+        else convertProps(nextJsProps, thisJs.jsPropsToScala, displayName)
+
+      val oldComponent = oldConvertedScalaProps
+      val newComponent = newConvertedScalaProps
+      val nextScalaStateVersion = nextState.scalaStateVersion
+      val nextScalaStateVersionUsedToComputeSubelements =
+        nextState.scalaStateVersionUsedToComputeSubelements
+      val stateChangeWarrantsComputingSubelements = nextScalaStateVersionUsedToComputeSubelements != nextScalaStateVersion
+      val warrentsUpdate = propsWarrantRerender || stateChangeWarrantsComputingSubelements
+
+      val nextScalaState = nextState.scalaState
+      val newSelf =
+        mkSelf(thisJs, nextScalaState, newComponent.retainedProps)
+      val ret =
+        newComponent.shouldUpdate.toOption match {
+          case Some(su) if (warrentsUpdate) =>
+            val curState = thisJs.state
+            val curScalaState = curState.scalaState
+            /* bypass this##self call for small perf boost */
+            val oldSelf =
+              mkSelf(thisJs, curScalaState, oldComponent.retainedProps)
+            su(new OldNewSelf(oldSelf, newSelf))
+          case _ => warrentsUpdate
+        }
+
+      // Mark ourselves as all caught up!, this is mutating, why???
+      nextState.scalaStateVersionUsedToComputeSubelements = nextScalaStateVersion
+      // run side effects and update list, run in reverse order
+      val nextSideEffects = nextState.sideEffects.reverse
+      if (nextSideEffects.length > 0) {
+        // running side effects can create new ones
+        nextSideEffects.foreach(_(newSelf))
+        thisJs.setState(futureTotalState => {
+          // this seems to be an obtuse way of .take
+          //   let rec initialSegment = (acc, n, l) =>
+          //     switch l {
+          //     | [x, ...nextL] when n > 0 => initialSegment([x, ...acc], n - 1, nextL)
+          //     | _ => List.rev(acc)
+          //     }
+          //   // Additional side effects are the initial segment.
+          //   val newSideEffects = {
+          //     val acc = []
+          //     val n = futureTotalState.sideEffects.size - nextState.sideEffects.size
+          //     initialSegment(acc, n, futureTotalState.sideEffects)
+          //   }
+          val n = futureTotalState.sideEffects.size - nextState.sideEffects.size
+          val newSideEffects = futureTotalState.sideEffects.take(n)
+
+          // nextStateOnlyNewSideEffects
+          mkState(futureTotalState.scalaState, futureTotalState.scalaStateVersion, futureTotalState.scalaStateVersionUsedToComputeSubelements, newSideEffects)
+        })
+      }
+      ret
+    }
+
+    def sendMethod(thisJs: ThisSelf, action: A): Unit = {
+      //println(s"$displayName:CreateClasOpts.sendMethod: $action")
+      val convertedScalaProps =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      val component = convertedScalaProps
+      // Allow side-effects to be executed here. Return inside of setState
+      // means reactjs.setStates will not update the state.
+      thisJs.setState(curTotalState => {
+        val curScalaState = curTotalState.scalaState
+        val scalaStateUpdate = component.reducer.map(_(action, curScalaState, reducerResult)).getOrElse(NoUpdate())
+
+        if (scalaStateUpdate == NoUpdate()) null // reactjs sees setState(null) so no update
+        else {
+          val nextTotalState =
+            transitionNextTotalState(curTotalState, scalaStateUpdate)
+          if (nextTotalState.scalaStateVersion != curTotalState.scalaStateVersion)
+            nextTotalState
+          else null
+        }
+      })
+    }
+
+    def handleMethod(thisJs: ThisSelf, cb: Self => Unit): Unit = {
+      //println(s"$displayName:CreateClassOpts.handleMethod: $cb")
+      val component =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      val curState = thisJs.state // this is the actual react js state, which is TotalState
+      val curScalaState = curState.scalaState
+      val self = mkSelf(thisJs, curScalaState, component.retainedProps)
+      cb(self)
+    }
+
+    val render = thisJs => {
+      // call the real render method!
+      val component =
+        convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+      // create the fake "self" structure for render
+      val curState = thisJs.state // this is the actual react js state, which is TotalState
+      val curScalaState = curState.scalaState
+      val self = mkSelf(thisJs, curScalaState, component.retainedProps)
+      component.render.map(_(self)).getOrElse(null)
+    }
+  }
+
+
+
+
+
+  // /** Copy the component and add the callback...enhance the component. */
+  // case class Copy(val c: ComponentType) {
+  //   def withInitialState(is: SelfInitialState => S) = mergeComponents[c.type](lit(), c, lit("initialState" -> is))
+  //   def withDidMount(f: (Self, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType) =  mergeComponents[c.type](lit(), c, lit("didMount" -> f))
+  //   def withWillUnmount(f: SelfWithoutMethods => Unit) = mergeComponents[c.type](lit(), c, lit("willUnmount" -> f))
+  //   def withRender(f: Self => ReactNode) = mergeComponents[c.type](lit(), c, lit("render" -> f))
+  //   def withWillReceiveProps(f: Self => S) =  mergeComponents[c.type](lit(), c, lit("willReceiveProps" -> f))
+  //   def withReducer(f: (A, S, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType) = mergeComponents[c.type](lit(), c, lit("reducer" -> f))
+  //   def withShouldUpdate(f: OldNewSelf[Self] => Boolean) = mergeComponents[c.type](lit(), c, lit("shouldUpdate" -> f))
+  //   def withWillUpdate(f: OldNewSelf[Self] => Unit) = mergeComponents[c.type](lit(), c, lit("willUpdate" -> f))
+  //   def withDidUpdate(f: OldNewSelf[Self] => Unit) = mergeComponents[c.type](lit(), c, lit("didUpdate" -> f))
+  //   def withRetainedProps(rp: RP) = mergeComponents[c.type](lit(), c, lit("retainedProps" -> rp.asInstanceOf[js.Any]))
+  //   def withSubscriptions(subs: Self => Seq[Subscription]) = mergeComponents[c.type](lit(), c, lit("subscriptions" -> subs))
+  //   def withDidCatch(f: (Self, js.Error, ErrorInfo) => Unit) = mergeComponents[c.type](lit(), c, lit("didCatch" -> f))
+  //   def withContextTypes(ct: js.Object) = mergeComponents[c.type](lit(), c, lit("contextTypes"->ct))
+  // }
+
+
+
+  /*
+  def withInitialState(is: SelfInitialState => S) = Copy(component).withInitialState(is)
+  def withDidMount(f: (Self, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType) = Copy(component).withDidMount(f)
+  def withWillUnmount(f: SelfWithoutMethods => Unit) = Copy(component).withWillUnmount(f)
+  def withRender(f: Self => ReactNode) = Copy(component).withRender(f)
+  def withWillReceiveProps(f: Self => S) =  Copy(component).withWillReceiveProps(f)
+  def withReducer(f: (A, S, ReducerResult[S, Self]) =>  ReducerResult[S, Self]#UpdateType) = Copy(component).withReducer(f)
+  def withShouldUpdate(f: OldNewSelf[Self] => Boolean) = Copy(component).withShouldUpdate(f)
+  def withWillUpdate(f: OldNewSelf[Self] => Unit) = Copy(component).withWillUpdate(f)
+  def withDidUpdate(f: OldNewSelf[Self] => Unit) = Copy(component).withDidUpdate(f)
+  def withRetainedProps(rp: RP) = Copy(component).withRetainedProps(rp)
+  def withSubscriptions(subs: Self => Seq[Subscription]) = Copy(component).withSubscriptions(subs)
+  def withDidCatch(f: (Self, js.Error, ErrorInfo) => Unit) = Copy(component).withDidCatch(f)
+  def withContextTypes(ct: js.Object) = Copy(component).withContextTypes(ct)
+   */
+

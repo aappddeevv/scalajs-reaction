@@ -5,7 +5,7 @@ title: Creating Components
 # Creating Components
 Creating react components in scalajs-react uses a "builder" type pattern. 
 
-In scala.js, Component is just a "data structure" (a record really) that holds a few values and functions. A proxy is setup on the javascript side that forwards the react calls to the scala side Component. You can create the Component almost anyway you want but some functions are provided for convenience. It's important to realize that the type parameters you provide are very different than those provided to other scala.js react facades as the API is very different as well. For example, scalajs-react includes a simple router in every component. There is also no `setState` API. Instead this has been replaced by a fine state machine.
+In scala.js, Component is just a "data structure" (a javascript object = "record") that holds a few values that are callback functions. A proxy is setup on the javascript side that forwards the react calls to the scala side Component. You can create the Component almost in anyway you like but some functions are provided for convenience. It's important to realize that the type parameters you provide are very different than those provided to other scala.js react facades as the reason-react API is different. There is also no `setState` API. Instead this has been replaced by a fine state machine.
 
 It's best to look to the [ReasonReact](https://reasonml.github.io/reason-react) docs to understand the approach to creating Components in scala.js. It's pretty much the same approach.
 
@@ -24,17 +24,19 @@ trait ToDoProps extends js.Object {
 
 object ToDoC {
   val ToDo = statelessComponent("ToDo")
+  import ToDo.ops._
   // def make(todo: ToDo, remove: Unit => Unit) =
   // or bundle them together into a trait
   def make(props: ToDoProps) =
-    ToDo.
-      .withRender{self => 
+    ToDo.copy(new methods {
+      render = js.defined{self => 
         <.div(^.style := Style("display" := "flex"))(
           Label()("Item:"),
           Label()(props.todo.name),
           defaultButton(
             F.text := "Remove",
             ^.onClick ==> ((_: ReactEvent) => props.remove(())))().toEl)}
+        })
 }
 ```
 You can pass in children via your ToDoProps or just add them to the make call, if you need children. Here's an example where they are passed in as a `js.Array[]`.
@@ -95,3 +97,12 @@ Note that every child must be converted to a `ReactNode` type, including strings
 val stringElement = stringToElement("blah")
 ```
 which can be quite verbose, hence the implicit conversions which will convert simple types to a `ReactNode`.
+
+## What's Ops?
+The import `myComponent.ops._` imports the "methods" trait so you can customize the component for your specific render, reducer, and processing needs. It also contains a few types you can use to help you break out methods into small parts. For example, it contains the "Self" type so that you can define a function separate from the methods:
+```scala
+def renderFooter(self: Self, ...): ReactNode = { ... }
+```
+If you use state or retained props, it contains `S` and `RP` as well.
+
+These types will *not* work anywhere else but for this component. Another component will have another "Self" type...this way you cannot mix things up accidently.

@@ -8,23 +8,24 @@ similar. While more advanced scala functionality could have been used, the
 scala.js implemetation was kept intentionally similar to ReasonReact so that the
 documentation would apply.
 
-The facade library is small and provides a new API  for creating
-components based on reason-react.
+This facade library is small, does not use advanced scala features and provides
+a different component API based on reason-react vs reactjs.
 
-Of course, you can code a react interface without using any of these facades
+You can code a scala.js based react interface without using any facade library
 since scala.js supports non-native JS class definitions. scala.js's JS class
 support is extensive and well thought out. One of the reasons I liked the
 ReasonReact model is that it rethought the abstractions and API. Instead of
-trying to copy the reactjs API it provides something smaller and simpler and
-emphasizes benefits in just a few dimensions of the reactive user interface
-problem--almost the very definition of "disruptive."
+trying to copy the reactjs API, it provides something smaller and emphasizes
+changes in a few dimensions of the reactive UI API problem--almost the very
+definition of "disruptive."
 
 scalajs-react emphasizes integration into an existing project by making it easy
-to export and import components and fit into existing global state-managed
-solutions, such as redux. At the same time it allows you to build your entire
-interface in scalajs-react if you wish. As long as your front-end solution can
-absorb the monolithic bundling aspect of scala.js in general, you should
-consider scalajs-react for your solution.
+to import/export components and fit into existing application including those
+using global state-managed solutions such as redux. At the same time, it allows
+you to build your entire interface in scalajs-react if you wish. As long as your
+front-end solution can manage the model of scala.js's output (one large module
+for all scala.js code, not file-by-file/module-by-module), you should consider
+scalajs-react for your solution.
 
 [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
 
@@ -189,7 +190,7 @@ object styles {
 ```
 In the example above, you would need to ensure webpack has an alias to the Examples directory and that you have setup your CSS processors correctly. post-css is quite popular when using webpack. Since a Dynamics was used, this is not type safe.
 
-A styling trait is also provided to help you typecheck the style attributes for inline styling:
+A styling trait is also provided to help you ensure you only provide style attributes for inline styling:
 ```scala
 val hstyle = new StyleAttr { display = "flex" }
 ```

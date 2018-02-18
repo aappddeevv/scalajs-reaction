@@ -5,10 +5,11 @@
 package ttg
 package react
 
+/*
 /**
-  * Logic for the react proxy component that can be separated
-  * out to make entry points more flexible and the logic more pure.
-  */
+ * Logic for the react proxy component that can be separated
+ * out to make entry points more flexible and the logic more pure.
+ */
 object componentlogic {
   type MakeState[S, RP, A, SLF, State <: TotalState[S, RP, A, SLF]] = (Option[S], Int, Int, Seq[SLF => Unit]) => State
 
@@ -53,3 +54,4 @@ object componentlogic {
   }
 
 }
+ */

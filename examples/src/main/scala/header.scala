@@ -16,7 +16,7 @@ import elements._
 
 object HeaderC {
 
-  private val component = statelessComponent("Header")
+  val header = statelessComponent("Header")
 
   val hstyle = new StyleAttr {
     lineHeight = "40px"
@@ -26,13 +26,25 @@ object HeaderC {
     fontSize = "14px"
   }
 
+  import header.ops._
+
   def make(className: String, target: String) =
-  component.
-    withRender{self =>
-      reactdom.createPortalInElementWithId(
-        <.div(^.className := className, ^.style := hstyle)(
-          "scalajs-react Examples (header via createPortal, inlines styles)"
-        ),
-        target)
-    }
+    header.copy(new methods {
+      render = js.defined { self =>
+        reactdom.createPortalInElementWithId(
+          <.div(^.className := className, ^.style := hstyle)(
+            "scalajs-react Examples (header via createPortal, inlines styles)"
+          ),
+          target)
+      }
+    })
+  //def make(className: String, target: String) =
+  // component.
+  //   withRender{self =>
+  //     reactdom.createPortalInElementWithId(
+  //       <.div(^.className := className, ^.style := hstyle)(
+  //         "scalajs-react Examples (header via createPortal, inlines styles)"
+  //       ),
+  //       target)
+  //   }
 }

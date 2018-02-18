@@ -7,6 +7,7 @@ package react
 
 import scala.scalajs.js
 import js.JSConverters._
+import js.Dynamic.{literal => lit}
 
 object WrapProps {
 
@@ -23,7 +24,9 @@ object WrapProps {
 
   /** Only need 1 interop component, then just copy and change jsElementWrapped. */
   private[this] val dummyInteropComponent =
-    elements.basicComponent[Stateless, NoRetainedProps, Actionless]("interop")
+    elements.statelessComponent("interop")
+
+  import dummyInteropComponent.ops._
 
   /**
     * Wrap a js authored component for use in scala world.  Props must be a js
@@ -31,13 +34,9 @@ object WrapProps {
     * an existing js component, only allow valid js values i.e. no scala object
     * leakage. `reactComponent` must be imported into scala using `@JSImport`.
     */
-  def wrapJsForScala[P <: js.Object](
-      reactComponent: ReactJsComponent,
-      props: P,
-      children: ReactNode*): Component[Stateless, NoRetainedProps, Actionless, _, _, _] = {
+  def wrapJsForScala[P <: js.Object](reactComponent: ReactJsComponent, props: P, children: ReactNode*): Component = {
+    // scala func
     val jsElementWrapped = wrapProps(reactComponent, props, children: _*)
-    dummyInteropComponent
-      .copy(jsElementWrapped = Some(jsElementWrapped))
-      .asInstanceOf[Component[Stateless, NoRetainedProps, Actionless, _, _, _]]
+    mergeComponents(lit(), dummyInteropComponent.component, lit("jsElementWrapped" -> jsElementWrapped.asInstanceOf[js.Any]))
   }
 }

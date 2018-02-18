@@ -28,7 +28,8 @@ object styles {
 import styles._
 
 object ChangeReduxStateC {
-  private val c = statelessComponent("ChangeReduxState")
+  val c = statelessComponent("ChangeReduxState")
+  import c.ops._
 
   trait ChangeReduxProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined
@@ -37,16 +38,18 @@ object ChangeReduxStateC {
   }
 
   private def _make(props: ChangeReduxProps) =
-    c.withRender { self =>
-      <.div(^.className := cstyles.component)(
-        Label()("Redux Label"),
-        TextField(new ITextFieldProps {
-          className = cstyles.label.asString
-          onChanged = js.defined((v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
-          value = props.label.getOrElse[String]("no redux label")
-        })()
-      )
-    }
+    c.copy(new methods {
+      render = js.defined { self =>
+        <.div(^.className := cstyles.component)(
+          Label()("Redux Label"),
+          TextField(new ITextFieldProps {
+            className = cstyles.label.asString
+            onChanged = js.defined((v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
+            value = props.label.getOrElse[String]("no redux label")
+          })()
+        )
+      }
+    })
 
   private val jsComponent = c.wrapScalaForJs { (jsProps: ChangeReduxProps) =>
     _make(jsProps)

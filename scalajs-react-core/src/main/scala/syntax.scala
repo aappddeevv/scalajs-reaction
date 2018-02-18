@@ -94,15 +94,15 @@ trait JsDynamicSyntax {
   implicit def jsDynamicOpsSyntax(jsdyn: js.Dynamic) = JsDynamicOps(jsdyn)
 }
 
-final case class ComponentOps[S, RP, A](c: Component[_, _, _, _, _, _]) {
+final case class ComponentOps(c: Component) {
   @inline def toEl: ReactElement = elements.element(c)
   @inline def toEl(key: Option[String] = None, ref: Option[RefCb] = None) =
     elements.element(c, key, ref)
 }
 
 trait ComponentSyntax {
-  implicit def componentOpsSyntax[S, RP, A](c: Component[_, _, _, _, _, _]) =
-    ComponentOps[S, RP, A](c)
+  implicit def componentOpsSyntax(c: Component) =
+    ComponentOps(c)
 }
 
 // trait ElementConversionSyntax {
@@ -130,7 +130,7 @@ object syntax {
 }
 
 trait C2E {
-  @inline implicit def c2e(c: ComponentAny): ReactNode = elements.element(c)
+  @inline implicit def c2e(c: Component): ReactNode = elements.element(c)
 }
 
 /**

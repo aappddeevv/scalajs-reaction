@@ -82,17 +82,7 @@ package object react {
   type JsElementWrapped = (Option[String], Option[RefCb]) => ReactElement
 
   /** Simplified ComponentSpec. */
-  type Component[S, RP, A, SLF, SLFW, SLFI] = ComponentSpec[S, RP, A, SLF, SLFW, SLFI]
-
-  /** Component type where only S, RP and A are specified, you don't care about selfs. */
-  type ComponentNoSelf[S, RP, A] = ComponentSpec[S, RP, A, _, _, _]
-
-  /** Component type where you don't care about the type parameters at all. */
-  type ComponentAny = ComponentSpec[_, _, _, _, _, _]
-
-  type NoRetainedProps = Unit
-  type Stateless = Unit
-  type Actionless = Unit
+  type Component = ComponentSpec
 
   /** Callback for react ref. Pure string refs are not supported. */
   type RefCb = js.Function1[ReactElement, Unit]
@@ -130,12 +120,17 @@ package object react {
     * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
     */
   @inline def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
+    // not js.Any? maybe keep js or scala values in here....
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
         result(key) = value
     }
     result.asInstanceOf[js.Dynamic]
+  }
+
+  private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
+    mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }
 
   /** Safely wrap a value which could be undefined or null -> None, otherwise Some. */
@@ -160,5 +155,4 @@ package object react {
     // def error(v: js.Any*) = _c.error(v:_*)
     def log(v: js.Any*) = g.console.log.apply(null, v.toJSArray)
   }
-
 }

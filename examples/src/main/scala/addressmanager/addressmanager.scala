@@ -41,9 +41,11 @@ case object Refresh extends Actions
 
 object AddressDetailC {
   val AddressDetail = statelessComponent("AddressDetail")
+  import AddressDetail.ops._
+
   def make(address: Option[Address]) =
-    AddressDetail
-      .withRender { self =>
+    AddressDetail.copy(new methods {
+      render = js.defined { self =>
         <.div(
           ^.className := amstyles.detail,
         )(
@@ -54,6 +56,7 @@ object AddressDetailC {
           Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
         )
       }
+    })
 }
 
 /**
@@ -89,35 +92,35 @@ object AddressListC {
   )
 
   val AddressList = statelessComponent("AddressList")
+  import AddressList.ops._
 
-  def make(sel: ISelection[Address],
-    addresses: AddressList = emptyAddressList,
-    activeCB: Option[Address] => Unit,
-    ifx: Option[Int] = None) =
-    AddressList
-      .withRender { self =>
-        val listopts = new IDetailsListProps[Address] {
-          val items = addresses.toJSArray
-          selectionPreservedOnEmptyClick = true
-          columns = icolumns
-          getKey = getAddressKey
-          initialFocusedIndex = ifx.orUndefined
-          onActiveItemChanged = js.defined({ (aundef, _, _) =>
-            activeCB(aundef.toNonNullOption)
-          })
-          /* or 
+  def make(sel: ISelection[Address], addresses: AddressList = emptyAddressList, activeCB: Option[Address] => Unit, ifx: Option[Int] = None) =
+    AddressList.copy(new methods {
+      render = js.defined {
+        self =>
+          val listopts = new IDetailsListProps[Address] {
+            val items = addresses.toJSArray
+            selectionPreservedOnEmptyClick = true
+            columns = icolumns
+            getKey = getAddressKey
+            initialFocusedIndex = ifx.orUndefined
+            onActiveItemChanged = js.defined({ (aundef, _, _) =>
+              activeCB(aundef.toNonNullOption)
+            })
+            /* or
           onActiveItemChanged = { (aundef, _, _) =>
             activeCB(aundef.toNonNullOption)
           }: OAIC
-           */
-          selection = sel
-          layoutMode = DetailsListLayoutMode.fixedColumns
-          constrainMode = ConstrainMode.horizontalConstrained
-        }
-        <.div(
-          ^.className := amstyles.master,
-        )(DetailsList[Address](listopts)())
+             */
+            selection = sel
+            layoutMode = DetailsListLayoutMode.fixedColumns
+            constrainMode = ConstrainMode.horizontalConstrained
+          }
+          <.div(
+            ^.className := amstyles.master,
+          )(DetailsList[Address](listopts)())
       }
+    })
 }
 
 object AddressManagerC {
@@ -132,10 +135,11 @@ object AddressManagerC {
       var selection: ISelection[Address] = null // its a js thing
   )
 
-  private val AddressManager = reducerComponentWithRetainedProps[State, NoRetainedProps, Actions]("AddressManager")
+  private val AddressManager = reducerComponent[State, Actions]("AddressManager")
+  import AddressManager.ops._
 
-  private def cbopts(self: AddressManager.Self) = new ICommandBarProps {
-    val isFetching = self.state.map(_.fetching).getOrElse(false)
+  private def cbopts(self: Self) = new ICommandBarProps {
+    val isFetching = self.state.fetching
     val items = js.Array(
       new IContextualMenuItem {
         val key = "new"
@@ -151,7 +155,7 @@ object AddressManagerC {
       },
     )
     farItems = js.Array(
-      if (self.state.map(_.fetching).getOrElse(false))
+      if (self.state.fetching)
         new IContextualMenuItem {
           val key = "refresh"
           name = "Fetching..."
@@ -167,7 +171,7 @@ object AddressManagerC {
     )
   }
 
-  private def fetchData(self: AddressManager.Self, dao: AddressDAO): Unit = {
+  private def fetchData(self: Self, dao: AddressDAO): Unit = {
     self.send(FetchRequest)
     dao
       .fetch("no id")
@@ -193,8 +197,9 @@ object AddressManagerC {
     * must take this into account.
     */
   private def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String], lastActiveAddressId: Option[Id]) =
-    AddressManager
-      .withInitialState { self =>
+    AddressManager.copy(new methods {
+
+      val initialState = { self =>
         val selcb = () => {
           self.handle { cbself =>
             // should probably do something with the selection
@@ -206,84 +211,78 @@ object AddressManagerC {
           selectionMode = SelectionMode.single
           onSelectionChanged = js.defined(selcb)
         }))
-        Some(State(selection = selection))
+        State(selection = selection)
       }
-      .withSubscriptions { self =>
+
+      subscriptions = js.defined({ self =>
         Seq(() => () => vm.setActive(null, null))
-      }
-      .withReducer { (action, sopt, gen) =>
-        //println(s"withReducer: ${action}, ${sopt}")
-        action match {
-          case FetchRequest if (sopt.isDefined) =>
-            gen.update(Some(sopt.get.copy(fetching = true)))
+      })
 
-          case FetchResult(result) if (sopt.isDefined) =>
-            result match {
-              case Left(msg) =>
-                println(s"fetch failed $msg")
-                gen.update(Some(sopt.get.copy(fetching = false, addresses = emptyAddressList, message = Some(msg))))
-              case Right(addresses) =>
-                gen.updateAndEffect(
-                  Some(sopt.get.copy(fetching = false, addresses = addresses)),
-                  self => {
-                    silentlyChangeSelection(sopt.get, sopt.get.selection) { s =>
-                      println("setting active after data fetch, but may not be the right time!")
-                      js.Dynamic.global.console.log("active id", vm.activeId, addresses)
-                      s.setItems(addresses, true)
-                    //vm.getSelectedIds().foreach(id => s.setKeySelected(id, true, false))
+      reducer = js.defined({
+        (action, state, gen) =>
+          action match {
+            case FetchRequest =>
+              gen.update(state.copy(fetching = true))
+            case FetchResult(result) =>
+              result match {
+                case Left(msg) =>
+                  println(s"fetch failed $msg")
+                  gen.update(state.copy(fetching = false, addresses = emptyAddressList, message = Some(msg)))
+                case Right(addresses) =>
+                  gen.updateAndEffect(
+                    state.copy(fetching = false, addresses = addresses),
+                    self => {
+                      silentlyChangeSelection(state, state.selection) { s =>
+                        println("setting active after data fetch, but may not be the right time!")
+                        js.Dynamic.global.console.log("active id", vm.activeId, addresses)
+                        s.setItems(addresses, true)
+                      //vm.getSelectedIds().foreach(id => s.setKeySelected(id, true, false))
+                      }
                     }
-                  }
-                )
-            }
-          case ActiveChanged(p) =>
-            p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
-              .getOrElse(gen.effect(_ => vm.setActive(null, null)))
-
-          case Refresh =>
-            // refresh data, clear active object
-            gen.updateAndEffect(sopt.map(state => state.copy(addresses = emptyAddressList)), eslf => {
-              //vm.setSelection(emptyIdList, null)
-              vm.setActive(null, null)
-              fetchData(eslf, dao)
-            })
-
-          case _ =>
-            gen.skip
-        }
-      }
-      // self is needed to init the full state since "selection" requires a callback
-      // so we do it in mount vs initialState
-      .withDidMount { (self, gen) =>
-        gen.effect(fetchData(_, dao))
-      }
-      .withRender { self =>
-        val initialFocusedIndex = for {
-          id <- lastActiveAddressId
-          addresses <- self.state.map(_.addresses)
-        } yield addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse[Boolean](false))
-        println(s"initial focused index opt: ${initialFocusedIndex}")
-        val selAddrOpt = toSafeOption(vm.active)
-
-        val activecb = (address: Option[Address]) => {
-          self.handle { cbself =>
-            cbself.send(ActiveChanged(address.map(a => (a.customeraddressid.get, a))))
+                  )
+              }
+            case ActiveChanged(p) =>
+              p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
+                .getOrElse(gen.effect(_ => vm.setActive(null, null)))
+            case Refresh =>
+              // refresh data, clear active object
+              gen.updateAndEffect(state.copy(addresses = emptyAddressList), eslf => {
+                //vm.setSelection(emptyIdList, null)
+                vm.setActive(null, null)
+                fetchData(eslf, dao)
+              })
+            case _ => gen.skip
           }
-        }
+      })
 
-        <.div(^.className := amstyles.component)(
-          CommandBar(cbopts(self))(),
-          <.div(^.className := amstyles.masterAndDetail)(
-            AddressListC.make(
-              self.state.map(_.selection).get,
-              self.state.map(_.addresses).getOrElse[AddressList](emptyAddressList),
-              activecb,
-            initialFocusedIndex),
-            AddressDetailC.make(selAddrOpt),
-          ),
-          AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
-          Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
-        )
-      }
+      didMount = js.defined({ (self, gen) =>
+        gen.effect(fetchData(_, dao))
+      })
+
+      render = js.defined({
+        self =>
+          val initialFocusedIndex = for {
+            id <- lastActiveAddressId
+          } yield self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse[Boolean](false))
+          println(s"initial focused index opt: ${initialFocusedIndex}")
+          val selAddrOpt = toSafeOption(vm.active)
+
+          val activecb = (address: Option[Address]) => {
+            self.handle { cbself =>
+              cbself.send(ActiveChanged(address.map(a => (a.customeraddressid.get, a))))
+            }
+          }
+          <.div(^.className := amstyles.component)(
+            CommandBar(cbopts(self))(),
+            <.div(^.className := amstyles.masterAndDetail)(
+              AddressListC.make(self.state.selection, self.state.addresses, activecb, initialFocusedIndex),
+              AddressDetailC.make(selAddrOpt),
+            ),
+            AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
+            Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
+          )
+      })
+    })
 
   @JSExportTopLevel("AddressManager")
   private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerPropsRedux) =>

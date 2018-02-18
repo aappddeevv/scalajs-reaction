@@ -90,18 +90,18 @@ trait JSReactDOM extends js.Object {
 object JSReactDOM extends JSReactDOM
 
 object reactdom {
+
   /** Render into the DOM given an element id. */
   def renderToElementWithId(el: ReactNode, id: String) = {
     val target = Option(dom.document.getElementById(id))
-    target.fold(throw new Exception(s"renderToElementWithId: No element with id $id found in the HTML."))(
-      htmlel => JSReactDOM.render(el, htmlel))
+    target.fold(throw new Exception(s"renderToElementWithId: No element with id $id found in the HTML."))(htmlel => JSReactDOM.render(el, htmlel))
   }
 
   /** Render the DOM given an element id using react's portal. */
   def createPortalInElementWithId(node: ReactNode, id: String) = {
     val target = Option(dom.document.getElementById(id))
-    target.fold(throw new Exception(s"createPortalInElemeentWithId: No element with id $id founud in the HTML."))(
-      htmlel => JSReactDOM.createPortal(node, htmlel))
+    target.fold(throw new Exception(s"createPortalInElemeentWithId: No element with id $id founud in the HTML."))(htmlel =>
+      JSReactDOM.createPortal(node, htmlel))
   }
 }
 @js.native

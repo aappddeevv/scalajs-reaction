@@ -9,64 +9,93 @@ The key message below is that even with a typescript description to guide you, y
 
 ## JS -> Scala
 Given that we also use native and non-native JS traits to describe the shape of data, we may wonder how to handle data from web apis, for example in the structure:
+
 ```typescript
 export interface Foo { 
     field1?: string
     field2?: string | null
 }
 ```
+
 field1 can be undefined or a string and field2 can be a string value, undefined or null. Depending on the nature of the data source, you may encounter alot of field1 or field2 on some combination of that. For example, field1 could represent a value that is non-nullable in the source database but may not have been requested in a fetch and may not be present. field2 could represent a nullable field in the source database that was not requested or was requested and was null.
 
 The question is how to best model these in scala so that we do not have to write an object conversion for each data structure. There was talk at one time to create a structure like UndefOr for nulls, `NullOr` however when you use a union type with null (whose type is Null), strange things can happen in scala's type system, such as collapsing a `T|Null` to just T since a T can be null to begin with.
 
 If you know the data is either there or not there, then UndefOr is fine:
+
 ```scala
 trait Foo extends js.Object {
   var field: js.UndefOr[String] // var so mutable, use val for immutable
 }
 ```
+
 However, if field can be null, undefined or a value what should we use? Consider:
+
 ```scala
 trait Foo extends js.Object {
   var field1: js.UndefOr[String]
 }
 ```
+
 Here, the value may not be present but it could be null, which is *different* then not being present. We could test:
+
 ```scala
 aFoo.field == null
+// or
+aFoo.orNull == null
 ```
-which returns true or false depending on whether the value is null. scalajs-react provides a pimp:
+
+which returns true or false depending on whether the value is null. `UndefOr` has its own pimp which returns null if UndefOr is undefined, but not if its null:
+
+```scala
+val x: jsUndefOr[String] = ...
+val test: String = x.orNull // test could be a string or null
+```
+
+What we generally need when obtaining data from javascript is something that recognizes the idioms that if a value is undefined or null, then its "false" or None, not just if its' undefined. UndefOr's `isEmpty` function just checks if its undefined, so its not quite right for our needs. What we need is to get to a scala Option (or something like that) when the value is null *or* undefined.
+
+scalajs-react provides a pimp:
 ```scala
 final case class JsUndefOrOps[A](a: UndefOr[A]) {
   def isNull  = a == null
   def isEmpty = isNull || !a.isDefined
 }
 ```
+
 which can be implicitly used by importing the syntax so you can test:
+
 ```scala
 val aBoolean = aFoo.field1.isNull // is it just null?
 val aBoolean2 = afoo.field1.isEmpty // is it null or undefined
 ```
+
 So we can test for null fairly easily given the `UndefOr` type definition. But we want to manipulate these things with some more functional syntax. For example, we would like an Option-based variant that is None if `isEmpty==true` and the value otherwise. Using `UndefOr.toOption` actually may wrap a "null" value and produce a `Some(null)` instead of None. So clearly, just using `.toOption` is not a good answer. So at the expense of a little boolean check, perhaps we could do something more convenient. Let's state what we want, an Option that reflects both UndefOr and possible underlying null value:
+
 ```scala
 final case class JsUndefOrOps[A](a: UndefOr[A]) {
   @inline def toNonNullOption = if(a.isEmpty) None else a.toOption
 }
 ```
+
 So now we can safely convert a UndefOr to an Option and have it be "null" if it is null or undefined and a Some with a non-null value otherwise. The cost you pay is a small conversion charge. So in general, it's ok to model your data us UndefOr:
+
 ```scala
  val x: Option[String] = aFoo.field1.toNonNullOption
 ```
+
 Also, if you need to set data to null and the trait defines it as an UndefOr, just set it directly to null, just before you dispatch it javascript code:
 ```scala
   aFoo.field1 = null
 ```
+
 You should note that just declaring the attribute as a type:
+
 ```
 trait Foo extends js.Object {
   var field1: String
 }
 ```
+
 does not communicate that it can be null explicitly as in typescript. Perhaps, a `var field1: String|Null`. There's nothing wrong with that except scala already defines that String to be potentially null so why go through the hassle!
 
 If you see a trait with just a plain String and you want an Option just wrap it just like in, `Option(field1)` since Option translates null to None in plain scala to begin with.

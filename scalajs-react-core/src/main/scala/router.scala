@@ -6,10 +6,10 @@ import scala.scalajs.js
 import org.scalajs.dom
 
 /**
- * Short router. Use pattern matching in the cb to match on the url structure
- * `(path seq, hash, search)` and then call "send" on your component's
- * router. Add your router as a Subscription and profit!
- */
+  * Short router. Use pattern matching in the cb to match on the url structure
+  * `(path seq, hash, search)` and then call "send" on your component's
+  * router. Add your router as a Subscription and profit!
+  */
 object router {
 
   private def makeEvent(t: String): dom.Event = {
@@ -36,7 +36,7 @@ object router {
       case x =>
         // always seems to be a leading /, so drop it
         val start = 1
-        val end = x.length - (if(x.endsWith("/")) 1 else 0)
+        val end = x.length - (if (x.endsWith("/")) 1 else 0)
         x.slice(start, end).split("/")
     }
   }
