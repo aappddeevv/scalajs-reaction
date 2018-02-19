@@ -67,7 +67,8 @@ lazy val root = project.in(file("."))
   .settings(noPublishSettings)
   .settings(name := "scalajs-react")
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
-    `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`)
+    `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
+    `scalajs-react-react-dom`, `scalajs-react-prop-types`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
@@ -76,7 +77,25 @@ lazy val `scalajs-react-core` = project
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(
-    description := "Core scala.js react facade.",
+    description := "reactjs package.",
+  )
+
+lazy val `scalajs-react-prop-types` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-react-core`)
+  .settings(
+    description := "prop-types package.",
+  )
+
+lazy val `scalajs-react-react-dom` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-react-core`)
+  .settings(
+    description := "react-dom package."
   )
 
 lazy val `scalajs-react-vdom` = project
@@ -94,7 +113,7 @@ lazy val `scalajs-react-redux` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`)
   .settings(
-    description := "Connect to redux store to drive rendering.",
+    description := "redux via react-redux.",
   )
 
 lazy val `scalajs-react-fabric` = project
@@ -103,7 +122,7 @@ lazy val `scalajs-react-fabric` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
   .settings(
-    description := "scala.js react facade support for microsoft office-ui-fabric",
+    description := "microsoft office-ui-fabric facade.",
   )
 
 // Watch non-scala assets as well, we add this to root project even
@@ -113,7 +132,7 @@ watchSources += baseDirectory.value / "examples/src/main/assets"
 lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
-  .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`)
+  .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`, `scalajs-react-prop-types`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   // rebuilds if these non-scala sources change...????

@@ -21,7 +21,7 @@ import fabric._
 import fabric.components._
 
 import vdom._
-import prefix_<^._
+import vdom.tags._
 import prefix_F._
 
 @js.native
@@ -31,6 +31,8 @@ object componentStyles extends js.Object
 object styles {
   val component = componentStyles.asInstanceOf[js.Dynamic]
 }
+
+import styles._
 
 case class ToDo(id: Int, name: String)
 
@@ -47,12 +49,12 @@ object ToDoC {
   def make(todo: ToDo, remove: Unit => Unit) =
     ToDo.copy(new methods {
       render = js.defined(self => {
-        <.div(^.className := styles.component.todo)(
-          Label(new LabelProps { className = styles.component.title.asString })(todo.name).toEl,
+        div(new DivProps{ className = component.todo.asString})(
+          Label()(todo.name),
           DefaultButton(new IButtonProps {
             text = "Remove"
             onClick = js.defined(_ => remove(()))
-          })().toEl
+          })()
         )
       })
     })
@@ -65,8 +67,8 @@ object ToDoListHeader {
   def make(length: Int) =
     ToDoListHeader.copy(new methods {
       render = js.defined { self =>
-        <.div()(
-          Label()(s"# To Dos - ${length}").toEl
+        div(
+          Label()(s"# To Dos - ${length}")
         )
       }
     })
@@ -80,8 +82,8 @@ object ToDoListC {
     ToDoList.copy(new methods {
       val retainedProps = length
       render = js.defined { self =>
-        <.div()(
-          ToDoListHeader.make(length).toEl,
+        div(
+          ToDoListHeader.make(length),
           arrayToElement(todos.map(t => element(ToDoC.make(t, _ => remove(t.id)), key = Some(t.id.toString()))))
         )
       }
@@ -122,33 +124,33 @@ object ToDosC {
       val initialState = _ => State(todos, None)
       render = js.defined {
         self =>
-          <.div(^.className := styles.component.todoApp)(
-            Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
-            <.div(^.className := styles.component.dataEntry)(
-              TextField(new ITextFieldProps {
-                placeholder = "enter new todo"
-                componentRef = js.defined((r: ITextField) => self.send(SetTextFieldRef(r)))
-                onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
-                value = self.state.input.getOrElse[String]("")
-              })(),
-              PrimaryButton(new IButtonProps {
-                text = "Add"
-                disabled = self.state.input.size == 0
-                // demonstrates inline callback
-                // could be _ => since we don't use 'e'
-                onClick = js.defined { (e: ReactEvent[_]) =>
-                  // if have state, add todo and refocus
-                  self.state.input.foreach { i =>
-                    self.handle { s =>
-                      s.send(Add(ToDo(mkId(), i)))
-                      s.state.textFieldRef.foreach(ref => refToJs(ref).focus())
-                    }
+        div(new DivProps{})(
+          Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
+          div(new DivProps{className = component.dataEntry.asString})(
+            TextField(new ITextFieldProps {
+              placeholder = "enter new todo"
+              componentRef = js.defined((r: ITextField) => self.send(SetTextFieldRef(r)))
+              onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
+              value = self.state.input.getOrElse[String]("")
+            })(),
+            PrimaryButton(new IButtonProps {
+              text = "Add"
+              disabled = self.state.input.size == 0
+              // demonstrates inline callback
+              // could be _ => since we don't use 'e'
+              onClick = js.defined { (e: ReactEvent[_]) =>
+                // if have state, add todo and refocus
+                self.state.input.foreach { i =>
+                  self.handle { s =>
+                    s.send(Add(ToDo(mkId(), i)))
+                    s.state.textFieldRef.foreach(ref => refToJs(ref).focus())
                   }
                 }
-              })()
-            ),
-            ToDoListC.make(self.state.todos.length, self.state.todos, (id: Int) => self.handle(remove(id)))
-          )
+              }
+            })()
+          ),
+          ToDoListC.make(self.state.todos.length, self.state.todos, (id: Int) => self.handle(remove(id)))
+        )
       }
     })
 

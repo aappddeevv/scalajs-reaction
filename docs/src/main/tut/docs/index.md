@@ -22,7 +22,11 @@ libraryDependencies ++= Seq(
     // optional but includes a Microsoft UI component set
     "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
     // optional unless you want to connect to redux state
-    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion)
+    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
+    // if you need react-dom
+    "ttg" %%% "scalajs-react-react-dom" % scalaJsReactVersion
+    // if you need prop-types
+    "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion)
 ```
 
 Then use the following imports to import functionality you need:
@@ -51,7 +55,11 @@ import react.implicits._
 import vdom._
 
 // imports all virtual dom elements so you can use <.div. If you import <._ then you can just use "div"
+// this is for list style attributes
 import prefix_<^._
+
+// non-native trait style attributes
+import vdom.tags
 
 // import this if you are using the office-ui-fabric-react library, otherwise skip
 import fabric
@@ -80,10 +88,11 @@ import ttg.react.implicits._
 ## npm and js packages
 Based on the scala libraries you use, you will need to bundle the appropriate packages. All of the scala.js imports underneath in the interop layer convert to CJS `require` calls.
 
-* core: react, react-dom, create-react-class
+* core: react, create-react-class
+* react-dom: react-dom
+* prop-types: prop-types
 * vdom: no js dependencies
 * fabric: office-ui-fabric-react
-* redux: react-redux
+* redux: react-redux, redux
 
 Generally, if you include these in your package.json as runtime dependencies you should be all set. If you use `scalajs-bundler` you would need to add these to your build.sbt file.
-

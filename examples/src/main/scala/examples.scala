@@ -96,6 +96,15 @@ object Pages {
       ReactMarkdownC.make(new ReactMarkdownProps { source = text })
     )
   }
+
+  def tagTest() = {
+    PivotItem(new IPivotItemProps {
+      linkText = "Tag Test"
+      itemKey = "tagTesT"
+    })(
+      TagTestC.make()
+    )
+  }
 }
 
 import Pages._
@@ -114,7 +123,8 @@ object Examples {
             todoPage,
             helloWorldPage,
             changeReduxStatePage(),
-            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make())
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
+            tagTest(),
           ),
           HeaderC.make("header", headerTarget)
         )

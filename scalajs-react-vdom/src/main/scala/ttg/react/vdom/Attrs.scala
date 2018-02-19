@@ -7,6 +7,8 @@ package react
 package vdom
 
 import scalajs.js
+import org.scalajs.dom
+import scala.annotation.unchecked.{uncheckedVariance => uv}
 
 /** The rhs of an Attribute name value pair. value could be a js undefined value. */
 case class AttrValue(value: js.Any)
@@ -99,5 +101,9 @@ trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
     AttrValue(attrs)
   //@inline implicit def cvtJsObjectToAttrValue(attrs: js.Object): AttrValue = AttrValue(attrs)
 
+  /** Create tag that takes a list of attributes. */
   @inline def tag(name: String): Tag = new Tag(name)
+
+  /** Create a tag that takes a typed js.Object. */
+  @inline def tagt[P <: js.Object](name: String): TagT[P] = new TagT[P](name)
 }

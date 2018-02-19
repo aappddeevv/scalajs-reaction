@@ -29,17 +29,21 @@ object ToDoC {
   // or bundle them together into a trait
   def make(props: ToDoProps) =
     ToDo.copy(new methods {
-      render = js.defined{self => 
-        <.div(^.style := Style("display" := "flex"))(
+      render = js.defined{ self => 
+       div(new DivProps { style = StyleAttr("display" = "flex")})(
           Label()("Item:"),
           Label()(props.todo.name),
-          defaultButton(
-            F.text := "Remove",
-            ^.onClick ==> ((_: ReactEvent) => props.remove(())))().toEl)}
+          DefaultButton(new IButtonProps{
+             text = "Remove"
+             onClick = js.defined{(_: ReactEvent) => props.remove(())}}))
         })
 }
 ```
-You can pass in children via your ToDoProps or just add them to the make call, if you need children. Here's an example where they are passed in as a `js.Array[]`.
+
+You can pass in children via your ToDoProps or just add them to the make call,
+if you need children. Here's an example where they are passed in as a
+`js.Array[]`.
+
 ```scala
 def make(props: ToDoProps, children: js.Array[ReactNode]) =
   ToDo.copy(new methods {
@@ -50,9 +54,13 @@ def make(props: ToDoProps, children: js.Array[ReactNode]) =
 Or you can use the spread `..., children: ReactNode*) = `.
 
 ## Attributes
-Notice that you can define your make function to take either a list of attributes or an object that bundles the attributes together. You can choose how you want to define the make parameters.
 
-In scala if you define your non-native JS traits (you cannot instantiate a trait annotated with @js.native), then you can create them without having to use "override val" syntax:
+You can define your make function to take either a list of attributes or an
+object that bundles the attributes together. You can choose how you want to
+define the make parameters.  In scala if you define your non-native JS traits
+(you cannot instantiate a trait annotated with @js.native), then you can create
+them without having to use "override val" syntax:
+
 ```scala
 trait MyOpts extends js.Object {
   var prop1: js.UndefOr[String] = js.undefined
@@ -75,7 +83,7 @@ new MyOpts {
 ```
 In order to allow your props to contain other attributes, such as those from div, just have your props inherit from the appropriate attributes trait that is provided:
 ```scala
-trait MyOpts extends HTMLAttributes[dom.html.div] {
+trait MyOpts extends HTMLAttributes[dom.html.Div] {
    // your extra traits
 }
 ```

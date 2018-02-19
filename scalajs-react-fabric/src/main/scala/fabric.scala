@@ -160,7 +160,8 @@ trait ITextFieldProps extends WithIconProps with ComponentRef[ITextField] with A
   var addonString: js.UndefOr[String] = js.undefined
   var onRenderAddon: js.UndefOr[IRenderFunction[ITextFieldProps]] = js.undefined
   //var iconProps?: IIconProps;
-  var defaultValue: js.UndefOr[String] = js.undefined
+  // defined in HTMLAttributes
+  //var defaultValue: js.UndefOr[String] = js.undefined
   //var value: js.UndefOr[String] = js.undefined
   var errorMessage: js.UndefOr[String] = js.undefined
   var onChanged: js.UndefOr[js.Function1[String, Unit]] = js.undefined

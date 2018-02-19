@@ -46,16 +46,21 @@ libraryDependencies ++= Seq(
     // optional but includes a Microsoft UI component set
     "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
     // if you integrate with redux
-    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion)
+    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
+    // if you need react-dom
+    "ttg" %%% "scalajs-react-react-dom" % scalaJsReactVersion
+    // if you need prop-types
+    "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion)
+    
 ```
 
 Do not forget to include the react libraries in your execution environment. For
-react 16+, the libraries have been split out into multiple libraries, listed
-below (react v15 had mostly a monolithic library):
+react 16+, the libraries have been split out into multiple libraries. For
+the reactjs based modules, the javascript dependencies are:
 
-* react 
-* react-dom
-* create-react-class
+* core: react, create-react-class
+* react-dom: react-dom
+* prop-types: prop-types
 
 ### Create a Component
 You can quickly create a component and render it:
@@ -66,7 +71,7 @@ object HelloWorldC {
   def make(name: Option[String]) =
     HelloWorld
       .withRender { self =>
-        <.div()(
+        div(
           "hello world" + name.map(" and welcome " + _).getOrElse("")
         )
       }
@@ -81,6 +86,10 @@ object MyWebApp {
    }
 }
 ```
+
+You can add a className to the div using: `div(new DivProps { className = "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
+ensure you only enter valid div props.
+
 ### Exporting a Component to Javascript
 
 If you want to use it in javascript or have a different "make" interface, define
@@ -106,7 +115,7 @@ You can also define your own "make" API to be whatever suits you:
   def make2(props: HelloWorldProps = noProps()) =
     HelloWorld
       .withRender{ self =>
-        <.div()(
+        div(
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )
       }
@@ -191,9 +200,15 @@ object styles {
 
 // use: styles.component.root
 ```
-In the example above, you would need to ensure webpack has an alias to the Examples directory and that you have setup your CSS processors correctly. post-css is quite popular when using webpack. Since a Dynamics was used, this is not type safe.
 
-A styling trait is also provided to help you ensure you only provide style attributes for inline styling:
+In the example above, you would need to ensure webpack has an alias to the
+Examples directory and that you have setup your CSS processors
+correctly. post-css is quite popular when using webpack. Since a Dynamics was
+used, this is not type safe.
+
+A styling trait is also provided to help you ensure you only provide style
+attributes for inline styling:
+
 ```scala
 val hstyle = new StyleAttr { display = "flex" }
 ```
@@ -201,6 +216,10 @@ val hstyle = new StyleAttr { display = "flex" }
 ### Redux
 Redux integration requires you to export your component then import it with
 redux enhanced props. Please see the extended documentation for details.
+
+### Routing
+A simple 100-line router is included based on the reason-react router
+implementation. See the example app for an example of how to use it.
 
 # Documentation
 

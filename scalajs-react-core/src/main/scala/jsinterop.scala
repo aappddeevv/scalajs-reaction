@@ -31,30 +31,12 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
-  def createElement[P <: js.Object](tag: String, props: P)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
+  def createElement(tag: String, props: js.Object)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
 
   def createElement(tag: ReactClass, props: js.Object)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
 
   def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, js.undefined, children: _*)
-
-  // def createElement(
-  //   tag: ReactClass,
-  //   props: js.Object,
-  //   children: Seq[ReactNode]
-  // ): ReactDOMElement = JSReact.createElement(tag, props, children:_*)
-
-  // def createElement[P <: js.Object](
-  //     c: ReactClass,
-  //     props: P,
-  //     children: Seq[ReactNode]
-  // ): ReactDOMElement = JSReact.createElement(c, props, children: _*)
-
-  // def createElement[P <: js.Object](
-  //     c: ReactClass,
-  //     props: js.UndefOr[P],
-  //     children: Seq[ReactNode]
-  // ): ReactDOMElement = JSReact.createElement(c, props, children: _*)
 
   def createElement(
       c: ReactClass
@@ -76,65 +58,15 @@ object React {
   */
 @js.native
 @JSImport("create-react-class", JSImport.Default)
-object reactCreateClass extends js.Object {
+private[react] object reactCreateClass extends js.Object {
   def apply(props: js.Object): ReactClass = js.native
 }
 
-@js.native
-trait JSReactDOM extends js.Object {
-  def render(node: ReactNode, target: dom.Element): Unit = js.native
-  def createPortal(node: ReactNode, target: dom.Element): ReactElement = js.native
-  def unmountComponentAtNode(el: dom.Element): Unit = js.native
-  //def findDOMNode(??? .reactRef): dom.element = js.native
-}
-
-@js.native
-@JSImport("react-dom", JSImport.Namespace)
-object JSReactDOM extends JSReactDOM
-
-object reactdom {
-
-  /** Render into the DOM given an element id. */
-  def renderToElementWithId(el: ReactNode, id: String) = {
-    val target = Option(dom.document.getElementById(id))
-    target.fold(throw new Exception(s"renderToElementWithId: No element with id $id found in the HTML."))(htmlel => JSReactDOM.render(el, htmlel))
-  }
-
-  /** Render the DOM given an element id using react's portal. */
-  def createPortalInElementWithId(node: ReactNode, id: String) = {
-    val target = Option(dom.document.getElementById(id))
-    target.fold(throw new Exception(s"createPortalInElemeentWithId: No element with id $id founud in the HTML."))(htmlel =>
-      JSReactDOM.createPortal(node, htmlel))
-  }
-}
-@js.native
-@JSImport("prop-types", JSImport.Namespace)
-object PropTypes extends ReactPropTypes {}
-
-@js.native
-trait Requireable[T <: js.Any] extends js.Object {
-  def isRequired(obj: T, key: String, componentName: String, rest: js.Any*): js.Any = js.native
-}
-
-@js.native
-trait ReactPropTypes extends js.Object {
-  val `any`: Requireable[js.Any] = js.native
-  val array: Requireable[js.Any] = js.native
-  val bool: Requireable[js.Any] = js.native
-  val func: Requireable[js.Any] = js.native
-  val number: Requireable[js.Any] = js.native
-  val `object`: Requireable[js.Any] = js.native
-  val string: Requireable[js.Any] = js.native
-  val node: Requireable[js.Any] = js.native
-  val element: Requireable[js.Any] = js.native
-  def instanceOf(expectedClass: js.Object): Requireable[js.Any] = js.native
-  def oneOf(types: js.Array[js.Any]): Requireable[js.Any] = js.native
-  def oneOfType(types: js.Array[Requireable[js.Any]]): Requireable[js.Any] = js.native
-  def arrayOf(`type`: Requireable[js.Any]): Requireable[js.Any] = js.native
-  def objectOf(`type`: Requireable[js.Any]): Requireable[js.Any] = js.native
-  def shape(`type`: Requireable[js.Any]): Requireable[js.Any] = js.native
-}
-
+/**
+ * React's context object contains the consumer and provider "components".
+ * 
+ * @todo validate that current/default value are part of the public API.
+ */
 @js.native
 trait ReactContext[T] extends js.Object {
   type ValueType = T
@@ -147,7 +79,13 @@ trait ReactContext[T] extends js.Object {
   val defaultValue: T = js.native  
 }
 
-// @todo Allow key on consumer...
+/**
+ * Provide context using react 16.3+ context mechanism. Import this object to
+ * obtain a syntax enhancement to create provider's and consumers. The syntax is
+ * not included in the standard syntax module.
+ * 
+ * @todo Consumer could take a bits argument but react's API is not settled yet.
+ */
 object context {
 
   /** v16.3 API. */
@@ -158,13 +96,15 @@ object context {
     JSReact.createElement(ctx.Provider, v, children:_*)
   }
 
-  def makeConsumer[T](ctx: ReactContext[T])(f: js.Function1[T, ReactNode]): ReactNode =
-    JSReact.createElement(ctx.Consumer, js.undefined, f.asInstanceOf[ReactNode])
+  def makeConsumer[T](ctx: ReactContext[T])(f: js.Function1[T, ReactNode], key: Option[String]=None): ReactNode = {
+    val props = key.fold[js.Any](js.undefined)(k => lit("key" -> k))
+    JSReact.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
+  }
 
   /** `import context._` brings the syntax into scope. */
   implicit class ReactContextOps[T](ctx: ReactContext[T]) {
     def makeProvider(value: T)(children: ReactNode*) = context.makeProvider[T](ctx)(Some(value))(children:_*)
     def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children:_*)
-    def makeConsumer(f: js.Function1[T, ReactNode]) = context.makeConsumer[T](ctx)(f)
+    def makeConsumer(f: js.Function1[T, ReactNode], key: Option[String] = None) = context.makeConsumer[T](ctx)(f)
   }
 }

@@ -17,9 +17,10 @@ import ttg.react.reactdom._
 import ttg.react.implicits._
 import ttg.react.fabric
 import ttg.react.redux
+import ttg.react.vdom.tags._
 import redux._
 import vdom._
-import prefix_<^._
+import vdom.tags._
 import fabric._
 import fabric.components._
 
@@ -50,11 +51,9 @@ object AddressDetailC {
     AddressDetail.copy(new methods {
       render = js.defined { self =>
         logContext.makeConsumer{log =>
-          js.Dynamic.global.console.log("blah", log)
+          js.Dynamic.global.console.log("context: log function:", log)
           log(address.getOrElse("<no detail address provided>"))
-          <.div(
-            ^.className := amstyles.detail,
-          )(
+          div(new DivProps {className = amstyles.detail.asString})(
             Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
             Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
             Label()(s"""State/Province: ${address.flatMap(_.stateorprovince.toOption).getOrElse("")}"""),
@@ -98,9 +97,8 @@ object AddressListC {
           layoutMode = DetailsListLayoutMode.fixedColumns
           constrainMode = ConstrainMode.horizontalConstrained
         }
-        <.div(
-          ^.className := amstyles.master,
-        )(DetailsList[Address](listopts)())
+        div(new DivProps{ className = amstyles.master.asString})(
+          DetailsList[Address](listopts)())
       }
     })
 }
@@ -277,9 +275,9 @@ object AddressManagerC {
               cbself.send(ActiveChanged(address.map(a => (a.customeraddressid.get, a))))
             }
           }
-          <.div(^.className := amstyles.component)(
+          div(new DivProps{ className = amstyles.component.asString })(
             CommandBar(cbopts(self))(),
-            <.div(^.className := amstyles.masterAndDetail)(
+            div(new DivProps{ className = amstyles.masterAndDetail.asString})(
               AddressListC.make(self.state.selection, self.state.addresses, activecb,
                 initialFocusedIndex),
               AddressDetailC.make(selAddrOpt),

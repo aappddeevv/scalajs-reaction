@@ -4,6 +4,9 @@
 
 package ttg.react.vdom
 
+/**
+ * Inherit from this trait to bring HTML tags into scope.
+ */
 trait HtmlTags {
   final lazy val html = tag("html")
   final lazy val head = tag("head")

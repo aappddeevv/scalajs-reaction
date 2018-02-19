@@ -890,39 +890,6 @@ object elements {
     }
   }
 
-  /*
-   /** Self trait used when we want to expose the this.context. */
-   trait SelfWithContext[S, RP, A, C] extends Self[S, RP, A] {
-   val context: Option[C]
-   }
-
-   /** Create a component that also includes the context in "self." */
-   def basicComponentWithContext[S, RP, A, C](debugNameArg: String, contextTypes: Option[js.Object] = None) = {
-   class BasicProxy[S, RP, A, C] extends StandardProxy[S, RP, A] {
-   type SLF = SelfWithContext[S, RP, A, C]
-   val displayName: String = debugNameArg
-   def mkSelf(thisJs: ThisSelf, sopt: Option[S], popt: Option[RP]): SLF =
-   new SelfWithContext[S, RP, A, C] {
-   type HandleArg = SLF
-   val state = sopt
-   val retainedProps = popt
-   def send(a: A) = sendMethod(thisJs, a)
-   def handle(cb: HandleArg => Unit) = handleMethod(thisJs, cb)
-   val context = thisJs.asInstanceOf[js.Dynamic].context.asInstanceOf[js.UndefOr[C]].toOption
-   ptr = thisJs.asInstanceOf[js.Any] // future hack!
-   }
-   // the cast on this should not be needed
-   val contextTypes = contextTypes.fold(js.undefined.asInstanceOf[js.UndefOr[js.Object]])(x => x)
-   }
-   val proxy = new BasicProxy[S, RP, A, C]()
-   ComponentSpec[S, RP, A, proxy.SLF, proxy.SLF, proxy.SLF](
-   debugName = debugNameArg,
-   reactClassInternal = reactCreateClass(proxy),
-   render = _ => stringToElement("Not Implemented"),
-   )
-   }
-   */
-
   /** Stateless, with retained props. */
   def statelessComponentWithRetainedProps[RetainedProps](debugNameArg: String) =
     new StatelessComponentWithRetainedPropsCake {

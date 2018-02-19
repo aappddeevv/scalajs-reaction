@@ -7,7 +7,14 @@
 package ttg.react
 
 import scalajs.js
+import org.scalajs.dom
+import scala.annotation.unchecked.{uncheckedVariance => uv}
 
+/**
+ * Simple vdom. This vdom implemntation uses attribute lists instead of
+ * non-native JS traits so you may or may not create a valid list of
+ * attributes.
+ */
 package object vdom extends vdom.Events with VDOMSyntax {
 
   import scala.language.implicitConversions
@@ -18,8 +25,8 @@ package object vdom extends vdom.Events with VDOMSyntax {
   val Style = Attrs
 
   /**
-    * Default prefixes you can use. You can import all of the
-    * actual values using `import ^._, <._`.
+    * Default tags and attributse you can use. You can import all of the actual
+    * values using `import ^._, <._`.
     */
   object prefix_<^ {
     object ^ extends HtmlAttrs
@@ -32,4 +39,5 @@ package object vdom extends vdom.Events with VDOMSyntax {
     */
   def classNames(c: (String, js.UndefOr[js.Any])*): AttrValue =
     AttrValue(c.filter(p => js.DynamicImplicits.truthValue(p._2.asInstanceOf[js.Dynamic])).map(_._2).mkString(" "))
+
 }
