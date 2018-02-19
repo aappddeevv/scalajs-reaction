@@ -40,47 +40,28 @@ case class ActiveChanged(active: Option[(String, Address)]) extends Actions
 case object Refresh extends Actions
 
 object AddressDetailC {
+  import examples.Contexts._
+  import context._
+
   val AddressDetail = statelessComponent("AddressDetail")
   import AddressDetail.ops._
 
   def make(address: Option[Address]) =
     AddressDetail.copy(new methods {
       render = js.defined { self =>
-        <.div(
-          ^.className := amstyles.detail,
-        )(
-          Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
-          Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
-          Label()(s"""State/Province: ${address.flatMap(_.stateorprovince.toOption).getOrElse("")}"""),
-          Label()(s"""Zipcode: ${address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
-          Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
-        )
-      }
+        logContext.makeConsumer{log =>
+          js.Dynamic.global.console.log("blah", log)
+          log(address.getOrElse("<no detail address provided>"))
+          <.div(
+            ^.className := amstyles.detail,
+          )(
+            Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
+            Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
+            Label()(s"""State/Province: ${address.flatMap(_.stateorprovince.toOption).getOrElse("")}"""),
+            Label()(s"""Zipcode: ${address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
+            Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
+          )}}
     })
-}
-
-/**
-  * A props trait. We actually don't use this in the "make" to show how one needs
-  * to break out parameters if your "make" does not take an unified props object.
-  * But having this trait makes writing some interop a little easier.
-  */
-trait AddressManagerProps extends js.Object {
-  val dao: AddressDAO
-  // derived from redux
-  var reduxLabel: js.UndefOr[String] = js.undefined
-  // derived from redux if not provided
-  var viewModel: js.UndefOr[AddressesViewModel] = js.undefined
-}
-
-// helper trait for some redux fiddling, we don't expose these to the world though or should we?
-private[addressmanager] trait AddressManagerPropsRedux extends AddressManagerProps {
-  var rstate: js.UndefOr[js.Dynamic] = js.undefined
-  // added by default to props unless mapDispatchToProps is provided
-  var dispatch: js.UndefOr[Dispatcher] = js.undefined
-  var address: js.UndefOr[Address] = js.undefined
-
-  /** could be null */
-  var lastActiveAddressId: Id
 }
 
 object AddressListC {
@@ -98,41 +79,69 @@ object AddressListC {
     AddressList.copy(new methods {
       render = js.defined {
         self =>
-          val listopts = new IDetailsListProps[Address] {
-            val items = addresses.toJSArray
-            selectionPreservedOnEmptyClick = true
-            columns = icolumns
-            getKey = getAddressKey
-            //initialFocusedIndex = ifx.orUndefined
-            onActiveItemChanged = js.defined({ (aundef, _, _) =>
-              activeCB(aundef.toNonNullOption)
-            })
-            /* or
-          onActiveItemChanged = { (aundef, _, _) =>
+        println(s"AddressListC.render: ifx ${ifx}")
+        val listopts = new IDetailsListProps[Address] {
+          val items = addresses.toJSArray
+          selectionPreservedOnEmptyClick = true
+          columns = icolumns
+          getKey = getAddressKey
+          //initialFocusedIndex = 2 //ifx.orUndefined
+          onActiveItemChanged = js.defined({ (aundef, _, _) =>
             activeCB(aundef.toNonNullOption)
-          }: OAIC
-             */
-            selection = sel
-            layoutMode = DetailsListLayoutMode.fixedColumns
-            constrainMode = ConstrainMode.horizontalConstrained
-          }
-          <.div(
-            ^.className := amstyles.master,
-          )(DetailsList[Address](listopts)())
+          })
+          /* or
+           onActiveItemChanged = { (aundef, _, _) =>
+           activeCB(aundef.toNonNullOption)
+           }: OAIC
+           */
+          selection = sel
+          layoutMode = DetailsListLayoutMode.fixedColumns
+          constrainMode = ConstrainMode.horizontalConstrained
+        }
+        <.div(
+          ^.className := amstyles.master,
+        )(DetailsList[Address](listopts)())
       }
     })
 }
 
-object AddressManagerC {
+/**
+ * A props trait. We actually don't use this in the "make" to show how one needs
+ * to break out parameters if your "make" does not take an unified props object.
+ * But having this trait makes writing some interop a little easier.
+ */
+trait AddressManagerProps extends js.Object {
+  val dao: AddressDAO
+  // derived from redux
+  var reduxLabel: js.UndefOr[String] = js.undefined
+  // derived from redux if not provided
+  var viewModel: js.UndefOr[AddressesViewModel] = js.undefined
+}
 
+/**
+ * Helper trait for some redux fiddling, we don't expose these to the world.
+ * The attributes here come from redux although one could pass them down from a
+ * parent if you wanted to.
+ */
+private[addressmanager] trait AddressManagerPropsRedux extends AddressManagerProps {
+  var rstate: js.UndefOr[js.Dynamic] = js.undefined
+  // added by default to props unless mapDispatchToProps is provided
+  var dispatch: js.UndefOr[Dispatcher] = js.undefined
+  var address: js.UndefOr[Address] = js.undefined
+
+  /** could be null */
+  var lastActiveAddressId: Id
+}
+
+object AddressManagerC {
   private[addressmanager] case class State(
-      /** ignore selection changes. */
-      var ignoreChanges: Boolean = false,
-      fetching: Boolean = false,
-      message: Option[String] = None,
-      addresses: AddressList = emptyAddressList,
-      /** instance var, so make mutable, might as well */
-      var selection: ISelection[Address] = null // its a js thing
+    /** ignore selection changes. */
+    var ignoreChanges: Boolean = false,
+    fetching: Boolean = false,
+    message: Option[String] = None,
+    addresses: AddressList = emptyAddressList,
+    /** instance var, so make mutable, might as well */
+    var selection: ISelection[Address] = null // its a js thing
   )
 
   private val AddressManager = reducerComponent[State, Actions]("AddressManager")
@@ -160,14 +169,14 @@ object AddressManagerC {
           val key = "refresh"
           name = "Fetching..."
         } else
-        new IContextualMenuItem {
-          val key = "refresh"
-          name = "Refresh"
-          onClick = { () =>
-            self.send(Refresh)
-          }: OC0
-          iconProps = lit("iconName" -> "Refresh")
-        }
+            new IContextualMenuItem {
+              val key = "refresh"
+              name = "Refresh"
+              onClick = { () =>
+                self.send(Refresh)
+              }: OC0
+              iconProps = lit("iconName" -> "Refresh")
+            }
     )
   }
 
@@ -193,19 +202,18 @@ object AddressManagerC {
   }
 
   /**
-    * Instead of a non-native JS trait, we use explicit parameters. Our interop wrappers
-    * must take this into account.
-    */
+   * Instead of a non-native JS trait, we use explicit parameters. Our interop wrappers
+   * must take this into account.
+   */
   private def make(dao: AddressDAO, vm: AddressesViewModel, label: Option[String], lastActiveAddressId: Option[Id]) =
     AddressManager.copy(new methods {
 
       val initialState = { self =>
         val selcb = () => {
-          self.handle { cbself =>
-            // should probably do something with the selection
-            //cbself.state.foreach(state => cbself.send(SelectionChanged(state.selection)))
-          }
-        }
+          self.handle{ cbself =>
+            println(s"AddressManager.selectionChanged: ${PrettyJson.render(cbself.state.selection.getSelection())}")
+            //self.handle { cbself => cbself.send(SelectionChanged(cbself.state.selection)) }
+          }}
         val selection = new Selection(js.defined(new ISelectionOptions[Address] {
           getKey = getAddressKey
           selectionMode = SelectionMode.single
@@ -220,39 +228,36 @@ object AddressManagerC {
 
       reducer = js.defined({
         (action, state, gen) =>
-          action match {
-            case FetchRequest =>
-              gen.update(state.copy(fetching = true))
-            case FetchResult(result) =>
-              result match {
-                case Left(msg) =>
-                  println(s"fetch failed $msg")
-                  gen.update(state.copy(fetching = false, addresses = emptyAddressList, message = Some(msg)))
-                case Right(addresses) =>
-                  gen.updateAndEffect(
-                    state.copy(fetching = false, addresses = addresses),
-                    self => {
-                      silentlyChangeSelection(state, state.selection) { s =>
-                        println("setting active after data fetch, but may not be the right time!")
-                        js.Dynamic.global.console.log("active id", vm.activeId, addresses)
-                        s.setItems(addresses, true)
-                      //vm.getSelectedIds().foreach(id => s.setKeySelected(id, true, false))
-                      }
+        action match {
+          case FetchRequest =>
+            gen.update(state.copy(fetching = true))
+          case FetchResult(result) =>
+            result match {
+              case Left(msg) =>
+                println(s"fetch failed $msg")
+                gen.update(state.copy(fetching = false, addresses = emptyAddressList, message = Some(msg)))
+              case Right(addresses) =>
+                gen.updateAndEffect(
+                  state.copy(fetching = false, addresses = addresses),
+                  self => {
+                    silentlyChangeSelection(state, state.selection) { s =>
+                      println("setting active after data fetch, but may not be the right time!")
+                      js.Dynamic.global.console.log("active id", vm.activeId, addresses)
+                      s.setItems(addresses, false)
                     }
-                  )
-              }
-            case ActiveChanged(p) =>
-              p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
-                .getOrElse(gen.effect(_ => vm.setActive(null, null)))
-            case Refresh =>
-              // refresh data, clear active object
-              gen.updateAndEffect(state.copy(addresses = emptyAddressList), eslf => {
-                //vm.setSelection(emptyIdList, null)
-                vm.setActive(null, null)
-                fetchData(eslf, dao)
-              })
-            case _ => gen.skip
-          }
+                  }
+                )
+            }
+          case ActiveChanged(p) =>
+            p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
+              .getOrElse(gen.effect(_ => vm.setActive(null, null)))
+          case Refresh =>
+            gen.updateAndEffect(state.copy(addresses = emptyAddressList), eslf => {
+              //vm.setActive(null, null) // keep selection if possible
+              fetchData(eslf, dao)
+            })
+          case _ => gen.skip
+        }
       })
 
       didMount = js.defined({ (self, gen) =>
@@ -264,7 +269,7 @@ object AddressManagerC {
           val initialFocusedIndex = for {
             id <- lastActiveAddressId
           } yield self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse[Boolean](false))
-          println(s"initial focused index opt: ${initialFocusedIndex}")
+        println(s"AddressManager.render:initial focused index opt: ${initialFocusedIndex}")
           val selAddrOpt = toSafeOption(vm.active)
 
           val activecb = (address: Option[Address]) => {
@@ -275,7 +280,8 @@ object AddressManagerC {
           <.div(^.className := amstyles.component)(
             CommandBar(cbopts(self))(),
             <.div(^.className := amstyles.masterAndDetail)(
-              AddressListC.make(self.state.selection, self.state.addresses, activecb, initialFocusedIndex),
+              AddressListC.make(self.state.selection, self.state.addresses, activecb,
+                initialFocusedIndex),
               AddressDetailC.make(selAddrOpt),
             ),
             AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
@@ -284,16 +290,26 @@ object AddressManagerC {
       })
     })
 
+  /** 
+   * We illustrate using a "view model" that requires something from both
+   * mapStateToProps and and mapDispatchToProps to show that you can do that
+   * inside this function. This is rougghly equivalent to providing a
+   * "mergeProps" argument to redux.connect.
+   */
   @JSExportTopLevel("AddressManager")
   private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerPropsRedux) =>
-    //println("making props to call make")
     val viewModel = jsProps.viewModel.getOrElse {
       mkReduxAddressesViewModel(jsProps.rstate.get.asJsObj, jsProps.dispatch.get)
     }
     make(jsProps.dao, viewModel, jsProps.reduxLabel.toOption, toSafeOption(jsProps.lastActiveAddressId))
   }
 
-  // component that has been connected to redux
+  /**
+   * Component that has been connected to redux. Note that since we are *not*
+   * providing a mapDispatchToProps, react-redux automatically adds a "dispatch"
+   * function to the props which we must model explicitly in
+   * AddressManagerPropsRedux.
+   */
   private val reduxJsComponent = {
     // we could also cast as AddressManagerProps, but here we just use a literal
     val mapStateToProps: MSTP[js.Object, AddressManagerPropsRedux] =
@@ -310,11 +326,10 @@ object AddressManagerC {
   }
 
   /**
-    * Using this "make" will us the component connected to redux. While you could
-    * set the redux part of the "props" they will get automatically filled in by
-    * redux so we only expose the base trait. You can set the non-redux parts to
-    * pass them through. Here, we only expose the non-redux parts of the props
-    * interface.
+    * Using this "make" will us the component connected to redux. While you
+    * could set the redux part of the "props" they will get automatically filled
+    * in by redux so we only expose the base trait. Here, we only expose the
+    * non-redux parts of the props interface which is why we split it up.
     */
   def makeWithRedux(props: AddressManagerProps = noProps()) =
     wrapJsForScala(reduxJsComponent, props)

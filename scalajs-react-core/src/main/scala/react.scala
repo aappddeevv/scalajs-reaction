@@ -139,20 +139,4 @@ package object react {
     else Option(t.asInstanceOf[T])
   }
 
-  // this does not work really well...but it does print the object
-  object console {
-    import js.Dynamic.{global => g}
-    import js.DynamicImplicits._
-
-    // only way to get the spread to work, w/o using apply/call
-    @js.native
-    trait JsConsole extends js.Object {
-      def log(xs: js.Any*) = js.native
-      def error(xs: js.Any*) = js.native
-    }
-    // private val _c = g.console.asInstanceOf[JsConsole]
-    // def log(v: js.Any*) = _c.log(v:_*)
-    // def error(v: js.Any*) = _c.error(v:_*)
-    def log(v: js.Any*) = g.console.log.apply(null, v.toJSArray)
-  }
 }

@@ -50,8 +50,8 @@ export function reducer(state: State = initialState,
     action: AllActions): State {
     switch (action.type) {
         case TypeKeys.SET_ACTIVE: {
-            console.log("Typescript SET_ACTIVE: id", action.activeId, "action: ", action)
-            const last = action.activeId ? { lastActiveAddressId: state.activeId } : {}
+            console.log("redux router:SET_ACTIVE: id", action.activeId, "action: ", action)
+            const last = state.activeId ? { lastActiveAddressId: state.activeId } : {}
             return {
                 ...state,
                 activeId: action.activeId ? action.activeId : null,

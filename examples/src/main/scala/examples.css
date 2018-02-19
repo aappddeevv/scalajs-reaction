@@ -1,5 +1,14 @@
 /** examples toplevel styles */
 
+/* Examples root, header renders into separate non-contained div via createPortal. */
 .root {
-    height: 100%;
+    /* We know the header is 40px. */
+    height: calc(100% - 40px);
+    overflow: hidden;
+    & [role=tabpanel] {
+        /* tab header is 40px. */
+        height: calc(100% - 40px);
+        overflow: hidden;
+        overflow-y: auto;
+    }
 }

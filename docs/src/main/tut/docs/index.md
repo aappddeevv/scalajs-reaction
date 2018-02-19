@@ -2,7 +2,12 @@
 layout: docs
 title: Getting Started
 ---
-Like any scala.js project to get started you need to include the libraries in your build. the artifacts are published to a bintray only and not jcenter or maven in general.
+# Getting Started
+
+Like any scala.js project to get started you need to include the libraries in
+your build. the artifacts are published to a bintray only and not jcenter or
+maven in general.
+
 ```scala
 // bintray resolvers
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
@@ -21,6 +26,7 @@ libraryDependencies ++= Seq(
 ```
 
 Then use the following imports to import functionality you need:
+
 ```scala
 // standard scala.js
 import scala.scalajs.js

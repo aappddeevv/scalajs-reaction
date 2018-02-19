@@ -26,7 +26,7 @@ trait AddressDAO extends js.Object {
   val update: js.Function1[Address, js.Promise[Unit]],
 }
 
-/** Manage data access and selection state. */
+/** Manage data access and selection state as a pair. */
 trait AddressesViewModel extends js.Object {
   // address can be null value explicitly per plain old scala
   def setActive(id: Id, address: Address): Unit

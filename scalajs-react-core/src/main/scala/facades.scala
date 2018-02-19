@@ -1024,6 +1024,7 @@ object elements {
     * to the prototype of reactClassInternal.
     */
   def wrapScalaForJs[P <: js.Object](c: Component, jsPropsToScala: P => ComponentSpec): ReactJsComponent = {
+    require(c != null, "wrapScalaForJs: Component must be non-null.")
     val dyn = c.reactClassInternal.asInstanceOf[js.Dynamic]
     dyn.prototype.jsPropsToScala = jsPropsToScala.asInstanceOf[js.Any]
     c.reactClassInternal.asInstanceOf[ReactJsComponent]

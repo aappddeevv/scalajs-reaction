@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (and 0.6.22, react v16.x)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (and 0.6.22, react v16.2+)
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
@@ -28,6 +28,8 @@ for all scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
 
 [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
+
+scalajs-react supports fragments and the new context provider in react v16.3.
 
 ## Usage
 Include the library in your build:
@@ -251,13 +253,13 @@ structures to your code.
 
 ## Prior Work
 There are a few [scala.js](https://www.scala-js.org/) react facades/implementations available:
-* [https://github.com/eldis/scalajs-react]: Very clean class oriented react implementation. Class oriented but has a builder as well and includes purely functional (stateless) component support as well. No macros. Allows ES class-like syntax. Has wrappers for japgolly. This lib was created to get around "wrapping" and other artifacts that the author was not fond of in japgolly.
-* [https://github.com/eldis/scalajs-redux]: Redux facade by the same as above.
-* [https://github.com/shogowada/scalajs-reactjs]: More functionally oriented facade. Contains redux facades and more.
-* [https://github.com/japgolly/scalajs-react]: The can't shoot yourself in the foot implementation. well supported and thought out but a bit more complex API wise.
-* [https://slinky.shadaj.me/]: Newcomer. Uses macros smartly. Allows you to use scala.js components in js as well. Uses some macros to help with javascript interop.
-* [https://github.com/xored/scala-js-react]: Class oriented facade. Uses macros to transform xml literals so you can write xml in your code like jsx.
-* [https://github.com/scalajs-react-interface/sri#sri]: React-native and web. New maintainers.
+* https://github.com/eldis/scalajs-react: Very clean class oriented react implementation. Class oriented but has a builder as well and includes purely functional (stateless) component support as well. No macros. Allows ES class-like syntax. Has wrappers for japgolly. This lib was created to get around "wrapping" and other artifacts that the author was not fond of in japgolly.
+* https://github.com/eldis/scalajs-redux: Redux facade by the same as above.
+* https://github.com/shogowada/scalajs-reactjs: More functionally oriented facade. Contains redux facades and more.
+* https://github.com/japgolly/scalajs-react: The can't shoot yourself in the foot implementation. well supported and thought out but a bit more complex API wise.
+* https://slinky.shadaj.me: Newcomer. Uses macros smartly. Allows you to use scala.js components in js as well. Uses some macros to help with javascript interop.
+* https://github.com/xored/scala-js-react: Class oriented facade. Uses macros to transform xml literals so you can write xml in your code like jsx.
+* https://github.com/scalajs-react-interface/sri#sri: React-native and web. New maintainers.
 
 The facades differ in their facade approach but many recreate all of the API
 parts found in reactjs. japgolly works hard to put a more safe, functional API
@@ -272,7 +274,7 @@ the javascript props and state objects in a way that makes them less usable from
 the javascript world. Most, if not all, libraries allow you to use javascript
 defined components fairly directly via some type of adoption or import process.
 
-This library [https://github.com/ThoughtWorksInc/Binding.scala] isn't react but
+This library https://github.com/ThoughtWorksInc/Binding.scala. isn't react but
 it is reactive. It uses a new binding framework for scala. Works on jvm and
 js. The binding framework is at a individual element level like mobx. You can
 use xml syntax as well. The binding approach is called "precise"

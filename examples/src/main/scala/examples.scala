@@ -122,7 +122,16 @@ object Examples {
     })
 }
 
+object Contexts {
+  import react.context
+  type ConsoleLog = js.Function1[js.Any, Unit]
+  val logContext = context.make[ConsoleLog](js.Dynamic.global.console.log.asInstanceOf[ConsoleLog])
+}
+
 object Main {
+  import react.context._
+  import Contexts._
+
   val portalElementId = "portalContainer"
   val container = "container"
 
@@ -141,10 +150,11 @@ object Main {
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     renderToElementWithId(
-      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps { store = StoreNS.store })(Fabric(new IFabricProps {
-        className = estyles.root.asString
-      })(
-        ExamplesApp.make()
+      React.createElement(redux.ReactRedux.Provider,
+        new redux.ProviderProps { store = StoreNS.store })(Fabric(new IFabricProps {
+          className = estyles.root.asString
+        })(
+          logContext.makeProvider(ExamplesApp.make())
       )),
       "container"
     )

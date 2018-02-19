@@ -9,6 +9,7 @@ import scala.scalajs.js
 import js.annotation._
 import js.|
 import js._
+import js.Dynamic.{literal => lit}
 
 import org.scalajs.dom
 
@@ -21,6 +22,8 @@ private[react] trait JSReact extends js.Object {
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
   // symbol or number depending on browser/environment support for symbols
   val Fragment: js.Any = js.native
+  /** v16.3 API. */
+  def createContext[T](defaultValue: T, calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
 }
 
 @js.native
@@ -130,4 +133,38 @@ trait ReactPropTypes extends js.Object {
   def arrayOf(`type`: Requireable[js.Any]): Requireable[js.Any] = js.native
   def objectOf(`type`: Requireable[js.Any]): Requireable[js.Any] = js.native
   def shape(`type`: Requireable[js.Any]): Requireable[js.Any] = js.native
+}
+
+@js.native
+trait ReactContext[T] extends js.Object {
+  type ValueType = T
+  /** Only takes a single attribute value, "value" with the context . */
+  val Provider: js.Any = js.native
+  val Consumer: js.Any = js.native
+  /** Not public API. */
+  var currentValue: T = js.native
+  /** Not public API. */
+  val defaultValue: T = js.native  
+}
+
+// @todo Allow key on consumer...
+object context {
+
+  /** v16.3 API. */
+  def make[T](defaultValue: T): ReactContext[T] = JSReact.createContext[T](defaultValue, js.undefined)
+
+  def makeProvider[T](ctx: ReactContext[T])(value: Option[T])(children: ReactNode*): ReactNode = {
+    val v = lit("value" -> value.getOrElse(ctx.currentValue).asInstanceOf[js.Any])
+    JSReact.createElement(ctx.Provider, v, children:_*)
+  }
+
+  def makeConsumer[T](ctx: ReactContext[T])(f: js.Function1[T, ReactNode]): ReactNode =
+    JSReact.createElement(ctx.Consumer, js.undefined, f.asInstanceOf[ReactNode])
+
+  /** `import context._` brings the syntax into scope. */
+  implicit class ReactContextOps[T](ctx: ReactContext[T]) {
+    def makeProvider(value: T)(children: ReactNode*) = context.makeProvider[T](ctx)(Some(value))(children:_*)
+    def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children:_*)
+    def makeConsumer(f: js.Function1[T, ReactNode]) = context.makeConsumer[T](ctx)(f)
+  }
 }

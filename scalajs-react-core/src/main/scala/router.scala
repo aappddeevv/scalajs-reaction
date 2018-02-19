@@ -49,7 +49,7 @@ object router {
   }
 
   def push(path: String): Unit = {
-    dom.window.history.pushState(new js.Object(), "", path)
+    dom.window.history.pushState(null, "", path)
     dom.window.dispatchEvent(makeEvent("popstate"))
   }
 

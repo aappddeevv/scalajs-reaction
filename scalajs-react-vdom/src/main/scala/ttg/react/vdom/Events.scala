@@ -235,6 +235,7 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
 
   // lots more to type...
+  
 }
 
 trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {

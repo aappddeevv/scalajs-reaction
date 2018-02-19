@@ -73,7 +73,7 @@ this, but in scalajs-react we keep them as simple functions you define directly
 in order to allow you flexibility to define the API for make as appropriate for
 your application.
 
-## scala side
+## Scala Side Approach (preferred)
 To preserve integration on the scala side, you have to do the same type of
 mapping from redux state to props. scalajs-react is explicit in that to create a
 component that takes props, you must go through a function (almost always called
@@ -131,7 +131,7 @@ object MyScalaComponentC {
 ```
 That's all you need to do. Just like with importing, if you choose your props carefully, you can reduce your API data swizzling work significantly but its up to you. Also, note that the `make` function takes no children. If it had, we would have added a second parameter list (or to the first parameter list) or added children explicitly to the `Props` trait and then added the children to the `wrapJsForScala` function call. It's up to you on how you want to structure your internal API.
 
-## javascript side
+## Alternative approach: Javascript Side
 This approach just has you create a connected component from the scala exported component. You must ensure that whatever props you expect to come from redux are reflecting in the scala mapping in its wrapper function as defined in "yourComponent.wrapScalaForJs". You can even pass in the dispatch function to the scala side if you want.
 
 In scala
