@@ -9,11 +9,11 @@ scala.js implemetation was kept intentionally similar to ReasonReact so that the
 documentation would apply.
 
 This facade library is small, does not use advanced scala features and provides
-a different component API based on reason-react vs reactjs.
+a different component API based on reason-react vs reactjs. It explicitly supports integrating into an existing javascript UI project or an entirely new one.
 
-You can code a scala.js based react interface without using any facade library
-since scala.js supports non-native JS class definitions. scala.js's JS class
-support is extensive and well thought out. One of the reasons I liked the
+You can always code a scala.js based react interface without using any facade
+library since scala.js supports non-native JS class definitions. scala.js's JS
+class support is extensive and well thought out. One of the reasons I liked the
 ReasonReact model is that it rethought the abstractions and API. Instead of
 trying to copy the reactjs API, it provides something smaller and emphasizes
 changes in a few dimensions of the reactive UI API problem--almost the very
@@ -22,9 +22,9 @@ definition of "disruptive."
 scalajs-react emphasizes integration into an existing project by making it easy
 to import/export components and fit into existing application including those
 using global state-managed solutions such as redux. At the same time, it allows
-you to build your entire interface in scalajs-react if you wish. As long as your
-front-end solution can manage the model of scala.js's output (one large module
-for all scala.js code, not file-by-file/module-by-module), you should consider
+you to build your entire interface in scalajs-react. As long as your front-end
+solution can manage the model of scala.js's output (one large module for all
+scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
 
 [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
@@ -43,7 +43,9 @@ val scalaJsReactVersion = "latest.version"
 libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-react-core" % scalaJsReactVersion,
     "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
-    // optional but includes a Microsoft UI component set
+    
+    // optionals
+    // Microsoft fabric UI components, "MS office"
     "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
     // if you integrate with redux
     "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
@@ -271,7 +273,7 @@ The core scala.js infrastructure costs you about 2.5k and increases as you use
 features such as immutability, the collections library or, of course, add data
 structures to your code.
 
-## Prior Work
+## Related
 There are a few [scala.js](https://www.scala-js.org/) react facades/implementations available:
 * https://github.com/eldis/scalajs-react: Very clean class oriented react implementation. Class oriented but has a builder as well and includes purely functional (stateless) component support as well. No macros. Allows ES class-like syntax. Has wrappers for japgolly. This lib was created to get around "wrapping" and other artifacts that the author was not fond of in japgolly.
 * https://github.com/eldis/scalajs-redux: Redux facade by the same as above.
@@ -294,15 +296,19 @@ the javascript props and state objects in a way that makes them less usable from
 the javascript world. Most, if not all, libraries allow you to use javascript
 defined components fairly directly via some type of adoption or import process.
 
-This library https://github.com/ThoughtWorksInc/Binding.scala. isn't react but
-it is reactive. It uses a new binding framework for scala. Works on jvm and
+Libraries you may be interested in:
+
+* [binding.scala](https://github.com/ThoughtWorksInc/Binding.scala): reactive UI framework. It uses a new binding framework for scala. Works on jvm and
 js. The binding framework is at a individual element level like mobx. You can
 use xml syntax as well. The binding approach is called "precise"
-binding. [udash](https://udash.io/) is another reactive framework that is not
+binding.
+* [diode](https://github.com/suzaku-io/diode): redux replacement
+* [laminar](https://github.com/raquo/laminar): a reactive web framework
+* [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom
+* [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes
+* [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework
+* [udash](https://udash.io/) is another reactive framework that is not
 react based, but reactive.
-
-I have not mentioned many other libraries out there that help with react-like
-development including [diode](https://github.com/suzaku-io/diode).
 
 ## License
 

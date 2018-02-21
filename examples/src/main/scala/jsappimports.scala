@@ -74,3 +74,9 @@ object PrettyJson extends js.Object {
 @js.native
 @JSImport("Examples/README.md", JSImport.Default)
 object ReadmeText extends js.Object
+
+@js.native
+@JSImport("classnames", JSImport.Default)
+object cx extends js.Object {
+  def apply(args: String|Number|js.UndefOr[js.Any]|js.Object|js.Dynamic|Null *): String = js.native
+}

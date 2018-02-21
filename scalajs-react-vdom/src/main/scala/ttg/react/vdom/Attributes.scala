@@ -8,6 +8,7 @@ package vdom
 
 import scala.annotation.unchecked.{uncheckedVariance => uv}
 import scalajs.js
+import js.annotation.JSName
 import js.Dynamic.{literal => lit}
 import js.|
 import org.scalajs.dom
@@ -670,6 +671,9 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var results: js.UndefOr[Int]         = js.undefined
   var security: js.UndefOr[String]     = js.undefined
   var nselectable: js.UndefOr[Boolean] = js.undefined
+
+  @JSName("will-change")
+  var willChange: js.UndefOr[String] = js.undefined;
 }
 
 trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {

@@ -116,7 +116,9 @@ trait StyleAttr extends js.Object {
   var outlineColor: js.UndefOr[String]         = js.undefined
   var outlineStyle: js.UndefOr[String]         = js.undefined
   var outlineWidth: js.UndefOr[String]         = js.undefined
-  var overflow: js.UndefOr[String]             = js.undefined
+  var overflow: js.UndefOr[String]       = js.undefined
+  var overflowX: js.UndefOr[String]             = js.undefined
+  var overflowY: js.UndefOr[String]             = js.undefined
   var padding: js.UndefOr[String]              = js.undefined
   var paddingTop: js.UndefOr[String]           = js.undefined
   var paddingRight: js.UndefOr[String]         = js.undefined

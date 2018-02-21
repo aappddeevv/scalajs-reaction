@@ -28,6 +28,8 @@ object TagTestC {
               display = "flex"
               flexDirection = "column"
               alignItems = "flex-start"
+              overflow = "hidden"
+              overflowY = "auto"
             }
           })(
             label("Testing raw HTML tags..."),

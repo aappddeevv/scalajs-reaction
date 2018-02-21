@@ -9,6 +9,8 @@ package ttg.react.examples
 package addressmanager
 
 import scala.scalajs.js
+import js.annotation._
+import js.JSConverters._
 import scala.concurrent.duration._
 
 object fakedata {
@@ -45,30 +47,44 @@ object fakedata {
     def active: Address = _active
   }
 
-  val defaultAddresses = js.Array[Address](
+  val defaultAddresses = generateAddresses(50)
+
+  def generateAddresses(n: Int) = (1 to n).map(i => generateRandom(i.toString())).toJSArray
+
+  private def generateRandom(id: String): Address =
     new Address {
-      override val customeraddressid = "1"
-      override val name              = "address1"
-      override val city              = "NYC"
-      override val createdon         = "2/1/2018"
-    },
-    new Address {
-      override val customeraddressid = "2"
-      override val name              = "address2"
-      override val stateorprovince   = "MA"
-      override val city              = "Boston"
-      override val createdon         = "1/1/2017"
-    },
-    new Address {
-      override val customeraddressid = "3"
-      override val name              = "address3"
-      override val stateorprovince   = "CA"
-      override val city              = "San Mateo"
-      override val createdon         = "3/1/2016"
+      override  val customeraddressid = id
+      override val name = s"${faker.name.lastName()}, ${faker.name.firstName()}"
+      override val city = faker.address.city()
+      override val stateorprovince = faker.address.state()
+      override val postalcode = faker.address.zipCode()
+      override val country = faker.address.country()
+      override val createdon = "3/1/2016"
     }
-  )
 
   /** Delay (ms) resolution. */
   def delayPromise[A](delay: FiniteDuration): A => js.Promise[A] =
     data => new js.Promise[A]((res, rej) => js.timers.setTimeout(delay) { res(data) })
+}
+
+@js.native
+trait address extends js.Object {
+  def zipCode(): String = js.native
+  def city(): String = js.native
+  def cityPrefix(): String = js.native
+  def state(): String = js.native
+  def country(): String = js.native
+}
+
+@js.native
+trait name extends js.Object {
+  def lastName(): String = js.native
+  def firstName(): String = js.native
+}
+
+@js.native
+@JSImport("faker", JSImport.Namespace)
+object faker extends js.Object {
+  val address: address = js.native
+  val name: name = js.native
 }

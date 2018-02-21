@@ -53,7 +53,7 @@ object AddressDetailC {
         self =>
           logContext.makeConsumer {
             log =>
-              js.Dynamic.global.console.log("context: log function:", log)
+            //js.Dynamic.global.console.log("context: log function:", log)
               log(address.getOrElse("<no detail address provided>"))
               div(new DivProps { className = amstyles.detail.asString })(
                 Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
@@ -105,10 +105,19 @@ object AddressListC {
              */
             selection = sel
             layoutMode = DetailsListLayoutMode.fixedColumns
-            constrainMode = ConstrainMode.horizontalConstrained
+            constrainMode = ConstrainMode.unconstrained
+            onRenderDetailsHeader = js.defined{ (props, defaultRender) =>
+              Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
+            }
           }
-          div(new DivProps { className = amstyles.master.asString })(
-            DetailsList[Address](listopts)())
+        // add data-is-scrollable
+        div(merge[DivProps](
+          lit("data-is-scrollable"->true),
+          new DivProps { className = amstyles.master.asString}))(
+          ScrollablePane()(
+            DetailsList[Address](listopts)()
+          )
+        )
       }
     })
 }
@@ -125,6 +134,7 @@ trait AddressManagerProps extends js.Object {
   var reduxLabel: js.UndefOr[String] = js.undefined
   // derived from redux if not provided
   var viewModel: js.UndefOr[AddressesViewModel] = js.undefined
+  var lastActiveAddressId: js.UndefOr[AddressesViewModel] = js.undefined
 }
 
 /**
@@ -137,9 +147,6 @@ private[addressmanager] trait AddressManagerPropsRedux extends AddressManagerPro
   // added by default to props unless mapDispatchToProps is provided
   var dispatch: js.UndefOr[Dispatcher] = js.undefined
   var address: js.UndefOr[Address]     = js.undefined
-
-  /** could be null */
-  var lastActiveAddressId: Id
 }
 
 object AddressManagerC {
@@ -151,7 +158,7 @@ object AddressManagerC {
       message: Option[String] = None,
       addresses: AddressList = emptyAddressList,
       /** instance var, so make mutable, might as well */
-      var selection: ISelection[Address] = null // its a js thing
+    var selection: ISelection[Address] = null, // its a js thing
   )
 
   private val AddressManager = reducerComponent[State, Actions]("AddressManager")
@@ -213,24 +220,32 @@ object AddressManagerC {
     }
   }
 
+  private def activecb(self: Self)(address: Option[Address]): Unit = {
+    self.handle { cbself =>
+      cbself.send(ActiveChanged(address.map(a => (a.customeraddressid.get, a))))
+    }
+  }
+
   /**
-    * Instead of a non-native JS trait, we use explicit parameters. Our interop wrappers
-    * must take this into account.
+    * Instead of a non-native JS trait, we use explicit parameters. Our interop
+    * wrappers must take this into account. Note that we cerated the "ViewModel"
+    * as a test as we would not normally break up the parameters this way.
     */
   private def make(
       dao: AddressDAO,
       vm: AddressesViewModel,
-      label: Option[String],
-      lastActiveAddressId: Option[Id]) =
+      label: Option[String] = None,
+    lastActiveAddressId: Option[Id] = None,
+    className: Option[String]= None) =
     AddressManager.copy(new methods {
-
       val initialState = {
         self =>
           val selcb = () => {
             self.handle { cbself =>
               println(
                 s"AddressManager.selectionChanged: ${PrettyJson.render(cbself.state.selection.getSelection())}")
-            //self.handle { cbself => cbself.send(SelectionChanged(cbself.state.selection)) }
+              // just log it, but here's how we could change it if we had a SelectionChanged event
+              //self.handle { cbself => cbself.send(SelectionChanged(cbself.state.selection)) }
             }
           }
           val selection = new Selection(js.defined(new ISelectionOptions[Address] {
@@ -269,11 +284,22 @@ object AddressManagerC {
                   )
               }
             case ActiveChanged(p) =>
-              p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
-                .getOrElse(gen.effect(_ => vm.setActive(null, null)))
+              // Tricky...the only change here is outside our state, which is kind of
+              // like a side effect, but not really. This queues a render.
+              p.fold{
+                vm.setActive(null,null)
+              }{
+                case (i, a) => vm.setActive(i, a)
+              }
+              //p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
+              //  .getOrElse(gen.effect(_ => vm.setActive(null, null)))
+              gen.skip
             case Refresh =>
+              // redux state is like this component's state, so...
+              // we can change it here *not* as an effect
+              vm.setActive(null,null) // this forces a render to be queued via redux
+              // this forces a render as well
               gen.updateAndEffect(state.copy(addresses = emptyAddressList), eslf => {
-                //vm.setActive(null, null) // keep selection if possible
                 fetchData(eslf, dao)
               })
             case _ => gen.skip
@@ -286,30 +312,25 @@ object AddressManagerC {
 
       render = js.defined({
         self =>
-          val initialFocusedIndex = for {
-            id <- lastActiveAddressId
-          } yield
-            self.state.addresses
-              .indexWhere(_.customeraddressid.map(_ == id).getOrElse[Boolean](false))
-          println(s"AddressManager.render:initial focused index opt: ${initialFocusedIndex}")
+        val ifx = lastActiveAddressId.map{ id =>
+          self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
+        }
+          println(s"AddressManager.render:initial focused index: ${ifx}")
           val selAddrOpt = toSafeOption(vm.active)
 
-          val activecb = (address: Option[Address]) => {
-            self.handle { cbself =>
-              cbself.send(ActiveChanged(address.map(a => (a.customeraddressid.get, a))))
-            }
-          }
-          div(new DivProps { className = amstyles.component.asString })(
+          div(new DivProps { className = cx(amstyles.component, className.getOrElse(null)) })(
             CommandBar(cbopts(self))(),
             div(new DivProps { className = amstyles.masterAndDetail.asString })(
               AddressListC.make(self.state.selection,
                                 self.state.addresses,
-                                activecb,
-                                initialFocusedIndex),
+                                activecb(self),
+                                ifx),
               AddressDetailC.make(selAddrOpt),
             ),
-            AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
-            Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
+            div(new DivProps{ className = amstyles.footer.asString })(
+              AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
+              Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
+            )
           )
       })
     })

@@ -766,7 +766,7 @@ trait ReducerComponentCake extends CakeWithState { cake =>
   type Self                = super.SelfLike
   type SelfForUnmount      = super.SelfForUnmountLike
   type SelfForInitialState = super.SelfForInitialStateLike
-  type State               = super.StateLike
+  protected type State               = super.StateLike
   type ComponentType       = super.ComponentLike
   type ProxyType           = super.ProxyLike
   type WithMethods         = super.WithMethodsLike
@@ -824,7 +824,7 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
   type Self                = SelfLike
   type SelfForUnmount      = SelfForUnmountLike
   type SelfForInitialState = SelfForInitialStateLike
-  type State               = super.StateLike
+  protected type State               = super.StateLike
   type Ops <: OpsLike
   trait OpsLike extends super[CakeWithRP].OpsLike with super[CakeWithState].OpsLike
 
@@ -926,6 +926,8 @@ case class SilentUpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit)
   * the ADT type. Side effects are run after the state update so use the
   * self parameter to the side effect to obtain the most current state and not the
   * self parameter to the function that you call the methods from.
+ * 
+ * This trait is only used when "client state" is present.
   */
 trait ReducerResult[S, SLF] {
 

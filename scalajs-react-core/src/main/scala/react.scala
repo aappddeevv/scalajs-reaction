@@ -129,7 +129,8 @@ package object react {
     result.asInstanceOf[js.Dynamic]
   }
 
-  @inline def merge[T <: js.Object](objs: T*): T = {
+  /** Merge objects and Ts together. Good for merging props with data- attributes. */
+  @inline def merge[T <: js.Object](objs: T|js.Dynamic *): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
@@ -138,14 +139,13 @@ package object react {
     result.asInstanceOf[T]
   }
 
-  private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
+  @inline private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }
 
   /** Safely wrap a value which could be undefined or null -> None, otherwise Some. */
-  def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
+  @inline def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
     if (js.isUndefined(t)) None
     else Option(t.asInstanceOf[T])
   }
-
 }

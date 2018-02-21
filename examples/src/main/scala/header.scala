@@ -11,7 +11,7 @@ import ttg.react._
 import fabric._
 import implicits._
 import vdom._
-import prefix_<^._
+import vdom.tags._
 import elements._
 import components._
 
@@ -33,8 +33,15 @@ object HeaderC {
     header.copy(new methods {
       render = js.defined { self =>
         reactdom.createPortalInElementWithId(
-          <.div(^.className := className, ^.style := hstyle)(
-            "scalajs-react Examples (header via createPortal, inlines styles)",
+          div(new DivProps {
+            className = className
+            style = hstyle
+          })(
+            a(new AProps {
+              href = "https://github.com/aappddeevv/scalajs-react"
+              target = "_blank"
+            })("scalajs-react"),
+            " Examples (header via createPortal, inlines styles) ",
             Link(new ILinkProps {
               style = new StyleAttr { marginRight = "10px" }
               onClick = js.defined { _ =>

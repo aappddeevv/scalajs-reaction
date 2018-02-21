@@ -2,12 +2,6 @@
 // Now that's a mouthful...
 import scala.sys.process._
 
-// may not need these next 2
-resolvers += Resolver.sonatypeRepo("releases")
-resolvers += Resolver.jcenterRepo
-autoCompilerPlugins := true
-scalafmtVersion in ThisBuild := "1.3.0"
-
 lazy val licenseSettings = Seq(
   headerMappings := headerMappings.value +
     (HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment),
@@ -30,6 +24,10 @@ lazy val buildSettings = Seq(
   organization := "ttg",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
   scalaVersion := "2.12.4",
+  resolvers += Resolver.sonatypeRepo("releases"),
+  resolvers += Resolver.jcenterRepo,
+  scalafmtVersion in ThisBuild := "1.4.0",
+  autoCompilerPlugins := true
 ) ++ licenseSettings
 
 lazy val noPublishSettings = Seq(
@@ -37,6 +35,12 @@ lazy val noPublishSettings = Seq(
   publish := {},
   publishLocal :={},
   publishArtifact := false 
+)
+
+lazy val exampleSettings = Seq(
+  libraryDependencies ++= Seq(
+    // any special ones??
+  )
 )
 
 lazy val publishSettings = Seq(
@@ -147,6 +151,7 @@ lazy val examples = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   .settings(macroSettings)
+  .settings(exampleSettings)
 
 // val CoreConfig = config("scalajs-react-core")
 // val VDOMConfig = config("scalajs-react-vdom")
@@ -177,6 +182,7 @@ lazy val docs = project
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     micrositePushSiteWith := GitHub4s
   )
+  .settings(exampleSettings)
   .settings(
     siteSubdirName in ScalaUnidoc := "api",
     addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)

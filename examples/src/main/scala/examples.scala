@@ -45,6 +45,7 @@ object Pages {
     PivotItem(new IPivotItemProps {
       linkText = s"$name"
       itemKey = s"$name-tab"
+      className = estyles.scrollme.asString
     })(
       LabelAndChild(new LabelAndChildProps { label = "Wrapped in typescript" })(c)
     )
@@ -53,6 +54,7 @@ object Pages {
   val todoPage = PivotItem(new IPivotItemProps {
     linkText = "To Do"
     itemKey = "todo"
+    className = estyles.scrollme.asString
   })(
     Label()("Note: The To Do manager's data is reset each time you switch tabs."),
     todo.ToDosC.make(Some("Your To Do List"), todo.fakedata.initialToDos)
@@ -61,6 +63,7 @@ object Pages {
   val helloWorldPage = PivotItem(new IPivotItemProps {
     linkText = "Hello World"
     itemKey = "helloworld"
+    className = estyles.scrollme.asString
   })(
     helloworld.HelloWorldC.make()
   )
@@ -84,6 +87,7 @@ object Pages {
     PivotItem(new IPivotItemProps {
       linkText = "Change Redux State"
       itemKey = "changeReduxState"
+      className = estyles.scrollme.asString
     })(
       examples.changereduxstate.ChangeReduxStateC.make()
     )
@@ -93,6 +97,7 @@ object Pages {
     PivotItem(new IPivotItemProps {
       linkText = "README"
       itemKey = "readme"
+      className = cx(estyles.scrollme, estyles.readme)
     })(
       ReactMarkdownC.make(new ReactMarkdownProps { source = text })
     )
@@ -101,7 +106,8 @@ object Pages {
   def tagTest() = {
     PivotItem(new IPivotItemProps {
       linkText = "Tag Test"
-      itemKey = "tagTesT"
+      itemKey = "tagTest"
+      className = estyles.scrollme.asString
     })(
       TagTestC.make()
     )
@@ -165,7 +171,7 @@ object Main {
         store = StoreNS.store
       })(
         Fabric(new IFabricProps {
-          className = estyles.root.asString
+          className = estyles.toplevel.asString
         })(
           logContext.makeProvider(ExamplesApp.make())
         )),

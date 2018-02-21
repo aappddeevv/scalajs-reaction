@@ -1,14 +1,27 @@
 /** examples toplevel styles */
 
 /* Examples root, header renders into separate non-contained div via createPortal. */
-.root {
-    /* We know the header is 40px. */
+:root {
+}
+
+.toplevel {
+    /* Header (outside the react dom container) is 40px. */
     height: calc(100% - 40px);
     overflow: hidden;
     & [role=tabpanel] {
-        /* tab header is 40px. */
+        /* Tab header is 40px. */
         height: calc(100% - 40px);
         overflow: hidden;
-        overflow-y: auto;
     }
+    & .scrollme {
+        overflow-y: auto;
+        height: 100%;
+    }
+    & .readme {
+        width: 800px;
+    }
+}
+
+.container {
+    overflow: hidden;
 }

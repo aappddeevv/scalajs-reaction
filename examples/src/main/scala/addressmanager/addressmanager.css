@@ -1,14 +1,25 @@
-/** addressmanager css */
+/** addressmanager CSS */
+
+:root {
+    --cbar: 40px;
+    --footer: 80px;
+}
 
 .component {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     & .masterAndDetail {
         display: flex;
         align-items: stretch;
         flex-wrap: wrap;
+        overflow: hidden;
+        height: calc(100% - var(--cbar) - var(--footer));
         & .master {
             flex-basis: 50%;
+            /* header, 2 labels at bottom */
+            overflow: hidden;
+            overflow-y: auto;
         }
         & .detail {
             flex-basis: 50%;
@@ -16,8 +27,9 @@
             flex-direction: column;
             min-width: 100;
         }
-        & .footer {
-            margin-top: auto; /* push to bottom */
-        }
+    }
+    & .footer {
+        /* push to bottom */
+        margin-top: auto;
     }
 }
