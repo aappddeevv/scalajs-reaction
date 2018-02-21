@@ -11,17 +11,18 @@ import org.scalajs.dom
 import implicits._
 
 /**
- * Create a tag from a list of attributes.
- */
+  * Create a tag from a list of attributes.
+  */
 class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
   def apply(attrs: Attrs*)(children: ReactNode*): ReactDOMElement =
     React.createElement(name, Attrs.concat(tagAttrs ++ attrs).toJs)(children: _*)
 }
 
-/** 
- * Create a tag that takes type non-native JS traits.
- */
+/**
+  * Create a tag that takes type non-native JS traits.
+  */
 class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) {
+
   /** Must have properties, maybe children. */
   def apply(attrs: P)(children: ReactNode*): ReactDOMElement =
     React.createElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
@@ -30,5 +31,3 @@ class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) {
   def apply(children: ReactNode*): ReactDOMElement =
     React.createElement(name, tagAttrs)(children: _*)
 }
-
-

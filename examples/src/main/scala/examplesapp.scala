@@ -28,31 +28,33 @@ object ExamplesApp {
   def make() =
     component.copy(new methods {
       val initialState = _ => State(Home)
-      reducer = js.defined{ (action, state, gen) =>
+      reducer = js.defined { (action, state, gen) =>
         // match..process..whatever
         // just stick it into the state...
         gen.update(state.copy(route = action))
       }
-      subscriptions = js.defined{ self =>
+      subscriptions = js.defined { self =>
         Seq(
           () => {
-            val token = router.watchUrl{url =>
+            val token = router.watchUrl { url =>
               println(s"url: $url")
               url._2.toLowerCase() match {
                 case "examples" => self.send(Home)
-                case "todo" => self.send(ToDo)
-                case _ => self.send(Home)
-              }}
-            () => router.unwatchUrl(token)
+                case "todo"     => self.send(ToDo)
+                case _          => self.send(Home)
+              }
+            }
+            () =>
+              router.unwatchUrl(token)
           }
         )
       }
-      render = js.defined{self =>
+      render = js.defined { self =>
         self.state.route match {
           case Home => Examples.make(Main.portalElementId)
-          case ToDo => todo.ToDosC.make(
-            Some("Your ToDo List - Courtesy of the Router!"),
-            todo.fakedata.initialToDos)
+          case ToDo =>
+            todo.ToDosC.make(Some("Your ToDo List - Courtesy of the Router!"),
+                             todo.fakedata.initialToDos)
         }
       }
     })

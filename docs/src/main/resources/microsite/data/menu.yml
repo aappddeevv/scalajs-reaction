@@ -31,3 +31,6 @@ options:
 
   - title: React Interop
     url: docs/reactinterop.html
+
+  - title: macros
+    url: docs/macros.html

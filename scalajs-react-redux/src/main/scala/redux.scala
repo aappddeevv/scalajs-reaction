@@ -11,9 +11,9 @@ import js.JSConverters._
 package object redux {
 
   /** A listener in redux is very coarse grained. You receive all events. */
-  type Listener = js.Function0[Unit]
+  type Listener     = js.Function0[Unit]
   type Unsubscriber = js.Function0[Unit]
-  type Dispatcher = js.Function1[js.Object | js.Dynamic, Unit]
+  type Dispatcher   = js.Function1[js.Object | js.Dynamic, Unit]
 
   /** drive type inference */
   type MSTP[RS, P] = (RS, P) => P
@@ -37,7 +37,7 @@ package object redux {
 
     type MSTP[RS <: js.Object, P <: js.Object] = js.Function2[RS, P, P]
     type MDTP[RS <: js.Object, P <: js.Object] = js.Function2[Dispatcher, P, P]
-    type MP[P <: js.Object] = js.Function3[P, P, P, P]
+    type MP[P <: js.Object]                    = js.Function3[P, P, P, P]
 
     // convert to js functions via scala.js implicit conversions, I'm lazy
     val mstp: js.UndefOr[MSTP[RS, P]] = mapStateToProps.map { f =>

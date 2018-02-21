@@ -11,12 +11,12 @@ import js.annotation._
 
 trait Address extends js.Object {
   val customeraddressid: js.UndefOr[String] = js.undefined
-  val name: js.UndefOr[String] = js.undefined
-  val city: js.UndefOr[String] = js.undefined
-  val stateorprovince: js.UndefOr[String] = js.undefined
-  val createdon: js.UndefOr[String] = js.undefined
-  val postalcode: js.UndefOr[String] = js.undefined
-  val country: js.UndefOr[String] = js.undefined
+  val name: js.UndefOr[String]              = js.undefined
+  val city: js.UndefOr[String]              = js.undefined
+  val stateorprovince: js.UndefOr[String]   = js.undefined
+  val createdon: js.UndefOr[String]         = js.undefined
+  val postalcode: js.UndefOr[String]        = js.undefined
+  val country: js.UndefOr[String]           = js.undefined
 }
 
 trait AddressDAO extends js.Object {

@@ -17,7 +17,7 @@ package react
   */
 final class Ref[T] private[react] (private var value: T) {
   def apply() = value
-  def get = value
+  def get     = value
   def set(newValue: T): Unit = {
     value = newValue
   }

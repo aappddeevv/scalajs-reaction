@@ -22,24 +22,24 @@ object router {
   private def search(): String = {
     dom.window.location.search match {
       case "" | "?" => ""
-      case x => x.drop(1)
+      case x        => x.drop(1)
     }
   }
 
   private def hash(): String = {
     dom.window.location.hash match {
       case "" | "#" => ""
-      case x => x.drop(1)
+      case x        => x.drop(1)
     }
   }
 
   private def path(): Seq[String] = {
     dom.window.location.pathname match {
       case "" | "/" => Nil
-      case x =>
+      case x        =>
         // always seems to be a leading /, so drop it
         val start = 1
-        val end = x.length - (if (x.endsWith("/")) 1 else 0)
+        val end   = x.length - (if (x.endsWith("/")) 1 else 0)
         x.slice(start, end).split("/")
     }
   }
@@ -55,7 +55,7 @@ object router {
 
   /** path, hash, search */
   type CallbackArg = (Seq[String], String, String)
-  type WatcherId = js.Any
+  type WatcherId   = js.Any
 
   private type CB = js.Function1[js.Any, js.Any]
 

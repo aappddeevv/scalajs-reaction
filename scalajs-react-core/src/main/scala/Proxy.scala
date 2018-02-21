@@ -29,7 +29,8 @@ trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   val render: js.ThisFunction0[ThisSelf, ReactNode]
 
   /** react js method. */
-  val componentWillReceiveProps: js.UndefOr[js.ThisFunction1[ThisSelf, ThisSelfProps, Unit]] = js.undefined
+  val componentWillReceiveProps: js.UndefOr[js.ThisFunction1[ThisSelf, ThisSelfProps, Unit]] =
+    js.undefined
 
   /** react js method. */
   val componentWillUnmount: js.UndefOr[js.ThisFunction0[ThisSelf, Unit]] = js.undefined
@@ -38,17 +39,21 @@ trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   val componentDidMount: js.UndefOr[js.ThisFunction0[ThisSelf, Unit]] = js.undefined
 
   /** react js method. */
-  val shouldComponentUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Boolean]] = js.undefined
+  val shouldComponentUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Boolean]] =
+    js.undefined
 
   /** React js method. @deprecated */
-  val componentWillUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]] = js.undefined
+  val componentWillUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]] =
+    js.undefined
 
   /** react js method. */
-  val componentDidUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]] = js.undefined
+  val componentDidUpdate: js.UndefOr[js.ThisFunction2[ThisSelf, ThisSelfProps, State, Unit]] =
+    js.undefined
 
   /** This should be removed. */
   val contextTypes: js.UndefOr[js.UndefOr[js.Object]] = js.undefined
 
   /** react js method. v16+ */
-  val componentDidCatch: js.UndefOr[js.ThisFunction2[ThisSelf, js.Error, ErrorInfo, Unit]] = js.undefined
+  val componentDidCatch: js.UndefOr[js.ThisFunction2[ThisSelf, js.Error, ErrorInfo, Unit]] =
+    js.undefined
 }

@@ -69,12 +69,12 @@ object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
   import HelloWorld.ops._
   def make(name: Option[String]) =
-    HelloWorld
-      .withRender { self =>
+    HelloWorld.copy(new methods {
+     render = js.defined{ self =>
         div(
           "hello world" + name.map(" and welcome " + _).getOrElse("")
         )
-      }
+      }})
 }
 
 object MyWebApp {
@@ -87,7 +87,8 @@ object MyWebApp {
 }
 ```
 
-You can add a className to the div using: `div(new DivProps { className = "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
+You can add a className to the div using: `div(new DivProps { className =
+"divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
 ensure you only enter valid div props.
 
 ### Exporting a Component to Javascript
@@ -220,6 +221,8 @@ redux enhanced props. Please see the extended documentation for details.
 ### Routing
 A simple 100-line router is included based on the reason-react router
 implementation. See the example app for an example of how to use it.
+
+### Macros
 
 # Documentation
 

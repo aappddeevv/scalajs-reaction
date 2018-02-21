@@ -18,6 +18,14 @@ lazy val licenseSettings = Seq(
          |""".stripMargin
     )))
 
+
+lazy val macroSettings = Seq (
+  resolvers += Resolver.sonatypeRepo("releases"),
+  resolvers += Resolver.bintrayRepo("scalameta", "maven"),
+  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
+  scalacOptions += "-Xplugin-require:macroparadise",
+)
+
 lazy val buildSettings = Seq(
   organization := "ttg",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
@@ -68,7 +76,7 @@ lazy val root = project.in(file("."))
   .settings(name := "scalajs-react")
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
-    `scalajs-react-react-dom`, `scalajs-react-prop-types`)
+    `scalajs-react-react-dom`, `scalajs-react-prop-types`, `scalajs-react-macros`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
@@ -76,36 +84,40 @@ lazy val `scalajs-react-core` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(description := "reactjs package.")
+
+lazy val `scalajs-react-macros` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(macroSettings)
   .settings(
-    description := "reactjs package.",
-  )
+    description := "Helpful macros.",
+    libraryDependencies ++= Seq(
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      "org.scalameta" %% "scalameta" % "1.8.0" // old version required
+    ))
 
 lazy val `scalajs-react-prop-types` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`)
-  .settings(
-    description := "prop-types package.",
-  )
+  .settings(description := "prop-types package.")
 
 lazy val `scalajs-react-react-dom` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`)
-  .settings(
-    description := "react-dom package."
-  )
+  .settings(description := "react-dom package.")
 
 lazy val `scalajs-react-vdom` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`)
-  .settings(
-    description := "vdom helpers.",
-  )
+  .settings(description := "vdom helpers.")
 
 lazy val `scalajs-react-redux` = project
   .settings(libsettings)
@@ -121,9 +133,7 @@ lazy val `scalajs-react-fabric` = project
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
-  .settings(
-    description := "microsoft office-ui-fabric facade.",
-  )
+  .settings(description := "microsoft office-ui-fabric facade.")
 
 // Watch non-scala assets as well, we add this to root project even
 // though its only relevant to examples project.
@@ -132,16 +142,11 @@ watchSources += baseDirectory.value / "examples/src/main/assets"
 lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
-  .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`, `scalajs-react-prop-types`)
+  .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
+    `scalajs-react-prop-types`, `scalajs-react-macros`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
-  // rebuilds if these non-scala sources change...????
-  //.settings(unmanagedResourceDirectories in Compile += baseDirectory.value / "examples/src/main/assets")
-  .settings(
-    libraryDependencies ++= Seq(
-      //"org.typelevel" %% "cats-core_sjs0.6" % "1.0.1",
-      //"org.typelevel" %% "cats-effect_sjs0.6" % "0.5",
-    ))
+  .settings(macroSettings)
 
 // val CoreConfig = config("scalajs-react-core")
 // val VDOMConfig = config("scalajs-react-vdom")
@@ -156,7 +161,7 @@ lazy val docs = project
   .disablePlugins(BintrayPlugin)
   //.enablePlugins(SiteScaladocPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
-    `scalajs-react-fabric`, `scalajs-react-redux`)
+    `scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-macros`)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples)
   )
@@ -186,6 +191,7 @@ lazy val docs = project
       // you need this if you use SiteScaladocPlugin so that the push uses gh-pages vs GitHub4s
       //micrositePushSiteWith := GHPagesPlugin
   )
+  .settings(macroSettings)
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")
 npmBuild := {

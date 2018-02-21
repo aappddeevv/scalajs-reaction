@@ -32,8 +32,8 @@ object ChangeReduxStateC {
   import c.ops._
 
   trait ChangeReduxProps extends js.Object {
-    var className: js.UndefOr[String] = js.undefined
-    var label: js.UndefOr[String] = js.undefined
+    var className: js.UndefOr[String]                         = js.undefined
+    var label: js.UndefOr[String]                             = js.undefined
     var onLabelChange: js.UndefOr[js.Function1[String, Unit]] = js.undefined
   }
 
@@ -44,7 +44,8 @@ object ChangeReduxStateC {
           Label()("Redux Label"),
           TextField(new ITextFieldProps {
             className = cstyles.label.asString
-            onChanged = js.defined((v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
+            onChanged =
+              js.defined((v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
             value = props.label.getOrElse[String]("no redux label")
           })()
         )
@@ -63,7 +64,8 @@ object ChangeReduxStateC {
     val mapDispatchToProps =
       (dispatch: Dispatcher, ownProps: ChangeReduxProps) =>
         new ChangeReduxProps {
-          onLabelChange = js.defined((label: String) => dispatch(ActionsNS.ViewActions.setLabel(label)))
+          onLabelChange =
+            js.defined((label: String) => dispatch(ActionsNS.ViewActions.setLabel(label)))
       }
     redux.connect(jsComponent, Some(mapStateToProps), Some(mapDispatchToProps))
   }

@@ -18,12 +18,18 @@ import org.scalajs.dom
 private[react] trait JSReact extends js.Object {
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
-  def createElement[P](el: js.Any | String, props: UndefOr[P], children: ReactNode*): ReactDOMElement = js.native
+  def createElement[P](
+      el: js.Any | String,
+      props: UndefOr[P],
+      children: ReactNode*): ReactDOMElement                             = js.native
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
   // symbol or number depending on browser/environment support for symbols
   val Fragment: js.Any = js.native
+
   /** v16.3 API. */
-  def createContext[T](defaultValue: T, calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
+  def createContext[T](
+      defaultValue: T,
+      calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
 }
 
 @js.native
@@ -31,9 +37,11 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
-  def createElement(tag: String, props: js.Object)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
+  def createElement(tag: String, props: js.Object)(children: ReactNode*): ReactDOMElement =
+    JSReact.createElement(tag, props, children: _*)
 
-  def createElement(tag: ReactClass, props: js.Object)(children: ReactNode*): ReactDOMElement = JSReact.createElement(tag, props, children: _*)
+  def createElement(tag: ReactClass, props: js.Object)(children: ReactNode*): ReactDOMElement =
+    JSReact.createElement(tag, props, children: _*)
 
   def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, js.undefined, children: _*)
@@ -63,48 +71,56 @@ private[react] object reactCreateClass extends js.Object {
 }
 
 /**
- * React's context object contains the consumer and provider "components".
- * 
- * @todo validate that current/default value are part of the public API.
- */
+  * React's context object contains the consumer and provider "components".
+  *
+  * @todo validate that current/default value are part of the public API.
+  */
 @js.native
 trait ReactContext[T] extends js.Object {
   type ValueType = T
+
   /** Only takes a single attribute value, "value" with the context . */
   val Provider: js.Any = js.native
   val Consumer: js.Any = js.native
+
   /** Not public API. */
   var currentValue: T = js.native
+
   /** Not public API. */
-  val defaultValue: T = js.native  
+  val defaultValue: T = js.native
 }
 
 /**
- * Provide context using react 16.3+ context mechanism. Import this object to
- * obtain a syntax enhancement to create provider's and consumers. The syntax is
- * not included in the standard syntax module.
- * 
- * @todo Consumer could take a bits argument but react's API is not settled yet.
- */
+  * Provide context using react 16.3+ context mechanism. Import this object to
+  * obtain a syntax enhancement to create provider's and consumers. The syntax is
+  * not included in the standard syntax module.
+  *
+  * @todo Consumer could take a bits argument but react's API is not settled yet.
+  */
 object context {
 
   /** v16.3 API. */
-  def make[T](defaultValue: T): ReactContext[T] = JSReact.createContext[T](defaultValue, js.undefined)
+  def make[T](defaultValue: T): ReactContext[T] =
+    JSReact.createContext[T](defaultValue, js.undefined)
 
   def makeProvider[T](ctx: ReactContext[T])(value: Option[T])(children: ReactNode*): ReactNode = {
     val v = lit("value" -> value.getOrElse(ctx.currentValue).asInstanceOf[js.Any])
-    JSReact.createElement(ctx.Provider, v, children:_*)
+    JSReact.createElement(ctx.Provider, v, children: _*)
   }
 
-  def makeConsumer[T](ctx: ReactContext[T])(f: js.Function1[T, ReactNode], key: Option[String]=None): ReactNode = {
+  def makeConsumer[T](ctx: ReactContext[T])(
+      f: js.Function1[T, ReactNode],
+      key: Option[String] = None): ReactNode = {
     val props = key.fold[js.Any](js.undefined)(k => lit("key" -> k))
     JSReact.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
   }
 
   /** `import context._` brings the syntax into scope. */
   implicit class ReactContextOps[T](ctx: ReactContext[T]) {
-    def makeProvider(value: T)(children: ReactNode*) = context.makeProvider[T](ctx)(Some(value))(children:_*)
-    def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children:_*)
-    def makeConsumer(f: js.Function1[T, ReactNode], key: Option[String] = None) = context.makeConsumer[T](ctx)(f)
+    def makeProvider(value: T)(children: ReactNode*) =
+      context.makeProvider[T](ctx)(Some(value))(children: _*)
+    def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children: _*)
+    def makeConsumer(f: js.Function1[T, ReactNode], key: Option[String] = None) =
+      context.makeConsumer[T](ctx)(f)
   }
 }

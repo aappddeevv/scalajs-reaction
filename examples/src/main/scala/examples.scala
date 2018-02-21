@@ -74,7 +74,8 @@ object Pages {
       linkText = "Address Manager"
       itemKey = "addressmanager"
     })(
-      Label()("Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes."),
+      Label()(
+        "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes."),
       AddressManagerC.makeWithRedux(opts)
     )
   }
@@ -115,7 +116,7 @@ object Examples {
   import c.ops._
   def make(headerTarget: String) =
     c.copy(new methods {
-      render = js.defined{ self =>
+      render = js.defined { self =>
         fragmentElement()(
           Pivot()(
             readme(examples.readmetext),
@@ -143,7 +144,7 @@ object Main {
   import Contexts._
 
   val portalElementId = "portalContainer"
-  val container = "container"
+  val container       = "container"
 
   /**
     * This will be exported from the ES module that scala.js outputs.  How you
@@ -160,12 +161,14 @@ object Main {
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     renderToElementWithId(
-      React.createElement(redux.ReactRedux.Provider,
-        new redux.ProviderProps { store = StoreNS.store })(Fabric(new IFabricProps {
+      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
+        store = StoreNS.store
+      })(
+        Fabric(new IFabricProps {
           className = estyles.root.asString
         })(
           logContext.makeProvider(ExamplesApp.make())
-      )),
+        )),
       "container"
     )
   }

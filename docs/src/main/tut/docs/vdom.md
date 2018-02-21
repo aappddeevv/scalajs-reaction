@@ -44,6 +44,8 @@ The attributes in a list are automatically converted to a js.Object behind the s
 
 In its current form, the attributes are a list converted to a props, which is not really typesafe from the perspective the attributes or the props "set of attributes." To improve this we need to use non-native JS traits which I have not provided, then provide the functions to use the props as well as perhaps the list of attributes. The non-native JS trait versions of these vdom elements will be added shortly.
 
+The list based vdom allows you to specify style attributes in a list using `style = Style(...)`. See the next section for more safe version of creating styles.
+
 ## Styling
 A simple, slightly more safe inline style capability has also been provided.
 
@@ -61,5 +63,3 @@ you can add style attribute anything missing via:
 val unsafeStyle = unsafeAddProp(style1, "foo", "bar")
 ```
 You would use these as the "value" in the list of attributes for the vdom elements.
-
-The list based vdom allows you to specify style attributes in a list using `style = Style(...)`.

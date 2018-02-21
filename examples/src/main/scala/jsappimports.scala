@@ -18,7 +18,7 @@ import ttg.react.redux
 import elements._
 
 trait LabelAndChildProps extends js.Object {
-  var label: js.UndefOr[String] = js.undefined
+  var label: js.UndefOr[String]     = js.undefined
   var className: js.UndefOr[String] = js.undefined
 }
 
@@ -41,16 +41,16 @@ object StoreNS extends js.Object {
 @js.native
 @JSImport("JSExamples/actions", JSImport.Namespace)
 object ActionsNS extends js.Object {
-  val ViewActions: js.Dynamic = js.native
+  val ViewActions: js.Dynamic           = js.native
   val AddressManagerActions: js.Dynamic = js.native
-  val Actions: js.Dynamic = js.native
+  val Actions: js.Dynamic               = js.native
 }
 @js.native
 @JSImport("react-markdown", JSImport.Default)
 object ReactMarkdown extends ReactJsComponent
 
 trait ReactMarkdownProps extends js.Object {
-  var source: js.UndefOr[String] = js.undefined
+  var source: js.UndefOr[String]    = js.undefined
   var className: js.UndefOr[String] = js.undefined
 }
 
@@ -65,7 +65,9 @@ class PrettyJsonOptions(
 @js.native
 @JSImport("prettyjson", JSImport.Namespace)
 object PrettyJson extends js.Object {
-  def render(data: js.Object | js.Dynamic, options: js.UndefOr[PrettyJsonOptions] = js.undefined): String =
+  def render(
+      data: js.Object | js.Dynamic,
+      options: js.UndefOr[PrettyJsonOptions] = js.undefined): String =
     js.native
 }
 

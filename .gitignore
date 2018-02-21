@@ -18,4 +18,4 @@ node_modules/*
 .project
 *~
 .#*
-docs/src/main/resource/microsite/static
+docs/src/main/resources/microsite/static

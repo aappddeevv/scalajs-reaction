@@ -30,7 +30,7 @@ object ToDoC {
   def make(props: ToDoProps) =
     ToDo.copy(new methods {
       render = js.defined{ self => 
-       div(new DivProps { style = StyleAttr("display" = "flex")})(
+       div(new DivProps { style = new StyleAttr("display" = "flex")})(
           Label()("Item:"),
           Label()(props.todo.name),
           DefaultButton(new IButtonProps{

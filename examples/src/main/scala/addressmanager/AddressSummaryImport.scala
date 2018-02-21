@@ -22,7 +22,7 @@ object AddressSummaryC {
   def make(className: Option[String] = None, address: Option[Address] = None) = {
     val props = literal(
       "className" -> className.orUndefined,
-      "address" -> address.orUndefined
+      "address"   -> address.orUndefined
     )
     elements.wrapJsForScala(AddressSummaryNS.AddressSummary, props)
   }

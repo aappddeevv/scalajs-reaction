@@ -129,6 +129,15 @@ package object react {
     result.asInstanceOf[js.Dynamic]
   }
 
+  @inline def merge[T <: js.Object](objs: T*): T = {
+    val result = js.Dictionary.empty[Any]
+    for (source <- objs) {
+      for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+        result(key) = value
+    }
+    result.asInstanceOf[T]
+  }
+
   private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }

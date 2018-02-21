@@ -36,11 +36,14 @@ object HeaderC {
           <.div(^.className := className, ^.style := hstyle)(
             "scalajs-react Examples (header via createPortal, inlines styles)",
             Link(new ILinkProps {
-              style = new StyleAttr{ marginRight = "10px" }
-              onClick = js.defined{_ => router.push("#todo")}
+              style = new StyleAttr { marginRight = "10px" }
+              onClick = js.defined { _ =>
+                router.push("#todo")
+              }
             })("Route to ToDos")
           ),
-          target)
+          target
+        )
       }
     })
 }

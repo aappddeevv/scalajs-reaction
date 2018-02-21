@@ -15,11 +15,11 @@ object fakedata {
 
   /* Fake DAO. Can fail every 10 times and adds a random delay for the fetch. */
   object addressDAO extends AddressDAO {
-    private var counter = -1
+    private var counter      = -1
     private var fetchCounter = -1
-    var delayMaxMillis: Int = 1000
-    var failMod: Int = 10
-    private val addresses = defaultAddresses.jsSlice(0)
+    var delayMaxMillis: Int  = 1000
+    var failMod: Int         = 10
+    private val addresses    = defaultAddresses.jsSlice(0)
     override val fetch = (id: Id) => {
       fetchCounter = fetchCounter + 1
       if (fetchCounter % failMod == 0) js.Promise.reject("Fetch failed (as specified in failMod)")
@@ -35,36 +35,36 @@ object fakedata {
   }
 
   object addressesVM extends AddressesViewModel {
-    private var _activeId: Id = null
+    private var _activeId: Id    = null
     private var _active: Address = null
     def setActive(id: Id, a: Address): Unit = {
       _activeId = id
       _active = a
     }
-    def activeId: Id = _activeId
+    def activeId: Id    = _activeId
     def active: Address = _active
   }
 
   val defaultAddresses = js.Array[Address](
     new Address {
       override val customeraddressid = "1"
-      override val name = "address1"
-      override val city = "NYC"
-      override val createdon = "2/1/2018"
+      override val name              = "address1"
+      override val city              = "NYC"
+      override val createdon         = "2/1/2018"
     },
     new Address {
       override val customeraddressid = "2"
-      override val name = "address2"
-      override val stateorprovince = "MA"
-      override val city = "Boston"
-      override val createdon = "1/1/2017"
+      override val name              = "address2"
+      override val stateorprovince   = "MA"
+      override val city              = "Boston"
+      override val createdon         = "1/1/2017"
     },
     new Address {
       override val customeraddressid = "3"
-      override val name = "address3"
-      override val stateorprovince = "CA"
-      override val city = "San Mateo"
-      override val createdon = "3/1/2016"
+      override val name              = "address3"
+      override val stateorprovince   = "CA"
+      override val city              = "San Mateo"
+      override val createdon         = "3/1/2016"
     }
   )
 

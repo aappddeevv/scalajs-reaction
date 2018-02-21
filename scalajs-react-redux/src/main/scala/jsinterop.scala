@@ -12,7 +12,7 @@ import js.annotation._
   * This trait does not include the full set of options.
   */
 trait ConnectOpts extends js.Object {
-  val pure: js.UndefOr[Boolean] = js.undefined
+  val pure: js.UndefOr[Boolean]    = js.undefined
   val storeKey: js.UndefOr[String] = js.undefined
 }
 
@@ -30,8 +30,8 @@ trait ProviderProps extends js.Object {
   */
 @js.native
 trait Store extends js.Object {
-  def getState[S <: js.Any](): S = js.native
-  val dispatch: Dispatcher = js.native
+  def getState[S <: js.Any](): S                      = js.native
+  val dispatch: Dispatcher                            = js.native
   val subscribe: js.Function1[Listener, Unsubscriber] = js.native
 
   /** The reducer replacement is untyped. */
@@ -51,5 +51,6 @@ object ReactRedux extends js.Object {
       mapStateToProps: js.UndefOr[js.Any] = js.undefined,
       mapDispatchToProps: js.UndefOr[js.Any] = js.undefined,
       mergeProps: js.UndefOr[js.Any] = js.undefined,
-      connectOpts: js.UndefOr[ConnectOpts] = js.undefined): js.Function1[ReactJsComponent, ReactJsComponent] = js.native
+      connectOpts: js.UndefOr[ConnectOpts] = js.undefined)
+    : js.Function1[ReactJsComponent, ReactJsComponent] = js.native
 }
