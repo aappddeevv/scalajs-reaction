@@ -14,7 +14,7 @@ import org.scalajs.dom
 import dom.html
 
 trait SetInnerHTML extends js.Object {
-  val __html: js.UndefOr[String] = js.undefined
+  val __html: String
 }
 
 trait Attributes extends js.Object {
@@ -25,13 +25,11 @@ trait ClassAttributes[E] extends Attributes {
   var ref: js.UndefOr[RefCbE[E]] = js.undefined
 }
 
-/** A props trait that takes all HTML props. */
+/** A props trait that takes all HTML props. Use wisely. */
 trait HTMLProps[+T <: dom.EventTarget]
     extends AllHTMLAttributes[T @uv]
     with ClassAttributes[T @uv] {}
 
-/** A props trait that takes all SVG props. */
-trait SVGProps[+T <: dom.EventTarget] extends SVGAttributes[T @uv] with ClassAttributes[T @uv] {}
 trait ElementAttributesOnly
     extends HTMLAttributes[dom.html.Element]
     with ClassAttributes[dom.html.Element]
@@ -469,6 +467,22 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   /** react specific */
   var dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
 
+  // clipboard events
+  var onCopy: js.UndefOr[ClipboardEventHandler[T @uv]]         = js.undefined
+  var onCopyCapture: js.UndefOr[ClipboardEventHandler[T @uv]]  = js.undefined
+  var onCut: js.UndefOr[ClipboardEventHandler[T @uv]]          = js.undefined
+  var onCutCapture: js.UndefOr[ClipboardEventHandler[T @uv]]   = js.undefined
+  var onPaste: js.UndefOr[ClipboardEventHandler[T @uv]]        = js.undefined
+  var onPasteCapture: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
+
+  // compositoin events
+  var onCompositionEnd: js.UndefOr[CompositionEventHandler[T @uv]]           = js.undefined
+  var onCompositionEndCapture: js.UndefOr[CompositionEventHandler[T @uv]]    = js.undefined
+  var onCompositionStart: js.UndefOr[CompositionEventHandler[T @uv]]         = js.undefined
+  var onCompositionStartCapture: js.UndefOr[CompositionEventHandler[T @uv]]  = js.undefined
+  var onCompositionUpdate: js.UndefOr[CompositionEventHandler[T @uv]]        = js.undefined
+  var onCompositionUpdateCapture: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
+
   // keyboard events val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
   var onKeyDown: js.UndefOr[KeyboardEventHandler[T @uv]]         = js.undefined
   var onKeyPress: js.UndefOr[KeyboardEventHandler[T @uv]]        = js.undefined
@@ -476,24 +490,50 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onKeyUp: js.UndefOr[KeyboardEventHandler[T @uv]]           = js.undefined
   var onKeyUpCapture: js.UndefOr[KeyboardEventHandler[T @uv]]    = js.undefined
 
+  // image events
+  var onLoad: js.UndefOr[ReactEventHandler[T @uv]]         = js.undefined
+  var onLoadCapture: js.UndefOr[ReactEventHandler[T @uv]]  = js.undefined
+  var onError: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onErrorCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+
   // mouse events
   var onClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
   var onClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined
+  var onContextMenu: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
+  var onContextMenuCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
   var onDoubleClick: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
   var onDoubleClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-
-  var onMouseDown: js.UndefOr[MouseEventHandler[T @uv]]  = js.undefined
-  var onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-  var onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-  var onMouseMove: js.UndefOr[MouseEventHandler[T @uv]]  = js.undefined
-  var onMouseOut: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseOver: js.UndefOr[MouseEventHandler[T @uv]]  = js.undefined
-  var onMouseUp: js.UndefOr[MouseEventHandler[T @uv]]    = js.undefined
+  var onDrag: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
+  var onDragCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
+  var onDragEnd: js.UndefOr[DragEventHandler[T @uv]]             = js.undefined
+  var onDragEndCapture: js.UndefOr[DragEventHandler[T @uv]]      = js.undefined
+  var onDragEnter: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
+  var onDragEnterCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
+  var onDragExit: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
+  var onDragExitCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
+  var onDragLeave: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
+  var onDragLeaveCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
+  var onDragOver: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
+  var onDragOverCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
+  var onDragStart: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
+  var onDragStartCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
+  var onDrop: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
+  var onDropCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
+  var onMouseDown: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
+  var onMouseDownCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
+  var onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
+  var onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
+  var onMouseMove: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
+  var onMouseMoveCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
+  var onMouseOut: js.UndefOr[MouseEventHandler[T @uv]]           = js.undefined
+  var onMouseOutCapture: js.UndefOr[MouseEventHandler[T @uv]]    = js.undefined
+  var onMouseOver: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
+  var onMouseOverCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
+  var onMouseUp: js.UndefOr[MouseEventHandler[T @uv]]            = js.undefined
+  var onMouseUpCapture: js.UndefOr[MouseEventHandler[T @uv]]     = js.undefined
 
   // this won't work because once it's a val we can't put in type bounds
   //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
-
-  // lots more to type...
 
   // Focus Events
   var onFocus: js.UndefOr[FocusEventHandler[T @uv]]        = js.undefined
@@ -512,6 +552,74 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onSubmitCapture: js.UndefOr[FormEventHandler[T @uv]]  = js.undefined
   var onInvalid: js.UndefOr[FormEventHandler[T @uv]]        = js.undefined
   var onInvalidCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+
+  // selection events
+  var onSelect: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onSelectCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+
+  // wheel events
+  var onWheel: js.UndefOr[WheelEventHandler[T @uv]]        = js.undefined
+  var onWheelCapture: js.UndefOr[WheelEventHandler[T @uv]] = js.undefined
+
+  // touch events
+  var onTouchCancel: js.UndefOr[TouchEventHandler[T @uv]]        = js.undefined
+  var onTouchCancelCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchEnd: js.UndefOr[TouchEventHandler[T @uv]]           = js.undefined
+  var onTouchEndCapture: js.UndefOr[TouchEventHandler[T @uv]]    = js.undefined
+  var onTouchMove: js.UndefOr[TouchEventHandler[T @uv]]          = js.undefined
+  var onTouchMoveCapture: js.UndefOr[TouchEventHandler[T @uv]]   = js.undefined
+  var onTouchStart: js.UndefOr[TouchEventHandler[T @uv]]         = js.undefined
+  var onTouchStartCapture: js.UndefOr[TouchEventHandler[T @uv]]  = js.undefined
+
+  // media events
+  var onAbort: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
+  var onAbortCapture: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
+  var onCanPlay: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onCanPlayCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onCanPlayThrough: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onCanPlayThroughCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onDurationChange: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onDurationChangeCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onEmptied: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onEmptiedCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onEncrypted: js.UndefOr[ReactEventHandler[T @uv]]             = js.undefined
+  var onEncryptedCapture: js.UndefOr[ReactEventHandler[T @uv]]      = js.undefined
+  var onEnded: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
+  var onEndedCapture: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
+  var onLoadedData: js.UndefOr[ReactEventHandler[T @uv]]            = js.undefined
+  var onLoadedDataCapture: js.UndefOr[ReactEventHandler[T @uv]]     = js.undefined
+  var onLoadedMetadata: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onLoadedMetadataCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onLoadStart: js.UndefOr[ReactEventHandler[T @uv]]             = js.undefined
+  var onLoadStartCapture: js.UndefOr[ReactEventHandler[T @uv]]      = js.undefined
+  var onPause: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
+  var onPauseCapture: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
+  var onPlay: js.UndefOr[ReactEventHandler[T @uv]]                  = js.undefined
+  var onPlayCapture: js.UndefOr[ReactEventHandler[T @uv]]           = js.undefined
+  var onPlaying: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onPlayingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onProgress: js.UndefOr[ReactEventHandler[T @uv]]              = js.undefined
+  var onProgressCapture: js.UndefOr[ReactEventHandler[T @uv]]       = js.undefined
+  var onRateChange: js.UndefOr[ReactEventHandler[T @uv]]            = js.undefined
+  var onRateChangeCapture: js.UndefOr[ReactEventHandler[T @uv]]     = js.undefined
+  var onSeeked: js.UndefOr[ReactEventHandler[T @uv]]                = js.undefined
+  var onSeekedCapture: js.UndefOr[ReactEventHandler[T @uv]]         = js.undefined
+  var onSeeking: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onSeekingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onStalled: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onStalledCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onSuspend: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onSuspendCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onTimeUpdate: js.UndefOr[ReactEventHandler[T @uv]]            = js.undefined
+  var onTimeUpdateCapture: js.UndefOr[ReactEventHandler[T @uv]]     = js.undefined
+  var onVolumeChange: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
+  var onVolumeChangeCapture: js.UndefOr[ReactEventHandler[T @uv]]   = js.undefined
+  var onWaiting: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
+  var onWaitingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+
+  // scroll events
+  var onScroll: js.UndefOr[UIEventHandler[T @uv]]        = js.undefined
+  var onScrollCapture: js.UndefOr[UIEventHandler[T @uv]] = js.undefined
 
 }
 
@@ -1035,269 +1143,4 @@ trait VideoHTMLAttributes[+T <: dom.EventTarget] extends MediaHTMLAttributes[T] 
   var height: js.UndefOr[Int | String] = js.undefined
   var poster: js.UndefOr[String]       = js.undefined
   var width: js.UndefOr[String | Int]  = js.undefined
-}
-
-trait SVGAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
-  /*
-        className?: string;
-        color?: string;
-        height?: number | string;
-        id?: string;
-        lang?: string;
-        max?: number | string;
-        media?: string;
-        method?: string;
-        min?: number | string;
-        name?: string;
-        style?: CSSProperties;
-        target?: string;
-        type?: string;
-        width?: number | string;
-
-        // Other HTML properties supported by SVG elements in browsers
-        role?: string;
-        tabIndex?: number;
-
-        // SVG Specific attributes
-        accentHeight?: number | string;
-        accumulate?: "none" | "sum";
-        additive?: "replace" | "sum";
-        alignmentBaseline?: "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" |
-        "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit";
-        allowReorder?: "no" | "yes";
-        alphabetic?: number | string;
-        amplitude?: number | string;
-        arabicForm?: "initial" | "medial" | "terminal" | "isolated";
-        ascent?: number | string;
-        attributeName?: string;
-        attributeType?: string;
-        autoReverse?: number | string;
-        azimuth?: number | string;
-        baseFrequency?: number | string;
-        baselineShift?: number | string;
-        baseProfile?: number | string;
-        bbox?: number | string;
-        begin?: number | string;
-        bias?: number | string;
-        by?: number | string;
-        calcMode?: number | string;
-        capHeight?: number | string;
-        clip?: number | string;
-        clipPath?: string;
-        clipPathUnits?: number | string;
-        clipRule?: number | string;
-        colorInterpolation?: number | string;
-        colorInterpolationFilters?: "auto" | "sRGB" | "linearRGB" | "inherit";
-        colorProfile?: number | string;
-        colorRendering?: number | string;
-        contentScriptType?: number | string;
-        contentStyleType?: number | string;
-        cursor?: number | string;
-        cx?: number | string;
-        cy?: number | string;
-        d?: string;
-        decelerate?: number | string;
-        descent?: number | string;
-        diffuseConstant?: number | string;
-        direction?: number | string;
-        display?: number | string;
-        divisor?: number | string;
-        dominantBaseline?: number | string;
-        dur?: number | string;
-        dx?: number | string;
-        dy?: number | string;
-        edgeMode?: number | string;
-        elevation?: number | string;
-        enableBackground?: number | string;
-        end?: number | string;
-        exponent?: number | string;
-        externalResourcesRequired?: number | string;
-        fill?: string;
-        fillOpacity?: number | string;
-        fillRule?: "nonzero" | "evenodd" | "inherit";
-        filter?: string;
-        filterRes?: number | string;
-        filterUnits?: number | string;
-        floodColor?: number | string;
-        floodOpacity?: number | string;
-        focusable?: number | string;
-        fontFamily?: string;
-        fontSize?: number | string;
-        fontSizeAdjust?: number | string;
-        fontStretch?: number | string;
-        fontStyle?: number | string;
-        fontVariant?: number | string;
-        fontWeight?: number | string;
-        format?: number | string;
-        from?: number | string;
-        fx?: number | string;
-        fy?: number | string;
-        g1?: number | string;
-        g2?: number | string;
-        glyphName?: number | string;
-        glyphOrientationHorizontal?: number | string;
-        glyphOrientationVertical?: number | string;
-        glyphRef?: number | string;
-        gradientTransform?: string;
-        gradientUnits?: string;
-        hanging?: number | string;
-        horizAdvX?: number | string;
-        horizOriginX?: number | string;
-        ideographic?: number | string;
-        imageRendering?: number | string;
-        in2?: number | string;
-        in?: string;
-        intercept?: number | string;
-        k1?: number | string;
-        k2?: number | string;
-        k3?: number | string;
-        k4?: number | string;
-        k?: number | string;
-        kernelMatrix?: number | string;
-        kernelUnitLength?: number | string;
-        kerning?: number | string;
-        keyPoints?: number | string;
-        keySplines?: number | string;
-        keyTimes?: number | string;
-        lengthAdjust?: number | string;
-        letterSpacing?: number | string;
-        lightingColor?: number | string;
-        limitingConeAngle?: number | string;
-        local?: number | string;
-        markerEnd?: string;
-        markerHeight?: number | string;
-        markerMid?: string;
-        markerStart?: string;
-        markerUnits?: number | string;
-        markerWidth?: number | string;
-        mask?: string;
-        maskContentUnits?: number | string;
-        maskUnits?: number | string;
-        mathematical?: number | string;
-        mode?: number | string;
-        numOctaves?: number | string;
-        offset?: number | string;
-        opacity?: number | string;
-        operator?: number | string;
-        order?: number | string;
-        orient?: number | string;
-        orientation?: number | string;
-        origin?: number | string;
-        overflow?: number | string;
-        overlinePosition?: number | string;
-        overlineThickness?: number | string;
-        paintOrder?: number | string;
-        panose1?: number | string;
-        pathLength?: number | string;
-        patternContentUnits?: string;
-        patternTransform?: number | string;
-        patternUnits?: string;
-        pointerEvents?: number | string;
-        points?: string;
-        pointsAtX?: number | string;
-        pointsAtY?: number | string;
-        pointsAtZ?: number | string;
-        preserveAlpha?: number | string;
-        preserveAspectRatio?: string;
-        primitiveUnits?: number | string;
-        r?: number | string;
-        radius?: number | string;
-        refX?: number | string;
-        refY?: number | string;
-        renderingIntent?: number | string;
-        repeatCount?: number | string;
-        repeatDur?: number | string;
-        requiredExtensions?: number | string;
-        requiredFeatures?: number | string;
-        restart?: number | string;
-        result?: string;
-        rotate?: number | string;
-        rx?: number | string;
-        ry?: number | string;
-        scale?: number | string;
-        seed?: number | string;
-        shapeRendering?: number | string;
-        slope?: number | string;
-        spacing?: number | string;
-        specularConstant?: number | string;
-        specularExponent?: number | string;
-        speed?: number | string;
-        spreadMethod?: string;
-        startOffset?: number | string;
-        stdDeviation?: number | string;
-        stemh?: number | string;
-        stemv?: number | string;
-        stitchTiles?: number | string;
-        stopColor?: string;
-        stopOpacity?: number | string;
-        strikethroughPosition?: number | string;
-        strikethroughThickness?: number | string;
-        string?: number | string;
-        stroke?: string;
-        strokeDasharray?: string | number;
-        strokeDashoffset?: string | number;
-        strokeLinecap?: "butt" | "round" | "square" | "inherit";
-        strokeLinejoin?: "miter" | "round" | "bevel" | "inherit";
-        strokeMiterlimit?: number | string;
-        strokeOpacity?: number | string;
-        strokeWidth?: number | string;
-        surfaceScale?: number | string;
-        systemLanguage?: number | string;
-        tableValues?: number | string;
-        targetX?: number | string;
-        targetY?: number | string;
-        textAnchor?: string;
-        textDecoration?: number | string;
-        textLength?: number | string;
-        textRendering?: number | string;
-        to?: number | string;
-        transform?: string;
-        u1?: number | string;
-        u2?: number | string;
-        underlinePosition?: number | string;
-        underlineThickness?: number | string;
-        unicode?: number | string;
-        unicodeBidi?: number | string;
-        unicodeRange?: number | string;
-        unitsPerEm?: number | string;
-        vAlphabetic?: number | string;
-        values?: string;
-        vectorEffect?: number | string;
-        version?: string;
-        vertAdvY?: number | string;
-        vertOriginX?: number | string;
-        vertOriginY?: number | string;
-        vHanging?: number | string;
-        vIdeographic?: number | string;
-        viewBox?: string;
-        viewTarget?: number | string;
-        visibility?: number | string;
-        vMathematical?: number | string;
-        widths?: number | string;
-        wordSpacing?: number | string;
-        writingMode?: number | string;
-        x1?: number | string;
-        x2?: number | string;
-        x?: number | string;
-        xChannelSelector?: string;
-        xHeight?: number | string;
-        xlinkActuate?: string;
-        xlinkArcrole?: string;
-        xlinkHref?: string;
-        xlinkRole?: string;
-        xlinkShow?: string;
-        xlinkTitle?: string;
-        xlinkType?: string;
-        xmlBase?: string;
-        xmlLang?: string;
-        xmlns?: string;
-        xmlnsXlink?: string;
-        xmlSpace?: string;
-        y1?: number | string;
-        y2?: number | string;
-        y?: number | string;
-        yChannelSelector?: string;
-        z?: number | string;
-  zoomAndPan?: string;
- */
 }

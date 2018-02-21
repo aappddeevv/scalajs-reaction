@@ -40,13 +40,18 @@ trait Events {
   type EventHandler[T <: dom.EventTarget, E <: SyntheticEvent[T]] = js.Function1[E, Unit]
 
   /** General event handler. */
-  type ReactEventHandler[T <: dom.EventTarget]    = EventHandler[T, SyntheticEvent[T]]
-  type MouseEventHandler[T <: dom.EventTarget]    = EventHandler[T, SyntheticMouseEvent[T]]
-  type KeyboardEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticKeyboardEvent[T]]
-  type UIEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticUIEvent[T]]
-  type FocusEventHandler[T <: dom.EventTarget]    = EventHandler[T, SyntheticFocusEvent[T]]
-  type FormEventHandler[T <: dom.EventTarget]     = EventHandler[T, SyntheticFormEvent[T]]
-  type ChangeEventHandler[T <: dom.EventTarget]   = EventHandler[T, SyntheticChangeEvent[T]]
+  type ReactEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticEvent[T]]
+  type MouseEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticMouseEvent[T]]
+  type KeyboardEventHandler[T <: dom.EventTarget]    = EventHandler[T, SyntheticKeyboardEvent[T]]
+  type UIEventHandler[T <: dom.EventTarget]          = EventHandler[T, SyntheticUIEvent[T]]
+  type FocusEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticFocusEvent[T]]
+  type FormEventHandler[T <: dom.EventTarget]        = EventHandler[T, SyntheticFormEvent[T]]
+  type ChangeEventHandler[T <: dom.EventTarget]      = EventHandler[T, SyntheticChangeEvent[T]]
+  type ClipboardEventHandler[T <: dom.EventTarget]   = EventHandler[T, SyntheticClipboardEvent[T]]
+  type DragEventHandler[T <: dom.EventTarget]        = EventHandler[T, SyntheticDragEvent[T]]
+  type TouchEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticTouchEvent[T]]
+  type CompositionEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticCompositionEvent[T]]
+  type WheelEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticWheelEvent[T]]
 }
 
 @js.native

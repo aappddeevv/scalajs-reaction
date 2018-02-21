@@ -11,7 +11,9 @@ import js.Dynamic.{literal => lit}
 import elements._
 import implicits._
 import vdom.StyleAttr
+import vdom.SetInnerHTML
 import vdom.tags._
+import vdom.svgtags._
 
 object TagTestC {
   val c = statelessComponent("TagTest")
@@ -106,7 +108,47 @@ object TagTestC {
                       td("Jane"),
                       td("Doe"),
                     ))
-            )
+            ),
+            label("SVG test"),
+            svg(new SVGProps { width = "12cm"; height = "4cm"; viewBox = "0 0 1200 400" })(
+              rect(new RectProps {
+                x = "1"; y = "1"; width = "1198"; height = "398"; fill = "none"; stroke = "blue";
+                strokeWidth = "2"
+              })(),
+              rect(new RectProps {
+                x = "400"; y = "100"; width = "400"; height = "200"; fill = "yellow";
+                stroke = "navy"; strokeWidth = "10"
+              })()
+            ),
+            label("SVG test by setting inner HTML"),
+            div(new DivProps {
+              dangerouslySetInnerHTML = new SetInnerHTML {
+                val __html = """
+<?xml version="1.0" standalone="no"?>
+<svg width="12cm" height="4cm" viewBox="0 0 1200 400"
+     xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <desc>Example line01 - lines expressed in user coordinates</desc>
+
+  <!-- Show outline of viewport using 'rect' element -->
+  <rect x="1" y="1" width="1198" height="398"
+        fill="none" stroke="blue" stroke-width="2" />
+
+  <g stroke="green" >
+    <line x1="100" y1="300" x2="300" y2="100"
+            stroke-width="5"  />
+    <line x1="300" y1="300" x2="500" y2="100"
+            stroke-width="10"  />
+    <line x1="500" y1="300" x2="700" y2="100"
+            stroke-width="15"  />
+    <line x1="700" y1="300" x2="900" y2="100"
+            stroke-width="20"  />
+    <line x1="900" y1="300" x2="1100" y2="100"
+            stroke-width="25"  />
+  </g>
+</svg>
+"""
+              }
+            })(),
           )
       }
     })
