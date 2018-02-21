@@ -222,8 +222,6 @@ redux enhanced props. Please see the extended documentation for details.
 A simple 100-line router is included based on the reason-react router
 implementation. See the example app for an example of how to use it.
 
-### Macros
-
 # Documentation
 
 Client:
