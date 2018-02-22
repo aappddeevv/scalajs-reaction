@@ -12,11 +12,10 @@ import ttg.react._
 import elements._
 import ttg.react.implicits._
 import vdom._
-import prefix_<^._
+import tags._
 import redux._
 import fabric._
 import fabric.components._
-import prefix_F._
 
 @js.native
 @JSImport("Examples/changereduxstate/changereduxstate.css", JSImport.Namespace)
@@ -39,8 +38,8 @@ object ChangeReduxStateC {
 
   private def _make(props: ChangeReduxProps) =
     c.copy(new methods {
-      render = js.defined { self =>
-        <.div(^.className := cstyles.component)(
+      val render = self => {
+        div(new DivProps { className = cstyles.component.asString })(
           Label()("Redux Label"),
           TextField(new ITextFieldProps {
             className = cstyles.label.asString

@@ -48,7 +48,7 @@ object ToDoC {
 
   def make(todo: ToDo, remove: Unit => Unit) =
     ToDo.copy(new methods {
-      render = js.defined(self => {
+      val render = self => {
         div(new DivProps { className = component.todo.asString })(
           Label()(todo.name),
           DefaultButton(new IButtonProps {
@@ -56,7 +56,7 @@ object ToDoC {
             onClick = js.defined(_ => remove(()))
           })()
         )
-      })
+      }
     })
 }
 
@@ -66,7 +66,7 @@ object ToDoListHeader {
 
   def make(length: Int) =
     ToDoListHeader.copy(new methods {
-      render = js.defined { self =>
+      val render = self => {
         div(
           Label()(s"# To Dos - ${length}")
         )
@@ -81,7 +81,7 @@ object ToDoListC {
   def make(length: Int, todos: Seq[ToDo], remove: Int => Unit) =
     ToDoList.copy(new methods {
       val retainedProps = length
-      render = js.defined { self =>
+      val render = self => {
         div(
           ToDoListHeader.make(length),
           arrayToElement(
@@ -111,7 +111,7 @@ object ToDosC {
   def make(title: Option[String] = None, todos: Seq[ToDo] = Seq()) =
     ToDos.copy(new methods {
       val retainedProps = RP(title)
-      reducer = js.defined((action, state, gen) => {
+      val reducer = (action, state, gen) => {
         action match {
           case Add(t) =>
             gen.update(state.copy(todos = state.todos :+ t, input = None))
@@ -124,10 +124,11 @@ object ToDosC {
           case _ =>
             gen.skip
         }
-      })
+      }
+      
       val initialState = _ => State(todos, None)
-      render = js.defined {
-        self =>
+      val render = 
+        self => {
           div(new DivProps {})(
             Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
             div(new DivProps { className = component.dataEntry.asString })(
@@ -157,7 +158,7 @@ object ToDosC {
                            self.state.todos,
                            (id: Int) => self.handle(remove(id)))
           )
-      }
+        }
     })
 
   @JSExportTopLevel("ToDos")

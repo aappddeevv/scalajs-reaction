@@ -106,7 +106,7 @@ object MyScalaComponentC {
   // standard make function. Remove "private" if you want to expose this
   // make for clients that want to use a version of your component not hooked
   // up to redux.
-  private def _make(props: Props) = MyScalaComponent.copy(new methods { render = ... })
+  private def _make(props: Props) = MyScalaComponent.copy(new methods { val render = { ... })
 
   // you could @JSExportTopLevel this component but it would not receive redux props
   private val jsComponent = c.wrapScalaForJs { (jsProps: Props) => ...; _make(jsProps) }

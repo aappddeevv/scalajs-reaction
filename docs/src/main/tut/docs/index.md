@@ -54,12 +54,9 @@ import react.implicits._
 // contains virtual dom objects
 import vdom._
 
-// imports all virtual dom elements so you can use <.div. If you import <._ then you can just use "div"
-// this is for list style attributes
-import prefix_<^._
-
-// non-native trait style attributes
-import vdom.tags
+// non-native JS trait style attributes
+import vdom.tags._
+import vdom.svgtags._
 
 // import this if you are using the office-ui-fabric-react library, otherwise skip
 import fabric

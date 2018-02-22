@@ -21,8 +21,8 @@ object TagTestC {
 
   def make() =
     c.copy(new methods {
-      render = js.defined {
-        self =>
+      val render =
+        self => {
           div(new DivProps {
             style = new StyleAttr {
               display = "flex"

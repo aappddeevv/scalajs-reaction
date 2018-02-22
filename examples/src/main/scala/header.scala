@@ -31,7 +31,7 @@ object HeaderC {
 
   def make(className: String, target: String) =
     header.copy(new methods {
-      render = js.defined { self =>
+      val render = self => {
         reactdom.createPortalInElementWithId(
           div(new DivProps {
             className = className

@@ -49,8 +49,8 @@ object AddressDetailC {
 
   def make(address: Option[Address]) =
     AddressDetail.copy(new methods {
-      render = js.defined {
-        self =>
+      val render =
+        self => {
           logContext.makeConsumer {
             log =>
             //js.Dynamic.global.console.log("context: log function:", log)
@@ -86,8 +86,8 @@ object AddressListC {
       activeCB: Option[Address] => Unit,
       ifx: Option[Int] = None) =
     AddressList.copy(new methods {
-      render = js.defined {
-        self =>
+      val render = 
+        self => {
           println(s"AddressListC.render: ifx ${ifx}")
           val listopts = new IDetailsListProps[Address] {
             val items = addresses.toJSArray
@@ -238,8 +238,8 @@ object AddressManagerC {
     lastActiveAddressId: Option[Id] = None,
     className: Option[String]= None) =
     AddressManager.copy(new methods {
-      val initialState = {
-        self =>
+      val initialState =
+        self => {
           val selcb = () => {
             self.handle { cbself =>
               println(
@@ -260,8 +260,8 @@ object AddressManagerC {
         Seq(() => () => vm.setActive(null, null))
       })
 
-      reducer = js.defined({
-        (action, state, gen) =>
+      val reducer = 
+        (action, state, gen) => {
           action match {
             case FetchRequest =>
               gen.update(state.copy(fetching = true))
@@ -304,14 +304,14 @@ object AddressManagerC {
               })
             case _ => gen.skip
           }
-      })
+      }
 
       didMount = js.defined({ (self, gen) =>
         gen.effect(fetchData(_, dao))
       })
 
-      render = js.defined({
-        self =>
+      val render =
+        self => {
         val ifx = lastActiveAddressId.map{ id =>
           self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
         }
@@ -332,7 +332,7 @@ object AddressManagerC {
               Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
             )
           )
-      })
+      }
     })
 
   /**

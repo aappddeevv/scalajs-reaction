@@ -33,7 +33,7 @@ import c.ops._
 
 def make(...) = c.copy(new methods {
     val initialState = MyState()
-    render = js.defined{ self => ... }
+    val render = self => { ... }
 })
 
 ```
@@ -70,12 +70,12 @@ object Root {
    
    def make(namePrefix: String) =
      Root.copy(new methods {
-       render = js.defined{ self =>
+       val render = self => {
          // or use the default using makeProvider(...children...)
          appContext.makeProvider(App(name=namePrefix + appContext.currentValue.name))(
            MyComponent.make()
          )}
-     })
+     }
 }
 
 // consumer
@@ -87,11 +87,11 @@ object MyComponent {
     
     def make() =
       MyComponent.copy(new methods {
-        render = js.defined{ self =>
+        val render =  self => {
            appContext.makeConsumer{ app =>
              app.name
            }}
-      })
+      }
 }
 ```
 

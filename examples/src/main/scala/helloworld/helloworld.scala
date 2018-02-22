@@ -14,7 +14,7 @@ import ttg.react.reactdom._
 import ttg.react.implicits._
 
 import vdom._
-import prefix_<^._
+import tags._
 
 /**
   * Demonstrates converting js side props to scala props. `make` could also take
@@ -27,8 +27,8 @@ object HelloWorldC {
 
   def make(name: Option[String] = None) =
     HelloWorld.copy(new methods {
-      render = js.defined { self =>
-        <.div()(
+      val render = self => {
+        div(
           "hello world" + name.map(" and welcome " + _).getOrElse("")
         )
       }
@@ -47,8 +47,8 @@ object HelloWorldC {
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps) =
     HelloWorld.copy(new methods {
-      render = js.defined { self =>
-        <.div()(
+      val render = self => {
+        div(
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )
       }

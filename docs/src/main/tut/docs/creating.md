@@ -29,7 +29,7 @@ object ToDoC {
   // or bundle them together into a trait
   def make(props: ToDoProps) =
     ToDo.copy(new methods {
-      render = js.defined{ self => 
+      val render = self => {
        div(new DivProps { style = new StyleAttr("display" = "flex")})(
           Label()("Item:"),
           Label()(props.todo.name),
@@ -40,6 +40,17 @@ object ToDoC {
 }
 ```
 
+Notice that you use a `val` to define `render`. Render is required for all components so the `methods` that you are creating forces you to define the render method. Using standard scala syntax, you need to define `val` when you instantiate the trait.
+
+Some methods are not required, such as `willMount`. The definition for `willMount` would look like:
+```scala
+  willMount = js.defined({ self => 
+  })
+```
+Since `willMount` is optional, it is defined as a var and defaults to `js.undefined`. You need the `js.defined` because of the scala.js environment requiring a double implicit search, which it can't do, so `js.defined()` helps with type inference. If you already use scala.js you are probably used to this.
+
+If you define a stateful component, you are required to define, using `val`, `reducer` and `initialState` in the same way you defined `render`. You do not need to define the parameter types although can if desired.
+
 You can pass in children via your ToDoProps or just add them to the make call,
 if you need children. Here's an example where they are passed in as a
 `js.Array[]`.
@@ -47,7 +58,7 @@ if you need children. Here's an example where they are passed in as a
 ```scala
 def make(props: ToDoProps, children: js.Array[ReactNode]) =
   ToDo.copy(new methods {
-    render = js.defined{ self =>
+    val render = self => {
        children
      })}
 ```

@@ -87,11 +87,13 @@ trait CakeBase { cake =>
   type ComponentType <: ComponentLike
 
   /**
-    * A component is just a javascript object. All of these methods should
-    * be defined in the ProxyLike class in this cake layer.
+    * A component is just a javascript object. All of these methods should be
+    * defined in the ProxyLike class in this cake layer. The component
+    * has all optional values but WithMethods sets required attributes based on
+    * the type of component being built so user is forced to create them.
     */
   protected trait ComponentLike extends ComponentSpec {
-    var render: js.UndefOr[Self => ReactNode]                     = js.undefined
+    var render: js.UndefOr[Self => ReactNode] = js.undefined
     var subscriptions: js.UndefOr[Self => Seq[Subscription]]      = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
@@ -117,7 +119,7 @@ trait CakeBase { cake =>
   type WithMethods <: WithMethodsLike
 
   trait WithMethodsLike extends js.Object {
-    var render: js.UndefOr[Self => ReactNode]                     = js.undefined
+    val render: Self => ReactNode
     var subscriptions: js.UndefOr[Self => Seq[Subscription]]      = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
@@ -434,8 +436,7 @@ trait CakeWithState extends CakeBase { cake =>
     var willReceiveProps: js.UndefOr[Self => S] = js.undefined
     var didMount: js.UndefOr[(Self, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType] =
       js.undefined
-    var reducer: js.UndefOr[(A, S, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType] =
-      js.undefined
+    val reducer: (A, S, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType
   }
 
   type Ops <: OpsLike

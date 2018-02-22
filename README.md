@@ -72,7 +72,7 @@ object HelloWorldC {
   import HelloWorld.ops._
   def make(name: Option[String]) =
     HelloWorld.copy(new methods {
-     render = js.defined{ self =>
+     val render = self => {
         div(
           "hello world" + name.map(" and welcome " + _).getOrElse("")
         )

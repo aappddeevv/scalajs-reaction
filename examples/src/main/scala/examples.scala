@@ -18,7 +18,6 @@ import ttg.react.reactdom._
 import ttg.react.implicits._
 import ttg.react.redux
 import vdom._
-import prefix_<^._
 import ttg.react.fabric
 import fabric._
 import fabric.components._
@@ -118,11 +117,17 @@ import Pages._
 import addressmanager.fakedata._
 
 object Examples {
-  val c = statelessComponent("Examples")
+  sealed trait Action
+  case class State()
+  val c = reducerComponent[State, Action]("Examples")
   import c.ops._
   def make(headerTarget: String) =
     c.copy(new methods {
-      render = js.defined { self =>
+      val initialState = _ => State()
+      val reducer = (self, state, gen) => {
+        gen.skip
+      }
+      val render = self =>
         fragmentElement()(
           Pivot()(
             readme(examples.readmetext),
@@ -135,7 +140,6 @@ object Examples {
           ),
           HeaderC.make("header", headerTarget)
         )
-      }
     })
 }
 
