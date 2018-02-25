@@ -108,6 +108,14 @@ object ToDosC {
   def inputChanged(e: Option[String])(self: ToDos.Self): Unit =
     self.send(InputChanged(e))
 
+  def addit(self: Self) =
+    self.state.input.foreach { i =>
+      self.handle { s =>
+        s.send(Add(ToDo(mkId(), i)))
+        s.state.textFieldRef.foreach(ref => refToJs(ref).focus())
+      }
+    }
+
   def make(title: Option[String] = None, todos: Seq[ToDo] = Seq()) =
     ToDos.copy(new methods {
       val retainedProps = RP(title)
@@ -125,9 +133,9 @@ object ToDosC {
             gen.skip
         }
       }
-      
+
       val initialState = _ => State(todos, None)
-      val render = 
+      val render =
         self => {
           div(new DivProps {})(
             Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
@@ -137,21 +145,19 @@ object ToDosC {
                 componentRef = js.defined((r: ITextField) => self.send(SetTextFieldRef(r)))
                 onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
                 value = self.state.input.getOrElse[String]("")
+                autoFocus = true
+                onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) addit(self))
               })(),
               PrimaryButton(new IButtonProps {
                 text = "Add"
                 disabled = self.state.input.size == 0
                 // demonstrates inline callback
-                // could be _ => since we don't use 'e'
-                onClick = js.defined { (e: ReactEvent[_]) =>
-                  // if have state, add todo and refocus
-                  self.state.input.foreach { i =>
-                    self.handle { s =>
-                      s.send(Add(ToDo(mkId(), i)))
-                      s.state.textFieldRef.foreach(ref => refToJs(ref).focus())
-                    }
-                  }
-                }
+                // could be:
+                // _ => since we don't use 'e', could
+                // ReactEvent[dom.html.Input] to be more specifci
+                // ReactKeyboardEvent[_] to be more specific
+                // ReactKeyboardEvent[dom.html.Input] to be more specific
+                onClick = js.defined((e: ReactEvent[_]) => addit(self))
               })()
             ),
             ToDoListC.make(self.state.todos.length,

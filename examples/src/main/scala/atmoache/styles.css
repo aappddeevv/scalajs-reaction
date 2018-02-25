@@ -1,0 +1,9 @@
+/* atmoache CSS */
+
+.controls {
+    display: flex;
+    & :global(.ms-TextField) {
+        width: 500px;
+        margin-right: 15px;
+    }
+}

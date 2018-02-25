@@ -21,7 +21,7 @@ object styling {
     result.asInstanceOf[StyleAttr]
   }
 
-  /** Add a style prop but it returns a dictionary since it can't be a StyleAttr anymore. */
+  /** Add a single style prop but it returns a dictionary since it can't be a StyleAttr anymore. */
   @inline def unsafeAddProp(
       style: StyleAttr,
       name: String,
@@ -31,6 +31,9 @@ object styling {
       .asInstanceOf[js.Dictionary[String]]
   }
 
+  /** Merge a StyleAttr and a js.Dyanmic assume the returned value is StyleAttr. */
+  @inline def mergeUnsafePropsTo(style: StyleAttr, unsafe: js.Dynamic) =
+    merge(style, unsafe.asInstanceOf[StyleAttr]).asInstanceOf[StyleAttr]
 }
 
 /**
@@ -92,7 +95,7 @@ trait StyleAttr extends js.Object {
   var fontStyle: js.UndefOr[String]            = js.undefined
   var fontVariant: js.UndefOr[String]          = js.undefined
   var fontWeight: js.UndefOr[String]           = js.undefined
-  var height: js.UndefOr[String]               = js.undefined
+  var height: js.UndefOr[String | Int]         = js.undefined
   var left: js.UndefOr[String]                 = js.undefined
   var letterSpacing: js.UndefOr[String]        = js.undefined
   var lineHeight: js.UndefOr[String]           = js.undefined
@@ -107,18 +110,18 @@ trait StyleAttr extends js.Object {
   var marginLeft: js.UndefOr[String]           = js.undefined
   var markerOffset: js.UndefOr[String]         = js.undefined
   var marks: js.UndefOr[String]                = js.undefined
-  var maxHeight: js.UndefOr[String]            = js.undefined
-  var maxWidth: js.UndefOr[String]             = js.undefined
-  var minHeight: js.UndefOr[String]            = js.undefined
-  var minWidth: js.UndefOr[String]             = js.undefined
+  var maxHeight: js.UndefOr[String | Int]      = js.undefined
+  var maxWidth: js.UndefOr[String | Int]       = js.undefined
+  var minHeight: js.UndefOr[String | Int]      = js.undefined
+  var minWidth: js.UndefOr[String | Int]       = js.undefined
   var orphans: js.UndefOr[String]              = js.undefined
   var outline: js.UndefOr[String]              = js.undefined
   var outlineColor: js.UndefOr[String]         = js.undefined
   var outlineStyle: js.UndefOr[String]         = js.undefined
   var outlineWidth: js.UndefOr[String]         = js.undefined
-  var overflow: js.UndefOr[String]       = js.undefined
-  var overflowX: js.UndefOr[String]             = js.undefined
-  var overflowY: js.UndefOr[String]             = js.undefined
+  var overflow: js.UndefOr[String]             = js.undefined
+  var overflowX: js.UndefOr[String]            = js.undefined
+  var overflowY: js.UndefOr[String]            = js.undefined
   var padding: js.UndefOr[String]              = js.undefined
   var paddingTop: js.UndefOr[String]           = js.undefined
   var paddingRight: js.UndefOr[String]         = js.undefined
@@ -159,7 +162,7 @@ trait StyleAttr extends js.Object {
   var volume: js.UndefOr[String]               = js.undefined
   var whiteSpace: js.UndefOr[String]           = js.undefined
   var widows: js.UndefOr[String]               = js.undefined
-  var width: js.UndefOr[String]                = js.undefined
+  var width: js.UndefOr[String | Int]          = js.undefined
   var wordSpacing: js.UndefOr[String]          = js.undefined
   var zIndex: js.UndefOr[String]               = js.undefined
   /* Below properties based on https://www.w3.org/Style/CSS/all-properties */

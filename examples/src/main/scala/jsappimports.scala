@@ -58,6 +58,29 @@ object ReactMarkdownC {
   def make(props: ReactMarkdownProps = noProps()) = wrapJsForScala(ReactMarkdown, props)
 }
 
+@js.native
+@JSImport("react-weather-display", JSImport.Default)
+object ReactWeatherDisplayJS extends ReactJsComponent
+
+trait ReactWeatherDisplayProps extends js.Object {
+  var width: js.UndefOr[String | Int]  = js.undefined
+  var height: js.UndefOr[String | Int] = js.undefined
+
+  /** @deprecated?? */
+  var currentTemperature: js.UndefOr[Float] = js.undefined
+  var temperature: js.UndefOr[Float]        = js.undefined
+  var currentCondition
+    : js.UndefOr[String] = js.undefined // ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']
+  var condition
+    : js.UndefOr[String]             = js.undefined // ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']
+  var opacity: js.UndefOr[Double]    = js.undefined
+  var isVisible: js.UndefOr[Boolean] = js.undefined
+}
+
+object ReactWeatherDisplay {
+  def make(props: ReactWeatherDisplayProps = null) = wrapJsForScala(ReactWeatherDisplayJS, props)
+}
+
 class PrettyJsonOptions(
     val noColor: js.UndefOr[Boolean] = js.undefined
 ) extends js.Object
@@ -78,5 +101,6 @@ object ReadmeText extends js.Object
 @js.native
 @JSImport("classnames", JSImport.Default)
 object cx extends js.Object {
-  def apply(args: String|Number|js.UndefOr[js.Any]|js.Object|js.Dynamic|Null *): String = js.native
+  def apply(args: String | Number | js.UndefOr[js.Any] | js.Object | js.Dynamic | Null*): String =
+    js.native
 }

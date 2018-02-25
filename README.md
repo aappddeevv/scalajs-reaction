@@ -305,7 +305,9 @@ binding.
 * [diode](https://github.com/suzaku-io/diode): redux replacement
 * [laminar](https://github.com/raquo/laminar): a reactive web framework
 * [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom
+* [pine](https://github.com/sparsetech/pine): XML/HTML builder.
 * [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes
+* [scala-tags](https://github.com/lihaoyi/scalatags): XML/HTML builder.
 * [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework
 * [udash](https://udash.io/) is another reactive framework that is not
 react based, but reactive.

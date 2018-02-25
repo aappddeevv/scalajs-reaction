@@ -50,6 +50,13 @@ object Pages {
     )
   }
 
+  val pressurePage =
+    PivotItem(new IPivotItemProps {
+      linkText = "Weather"
+      itemKey = "weather"
+      className = estyles.scrollme.asString
+    })(atmoache.app.make())
+
   val todoPage = PivotItem(new IPivotItemProps {
     linkText = "To Do"
     itemKey = "todo"
@@ -137,9 +144,10 @@ object Examples {
             changeReduxStatePage(),
             labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
             tagTest(),
+            pressurePage,
           ),
           HeaderC.make("header", headerTarget)
-        )
+      )
     })
 }
 

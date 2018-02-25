@@ -28,7 +28,7 @@ object ExamplesApp {
   def make() =
     component.copy(new methods {
       val initialState = _ => State(Home)
-      val reducer =  (action, state, gen) => {
+      val reducer = (action, state, gen) => {
         // match..process..whatever
         // just stick it into the state...
         gen.update(state.copy(route = action))
@@ -49,12 +49,12 @@ object ExamplesApp {
           }
         )
       }
-      val render =  self => {
+      val render = self => {
         self.state.route match {
           case Home => Examples.make(Main.portalElementId)
           case ToDo =>
-            todo.ToDosC.make(Some("Your ToDo List - Courtesy of the Router!"),
-                             todo.fakedata.initialToDos)
+            todo.ToDosC
+              .make(Some("Your ToDo List - Courtesy of the Router!"), todo.fakedata.initialToDos)
         }
       }
     })

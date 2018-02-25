@@ -130,7 +130,9 @@ object syntax {
 }
 
 trait C2E {
-  @inline implicit def c2e(c: Component): ReactNode = elements.element(c)
+  @inline implicit def c2E(c: Component): ReactNode = elements.element(c)
+  @inline implicit def cSeq2E(c: Seq[Component]): ReactNode =
+    arrayToElement(c.map(elements.element(_)))
 }
 
 /**

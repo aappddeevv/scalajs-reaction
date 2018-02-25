@@ -61,35 +61,35 @@ object FabricNS extends js.Object {
 object components {
   import ttg.react.elements.wrapJsForScala
 
-  def Fabric(props: IFabricProps = noProps())(children: ReactNode*) =
+  def Fabric(props: IFabricProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Fabric, props, children: _*)
-  def TextField(props: ITextFieldProps = noProps())(children: ReactNode*) =
+  def TextField(props: ITextFieldProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.TextField, props, children: _*)
-  def Label(props: LabelProps = noProps())(children: ReactNode*) =
+  def Label(props: ILabelProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Label, props, children: _*)
-  def Link(props: ILinkProps = noProps())(children: ReactNode*) =
+  def Link(props: ILinkProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Link, props, children: _*)
-  def PrimaryButton(props: IButtonProps = noProps())(children: ReactNode*) =
+  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
-  def DefaultButton(props: IButtonProps = noProps())(children: ReactNode*) =
+  def DefaultButton(props: IButtonProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
-  def Pivot(props: IPivotProps = noProps())(children: ReactNode*) =
+  def Pivot(props: IPivotProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Pivot, props, children: _*)
-  def PivotItem(props: IPivotItemProps = noProps())(children: ReactNode*) =
+  def PivotItem(props: IPivotItemProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.PivotItem, props, children: _*)
-  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = noProps())(children: ReactNode*) =
+  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.DetailsList, props, children: _*)
   def CommandBar(props: Attr*)(children: ReactNode*) =
     wrapJsForScala(FabricNS.CommandBar, new Attrs(props).toJs, children: _*)
-  def CommandBar(props: ICommandBarProps = noProps())(children: ReactNode*) =
+  def CommandBar(props: ICommandBarProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.CommandBar, props, children: _*)
-  def Spinner(props: ISpinnerProps = noProps())(children: ReactNode*) =
+  def Spinner(props: ISpinnerProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
-  def ScrollablePane(props: IScrollablePane = noProps())(children: ReactNode*) =
+  def ScrollablePane(props: IScrollablePane = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.ScrollablePane, props, children: _*)
-  def Sticky(props: IScrollablePane = noProps())(children: ReactNode*) =
+  def Sticky(props: IScrollablePane = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Sticky, props, children: _*)
-  def List[T <: js.Object](props: IListProps[T] = noProps())(children: ReactNode*) =
+  def List[T <: js.Object](props: IListProps[T] = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.List, props, children: _*)
 }
 
@@ -130,7 +130,7 @@ trait WithIconProps extends js.Object {
 // For components
 //
 
-trait LabelProps
+trait ILabelProps
     extends LabelHTMLAttributes[dom.html.Label]
     with ComponentRef[js.Any]
     with Disabled
@@ -168,6 +168,7 @@ trait ITextField extends Focusable with ReactRef {
 //export interface ITextFieldProps extends React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
 // withDisabled
 
+// should also included attributes from dom.html.TextArea
 trait ITextFieldProps
     extends WithIconProps
     with ComponentRef[ITextField]

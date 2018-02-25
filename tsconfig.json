@@ -7,7 +7,7 @@
 		"noEmitHelpers": true,
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": false,
-		  //"esModuleInterop": true,
+		 //"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"inlineSourceMap": false,
 		"sourceMap": true,

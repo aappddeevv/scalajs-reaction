@@ -25,7 +25,8 @@ const finalStyleLoaders = [
             plugins: (loader) => [
                 require("postcss-import")({ root: loader.resourcePath }),
                 require("postcss-mixins")(),
-                require("postcss-cssnext")(),
+                require("postcss-cssnext")({
+                }),
                 require("postcss-reporter")({ clearMessages: true }),
             ]
         }
@@ -150,16 +151,17 @@ module.exports = function (env) {
     const copyplugin = new CopyWebpackPlugin(staticAssets)
     console.log("isProd: ", isProd)
     console.log("scalapath: ", scalapath)
-    console.log("globals: ", globals)
     const prodCopy = new CopyWebpackPlugin([
         {from: "dist/*", to: path.join(__dirname, "docs/src/main/resources/microsite/static/demo")}
     ])
     
     if (isProd) {
+        const g = globals("production")
         console.log("Production build")
+        console.log("globals: ", g)
         return merge(output, common(scalapath), prod, {
             plugins: [
-                new webpack.DefinePlugin(globals("production")),
+                new webpack.DefinePlugin(g),
                 new UglifyJsPlugin({
                     cache: true,
                     parallel: 4,
@@ -172,11 +174,13 @@ module.exports = function (env) {
         })
     }
     else {
+        const g = globals()
         console.log("Dev build")
+        console.log("globals: ", g)
         return merge(output, common(scalapath), dev, {
             plugins: [
                 new webpack.HotModuleReplacementPlugin(),
-                new webpack.DefinePlugin(globals()),
+                new webpack.DefinePlugin(g),
                 copyplugin,
             ]
         })

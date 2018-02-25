@@ -53,13 +53,13 @@ object fakedata {
 
   private def generateRandom(id: String): Address =
     new Address {
-      override  val customeraddressid = id
-      override val name = s"${faker.name.lastName()}, ${faker.name.firstName()}"
-      override val city = faker.address.city()
-      override val stateorprovince = faker.address.state()
-      override val postalcode = faker.address.zipCode()
-      override val country = faker.address.country()
-      override val createdon = "3/1/2016"
+      override val customeraddressid = id
+      override val name              = s"${faker.name.lastName()}, ${faker.name.firstName()}"
+      override val city              = faker.address.city()
+      override val stateorprovince   = faker.address.state()
+      override val postalcode        = faker.address.zipCode()
+      override val country           = faker.address.country()
+      override val createdon         = "3/1/2016"
     }
 
   /** Delay (ms) resolution. */
@@ -69,16 +69,16 @@ object fakedata {
 
 @js.native
 trait address extends js.Object {
-  def zipCode(): String = js.native
-  def city(): String = js.native
+  def zipCode(): String    = js.native
+  def city(): String       = js.native
   def cityPrefix(): String = js.native
-  def state(): String = js.native
-  def country(): String = js.native
+  def state(): String      = js.native
+  def country(): String    = js.native
 }
 
 @js.native
 trait name extends js.Object {
-  def lastName(): String = js.native
+  def lastName(): String  = js.native
   def firstName(): String = js.native
 }
 
@@ -86,5 +86,5 @@ trait name extends js.Object {
 @JSImport("faker", JSImport.Namespace)
 object faker extends js.Object {
   val address: address = js.native
-  val name: name = js.native
+  val name: name       = js.native
 }

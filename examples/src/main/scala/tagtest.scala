@@ -152,6 +152,6 @@ object TagTestC {
               }
             })(),
           )
-      }
+        }
     })
 }

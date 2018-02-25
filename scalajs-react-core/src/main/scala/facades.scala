@@ -76,6 +76,11 @@ trait CakeBase { cake =>
     * may create additional "Self"s for use in client API methods.
     */
   trait SelfLike extends SelfForUnmountLike {
+
+    /**
+      * You should need not need to use this in scala.js vs reason-react, given
+      * that we have a separate Self type.
+      */
     def handle(cb: Self => Unit): Unit
   }
 
@@ -93,7 +98,7 @@ trait CakeBase { cake =>
     * the type of component being built so user is forced to create them.
     */
   protected trait ComponentLike extends ComponentSpec {
-    var render: js.UndefOr[Self => ReactNode] = js.undefined
+    var render: js.UndefOr[Self => ReactNode]                     = js.undefined
     var subscriptions: js.UndefOr[Self => Seq[Subscription]]      = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
@@ -767,7 +772,7 @@ trait ReducerComponentCake extends CakeWithState { cake =>
   type Self                = super.SelfLike
   type SelfForUnmount      = super.SelfForUnmountLike
   type SelfForInitialState = super.SelfForInitialStateLike
-  protected type State               = super.StateLike
+  protected type State     = super.StateLike
   type ComponentType       = super.ComponentLike
   type ProxyType           = super.ProxyLike
   type WithMethods         = super.WithMethodsLike
@@ -825,7 +830,7 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
   type Self                = SelfLike
   type SelfForUnmount      = SelfForUnmountLike
   type SelfForInitialState = SelfForInitialStateLike
-  protected type State               = super.StateLike
+  protected type State     = super.StateLike
   type Ops <: OpsLike
   trait OpsLike extends super[CakeWithRP].OpsLike with super[CakeWithState].OpsLike
 
@@ -927,8 +932,8 @@ case class SilentUpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit)
   * the ADT type. Side effects are run after the state update so use the
   * self parameter to the side effect to obtain the most current state and not the
   * self parameter to the function that you call the methods from.
- * 
- * This trait is only used when "client state" is present.
+  *
+  * This trait is only used when "client state" is present.
   */
 trait ReducerResult[S, SLF] {
 
@@ -1086,7 +1091,8 @@ object elements {
   /**
     * Wrap a js side component for scala side usage. You also need to import the
     * react class using standard scala.js import mechanisms and write a "make"
-    * function to create your props from "make" parameters.
+    * function to create your props from "make" parameters. props can be null
+    *  if you do not have any saving an allocation of an empty object.
     */
   def wrapJsForScala[P <: js.Object](
       reactClass: ReactJsComponent,

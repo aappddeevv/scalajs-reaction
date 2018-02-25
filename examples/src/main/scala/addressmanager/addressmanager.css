@@ -17,9 +17,9 @@
         height: calc(100% - var(--cbar) - var(--footer));
         & .master {
             flex-basis: 50%;
-            /* header, 2 labels at bottom */
-            overflow: hidden;
-            overflow-y: auto;
+            & .list {
+                height: 100%;
+            }
         }
         & .detail {
             flex-basis: 50%;

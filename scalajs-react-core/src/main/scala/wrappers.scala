@@ -11,7 +11,7 @@ import js.Dynamic.{literal => lit}
 
 object WrapProps {
 
-  /** Curry given basic react js creation args. */
+  /** Curry given basic react js creation args. Allow scala objects as keys on props. */
   private[this] def wrapProps[P <: js.Object](
       reactComponent: ReactJsComponent,
       props: P,
@@ -20,9 +20,14 @@ object WrapProps {
       val newProps = js.Dictionary.empty[scala.Any]
       ref.foreach(r => newProps("ref") = r)
       key.foreach(k => newProps("key") = k)
-      val pprops                               = props.asInstanceOf[js.Dictionary[scala.Any]]
-      val totalProps: js.Dictionary[scala.Any] = (pprops ++ newProps).toJSDictionary
-      JSReact.createElement(reactComponent, totalProps, children: _*)
+      // avoid a merge, if possible
+      val all: js.UndefOr[js.Any] =
+        if (props == null && newProps.size > 0) newProps
+        else if (props == null && newProps.size == 0) js.undefined
+        else if (props != null && newProps.size == 0) props
+        else merge[js.Object](props, newProps.asInstanceOf[js.Object])
+      //js.Dynamic.global.console.log("wrapped props", all)
+      JSReact.createElement(reactComponent, all, children: _*)
     }
 
   /** Only need 1 interop component, then just copy and change jsElementWrapped. */

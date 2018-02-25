@@ -91,6 +91,7 @@ object AddressListC {
           println(s"AddressListC.render: ifx ${ifx}")
           val listopts = new IDetailsListProps[Address] {
             val items = addresses.toJSArray
+            className = amstyles.list.asString
             selectionPreservedOnEmptyClick = true
             columns = icolumns
             getKey = getAddressKey
@@ -111,9 +112,8 @@ object AddressListC {
             }
           }
         // add data-is-scrollable
-        div(merge[DivProps](
-          lit("data-is-scrollable"->true),
-          new DivProps { className = amstyles.master.asString}))(
+        div.merge(lit("data-is-scrollable" -> true))(
+          new DivProps { className = amstyles.master.asString})(
           ScrollablePane()(
             DetailsList[Address](listopts)()
           )

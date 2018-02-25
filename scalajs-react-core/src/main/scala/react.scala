@@ -76,6 +76,15 @@ package object react {
   @inline def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
   /**
+    * Empty children value but non-empty array. Be careful as someone could
+    * mutate this global instance on you.
+    */
+  val emptyChildrenVal = js.Array[ReactNode]()
+
+  /** Allocate an empty childe array. It's not shared like `emptyChildrenVal` */
+  def emptyChildren = js.Array[ReactNode]()
+
+  /**
     * Hidden field for scala components that are based directly on a js component.
     * Args should be an optional key and ref callback.
     */
@@ -130,7 +139,7 @@ package object react {
   }
 
   /** Merge objects and Ts together. Good for merging props with data- attributes. */
-  @inline def merge[T <: js.Object](objs: T|js.Dynamic *): T = {
+  @inline def merge[T <: js.Object](objs: T | js.Dynamic*): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])

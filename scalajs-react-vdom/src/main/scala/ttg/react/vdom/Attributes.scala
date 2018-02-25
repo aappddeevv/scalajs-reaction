@@ -35,7 +35,7 @@ trait ElementAttributesOnly
     extends HTMLAttributes[dom.html.Element]
     with ClassAttributes[dom.html.Element]
 
-object tags {
+trait tags {
 
   trait AProps extends AnchorHTMLAttributes[dom.html.Anchor] with ClassAttributes[dom.html.Anchor]
   final lazy val a = tagt[AProps]("a")
@@ -149,7 +149,7 @@ object tags {
 
   // should be dom.html.Dl
   type DlProps = ElementAttributesOnly
-  final lazy val dl = tagt[DivProps]("dl")
+  final lazy val dl = tagt[DlProps]("dl")
 
   // should be dom.html.Dt
   type DtProps = ElementAttributesOnly
@@ -452,10 +452,13 @@ object tags {
 
   type WbrProps = ElementAttributesOnly
   final lazy val wbr = tagt[WbrProps]("wbr")
-  /*
-final lazy val        webview: DetailedHTMLFactory<WebViewHTMLAttributes<HTMLElement>, HTMLElement>;
- */
+
+  type WebviewProps = WebViewHTMLAttributes[dom.html.Element]
+  final lazy val webview = tagt[WebviewProps]("webview")
+
 }
+
+object tags extends tags
 
 /**
   * Mostly handlers for DOM nodes.
@@ -639,12 +642,13 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var className: js.UndefOr[String]        = js.undefined
   var contentEditable: js.UndefOr[Boolean] = js.undefined
   var dir: js.UndefOr[String]              = js.undefined
-  var draggable: js.UndefOr[Boolean]       = js.undefined
-  var hidden: js.UndefOr[Boolean]          = js.undefined
-  var id: js.UndefOr[String]               = js.undefined
-  var lang: js.UndefOr[String]             = js.undefined
-  var slot: js.UndefOr[String]             = js.undefined
-  var spellCheck: js.UndefOr[Boolean]      = js.undefined
+
+  var draggable: js.UndefOr[Boolean]  = js.undefined
+  var hidden: js.UndefOr[Boolean]     = js.undefined
+  var id: js.UndefOr[String]          = js.undefined
+  var lang: js.UndefOr[String]        = js.undefined
+  var slot: js.UndefOr[String]        = js.undefined
+  var spellCheck: js.UndefOr[Boolean] = js.undefined
   // was js.Any, but use js.Object|js.Dynamic or other, can use StyleAttr here!
   var style: js.UndefOr[js.Object | js.Dynamic] = js.undefined
   var tabIndex: js.UndefOr[Int]                 = js.undefined
@@ -674,6 +678,56 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
 
   @JSName("will-change")
   var willChange: js.UndefOr[String] = js.undefined;
+
+  /*
+        'aria-activedescendant'?: string;
+        'aria-atomic'?: boolean | 'false' | 'true';
+        'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
+        'aria-busy'?: boolean | 'false' | 'true';
+        'aria-checked'?: boolean | 'false' | 'mixed' | 'true';
+        'aria-colcount'?: number;
+        'aria-colindex'?: number;
+        'aria-colspan'?: number;
+        'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
+        'aria-describedby'?: string;
+        'aria-details'?: string;
+        'aria-disabled'?: boolean | 'false' | 'true';
+        'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
+        'aria-errormessage'?: string;
+        'aria-expanded'?: boolean | 'false' | 'true';
+        'aria-flowto'?: string;
+        'aria-grabbed'?: boolean | 'false' | 'true';
+        'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+        'aria-hidden'?: boolean | 'false' | 'true';
+        'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling';
+        'aria-keyshortcuts'?: string;
+        'aria-label'?: string;
+        'aria-labelledby'?: string;
+        'aria-level'?: number;
+        'aria-live'?: 'off' | 'assertive' | 'polite';
+        'aria-modal'?: boolean | 'false' | 'true';
+        'aria-multiline'?: boolean | 'false' | 'true';
+        'aria-multiselectable'?: boolean | 'false' | 'true';
+        'aria-orientation'?: 'horizontal' | 'vertical';
+        'aria-owns'?: string;
+        'aria-placeholder'?: string;
+        'aria-posinset'?: number;
+        'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
+        'aria-readonly'?: boolean | 'false' | 'true';
+        'aria-relevant'?: 'additions' | 'additions text' | 'all' | 'removals' | 'text';
+        'aria-required'?: boolean | 'false' | 'true';
+        'aria-roledescription'?: string;
+        'aria-rowcount'?: number;
+        'aria-rowindex'?: number;
+        'aria-rowspan'?: number;
+        'aria-selected'?: boolean | 'false' | 'true';
+        'aria-setsize'?: number;
+        'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
+        'aria-valuemax'?: number;
+        'aria-valuemin'?: number;
+        'aria-valuenow'?: number;
+        'aria-valuetext'?: string;
+ */
 }
 
 trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
@@ -1147,4 +1201,25 @@ trait VideoHTMLAttributes[+T <: dom.EventTarget] extends MediaHTMLAttributes[T] 
   var height: js.UndefOr[Int | String] = js.undefined
   var poster: js.UndefOr[String]       = js.undefined
   var width: js.UndefOr[String | Int]  = js.undefined
+}
+
+/** Electron support. */
+trait WebViewHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+  var allowFullScreen: js.UndefOr[Boolean]     = js.undefined
+  var allowpopups: js.UndefOr[Boolean]         = js.undefined
+  var autoFocus: js.UndefOr[Boolean]           = js.undefined
+  var autosize: js.UndefOr[Boolean]            = js.undefined
+  var blinkfeatures: js.UndefOr[String]        = js.undefined
+  var disableblinkfeatures: js.UndefOr[String] = js.undefined
+  var disableguestresize: js.UndefOr[Boolean]  = js.undefined
+  var disablewebsecurity: js.UndefOr[Boolean]  = js.undefined
+  var guestinstance: js.UndefOr[String]        = js.undefined
+  var httpreferrer: js.UndefOr[String]         = js.undefined
+  var nodeintegration: js.UndefOr[Boolean]     = js.undefined
+  var partition: js.UndefOr[Boolean]           = js.undefined
+  var plugins: js.UndefOr[Boolean]             = js.undefined
+  var preload: js.UndefOr[String]              = js.undefined
+  var src: js.UndefOr[String]                  = js.undefined
+  var useragent: js.UndefOr[String]            = js.undefined
+  var webpreferences: js.UndefOr[String]       = js.undefined
 }

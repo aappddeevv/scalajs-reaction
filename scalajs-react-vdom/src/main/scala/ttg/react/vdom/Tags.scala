@@ -7,11 +7,13 @@ package react
 package vdom
 
 import scalajs.js
+import js.|
 import org.scalajs.dom
+import js.JSConverters._
 import implicits._
 
 /**
-  * Create a tag from a list of attributes.
+  * Create a tag from a list of attributes. This is a "factory" for tags.
   */
 class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
   def apply(attrs: Attrs*)(children: ReactNode*): ReactDOMElement =
@@ -19,9 +21,10 @@ class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
 }
 
 /**
-  * Create a tag that takes type non-native JS traits.
+  * Create a tag that takes type non-native JS traits. This is a "factory" for
+  * tags.
   */
-class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) {
+class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) { self =>
 
   /** Must have properties, maybe children. */
   def apply(attrs: P)(children: ReactNode*): ReactDOMElement =
@@ -30,4 +33,10 @@ class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) {
   /** Only children. */
   def apply(children: ReactNode*): ReactDOMElement =
     React.createElement(name, tagAttrs)(children: _*)
+
+  /** Merge attributes of type P or dynamic into this tag. By adding dynamic
+    * literal, you are not type safe. Escape hatch!
+    */
+  def merge(objs: P | js.Dynamic*) = new TagT[P](name, react.merge(objs: _*))
+
 }
