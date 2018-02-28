@@ -1,0 +1,123 @@
+<html><head><title>scalajs-react: Importing from JS</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="aappddeevv" /><meta name="description" content="A react integration library for scala.js in the spirit of ReasonReact" /><meta name="og:image" content="/scalajs-react/img/poster.png" /><meta name="og:title" content="scalajs-react: Importing from JS" /><meta name="og:site_name" content="scalajs-react" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="A react integration library for scala.js in the spirit of ReasonReact" /><link rel="icon" type="image/png" href="/scalajs-react/img/favicon.png" /><meta name="twitter:title" content="scalajs-react: Importing from JS" /><meta name="twitter:image" content="img/poster.png" /><meta name="twitter:description" content="A react integration library for scala.js in the spirit of ReasonReact" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/scalajs-react/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/scalajs-react/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/scalajs-react/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/scalajs-react/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/scalajs-react/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/scalajs-react/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/scalajs-react/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/scalajs-react/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/scalajs-react/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/scalajs-react/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/scalajs-react/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/scalajs-react/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/scalajs-react/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/scalajs-react/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/scalajs-react/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/scalajs-react/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/scalajs-react/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/scalajs-react/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/scalajs-react/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/scalajs-react/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/scalajs-react/highlight/styles/default.css" /><link rel="stylesheet" href="/scalajs-react/css/style.css" /><link rel="stylesheet" href="/scalajs-react/css/palette.css" /><link rel="stylesheet" href="/scalajs-react/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/scalajs-react/" class="brand"><div class="brand-wrapper"><span>scalajs-react</span></div></a></li> <li><a href="/scalajs-react/docs/index.html" class="">Getting Started</a></li> <li><a href="/scalajs-react/docs/creating.html" class="">Creating scala.js Components</a></li> <li><a href="/scalajs-react/docs/importing.html" class=" active ">Importing from JS</a></li> <li><a href="/scalajs-react/docs/exporting.html" class="">Exporting to JS</a></li> <li><a href="/scalajs-react/docs/styling.html" class="">Styling Suggestions</a></li> <li><a href="/scalajs-react/docs/vdom.html" class="">Virtual DOM</a></li> <li><a href="/scalajs-react/docs/redux.html" class="">Redux</a></li> <li><a href="/scalajs-react/docs/datainterop.html" class="">Data interop</a></li> <li><a href="/scalajs-react/docs/fabric.html" class="">office-fabric-ui-react</a></li> <li><a href="/scalajs-react/docs/mixedproject.html" class="">Mixed Projects</a></li> <li><a href="/scalajs-react/docs/reactinterop.html" class="">React Interop</a></li> <li><a href="/scalajs-react/docs/macros.html" class="">macros</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/aappddeevv/scalajs-react"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/aappddeevv/scalajs-react"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('scalajs-react A react integration library for scala.js in the spirit of ReasonReact');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('scalajs-react A react integration library for scala.js in the spirit of ReasonReact');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="aappddeevv" data-github-repo="scalajs-react"><div class="content-wrapper"><section><h1 id="importing-from-js">Importing from JS</h1>
+<p>Importing a component javascript means you need to create a “Component” in scala. There is a simple function call to do that for you. You still need to perform the scala.js <code class="highlighter-rouge">@JSImport</code>.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// import a react component exported as part of a namespace export
+// perhaps mark the import private
+</span><span class="nd">@js</span><span class="o">.</span><span class="n">native</span>
+<span class="nd">@JSImport</span><span class="o">(</span><span class="s">"some-lib"</span><span class="o">,</span> <span class="nc">JSImport</span><span class="o">.</span><span class="nc">Namespace</span><span class="o">)</span>
+<span class="k">object</span> <span class="nc">SomeLibNS</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="nc">YourComponent1</span><span class="k">:</span> <span class="kt">ReactJSComponent</span> <span class="o">=</span> <span class="n">js</span><span class="o">.</span><span class="n">native</span>
+  <span class="k">val</span> <span class="nc">YourComponent2</span><span class="k">:</span> <span class="kt">ReactJSComponent</span> <span class="o">=</span> <span class="n">js</span><span class="o">.</span><span class="n">native</span>
+<span class="o">}</span>
+
+<span class="c1">// create a proxy component for it
+</span><span class="k">object</span> <span class="nc">SomeLib</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">ttg.react.elements._</span>
+  <span class="k">def</span> <span class="nc">YourComponent1</span><span class="o">(</span><span class="n">props</span><span class="k">:</span> <span class="kt">Attr*</span><span class="o">)(</span><span class="n">children</span><span class="k">:</span> <span class="kt">ReactNode*</span><span class="o">)</span> <span class="k">=</span> <span class="n">wrapJsForScala</span><span class="o">(</span><span class="nc">SomeLibNS</span><span class="o">.</span><span class="nc">YourComponent1</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Attrs</span><span class="o">(</span><span class="n">props</span><span class="o">).</span><span class="n">toJs</span><span class="o">,</span> <span class="n">children</span><span class="k">:_</span><span class="kt">*</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p>A component, declared as a react class, should be typed as a <code class="highlighter-rouge">ReactJSComponent</code>.</p>
+
+<p>How you hook up attributes and children values to your component is up to you. The definition in SomeLib is what you want it to be. In typescript, it is common to define an interface that declares the allowed properties to be passed in. The equivalent in scala.js are JS traits. You will want to make them non-native JS traits so you can instantiate them.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">trait</span> <span class="nc">YourComponent1Props</span> <span class="k">extends</span> <span class="n">js</span><span class="o">.</span><span class="nc">Object</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="n">className</span><span class="k">:</span> <span class="kt">js.UndefOr</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="n">js</span><span class="o">.</span><span class="n">undefined</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p>Then you can define:</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">object</span> <span class="nc">SomeLib</span> <span class="o">{</span>
+  <span class="k">import</span> <span class="nn">ttg.react.elements._</span>
+  <span class="k">def</span> <span class="nc">YourComponent1</span><span class="o">(</span><span class="n">props</span><span class="k">:</span> <span class="kt">YourComponent1Props</span> <span class="o">=</span> <span class="n">noProps</span><span class="o">())(</span><span class="n">children</span><span class="k">:</span> <span class="kt">ReactNode*</span><span class="o">)</span> <span class="k">=</span> <span class="n">wrapJsForScala</span><span class="o">(</span><span class="nc">SomeLibNS</span><span class="o">,</span> <span class="k">new</span> <span class="nc">Attrs</span><span class="o">(</span><span class="n">props</span><span class="o">).</span><span class="n">toJs</span><span class="o">,</span> <span class="n">children</span><span class="k">:_</span><span class="kt">*</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p>You can use more fancy approaches to consolidating your imported component’s properties into a js.Object, it’s up to you.</p>
+
+<h2 id="managing-javascript-props">Managing Javascript Props</h2>
+<p>If you need to include additional HTML specific props, you can use the vdom package. Let’s say you want to be able to pass in any HTML element properties to your component.</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">ttg.react.vdom._</span>
+
+<span class="k">trait</span> <span class="nc">YourComponent1</span> <span class="k">extends</span> <span class="nc">HTMLAttributes</span><span class="o">[</span><span class="kt">dom.html.Element</span><span class="o">]</span> <span class="o">{</span>
+  <span class="c1">// className already declared in HTMLAttributes.
+</span><span class="o">}</span>
+</code></pre>
+</div>
+
+<h2 id="import-typescript-sfc">Import Typescript SFC</h2>
+<p>A stateless functional component is just a function. However, react can take a function definition in its <code class="highlighter-rouge">React.createElement</code> API. Hence, you can import a SFC and just “label” it a <code class="highlighter-rouge">ReactJSComponent</code>. Here’s an example:</p>
+<div class="language-typescript highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">React</span> <span class="k">from</span> <span class="s2">"react"</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">Address</span> <span class="p">}</span> <span class="k">from</span> <span class="s2">"./datamodel"</span>
+<span class="k">import</span> <span class="nx">cx</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"classnames"</span><span class="p">)</span>
+
+<span class="k">export</span> <span class="kr">interface</span> <span class="nx">Props</span> <span class="p">{</span>
+    <span class="nx">className</span><span class="p">?:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span>
+    <span class="nx">address</span><span class="p">?:</span> <span class="nx">Address</span> <span class="o">|</span> <span class="kc">null</span>
+<span class="p">}</span>
+
+<span class="cm">/** Summarize address. */</span>
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">AddressSummary</span><span class="err">:</span> <span class="nx">React</span><span class="p">.</span><span class="nx">SFC</span><span class="o">&lt;</span><span class="nx">Address</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">?:</span> <span class="nx">Props</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="nx">props</span> <span class="o">=</span> <span class="nx">props</span> <span class="o">||</span> <span class="p">{}</span>
+    <span class="kd">const</span> <span class="nx">name</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span> <span class="o">&amp;&amp;</span> <span class="nx">props</span><span class="p">.</span><span class="nx">address</span> <span class="o">&amp;&amp;</span> <span class="nx">props</span><span class="p">.</span><span class="nx">address</span><span class="p">.</span><span class="nx">name</span><span class="p">)</span> <span class="o">||</span> <span class="s2">"&lt;unnamed address&gt;"</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="o">&lt;</span><span class="nx">div</span> <span class="nx">className</span><span class="o">=</span><span class="p">{</span><span class="nx">cx</span><span class="p">(</span><span class="s2">"addressSummary"</span><span class="p">,</span> <span class="nx">props</span><span class="p">.</span><span class="nx">className</span><span class="p">)}</span><span class="o">&gt;</span>
+            <span class="nx">Typescript</span> <span class="na">sourced</span><span class="p">:</span> <span class="nx">Address</span> <span class="na">Summary</span><span class="p">:</span> <span class="p">{</span><span class="nx">name</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="sr">/div</span><span class="err">&gt;
+</span>    <span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p><code class="highlighter-rouge">Address</code> is defined in typescript language and represents an interface you need to type in:</p>
+<div class="language-typescript highlighter-rouge"><pre class="highlight"><code><span class="c1">// We have to define this on the scala.js and typescript side.</span>
+<span class="k">export</span> <span class="kr">interface</span> <span class="nx">Address</span> <span class="p">{</span>
+    <span class="nl">customeraddressid</span><span class="p">:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span>
+    <span class="nx">name</span><span class="p">?:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span>
+    <span class="nx">city</span><span class="p">?:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span>
+    <span class="nx">stateorprovince</span><span class="p">?:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span>
+    <span class="nx">postalcode</span><span class="p">?:</span> <span class="kr">string</span> <span class="o">|</span> <span class="kc">null</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+<p>The key thing to notice is that the SFC takes a js object with two optional parameters. Let’s import it into scala.js</p>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">scala.scalajs.js</span>
+<span class="k">import</span> <span class="nn">js.annotation.JSImport</span>
+<span class="k">import</span> <span class="nn">ttg.react._</span>
+<span class="k">import</span> <span class="nn">ttg.react.elements._</span>
+<span class="k">import</span> <span class="nn">js.Dynamic.literal</span>
+<span class="k">import</span> <span class="nn">js.JSConverters._</span>
+
+<span class="nd">@js</span><span class="o">.</span><span class="n">native</span>
+<span class="nd">@JSImport</span><span class="o">(</span><span class="s">"JSExamples/AddressSummary"</span><span class="o">,</span> <span class="nc">JSImport</span><span class="o">.</span><span class="nc">Namespace</span><span class="o">)</span>
+<span class="k">object</span> <span class="nc">AddressSummaryNS</span> <span class="k">extends</span> <span class="n">js</span><span class="o">.</span><span class="nc">Object</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="nc">AddressSummary</span><span class="k">:</span> <span class="kt">ReactJSComponent</span> <span class="o">=</span> <span class="n">js</span><span class="o">.</span><span class="n">native</span>
+<span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">AddressSummaryC</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="n">make</span><span class="o">(</span><span class="n">className</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">None</span><span class="o">,</span> <span class="n">address</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Address</span><span class="o">]</span> <span class="k">=</span> <span class="nc">None</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="n">props</span> <span class="k">=</span> <span class="n">literal</span><span class="o">(</span>
+      <span class="s">"className"</span> <span class="o">-&gt;</span> <span class="n">className</span><span class="o">.</span><span class="n">orUndefined</span><span class="o">,</span>
+      <span class="s">"address"</span> <span class="o">-&gt;</span> <span class="n">address</span><span class="o">.</span><span class="n">orUndefined</span>
+    <span class="o">)</span>
+    <span class="n">elements</span><span class="o">.</span><span class="n">wrapJsForScala</span><span class="o">(</span><span class="nc">AddressSummaryNS</span><span class="o">.</span><span class="nc">AddressSummary</span><span class="o">,</span> <span class="n">props</span><span class="o">)</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre>
+</div>
+<p>Here’ we do the <code class="highlighter-rouge">@JSImport</code> operation. You can make the import object private if you wish. All we need is a <code class="highlighter-rouge">make</code> function that represents the API you choose to provide ta scala.js code. In this case, we provide two parameters, wrapped in Option, that gives us the scala side. The code between the def and the call to <code class="highlighter-rouge">elements.wrapJsForScala</code> translates between scala side objects and objects needed for javascript. In this case, since the def defines the strongly typed API, we use a literal to create the argument to the typescript component. We do not need a non-native JS trait since the trait would no be exposed. This is the choice made for this component. Another imported component may have so many parameters that we choose to expose a scala object or a non-native JS trait for the caller to use.</p>
+
+<p>With the JSConverters import, we can convert an <code class="highlighter-rouge">Option</code> to an <code class="highlighter-rouge">UndefOr</code> with <code class="highlighter-rouge">orUndefined</code>. A js literal is created as a js.Dynamic with js.Object hence its already a js.Object which is the parameter type in <code class="highlighter-rouge">wrapJsForScala</code>.</p>
+
+<h2 id="typescript">Typescript</h2>
+<p>If you have typescript definitions you may want to try to convert them to a native JS trait. There are converters you can try:</p>
+<ul>
+  <li><a href="https://github.com/DefinitelyTyped/DefinitelyTyped">definitely typed</a></li>
+  <li><a href="https://github.com/sjrd/scala-js-ts-importer">scala-js-ts-importer</a></li>
+</ul>
+
+<p>You may find that for complicated libraries the conversion is not accurate and you still need hand editing or that the conversion fails.</p>
+
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/scalajs-react/highlight/highlight.pack.js"></script><script>hljs.configure({
+languages:['scala','java','bash']
+});
+hljs.initHighlighting();
+             </script><script src="/scalajs-react/js/main.js"></script></body></html>
