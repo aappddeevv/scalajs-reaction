@@ -196,9 +196,65 @@ There is no JSX support.
 
 ### Styling
 
-Styling can be performed several ways for example using
-[ScalaCSS](https://github.com/japgolly/scalacss). You can also just import your
-style sheets and have them picked up by webpack:
+Styling can be performed different ways.
+
+fabric's `merge-styles` is provided in the fabric package and you can use
+css-in-scala concepts to create your styles easily. See the ToDo example source
+code for a detailed example. It works nicely and is independent of fabric. Tree
+shaking should remove any fabric UI code if you only want to use `merge-styles`
+but not the UI part, and sill want a lean bundle. `merge-styles` creates
+stylesheets from scala code. Here's an example showing the use of CSS variables:
+
+```scala
+  // Each key indicates an area of our component.
+  @js.native
+  trait ToDoClassNames extends js.Object {
+    var root: String      = js.native
+    var todo: String      = js.native
+    var title: String     = js.native
+    var dataEntry: String = js.native
+  }
+
+  def getClassNames() =
+    FabricStyling.mergeStyleSets[ToDoClassNames](
+      styleset(
+        "root" -> new IRawStyle {
+          selectors = selectorset(
+            ":global(:root)" -> lit(
+              "--label-width" -> "400px",
+            ))
+         },
+         "todo" -> new IRawStyle {
+          displayName = "machina"
+          display = "flex"
+          marginBottom = "10px"
+          selectors = selectorset("& $title" -> new IRawStyle {})
+        },
+        "title" -> new IRawStyle {
+          width = "var(--label-width)"
+          marginRight = "10px"
+        },
+        "dataEntry" -> new IRawStyle {
+          display = "flex"
+          selectors = selectorset("& .ms-Textfield" -> new IRawStyle {
+            width = "var(--label-width)"
+            marginRight = "10px"
+          })
+        }
+      ))
+}
+
+// now use it
+
+val cn = getClassNames()
+val props = new DivProps {
+  className = cn.root
+}
+```
+
+If you have dynamically calculated styles, its best to memoize the result so you do not incur the processing overhead on each component creation. The above was static so we just create it once.
+
+If you keep your CSS external and process it at build time, you can just import your style sheets and have them picked up by your bundler such as webpack:
 
 ```scala
 @js.native
@@ -218,18 +274,19 @@ Examples directory and that you have setup your CSS processors
 correctly. post-css is quite popular when using webpack. Since a Dynamics was
 used, this is not type safe.
 
-A styling trait is also provided to help you ensure you only provide style
-attributes for inline styling:
+A styling trait is provided to help you ensure you only provide style attributes
+for inline styling:
 
 ```scala
 val hstyle = new StyleAttr { display = "flex" }
+
+val props = new DivProps {
+    style = hstyle
+}
 ```
 
-fabric's `merge-styles` is also provided in the fabric pacakge and you can use
-css-in-scala concepts to create your styles easily. See the ToDo example source
-code for a detailed example. It works nicely and is independent of fabric. Tree
-shaking should remove any fabric UI code if you only want to use `merge-styles`
-but not the UI part, and sill want a lean bundle.
+Styling can also be performed using scala specific libraries such as 
+[ScalaCSS](https://github.com/japgolly/scalacss). 
 
 ### Redux
 Redux integration requires you to export your component then import it with
