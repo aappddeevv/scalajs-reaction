@@ -110,6 +110,7 @@
     },
     "dependencies": {
         "@uifabric/icons": "^5.2.0",
+        "@uifabric/merge-styles": "^5.13.0",
         "babel-runtime": "^6.26.0",
         "codemirror": "^5.31.0",
         "create-react-class": "^15.6.3",

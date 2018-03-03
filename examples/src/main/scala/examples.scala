@@ -37,6 +37,7 @@ object Pages {
   import JSAppImports._
   import todo._
   import addressmanager._
+  import graphs._
 
   val defaultTodos = Seq(ToDo(1, "Call Fred"))
 
@@ -49,6 +50,13 @@ object Pages {
       LabelAndChild(new LabelAndChildProps { label = "Wrapped in typescript" })(c)
     )
   }
+
+  val graphPage =
+    PivotItem(new IPivotItemProps {
+      linkText = "Graph"
+      itemKey = "graph"
+      // don't scroll this!?!?
+    })(Graph.make())
 
   val pressurePage =
     PivotItem(new IPivotItemProps {
@@ -145,6 +153,7 @@ object Examples {
             labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
             tagTest(),
             pressurePage,
+            graphPage,
           ),
           HeaderC.make("header", headerTarget)
       )
@@ -173,6 +182,10 @@ object Main {
   @JSExportTopLevel("App")
   def App(): Unit = {
     println("Running examples app")
+    // use append so we can read/change the CSS in the browser debugger
+    StylesheetNS.Stylesheet.getInstance.setConfig(new IStylesheetConfig {
+      injectionMode = InjectMode.appendChild
+    })
     uifabric_icons.initializeIcons()
 
     // init message for store, although it does not do anything :-)

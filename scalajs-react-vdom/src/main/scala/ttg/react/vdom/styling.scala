@@ -8,6 +8,10 @@ package vdom
 
 import scala.scalajs.js
 import js.|
+import org.scalajs.dom
+import js.JSConverters._
+
+import tagging._
 
 object styling {
 
@@ -21,7 +25,10 @@ object styling {
     result.asInstanceOf[StyleAttr]
   }
 
-  /** Add a single style prop but it returns a dictionary since it can't be a StyleAttr anymore. */
+  /**
+    * Add a single style prop but it returns a dictionary since it can't be a
+    * StyleAttr anymore.
+    */
   @inline def unsafeAddProp(
       style: StyleAttr,
       name: String,
@@ -31,16 +38,58 @@ object styling {
       .asInstanceOf[js.Dictionary[String]]
   }
 
-  /** Merge a StyleAttr and a js.Dyanmic assume the returned value is StyleAttr. */
+  /**
+    * Merge a StyleAttr and a js.Dyanmic assume the returned value is StyleAttr.
+    */
   @inline def mergeUnsafePropsTo(style: StyleAttr, unsafe: js.Dynamic) =
     merge(style, unsafe.asInstanceOf[StyleAttr]).asInstanceOf[StyleAttr]
+
+  /**
+    * Obtain a style attribute value. Assumes variable is at :root element via
+    * :root.  Cache the CSSStyleDeclaration from window.getComputedStyle if you
+    * read frequently. Obtain an el via `document.querySelector(class)` or
+    * `document.getElementById`. You can use the psuedo-selector name of `:root`
+    * for the HTML element.
+    */
+  @inline def getCSSVar(vname: String, el: dom.Element = dom.document.documentElement): String = {
+    dom.window.getComputedStyle(el, null).getPropertyValue(vname)
+  }
+
+  /**
+    * Set CSS variable on the :root element. Cache the computed style if you
+    * update frequently.
+    */
+  @inline def setCSSVar(
+      vname: String,
+      value: String,
+      el: dom.Element = dom.document.documentElement,
+      priority: Option[String] = None): Unit = {
+    dom.document.documentElement.asInstanceOf[dom.html.Element].style.setProperty(vname, value)
+  }
+}
+
+trait RawFontStyle extends js.Object {
+  var font: js.UndefOr[String]           = js.undefined
+  var fontFamily: js.UndefOr[String]     = js.undefined
+  var fontSize: js.UndefOr[String]       = js.undefined
+  var fontSizeAdjust: js.UndefOr[String] = js.undefined
+  var fontStretch: js.UndefOr[String]    = js.undefined
+  var fontStyle: js.UndefOr[String]      = js.undefined
+  var fontVariant: js.UndefOr[String]    = js.undefined
+  var fontWeight: js.UndefOr[String]     = js.undefined
+}
+
+trait FontFace extends RawFontStyle {
+  var src: js.UndefOr[String]                = js.undefined
+  var unicodeRange: js.UndefOr[String]       = js.undefined
+  var fontFeatureSetting: js.UndefOr[String] = js.undefined
 }
 
 /**
-  * Use to create a mildly useful style object. It won't typecheck the values but
+  * Use to create a mildly useful style object. It won't typecheck the values themselves but
   * it will check the field themselves to ensure they are valid.
   */
-trait StyleAttr extends js.Object {
+trait RawStyleBase extends RawFontStyle {
   var azimuth: js.UndefOr[String]              = js.undefined
   var background: js.UndefOr[String]           = js.undefined
   var backgroundAttachment: js.UndefOr[String] = js.undefined
@@ -87,84 +136,77 @@ trait StyleAttr extends js.Object {
   var elevation: js.UndefOr[String]            = js.undefined
   var emptyCells: js.UndefOr[String]           = js.undefined
   var float: js.UndefOr[String]                = js.undefined
-  var font: js.UndefOr[String]                 = js.undefined
-  var fontFamily: js.UndefOr[String]           = js.undefined
-  var fontSize: js.UndefOr[String]             = js.undefined
-  var fontSizeAdjust: js.UndefOr[String]       = js.undefined
-  var fontStretch: js.UndefOr[String]          = js.undefined
-  var fontStyle: js.UndefOr[String]            = js.undefined
-  var fontVariant: js.UndefOr[String]          = js.undefined
-  var fontWeight: js.UndefOr[String]           = js.undefined
-  var height: js.UndefOr[String | Int]         = js.undefined
-  var left: js.UndefOr[String]                 = js.undefined
-  var letterSpacing: js.UndefOr[String]        = js.undefined
-  var lineHeight: js.UndefOr[String]           = js.undefined
-  var listStyle: js.UndefOr[String]            = js.undefined
-  var listStyleImage: js.UndefOr[String]       = js.undefined
-  var listStylePosition: js.UndefOr[String]    = js.undefined
-  var listStyleType: js.UndefOr[String]        = js.undefined
-  var margin: js.UndefOr[String]               = js.undefined
-  var marginTop: js.UndefOr[String]            = js.undefined
-  var marginRight: js.UndefOr[String]          = js.undefined
-  var marginBottom: js.UndefOr[String]         = js.undefined
-  var marginLeft: js.UndefOr[String]           = js.undefined
-  var markerOffset: js.UndefOr[String]         = js.undefined
-  var marks: js.UndefOr[String]                = js.undefined
-  var maxHeight: js.UndefOr[String | Int]      = js.undefined
-  var maxWidth: js.UndefOr[String | Int]       = js.undefined
-  var minHeight: js.UndefOr[String | Int]      = js.undefined
-  var minWidth: js.UndefOr[String | Int]       = js.undefined
-  var orphans: js.UndefOr[String]              = js.undefined
-  var outline: js.UndefOr[String]              = js.undefined
-  var outlineColor: js.UndefOr[String]         = js.undefined
-  var outlineStyle: js.UndefOr[String]         = js.undefined
-  var outlineWidth: js.UndefOr[String]         = js.undefined
-  var overflow: js.UndefOr[String]             = js.undefined
-  var overflowX: js.UndefOr[String]            = js.undefined
-  var overflowY: js.UndefOr[String]            = js.undefined
-  var padding: js.UndefOr[String]              = js.undefined
-  var paddingTop: js.UndefOr[String]           = js.undefined
-  var paddingRight: js.UndefOr[String]         = js.undefined
-  var paddingBottom: js.UndefOr[String]        = js.undefined
-  var paddingLeft: js.UndefOr[String]          = js.undefined
-  var page: js.UndefOr[String]                 = js.undefined
-  var pageBreakAfter: js.UndefOr[String]       = js.undefined
-  var pageBreakBefore: js.UndefOr[String]      = js.undefined
-  var pageBreakInside: js.UndefOr[String]      = js.undefined
-  var pause: js.UndefOr[String]                = js.undefined
-  var pauseAfter: js.UndefOr[String]           = js.undefined
-  var pauseBefore: js.UndefOr[String]          = js.undefined
-  var pitch: js.UndefOr[String]                = js.undefined
-  var pitchRange: js.UndefOr[String]           = js.undefined
-  var playDuring: js.UndefOr[String]           = js.undefined
-  var position: js.UndefOr[String]             = js.undefined
-  var quotes: js.UndefOr[String]               = js.undefined
-  var richness: js.UndefOr[String]             = js.undefined
-  var right: js.UndefOr[String]                = js.undefined
-  var size: js.UndefOr[String]                 = js.undefined
-  var speak: js.UndefOr[String]                = js.undefined
-  var speakHeader: js.UndefOr[String]          = js.undefined
-  var speakNumeral: js.UndefOr[String]         = js.undefined
-  var speakPunctuation: js.UndefOr[String]     = js.undefined
-  var speechRate: js.UndefOr[String]           = js.undefined
-  var stress: js.UndefOr[String]               = js.undefined
-  var tableLayout: js.UndefOr[String]          = js.undefined
-  var textAlign: js.UndefOr[String]            = js.undefined
-  var textDecoration: js.UndefOr[String]       = js.undefined
-  var textIndent: js.UndefOr[String]           = js.undefined
-  var textShadow: js.UndefOr[String]           = js.undefined
-  var textTransform: js.UndefOr[String]        = js.undefined
-  var top: js.UndefOr[String]                  = js.undefined
-  var unicodeBidi: js.UndefOr[String]          = js.undefined
-  var verticalAlign: js.UndefOr[String]        = js.undefined
-  var visibility: js.UndefOr[String]           = js.undefined
-  var voiceFamily: js.UndefOr[String]          = js.undefined
-  var volume: js.UndefOr[String]               = js.undefined
-  var whiteSpace: js.UndefOr[String]           = js.undefined
-  var widows: js.UndefOr[String]               = js.undefined
-  var width: js.UndefOr[String | Int]          = js.undefined
-  var wordSpacing: js.UndefOr[String]          = js.undefined
-  var zIndex: js.UndefOr[String]               = js.undefined
+
+  var height: js.UndefOr[String | Int]      = js.undefined
+  var left: js.UndefOr[String]              = js.undefined
+  var letterSpacing: js.UndefOr[String]     = js.undefined
+  var lineHeight: js.UndefOr[String]        = js.undefined
+  var listStyle: js.UndefOr[String]         = js.undefined
+  var listStyleImage: js.UndefOr[String]    = js.undefined
+  var listStylePosition: js.UndefOr[String] = js.undefined
+  var listStyleType: js.UndefOr[String]     = js.undefined
+  var margin: js.UndefOr[String]            = js.undefined
+  var marginTop: js.UndefOr[String]         = js.undefined
+  var marginRight: js.UndefOr[String]       = js.undefined
+  var marginBottom: js.UndefOr[String]      = js.undefined
+  var marginLeft: js.UndefOr[String]        = js.undefined
+  var markerOffset: js.UndefOr[String]      = js.undefined
+  var marks: js.UndefOr[String]             = js.undefined
+  var maxHeight: js.UndefOr[String | Int]   = js.undefined
+  var maxWidth: js.UndefOr[String | Int]    = js.undefined
+  var minHeight: js.UndefOr[String | Int]   = js.undefined
+  var minWidth: js.UndefOr[String | Int]    = js.undefined
+  var orphans: js.UndefOr[String]           = js.undefined
+  var outline: js.UndefOr[String]           = js.undefined
+  var outlineColor: js.UndefOr[String]      = js.undefined
+  var outlineStyle: js.UndefOr[String]      = js.undefined
+  var outlineWidth: js.UndefOr[String]      = js.undefined
+  var overflow: js.UndefOr[String]          = js.undefined
+  var overflowX: js.UndefOr[String]         = js.undefined
+  var overflowY: js.UndefOr[String]         = js.undefined
+  var padding: js.UndefOr[String]           = js.undefined
+  var paddingTop: js.UndefOr[String]        = js.undefined
+  var paddingRight: js.UndefOr[String]      = js.undefined
+  var paddingBottom: js.UndefOr[String]     = js.undefined
+  var paddingLeft: js.UndefOr[String]       = js.undefined
+  var page: js.UndefOr[String]              = js.undefined
+  var pageBreakAfter: js.UndefOr[String]    = js.undefined
+  var pageBreakBefore: js.UndefOr[String]   = js.undefined
+  var pageBreakInside: js.UndefOr[String]   = js.undefined
+  var pause: js.UndefOr[String]             = js.undefined
+  var pauseAfter: js.UndefOr[String]        = js.undefined
+  var pauseBefore: js.UndefOr[String]       = js.undefined
+  var pitch: js.UndefOr[String]             = js.undefined
+  var pitchRange: js.UndefOr[String]        = js.undefined
+  var playDuring: js.UndefOr[String]        = js.undefined
+  var position: js.UndefOr[String]          = js.undefined
+  var quotes: js.UndefOr[String]            = js.undefined
+  var richness: js.UndefOr[String]          = js.undefined
+  var right: js.UndefOr[String]             = js.undefined
+  var size: js.UndefOr[String]              = js.undefined
+  var speak: js.UndefOr[String]             = js.undefined
+  var speakHeader: js.UndefOr[String]       = js.undefined
+  var speakNumeral: js.UndefOr[String]      = js.undefined
+  var speakPunctuation: js.UndefOr[String]  = js.undefined
+  var speechRate: js.UndefOr[String]        = js.undefined
+  var stress: js.UndefOr[String]            = js.undefined
+  var tableLayout: js.UndefOr[String]       = js.undefined
+  var textAlign: js.UndefOr[String]         = js.undefined
+  var textDecoration: js.UndefOr[String]    = js.undefined
+  var textIndent: js.UndefOr[String]        = js.undefined
+  var textShadow: js.UndefOr[String]        = js.undefined
+  var textTransform: js.UndefOr[String]     = js.undefined
+  var top: js.UndefOr[String]               = js.undefined
+  var unicodeBidi: js.UndefOr[String]       = js.undefined
+  var verticalAlign: js.UndefOr[String]     = js.undefined
+  var visibility: js.UndefOr[String]        = js.undefined
+  var voiceFamily: js.UndefOr[String]       = js.undefined
+  var volume: js.UndefOr[String]            = js.undefined
+  var whiteSpace: js.UndefOr[String]        = js.undefined
+  var widows: js.UndefOr[String]            = js.undefined
+  var width: js.UndefOr[String | Int]       = js.undefined
+  var wordSpacing: js.UndefOr[String]       = js.undefined
+  var zIndex: js.UndefOr[String]            = js.undefined
   /* Below properties based on https://www.w3.org/Style/CSS/all-properties */
   /* Color Level 3 - REC */
   var opacity: js.UndefOr[String] = js.undefined
@@ -217,6 +259,7 @@ trait StyleAttr extends js.Object {
   var objectPosition: js.UndefOr[String]   = js.undefined
   var imageResolution: js.UndefOr[String]  = js.undefined
   var imageOrientation: js.UndefOr[String] = js.undefined
+
   /* Flexible Box Layout - CR */
   var alignContent: js.UndefOr[String]   = js.undefined
   var alignItems: js.UndefOr[String]     = js.undefined
@@ -230,6 +273,7 @@ trait StyleAttr extends js.Object {
   var flexWrap: js.UndefOr[String]       = js.undefined
   var justifyContent: js.UndefOr[String] = js.undefined
   var order: js.UndefOr[String]          = js.undefined
+
   /* Text Decoration Level 3 - CR */
   /* textDecoration - already defined by CSS2Properties */
   var textDecorationColor: js.UndefOr[String]  = js.undefined
@@ -430,3 +474,11 @@ trait StyleAttr extends js.Object {
   var rubyMerge: js.UndefOr[String]    = js.undefined
   var rubyPosition: js.UndefOr[String] = js.undefined
 }
+
+/**
+  * A style trait that can provide some protection that the
+  * values you provide *are* valid styling keywords e.g.
+  * backgroundColor. Use this like
+  * `new StyleAttr{ backgroundColor = "red" }`.
+  */
+trait StyleAttr extends RawStyleBase

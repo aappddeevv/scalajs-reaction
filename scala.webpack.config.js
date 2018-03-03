@@ -26,6 +26,12 @@ const finalStyleLoaders = [
                 require("postcss-import")({ root: loader.resourcePath }),
                 require("postcss-mixins")(),
                 require("postcss-cssnext")({
+                    //https://github.com/MoOx/postcss-cssnext/blob/master/src/features.js
+                    features: {
+                        customProperties: false,
+                        applyRule: false,
+                        calc: false,
+                    }
                 }),
                 require("postcss-reporter")({ clearMessages: true }),
             ]

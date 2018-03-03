@@ -16,6 +16,8 @@ reducer built into every component. The state is reset whenever you change tabs
 so any todos you added or removed are lost upon tab change. fabric's Pivot
 unmounts the component when the tab changes.
 
+To Do uses css-in-js via the fabric scala facade.
+
 ## Change Redux State
 Change the "reduxLabel" state property in the the redux state. You can see the
 label change reflected in the address manager tab.
@@ -55,5 +57,16 @@ store whenever it changes.
   unmounted and the last active address id is not updated in redux so that it is
   available when the components remounts.
 
+There is a CSS var containing the height of the footer. It can be incremented using a button in the command bar. The change does not go through the reducer and hence, not through a re-render in react. Going through the reducer is the proper way to do it. For the moment, it modifies the CSS var directly and the visual layout sometimes takes a moment to catch up.
+
 ## Hello World
 A simple hello world component. It is also exported for use in another tab.
+
+## Tag Test
+Display a large number of standard HTML tags.
+
+## Weather
+Use api.openweather.org to obtain temperature forecasts. Only cities that are listed at openweather.org can be used--so try some major cities. Weather results are cached and the city name is stored in the state, etc.
+
+## Graph
+Show a graph of relationships. This does not show much "reducer" wise but does show that state can be large, complex and spread out to some degree.

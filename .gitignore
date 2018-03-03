@@ -1,5 +1,6 @@
 *.class
 *.log
+*.orig
 
 # sbt specific
 .cache
@@ -18,4 +19,6 @@ node_modules/*
 .project
 *~
 .#*
+\#*\#
+.\#*
 docs/src/main/resources/microsite/static

@@ -953,6 +953,9 @@ trait ReducerResult[S, SLF] {
 
 object elements {
 
+  /** Mostly untyped React.createElement or replacements e.g. glamor's createElement. */
+  //type NativeCreateElement = js.Function3[js.Any|String, js.UndefOr[Nothing], Seq[ReactNode], Unit]
+
   /** Create a DOM element. */
   def createDomElement(
       n: String,

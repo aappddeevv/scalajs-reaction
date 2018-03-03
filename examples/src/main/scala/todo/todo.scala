@@ -19,20 +19,50 @@ import ttg.react.implicits._
 import ttg.react.fabric
 import fabric._
 import fabric.components._
+import fabric.styling._
 
 import vdom._
 import vdom.tags._
 import prefix_F._
 
-@js.native
-@JSImport("Examples/todo/todo.css", JSImport.Namespace)
-object componentStyles extends js.Object
+object ToDoStyling {
 
-object styles {
-  val component = componentStyles.asInstanceOf[js.Dynamic]
+  @js.native
+  trait ToDoClassNames extends js.Object {
+    var root: String      = js.native
+    var todo: String      = js.native
+    var title: String     = js.native
+    var dataEntry: String = js.native
+  }
+
+  def getClassNames() =
+    FabricStyling.mergeStyleSets[ToDoClassNames](
+      styleset(
+        "root" -> new IRawStyle {
+          selectors = selectorset(
+            ":global(:root)" -> lit(
+              "--label-width" -> "400px",
+            ))
+        },
+        "todo" -> new IRawStyle {
+          displayName = "machina"
+          display = "flex"
+          marginBottom = "10px"
+          selectors = selectorset("& $title" -> new IRawStyle {})
+        },
+        "title" -> new IRawStyle {
+          width = "var(--label-width)"
+          marginRight = "10px"
+        },
+        "dataEntry" -> new IRawStyle {
+          display = "flex"
+          selectors = selectorset("& .ms-Textfield" -> new IRawStyle {
+            width = "var(--label-width)"
+            marginRight = "10px"
+          })
+        }
+      ))
 }
-
-import styles._
 
 case class ToDo(id: Int, name: String)
 
@@ -43,14 +73,21 @@ case class InputChanged(input: Option[String]) extends ToDoAction
 case class SetTextFieldRef(ref: ITextField)    extends ToDoAction
 
 object ToDoC {
+
   val ToDo = statelessComponent("ToDoItem")
   import ToDo.ops._
+  val cn = ToDoStyling.getClassNames()
+  println(s"classnames\n${PrettyJson.render(cn)}")
 
   def make(todo: ToDo, remove: Unit => Unit) =
     ToDo.copy(new methods {
       val render = self => {
-        div(new DivProps { className = component.todo.asString })(
-          Label()(todo.name),
+        div(new DivProps { className = cn.todo })(
+          Label(new ILabelProps {
+            className = cn.title
+          })(
+            todo.name
+          ),
           DefaultButton(new IButtonProps {
             text = "Remove"
             onClick = js.defined(_ => remove(()))
@@ -94,6 +131,7 @@ object ToDoListC {
 object ToDosC {
   var idCounter: Int = -1
   def mkId(): Int    = { idCounter = idCounter + 1; idCounter }
+  val cn             = ToDoStyling.getClassNames()
 
   case class State(
       todos: Seq[ToDo] = Seq(),
@@ -137,9 +175,11 @@ object ToDosC {
       val initialState = _ => State(todos, None)
       val render =
         self => {
-          div(new DivProps {})(
+          div(new DivProps {
+            className = cn.root
+          })(
             Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
-            div(new DivProps { className = component.dataEntry.asString })(
+            div(new DivProps { className = cn.dataEntry })(
               TextField(new ITextFieldProps {
                 placeholder = "enter new todo"
                 componentRef = js.defined((r: ITextField) => self.send(SetTextFieldRef(r)))

@@ -80,7 +80,7 @@ lazy val root = project.in(file("."))
   .settings(name := "scalajs-react")
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
-    `scalajs-react-react-dom`, `scalajs-react-prop-types`, `scalajs-react-macros`)
+    `scalajs-react-react-dom`, `scalajs-react-prop-types`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
@@ -147,10 +147,10 @@ lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
-    `scalajs-react-prop-types`, `scalajs-react-macros`)
+    `scalajs-react-prop-types`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
-  .settings(macroSettings)
+  //.settings(macroSettings)
   .settings(exampleSettings)
 
 // val CoreConfig = config("scalajs-react-core")
@@ -158,6 +158,7 @@ lazy val examples = project
 // val FabricConfig = config("scalajs-react-fabric")
 // val ReduxConfig = config("scalajs-react-redux")
 
+// macro project was removed
 lazy val docs = project
   .settings(buildSettings)
   .settings(noPublishSettings)
@@ -166,7 +167,7 @@ lazy val docs = project
   .disablePlugins(BintrayPlugin)
   //.enablePlugins(SiteScaladocPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
-    `scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-macros`)
+    `scalajs-react-fabric`, `scalajs-react-redux`)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples)
   )
@@ -197,7 +198,9 @@ lazy val docs = project
       // you need this if you use SiteScaladocPlugin so that the push uses gh-pages vs GitHub4s
       //micrositePushSiteWith := GHPagesPlugin
   )
-  .settings(macroSettings)
+  //.settings(macroSettings)
+
+addCommandAlias("fmt", ";scalafmt")
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")
 npmBuild := {

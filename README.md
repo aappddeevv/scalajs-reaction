@@ -9,7 +9,9 @@ scala.js implemetation was kept intentionally similar to ReasonReact so that the
 documentation would apply.
 
 This facade library is small, does not use advanced scala features and provides
-a different component API based on reason-react vs reactjs. It explicitly supports integrating into an existing javascript UI project or an entirely new one.
+a different component API based on reason-react vs reactjs. It explicitly
+supports integrating into an existing javascript UI project or an entirely new
+one.
 
 You can always code a scala.js based react interface without using any facade
 library since scala.js supports non-native JS class definitions. scala.js's JS
@@ -45,7 +47,7 @@ libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
     
     // optionals
-    // Microsoft fabric UI components, "MS office"
+    // Microsoft fabric UI components, "MS office", css-in-js
     "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
     // if you integrate with redux
     "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
@@ -282,6 +284,7 @@ There are a few [scala.js](https://www.scala-js.org/) react facades/implementati
 * https://slinky.shadaj.me: Newcomer. Uses macros smartly. Allows you to use scala.js components in js as well. Uses some macros to help with javascript interop.
 * https://github.com/xored/scala-js-react: Class oriented facade. Uses macros to transform xml literals so you can write xml in your code like jsx.
 * https://github.com/scalajs-react-interface/sri#sri: React-native and web. New maintainers.
+* https://github.com/Ahnfelt/react4s: React wrapper. This does not just mimic the standard react interface. Includes an interesting CSS builder, css-in-scala.
 
 The facades differ in their facade approach but many recreate all of the API
 parts found in reactjs. japgolly works hard to put a more safe, functional API
@@ -306,11 +309,13 @@ binding.
 * [laminar](https://github.com/raquo/laminar): a reactive web framework
 * [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom
 * [pine](https://github.com/sparsetech/pine): XML/HTML builder.
+* [scalacss](https://github.com/japgolly/scalacss): A solid css-in-scala solution.
 * [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes
 * [scala-tags](https://github.com/lihaoyi/scalatags): XML/HTML builder.
 * [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework
 * [udash](https://udash.io/) is another reactive framework that is not
 react based, but reactive.
+* [udash-css](https://udash.io): A css-in-scala framework.
 
 ## License
 

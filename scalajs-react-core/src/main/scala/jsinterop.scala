@@ -21,9 +21,11 @@ private[react] trait JSReact extends js.Object {
   def createElement[P](
       el: js.Any | String,
       props: UndefOr[P],
-      children: ReactNode*): ReactDOMElement                             = js.native
+      children: ReactNode*): ReactDOMElement = js.native
+
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
-  // symbol or number depending on browser/environment support for symbols
+
+  /** Symbol or number depending on browser/environment support for symbols */
   val Fragment: js.Any = js.native
 
   /** v16.3 API. */
@@ -37,16 +39,17 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
-  def createElement(tag: String, props: js.Object)(children: ReactNode*): ReactDOMElement =
+  @inline def createElement(tag: String, props: js.Object)(children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, props, children: _*)
 
-  def createElement(tag: ReactClass, props: js.Object)(children: ReactNode*): ReactDOMElement =
+  @inline def createElement(tag: ReactClass, props: js.Object)(
+      children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, props, children: _*)
 
-  def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
+  @inline def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, js.undefined, children: _*)
 
-  def createElement(
+  @inline def createElement(
       c: ReactClass
   ): ReactDOMElement = JSReact.createElement(c, js.undefined)
 
@@ -54,7 +57,7 @@ object React {
     * Create a react fragment. Fragments are created as an "element" with a specific
     * tag (symbol or number if target does not support symbol) vs say, the string "div".
     */
-  def createFragment(key: Option[String], children: ReactNode*): ReactDOMElement = {
+  @inline def createFragment(key: Option[String], children: ReactNode*): ReactDOMElement = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
     JSReact.createElement(JSReact.Fragment, props, children: _*)
@@ -88,39 +91,4 @@ trait ReactContext[T] extends js.Object {
 
   /** Not public API. */
   val defaultValue: T = js.native
-}
-
-/**
-  * Provide context using react 16.3+ context mechanism. Import this object to
-  * obtain a syntax enhancement to create provider's and consumers. The syntax is
-  * not included in the standard syntax module.
-  *
-  * @todo Consumer could take a bits argument but react's API is not settled yet.
-  */
-object context {
-
-  /** v16.3 API. */
-  def make[T](defaultValue: T): ReactContext[T] =
-    JSReact.createContext[T](defaultValue, js.undefined)
-
-  def makeProvider[T](ctx: ReactContext[T])(value: Option[T])(children: ReactNode*): ReactNode = {
-    val v = lit("value" -> value.getOrElse(ctx.currentValue).asInstanceOf[js.Any])
-    JSReact.createElement(ctx.Provider, v, children: _*)
-  }
-
-  def makeConsumer[T](ctx: ReactContext[T])(
-      f: js.Function1[T, ReactNode],
-      key: Option[String] = None): ReactNode = {
-    val props = key.fold[js.Any](js.undefined)(k => lit("key" -> k))
-    JSReact.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
-  }
-
-  /** `import context._` brings the syntax into scope. */
-  implicit class ReactContextOps[T](ctx: ReactContext[T]) {
-    def makeProvider(value: T)(children: ReactNode*) =
-      context.makeProvider[T](ctx)(Some(value))(children: _*)
-    def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children: _*)
-    def makeConsumer(f: js.Function1[T, ReactNode], key: Option[String] = None) =
-      context.makeConsumer[T](ctx)(f)
-  }
 }

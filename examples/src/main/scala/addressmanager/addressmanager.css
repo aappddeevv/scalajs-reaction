@@ -12,7 +12,7 @@
     & .masterAndDetail {
         display: flex;
         align-items: stretch;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
         overflow: hidden;
         height: calc(100% - var(--cbar) - var(--footer));
         & .master {

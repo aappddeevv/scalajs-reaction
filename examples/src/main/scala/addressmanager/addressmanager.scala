@@ -53,7 +53,7 @@ object AddressDetailC {
         self => {
           logContext.makeConsumer {
             log =>
-            //js.Dynamic.global.console.log("context: log function:", log)
+              //js.Dynamic.global.console.log("context: log function:", log)
               log(address.getOrElse("<no detail address provided>"))
               div(new DivProps { className = amstyles.detail.asString })(
                 Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
@@ -65,7 +65,7 @@ object AddressDetailC {
                 Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
               )
           }
-      }
+        }
     })
 }
 
@@ -86,7 +86,7 @@ object AddressListC {
       activeCB: Option[Address] => Unit,
       ifx: Option[Int] = None) =
     AddressList.copy(new methods {
-      val render = 
+      val render =
         self => {
           println(s"AddressListC.render: ifx ${ifx}")
           val listopts = new IDetailsListProps[Address] {
@@ -107,18 +107,19 @@ object AddressListC {
             selection = sel
             layoutMode = DetailsListLayoutMode.fixedColumns
             constrainMode = ConstrainMode.unconstrained
-            onRenderDetailsHeader = js.defined{ (props, defaultRender) =>
+            onRenderDetailsHeader = js.defined { (props, defaultRender) =>
               Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
             }
           }
-        // add data-is-scrollable
-        div.merge(lit("data-is-scrollable" -> true))(
-          new DivProps { className = amstyles.master.asString})(
-          ScrollablePane()(
-            DetailsList[Address](listopts)()
+          // add data-is-scrollable
+          div.merge(lit("data-is-scrollable" -> true))(new DivProps {
+            className = amstyles.master.asString
+          })(
+            ScrollablePane()(
+              DetailsList[Address](listopts)()
+            )
           )
-        )
-      }
+        }
     })
 }
 
@@ -133,7 +134,7 @@ trait AddressManagerProps extends js.Object {
   // derived from redux
   var reduxLabel: js.UndefOr[String] = js.undefined
   // derived from redux if not provided
-  var viewModel: js.UndefOr[AddressesViewModel] = js.undefined
+  var viewModel: js.UndefOr[AddressesViewModel]           = js.undefined
   var lastActiveAddressId: js.UndefOr[AddressesViewModel] = js.undefined
 }
 
@@ -157,8 +158,8 @@ object AddressManagerC {
       fetching: Boolean = false,
       message: Option[String] = None,
       addresses: AddressList = emptyAddressList,
-      /** instance var, so make mutable, might as well */
-    var selection: ISelection[Address] = null, // its a js thing
+      /** instance var, so make mutable, might as well, null it's a js thing */
+      var selection: ISelection[Address] = null
   )
 
   private val AddressManager = reducerComponent[State, Actions]("AddressManager")
@@ -179,6 +180,20 @@ object AddressManagerC {
         disabled = isFetching
         iconProps = lit("iconName" -> "Delete")
       },
+      new IContextualMenuItem {
+        val key = "footerSize"
+        name = "Incr Footer Height (CSS Var)"
+        onClick = { () =>
+          val pattern    = "([0-9]+)px".r
+          val pattern(h) = vdom.styling.getCSSVar("--footer").trim
+          val hint       = h.toInt
+          val newHeight  = if (hint > 300) 80 else hint + 10
+          // This is really as side effect that should force a re-render.
+          // So I should really call into the reducer, but I'm lazy.
+          vdom.styling.setCSSVar("--footer", s"${newHeight}px")
+        }: OC0
+        iconProps = lit("iconName" -> "Add")
+      }
     )
     farItems = js.Array(
       if (self.state.fetching)
@@ -235,8 +250,8 @@ object AddressManagerC {
       dao: AddressDAO,
       vm: AddressesViewModel,
       label: Option[String] = None,
-    lastActiveAddressId: Option[Id] = None,
-    className: Option[String]= None) =
+      lastActiveAddressId: Option[Id] = None,
+      className: Option[String] = None) =
     AddressManager.copy(new methods {
       val initialState =
         self => {
@@ -244,8 +259,8 @@ object AddressManagerC {
             self.handle { cbself =>
               println(
                 s"AddressManager.selectionChanged: ${PrettyJson.render(cbself.state.selection.getSelection())}")
-              // just log it, but here's how we could change it if we had a SelectionChanged event
-              //self.handle { cbself => cbself.send(SelectionChanged(cbself.state.selection)) }
+            // just log it, but here's how we could change it if we had a SelectionChanged event
+            //self.handle { cbself => cbself.send(SelectionChanged(cbself.state.selection)) }
             }
           }
           val selection = new Selection(js.defined(new ISelectionOptions[Address] {
@@ -254,13 +269,13 @@ object AddressManagerC {
             onSelectionChanged = js.defined(selcb)
           }))
           State(selection = selection)
-      }
+        }
 
       subscriptions = js.defined({ self =>
         Seq(() => () => vm.setActive(null, null))
       })
 
-      val reducer = 
+      val reducer =
         (action, state, gen) => {
           action match {
             case FetchRequest =>
@@ -286,9 +301,9 @@ object AddressManagerC {
             case ActiveChanged(p) =>
               // Tricky...the only change here is outside our state, which is kind of
               // like a side effect, but not really. This queues a render.
-              p.fold{
-                vm.setActive(null,null)
-              }{
+              p.fold {
+                vm.setActive(null, null)
+              } {
                 case (i, a) => vm.setActive(i, a)
               }
               //p.map { case (id, address) => gen.effect(_ => vm.setActive(id, address)) }
@@ -297,14 +312,14 @@ object AddressManagerC {
             case Refresh =>
               // redux state is like this component's state, so...
               // we can change it here *not* as an effect
-              vm.setActive(null,null) // this forces a render to be queued via redux
+              vm.setActive(null, null) // this forces a render to be queued via redux
               // this forces a render as well
               gen.updateAndEffect(state.copy(addresses = emptyAddressList), eslf => {
                 fetchData(eslf, dao)
               })
             case _ => gen.skip
           }
-      }
+        }
 
       didMount = js.defined({ (self, gen) =>
         gen.effect(fetchData(_, dao))
@@ -312,27 +327,25 @@ object AddressManagerC {
 
       val render =
         self => {
-        val ifx = lastActiveAddressId.map{ id =>
-          self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
-        }
+          val ifx = lastActiveAddressId.map { id =>
+            self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
+          }
           println(s"AddressManager.render:initial focused index: ${ifx}")
           val selAddrOpt = toSafeOption(vm.active)
 
           div(new DivProps { className = cx(amstyles.component, className.getOrElse(null)) })(
             CommandBar(cbopts(self))(),
             div(new DivProps { className = amstyles.masterAndDetail.asString })(
-              AddressListC.make(self.state.selection,
-                                self.state.addresses,
-                                activecb(self),
-                                ifx),
+              AddressListC.make(self.state.selection, self.state.addresses, activecb(self), ifx),
               AddressDetailC.make(selAddrOpt),
             ),
-            div(new DivProps{ className = amstyles.footer.asString })(
+            div(new DivProps { className = amstyles.footer.asString })(
               AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
-              Label()("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
+              Label()(
+                "Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
             )
           )
-      }
+        }
     })
 
   /**
