@@ -85,11 +85,13 @@ import ttg.react.implicits._
 ## npm and js packages
 Based on the scala libraries you use, you will need to bundle the appropriate packages. All of the scala.js imports underneath in the interop layer convert to CJS `require` calls.
 
-* core: react, create-react-class
-* react-dom: react-dom
+* core: react (>=16.3+), create-react-class
+* react-dom: react-dom (>=16.3+)
 * prop-types: prop-types
 * vdom: no js dependencies
-* fabric: office-ui-fabric-react
+* fabric: office-ui-fabric-react (>= 5.58.0), merge-styles (>= 5.13.0)
 * redux: react-redux, redux
 
 Generally, if you include these in your package.json as runtime dependencies you should be all set. If you use `scalajs-bundler` you would need to add these to your build.sbt file.
+
+If you do not use fragments or the other latest features in react, you can use an earlier version.

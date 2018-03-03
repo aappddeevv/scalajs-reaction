@@ -130,7 +130,7 @@
         "moment": "^2.20.1",
         "monet": "^0.8.10",
         "normalizr": "^3.2.4",
-        "office-ui-fabric-react": "^5.41.2",
+        "office-ui-fabric-react": "^5.58.0",
         "prettyjson": "^1.2.1",
         "ramda": "^0.25.0",
         "randomcolor": "^0.5.3",

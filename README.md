@@ -47,7 +47,8 @@ libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
     
     // optionals
-    // Microsoft fabric UI components, "MS office", css-in-js
+    // Microsoft fabric UI components, "MS office", css-in-"scala"
+    // css-in-scala can be used independently of fabric
     "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
     // if you integrate with redux
     "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
@@ -64,7 +65,13 @@ the reactjs based modules, the javascript dependencies are:
 
 * core: react, create-react-class
 * react-dom: react-dom
-* prop-types: prop-types
+
+```sh
+npm i --save react create-react-class
+npm i --save react-dom
+```
+
+The latest react is recommended, v16.2+. If you wish to use the latest features such as the new context, use v16.3+.
 
 ### Create a Component
 You can quickly create a component and render it:
@@ -217,6 +224,12 @@ attributes for inline styling:
 ```scala
 val hstyle = new StyleAttr { display = "flex" }
 ```
+
+fabric's `merge-styles` is also provided in the fabric pacakge and you can use
+css-in-scala concepts to create your styles easily. See the ToDo example source
+code for a detailed example. It works nicely and is independent of fabric. Tree
+shaking should remove any fabric UI code if you only want to use `merge-styles`
+but not the UI part, and sill want a lean bundle.
 
 ### Redux
 Redux integration requires you to export your component then import it with

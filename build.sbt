@@ -198,7 +198,8 @@ lazy val docs = project
       // you need this if you use SiteScaladocPlugin so that the push uses gh-pages vs GitHub4s
       //micrositePushSiteWith := GHPagesPlugin
   )
-  //.settings(macroSettings)
+  .settings(unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(`scalajs-react-macros`))
+//.settings(macroSettings)
 
 addCommandAlias("fmt", ";scalafmt")
 

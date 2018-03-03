@@ -274,7 +274,7 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
   var constrainMode: js.UndefOr[Int]    = js.undefined
   var listProps: js.UndefOr[js.Dynamic] = js.undefined
   var getKey
-    : js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] =
+    : js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
   var initialFocusedIndex: js.UndefOr[Int]                                       = js.undefined
   var selection: js.UndefOr[ISelection[T]]                                       = js.undefined
@@ -425,7 +425,7 @@ object SelectionMode {
 
 trait ISelectionOptions[T <: js.Object] extends js.Object {
   var getKey
-    : js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] =
+    : js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
   var selectionMode: js.UndefOr[Int]                     = js.undefined
   var onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
