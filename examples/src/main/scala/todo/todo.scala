@@ -35,13 +35,13 @@ object ToDoStyling {
     var dataEntry: String = js.native
   }
 
-  def getClassNames() =
+  def getClassNames(randomArg: Int = 400) =
     FabricStyling.mergeStyleSets[ToDoClassNames](
       styleset(
         "root" -> new IRawStyle {
           selectors = selectorset(
             ":global(:root)" -> lit(
-              "--label-width" -> "400px",
+              "--label-width" -> s"${randomArg}px",
             ))
         },
         "todo" -> new IRawStyle {
@@ -62,6 +62,10 @@ object ToDoStyling {
           })
         }
       ))
+
+  // example of memoizing, you need a js.Function to use memoizeFunction
+  val memoized = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassNames))
+  val cn = memoized(500)
 }
 
 case class ToDo(id: Int, name: String)
@@ -76,7 +80,7 @@ object ToDoC {
 
   val ToDo = statelessComponent("ToDoItem")
   import ToDo.ops._
-  val cn = ToDoStyling.getClassNames()
+  import ToDoStyling._
   println(s"classnames\n${PrettyJson.render(cn)}")
 
   def make(todo: ToDo, remove: Unit => Unit) =
@@ -131,7 +135,7 @@ object ToDoListC {
 object ToDosC {
   var idCounter: Int = -1
   def mkId(): Int    = { idCounter = idCounter + 1; idCounter }
-  val cn             = ToDoStyling.getClassNames()
+  import ToDoStyling._
 
   case class State(
       todos: Seq[ToDo] = Seq(),

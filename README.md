@@ -196,14 +196,16 @@ There is no JSX support.
 
 ### Styling
 
-Styling can be performed different ways.
+Styling can be performed different ways. For a quick summary of different aspects of styling designs see this [blog](http://appddeevvmeanderings.blogspot.com/2017/08/web-app-styling-interlude-how-to.html).
 
 fabric's `merge-styles` is provided in the fabric package and you can use
 css-in-scala concepts to create your styles easily. See the ToDo example source
 code for a detailed example. It works nicely and is independent of fabric. Tree
 shaking should remove any fabric UI code if you only want to use `merge-styles`
 but not the UI part, and sill want a lean bundle. `merge-styles` creates
-stylesheets from scala code. Here's an example showing the use of CSS variables:
+stylesheets from scala code. Here's an example showing the use of CSS
+variables. `merge-styles` is a little like glamor (which we recommend as well)
+but is also a bit different in that it is explicit about "selectors".
 
 ```scala
   // Each key indicates an area of our component.
@@ -215,13 +217,13 @@ stylesheets from scala code. Here's an example showing the use of CSS variables:
     var dataEntry: String = js.native
   }
 
-  def getClassNames() =
+  def getClassNames(width: Int = 400) =
     FabricStyling.mergeStyleSets[ToDoClassNames](
       styleset(
         "root" -> new IRawStyle {
           selectors = selectorset(
             ":global(:root)" -> lit(
-              "--label-width" -> "400px",
+              "--label-width" -> s"${width}px",
             ))
          },
          "todo" -> new IRawStyle {
@@ -252,7 +254,13 @@ val props = new DivProps {
 }
 ```
 
-If you have dynamically calculated styles, its best to memoize the result so you do not incur the processing overhead on each component creation. The above was static so we just create it once.
+If you have dynamically calculated styles, its best to memoize the result so you do not incur the processing overhead on each component creation. The above was static so we just create it once. To memoize, use yours or fabric's memoize. Fabric's `memoize` needs a js function, so:
+
+```scala
+ // notice the fromFunction1 conversion from scala to js.Function, the "N" is for arity
+ val memoizedClassNames = fabric.UitilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassName))
+ val cn = memoized(500)
+```
 
 If you keep your CSS external and process it at build time, you can just import your style sheets and have them picked up by your bundler such as webpack:
 

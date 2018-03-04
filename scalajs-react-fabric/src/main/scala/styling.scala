@@ -129,7 +129,7 @@ object FabricStyling extends js.Object {
 @js.native
 @JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
 object UtilitiesNS extends js.Object {
-  def memoizeFunction(): Unit = js.native
+  def memoizeFunction[T <: js.Function](f: T): T = js.native
 }
 
 object InjectMode {
