@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (and 0.6.22, react v16.2+)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (& 0.6.22, react v16.2+)
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
@@ -39,7 +39,7 @@ Include the library in your build:
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "latest.version"
 //  or
-//val scalaJsReactVersion = "0.1.0-M1"
+//val scalaJsReactVersion = "0.1.0-M2"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(

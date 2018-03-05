@@ -10,6 +10,8 @@ If you run the demo from a web server, you can use redux devtools (a browser
 extension) to see the actions and state changes as with any redux-based
 application.
 
+All of the examples are a Work in Progress (WIP) so some of them do not display anything or crazy things. Other tabs are more polished.
+
 ## To Do
 Simple to do app. It uses all locally managed state using the scalajs-react
 reducer built into every component. The state is reset whenever you change tabs
@@ -70,3 +72,8 @@ Use api.openweather.org to obtain temperature forecasts. Only cities that are li
 
 ## Graph
 Show a graph of relationships. This does not show much "reducer" wise but does show that state can be large, complex and spread out to some degree.
+
+## Movies
+Using r16.4 alphas, demonstrate some of the asynchronous rendering that react can perform if your rendering method throws a "promise" that completes when your component is ready to be rendered.
+
+This is bleeding edge stuff from an early March 2018 conference where Dan previewed some of their changes based on their react "fiber" core.
