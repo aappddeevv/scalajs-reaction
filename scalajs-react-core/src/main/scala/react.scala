@@ -139,7 +139,7 @@ package object react {
   }
 
   /** Merge objects and Ts together. Good for merging props with data- attributes. */
-  @inline def merge[T <: js.Object](objs: T | js.Dynamic*): T = {
+  @inline def merge[T <: js.Object](objs: T | js.Dynamic *): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])

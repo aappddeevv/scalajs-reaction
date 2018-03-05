@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# Author: aappddeevv
+# name: stateless
+# key: stateless
+# --
+object ${1:enumerate} {
+  val c = ttg.react.elements.statelessComponent("$1")
+  import c.ops._
+
+  def make() =
+    c.copy(new methods {
+        val render = self => {
+        div("component $1")
+        }
+    })
+}

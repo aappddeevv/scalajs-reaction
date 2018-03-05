@@ -126,6 +126,16 @@ object Pages {
       TagTestC.make()
     )
   }
+
+  def movies() = {
+    PivotItem(new IPivotItemProps {
+      linkText = "Movies"
+      itemKey = "movies"
+      className = estyles.scrollme.asString
+    })(
+      movie.Movies.make()
+    )
+  }
 }
 
 import Pages._
@@ -154,6 +164,7 @@ object Examples {
             tagTest(),
             pressurePage,
             graphPage,
+            movies(),
           ),
           HeaderC.make("header", headerTarget)
       )

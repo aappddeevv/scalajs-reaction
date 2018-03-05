@@ -1,0 +1,24 @@
+# -*- mode: snippet -*-
+# Author: aappddeevv
+# name: reducer
+# key: reducer
+# --
+object ${1:enumerate} {
+  sealed trait ${2:enumerate}
+  case class ${3:enumerate}()
+  val c = ttg.react.elements.reducerComponent[$3, $2]("$1")
+  import c.ops._
+
+  def make() =
+    c.copy(new methods {
+       val initialState = self => State()
+       val reducer = (action, state, gen) => {
+          action match {
+            case _ => gen.skip
+          }
+       }
+       val render = self => {
+          div("component $1")
+       }
+    })
+}

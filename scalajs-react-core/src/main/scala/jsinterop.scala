@@ -32,6 +32,18 @@ private[react] trait JSReact extends js.Object {
   def createContext[T](
       defaultValue: T,
       calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
+
+  /** Experimental. */
+  val Loading: ReactClass = js.native
+
+  /** Experimental. */
+  val Timeout: ReactClass = js.native
+
+  /** Experimental. */
+  val unstable_AsyncMode: js.Any = js.native
+
+  /** Experimental. */
+  val StrictMode: ReactClass = js.native
 }
 
 @js.native
@@ -76,7 +88,7 @@ private[react] object reactCreateClass extends js.Object {
 /**
   * React's context object contains the consumer and provider "components".
   *
-  * @todo validate that current/default value are part of the public API.
+  * @todo Validate that current/default value are part of the public API.
   */
 @js.native
 trait ReactContext[T] extends js.Object {

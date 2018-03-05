@@ -257,9 +257,9 @@ val props = new DivProps {
 If you have dynamically calculated styles, its best to memoize the result so you do not incur the processing overhead on each component creation. The above was static so we just create it once. To memoize, use yours or fabric's memoize. Fabric's `memoize` needs a js function, so:
 
 ```scala
- // notice the fromFunction1 conversion from scala to js.Function, the "N" is for arity
- val memoizedClassNames = fabric.UitilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassName))
- val cn = memoized(500)
+// notice the fromFunction1 conversion from scala to js.Function, the "N" is for arity
+val memoizedClassNames = fabric.UitilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassName))
+val cn = memoized(500)
 ```
 
 If you keep your CSS external and process it at build time, you can just import your style sheets and have them picked up by your bundler such as webpack:

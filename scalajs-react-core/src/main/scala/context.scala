@@ -35,10 +35,13 @@ object context {
 
   /** `import context._` brings the syntax into scope. */
   implicit class ReactContextOps[T](ctx: ReactContext[T]) {
+
     def makeProvider(value: T)(children: ReactNode*) =
       context.makeProvider[T](ctx)(Some(value))(children: _*)
+
     def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children: _*)
-    def makeConsumer(f: js.Function1[T, ReactNode], key: Option[String] = None) =
-      context.makeConsumer[T](ctx)(f)
+
+    def makeConsumer(f: T => ReactNode, key: Option[String] = None) =
+      context.makeConsumer[T](ctx)(js.Any.toFunction1(f))
   }
 }

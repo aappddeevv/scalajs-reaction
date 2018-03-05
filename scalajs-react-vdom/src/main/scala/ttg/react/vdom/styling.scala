@@ -71,7 +71,7 @@ object styling {
 trait RawFontStyle extends js.Object {
   var font: js.UndefOr[String]           = js.undefined
   var fontFamily: js.UndefOr[String]     = js.undefined
-  var fontSize: js.UndefOr[String]       = js.undefined
+  var fontSize: js.UndefOr[String|Double]       = js.undefined
   var fontSizeAdjust: js.UndefOr[String] = js.undefined
   var fontStretch: js.UndefOr[String]    = js.undefined
   var fontStyle: js.UndefOr[String]      = js.undefined
@@ -137,7 +137,7 @@ trait RawStyleBase extends RawFontStyle {
   var emptyCells: js.UndefOr[String]           = js.undefined
   var float: js.UndefOr[String]                = js.undefined
 
-  var height: js.UndefOr[String | Int]      = js.undefined
+  var height: js.UndefOr[String | Double]      = js.undefined
   var left: js.UndefOr[String]              = js.undefined
   var letterSpacing: js.UndefOr[String]     = js.undefined
   var lineHeight: js.UndefOr[String]        = js.undefined
@@ -164,11 +164,11 @@ trait RawStyleBase extends RawFontStyle {
   var overflow: js.UndefOr[String]          = js.undefined
   var overflowX: js.UndefOr[String]         = js.undefined
   var overflowY: js.UndefOr[String]         = js.undefined
-  var padding: js.UndefOr[String]           = js.undefined
-  var paddingTop: js.UndefOr[String]        = js.undefined
-  var paddingRight: js.UndefOr[String]      = js.undefined
-  var paddingBottom: js.UndefOr[String]     = js.undefined
-  var paddingLeft: js.UndefOr[String]       = js.undefined
+  var padding: js.UndefOr[String|Double]           = js.undefined
+  var paddingTop: js.UndefOr[String|Double]        = js.undefined
+  var paddingRight: js.UndefOr[String|Double]      = js.undefined
+  var paddingBottom: js.UndefOr[String|Double]     = js.undefined
+  var paddingLeft: js.UndefOr[String|Double]       = js.undefined
   var page: js.UndefOr[String]              = js.undefined
   var pageBreakAfter: js.UndefOr[String]    = js.undefined
   var pageBreakBefore: js.UndefOr[String]   = js.undefined
@@ -204,7 +204,7 @@ trait RawStyleBase extends RawFontStyle {
   var volume: js.UndefOr[String]            = js.undefined
   var whiteSpace: js.UndefOr[String]        = js.undefined
   var widows: js.UndefOr[String]            = js.undefined
-  var width: js.UndefOr[String | Int]       = js.undefined
+  var width: js.UndefOr[String | Double]       = js.undefined
   var wordSpacing: js.UndefOr[String]       = js.undefined
   var zIndex: js.UndefOr[String]            = js.undefined
   /* Below properties based on https://www.w3.org/Style/CSS/all-properties */
@@ -365,7 +365,7 @@ trait RawStyleBase extends RawFontStyle {
   var gridRowGap: js.UndefOr[String]          = js.undefined
   var gridRowStart: js.UndefOr[String]        = js.undefined
   var gridTemplate: js.UndefOr[String]        = js.undefined
-  var gridTempalteAreas: js.UndefOr[String]   = js.undefined
+  var gridTemplateAreas: js.UndefOr[String]   = js.undefined
   var gridTemplateColumns: js.UndefOr[String] = js.undefined
   var gridTemplateRows: js.UndefOr[String]    = js.undefined
   /* Will Change Level 1 - CR */

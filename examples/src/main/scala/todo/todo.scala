@@ -68,13 +68,14 @@ object ToDoStyling {
   val cn = memoized(500)
 }
 
-case class ToDo(id: Int, name: String)
+case class ToDo(id: Int, name: String, added: js.Date = null)
 
 sealed trait ToDoAction
 case class Add(todo: ToDo)                     extends ToDoAction
 case class Remove(id: Int)                     extends ToDoAction
 case class InputChanged(input: Option[String]) extends ToDoAction
 case class SetTextFieldRef(ref: ITextField)    extends ToDoAction
+case class Complete(id: Int) extends ToDoAction
 
 object ToDoC {
 

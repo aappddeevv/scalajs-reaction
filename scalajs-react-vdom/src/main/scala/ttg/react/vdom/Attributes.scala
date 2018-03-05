@@ -179,13 +179,13 @@ trait tags {
   trait FormProps extends FormHTMLAttributes[dom.html.Form] with ClassAttributes[dom.html.Form]
   final lazy val form = tagt[FormProps]("form")
 
-  trait HeadingProps extends HTMLAttributes[dom.html.Heading]
-  final lazy val h1 = tagt[HeadingProps]("h1")
-  final lazy val h2 = tagt[HeadingProps]("h2")
-  final lazy val h3 = tagt[HeadingProps]("h2")
-  final lazy val h4 = tagt[HeadingProps]("h2")
-  final lazy val h5 = tagt[HeadingProps]("h2")
-  final lazy val h6 = tagt[HeadingProps]("h2")
+  trait HProps extends HTMLAttributes[dom.html.Heading]
+  final lazy val h1 = tagt[HProps]("h1")
+  final lazy val h2 = tagt[HProps]("h2")
+  final lazy val h3 = tagt[HProps]("h2")
+  final lazy val h4 = tagt[HProps]("h2")
+  final lazy val h5 = tagt[HProps]("h2")
+  final lazy val h6 = tagt[HProps]("h2")
 
   trait HeadProps extends HTMLAttributes[dom.html.Head] with ClassAttributes[dom.html.Head]
   final lazy val head = tagt[HeadProps]("head")
@@ -951,12 +951,12 @@ trait IframeHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 
 trait ImgHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var alt: js.UndefOr[String]          = js.undefined
-  var height: js.UndefOr[String | Int] = js.undefined
+  var height: js.UndefOr[String | Double | Int] = js.undefined
   var sizes: js.UndefOr[String]        = js.undefined
   var src: js.UndefOr[String]          = js.undefined
   var srcSet: js.UndefOr[String]       = js.undefined
   var useMap: js.UndefOr[String]       = js.undefined
-  var width: js.UndefOr[String | Int]  = js.undefined
+  var width: js.UndefOr[String | Double | Int]  = js.undefined
 }
 
 trait InputHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
