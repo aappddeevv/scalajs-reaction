@@ -22,7 +22,7 @@ class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
 
 /**
   * Create a tag that takes type non-native JS traits. This is a "factory" for
-  * tags.
+  * the standard html tags, which are typically lowercase.
   */
 class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) { self =>
 

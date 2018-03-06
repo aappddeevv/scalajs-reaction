@@ -49,6 +49,7 @@ object data {
       .flatMap { _.json().toFuture.map(_.asInstanceOf[Config]) }
 
   val config = RichSimpleCacheProvider(SimpleCacheProvider).createResource(fetchConfig())
+  //val config = SimpleCacheProvider.createResource(fetchConfig())
   
   def searchMovies(query:String) =
     Fetch

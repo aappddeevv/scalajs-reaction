@@ -80,12 +80,9 @@ object HelloWorldC {
   val HelloWorld = statelessComponent("HelloWorld")
   import HelloWorld.ops._
   def make(name: Option[String]) =
-    HelloWorld.copy(new methods {
-     val render = self => {
-        div(
-          "hello world" + name.map(" and welcome " + _).getOrElse("")
-        )
-      }})
+    render{ self =>
+        div("hello world" + name.map(" and welcome " + _).getOrElse(""))
+      }
 }
 
 object MyWebApp {
@@ -101,6 +98,16 @@ object MyWebApp {
 You can add a className to the div using: `div(new DivProps { className =
 "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
 ensure you only enter valid div props.
+
+The "render" method copies the internal proxy component and adds a callback from reactjs to scala. If you need to use other methods, you will need to use the full syntax as the render syntax is just a shortcut to:
+
+```scala
+    def make(name: Option[String]) =
+      HelloWorld.copy(new methods  {
+        val render = self => { ... }
+      })
+
+```
 
 ### Exporting a Component to Javascript
 

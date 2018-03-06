@@ -38,7 +38,10 @@ package object react {
     // ...add ref here...is it a string or a callback?
   }
 
-  /** An element that has been created via createElement. Props are optional of course. */
+  /** 
+   * A standard HTML element that has been created using React.createElement. 
+   * Props are optional of course. 
+   */
   @js.native
   trait ReactDOMElement extends ReactElement {
     def `type`: String = js.native
@@ -58,7 +61,9 @@ package object react {
   /**
     * A type used only to imported javascript side components. Typically this is
     * used to annotate a type imported from javascript or created via other
-    * js-interop mechanisms such as redux integration.
+    * js-interop mechanisms such as redux integration. By using a separate type
+    * not related to ReactNode, you must use scalajs-react's API to create an
+    * element.
     */
   @js.native
   trait ReactJsComponent extends js.Object
@@ -69,10 +74,13 @@ package object react {
   /** Return a "non render" element. */
   val nullElement = null.asInstanceOf[ReactNode]
 
+  /** Convenience. Use implicits for automatic conversion. */
   @inline def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
 
+  /** Convenience. Use implicits for automatic conversion. */
   @inline def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
 
+  /** Convenience. Use implicits for automatic conversion. */
   @inline def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
   /**
@@ -90,7 +98,7 @@ package object react {
     */
   type JsElementWrapped = (Option[String], Option[RefCb]) => ReactElement
 
-  /** Simplified ComponentSpec. */
+  /** Alias for ComponentSpec. */
   type Component = ComponentSpec
 
   /** Callback for react ref. Pure string refs are not supported. */

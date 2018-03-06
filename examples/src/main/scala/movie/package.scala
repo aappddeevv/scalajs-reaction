@@ -19,7 +19,8 @@ package object movie {
   //     </SimpleCache.Consumer>
   //   );
   // }
- 
+
+  // NOT PIMPING PROPERLY
   implicit class RichSimpleCacheProvider(c: SimpleCacheProvider.type) {
     def createResource[K, V](
       loadResource: K => Future[V]): Resource[K, V] =

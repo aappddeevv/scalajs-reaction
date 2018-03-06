@@ -133,7 +133,7 @@ object Pages {
       itemKey = "movies"
       className = estyles.scrollme.asString
     })(
-      movie.Movies.make()
+      movie.MoviesImpl.make()
     )
   }
 }

@@ -21,7 +21,7 @@ object elements {
   /** Mostly untyped React.createElement or replacements e.g. glamor's createElement. */
   //type NativeCreateElement = js.Function3[js.Any|String, js.UndefOr[Nothing], Seq[ReactNode], Unit]
 
-  /** Create a DOM element. */
+  /** Create a DOM element, which is always a string, lowercase. */
   def createDomElement(
       n: String,
       props: js.Object | js.Dynamic,
@@ -134,8 +134,6 @@ object elements {
       type S   = TheState
       type RP  = RetainedProps
       type A   = Action
-      type Ops = OpsLike
-      val ops = new OpsLike {}
       type ProxyType = ProxyLike
 
       class ProxyLike extends super.ProxyLike {

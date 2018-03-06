@@ -48,9 +48,7 @@ object Header {
   val header = statelessComponent("Header")
   import header.ops._
   def make() =
-    header.copy(new methods {
-      val render = self => "Movie Search"
-    })
+    render{ _ => "Movie Search" }
 }
 
 object PosterThumbnail {
@@ -58,14 +56,12 @@ object PosterThumbnail {
   import poster.ops._
 
   def make(src: String) =
-    poster.copy(new methods {
-      val render = self => {
+    render{ self =>
         TimeoutWithFallback.make(0)(
           "Loading",
           Image.make(src)
         )
-      }
-    })
+    }
 }
 
 object FullPoster {
@@ -73,8 +69,7 @@ object FullPoster {
   import poster.ops._
 
   def make(cache: Cache, movie: Movie) =
-    poster.copy(new methods {
-      val render = self => {
+    render{ self => 
         val path = Option(movie.poster_path)
         if(path.isEmpty) null
         else {
@@ -87,7 +82,6 @@ object FullPoster {
           val src = s"$baseURL/$size/${movie.poster_path}"
           Timeout.make(2000){ _ => Image.make(src, Some(new ImgProps{ width = w}))}
         }}
-    })
 }
 
 object Results {
@@ -95,16 +89,14 @@ object Results {
   import results.ops._
 
   def make(cache: Cache, query: Option[String], onActiveResultUpdate: Unit, activeResult: Option[Movie]=None) =
-    results.copy(new methods {
-      val render = self => {
-        if(query.isEmpty) "Search for something"
+    render{ self =>
         val results = data.movieSearchResults.read(cache, query.getOrElse[String]("")).results
+        if(query.isEmpty) "Search for something"
         else {
           results.take(5).map(m =>
-            div(new DivProps{ })(Result.make(cache, result=r, isActive=true)))
+            div(new DivProps{ key = m.id })(Result.make(cache, m, true)))
         }
-      }
-    })
+    }
 }
 
 object Result {
@@ -112,8 +104,7 @@ object Result {
   import result.ops._
 
   def make(cache: Cache, result: Movie, isActive: Boolean) =
-    result.copy(new methods {
-      val render = self => {
+    render { self =>
         val config = data.config.read(cache, ())
         val size = config.images.poster_sizes(0)
         val baseURL =
@@ -128,7 +119,6 @@ object Result {
             h2(new HProps{className = cn.header})(result.title)
           ))
       }
-    })
 
   @js.native
   private trait ResultClassNames extends js.Object {
@@ -175,15 +165,13 @@ object Search {
   import search.ops._
 
   def make(query: Option[String] = None, onQueryUpdate: Option[String] => Unit) =
-    search.copy(new methods {
-      val render = self => {
+    render{ self =>
         input(new InputProps {
           // wrap in Option to help detect nulls
-          onChange = js.defined(e => onQueryUpdate(Option(e.target.value)))
+          onChange = js.defined(e => onQueryUpdate(toSafeOption(e.target.value)))
           value = query.getOrElse[String]("")
         })()
       }
-    })
 }
 
 object MovieInfo {
@@ -191,8 +179,7 @@ object MovieInfo {
   import info.ops._
 
   def make(cache: Cache, movie: Movie) =
-    info.copy(new methods {
-      val render = self => {
+    render{ self => 
         val fullResult = data.movie.read(cache, movie.id)
         fragmentElement()(
           FullPoster.make(cache, movie),
@@ -200,7 +187,6 @@ object MovieInfo {
           div(movie.overview)
         )
       }
-    })
 }
 
 object Details {
@@ -208,14 +194,12 @@ object Details {
   import details.ops._
 
   def make(cache: Cache, result: Movie) =
-    details.copy(new methods {
-      val render = self => {
+    render{ self => 
         fragmentElement()(
           div(button("Back")),
            MovieInfo.make(cache, result)
         )
       }
-    })
 }
 
 object MasterDetail {
@@ -224,8 +208,7 @@ object MasterDetail {
 
   def make(header: ReactNode, search: ReactNode, results: ReactNode,
     details: ReactNode, showDetails: Boolean) =
-    c.copy(new methods {
-      val render = self => {
+    render{ self => 
         val cn = getClassNames(showDetails)
         div(new DivProps{className = cn.root})(
           div(header),
@@ -235,7 +218,6 @@ object MasterDetail {
             div(new DivProps{className = cn.details})(details)
           ))
       }
-    })
 
   @js.native
   private trait MasterDetailClassNames extends js.Object {
@@ -285,7 +267,7 @@ results details"""
 
 }
 
-object Movies {
+object MoviesImpl {
   sealed trait Action
   case class UpdateQuery(query: Option[String] = None) extends Action
   case class ActiveResult(activeResult: Option[Movie] = None) extends Action

@@ -21,9 +21,9 @@ trait ErrorInfo extends js.Object {
 }
 
 /**
-  * Basic component.  Only includes the parts of a component not dependent on
-  * specific types. A component is just a javascript object with some callback
-  * fields on it.
+  * Basic scala component.  It only includes the parts of a component not
+  * dependent on specific types. A scala component is a javascript object with
+  * some callback "fields" that the reactjs methods call.
   */
 trait ComponentSpec extends js.Object {
   var debugName: String
@@ -136,16 +136,21 @@ trait CakeBase { cake =>
   }
 
   /**
-    * Helpers exposed when the client imports them via `import myCmponent.ops._`.
+    * Helpers exposed when the client imports them via `import myComponent.ops._`.
     */
   val ops: Ops
 
   type Ops <: OpsLike
   trait OpsLike {
     type Self = cake.Self
+    type SelfForUnmount = cake.SelfForUnmount
+    type ComponentType = cake.ComponentType
 
     /** Use this as `myComponent.copy(new methods { ... })`. */
     type methods = cake.WithMethods
+
+    /** Alias for this component cake's `copy()` method. */
+    def copyWith(newMethods: methods) = cake.copy(newMethods)
   }
 
   /**
@@ -394,7 +399,7 @@ trait CakeWithRP extends CakeBase { cake =>
   }
   type Ops <: OpsLike
   trait OpsLike extends super.OpsLike {
-    type RP = cake.RP
+    type RetainedProps = cake.RP
   }
 }
 
@@ -446,8 +451,12 @@ trait CakeWithState extends CakeBase { cake =>
 
   type Ops <: OpsLike
   trait OpsLike extends super.OpsLike {
+    /** State type S. Kept as S to avoid clash with common name "State" */
     type S = cake.S
+    /** Action type A. Kept as A to avoid clash with common name "Action" */
     type A = cake.A
+
+    type SelfForInitialState = cake.SelfForInitialState
   }
 
   /** The "self" used for the initial state used for the initialState API. */
@@ -701,18 +710,31 @@ trait CakeWithState extends CakeBase { cake =>
   }
 }
 
-/** A ComponentCake that only requires a render method. */
+/** 
+ * A ComponentCake that only requires a render method. To reduce boilerplate
+ * after importing ops, just use `[ops.]render(self => { ... })` in your make
+ * function *if* you only have a render method.
+ */
 trait StatelessComponentCake extends CakeBase { cake =>
 
   /** No RP, no S, no A. You do get a handle(). */
-  type Self            = super.SelfLike
+  type Self            = SelfLike
   type SelfForUnmount  = Self
-  protected type State = super.StateLike
-  type ProxyType       = super.ProxyLike
-  type ComponentType   = super.ComponentLike
-  type WithMethods     = super.WithMethodsLike
-  type Ops             = super.OpsLike
-  val ops = new super.OpsLike {}
+  protected type State = StateLike
+  type ProxyType       = ProxyLike
+  type ComponentType   = ComponentLike
+  type WithMethods     = WithMethodsLike
+  type Ops             = MyOpsLike
+
+  trait MyOpsLike extends super.OpsLike {
+    def render(f: Self => ReactNode) =
+      cake.copy(new WithMethods {
+        val render = f
+      })
+  }
+
+  val ops = new MyOpsLike {}
+  //val ops = new Ops {}
 
   def mkSelf(
       thisJs: ThisSelf,
@@ -735,17 +757,17 @@ trait StatelessComponentCake extends CakeBase { cake =>
 trait StatelessComponentWithRetainedPropsCake extends CakeWithRP { cake =>
 
   /** No S, A. You do get a handle. */
-  type Self            = super.SelfLike
-  type SelfForUnmount  = super.SelfForUnmountLike
-  protected type State = super.StateLike
+  type Self            = SelfLike
+  type SelfForUnmount  = SelfForUnmountLike
+  protected type State = StateLike
   type ComponentType   = ComponentLike
-  type ProxyType       = super.ProxyLike
-  type WithMethods     = super.WithMethodsLike
-  type Ops             = super.OpsLike
+  type ProxyType       = ProxyLike
+  type WithMethods     = WithMethodsLike
+  type Ops             = OpsLike
   val ops = new Ops {}
 
   def mkSelf(thisJs: ThisSelf, reactjsState: State, component: ComponentType, displayName: String) =
-    new super.SelfLike {
+    new Self {
       val retainedProps =
         component.retainedProps.getOrElse(
           throw new Exception(
@@ -758,7 +780,7 @@ trait StatelessComponentWithRetainedPropsCake extends CakeWithRP { cake =>
       reactjsState: State,
       component: ComponentType,
       displayName: String): SelfForUnmount =
-    new super.SelfForUnmount {
+    new SelfForUnmount {
       val retainedProps =
         component.retainedProps.getOrElse(
           throw new Exception(
@@ -769,16 +791,16 @@ trait StatelessComponentWithRetainedPropsCake extends CakeWithRP { cake =>
 }
 
 trait ReducerComponentCake extends CakeWithState { cake =>
-  type Self                = super.SelfLike
-  type SelfForUnmount      = super.SelfForUnmountLike
-  type SelfForInitialState = super.SelfForInitialStateLike
-  protected type State     = super.StateLike
-  type ComponentType       = super.ComponentLike
-  type ProxyType           = super.ProxyLike
-  type WithMethods         = super.WithMethodsLike
+  type Self                = SelfLike
+  type SelfForUnmount      = SelfForUnmountLike
+  type SelfForInitialState = SelfForInitialStateLike
+  protected type State     = StateLike
+  type ComponentType       = ComponentLike
+  type ProxyType           = ProxyLike
+  type WithMethods         = WithMethodsLike
   type Ops                 = OpsLike
   trait OpsLike extends super.OpsLike
-  val ops = new OpsLike {}
+  val ops = new Ops {}
 
   /**
     * Helper to make reactjs this.state if this is all that there is. Subtraits
@@ -830,9 +852,11 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
   type Self                = SelfLike
   type SelfForUnmount      = SelfForUnmountLike
   type SelfForInitialState = SelfForInitialStateLike
-  protected type State     = super.StateLike
-  type Ops <: OpsLike
+  protected type State     = StateLike
+  type Ops = OpsLike
   trait OpsLike extends super[CakeWithRP].OpsLike with super[CakeWithState].OpsLike
+
+  val ops = new Ops {}
 
   trait SelfLike extends super[CakeWithRP].SelfLike with super[CakeWithState].SelfLike
   trait SelfForUnmountLike
