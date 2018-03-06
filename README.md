@@ -99,15 +99,20 @@ You can add a className to the div using: `div(new DivProps { className =
 "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
 ensure you only enter valid div props.
 
-The "render" method copies the internal proxy component and adds a callback from reactjs to scala. If you need to use other methods, you will need to use the full syntax as the render syntax is just a shortcut to:
+The "render" method copies the internal proxy component and adds a callback from reactjs to scala. If you need to use other methods, use the full syntax as the render syntax is just a shortcut to:
 
 ```scala
     def make(name: Option[String]) =
       HelloWorld.copy(new methods  {
         val render = self => { ... }
+        didMount = js.defined{ oldNewSelf => 
+            ... 
+        } 
       })
 
 ```
+
+The `val` is required on required methods, you must define it. Other methods are optional are defined as show immediately above.
 
 ### Exporting a Component to Javascript
 
@@ -127,13 +132,13 @@ object HelloWorld {
   private val exported =
     HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
 ```
-You can also define your own "make" API to be whatever suits you:
+You can define your own "make" API to be whatever suits you:
 ```scala
   // Alternative scala `make` definition, render must convert to scala objects if needed
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps = noProps()) =
     HelloWorld
-      .withRender{ self =>
+      .render{ self =>
         div(
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )
