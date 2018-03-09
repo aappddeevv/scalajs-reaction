@@ -149,7 +149,7 @@ trait CakeBase { cake =>
     /** Use this as `myComponent.copy(new methods { ... })`. */
     type methods = cake.WithMethods
 
-    /** Alias for this component cake's `copy()` method. */
+    /** Alias for this component cake's `copy()` method but without the need for the val anchor. */
     def copyWith(newMethods: methods) = cake.copy(newMethods)
   }
 
@@ -269,7 +269,9 @@ trait CakeBase { cake =>
       case Some(dc) =>
         val self = mkSelf(thisJs, thisJs.state, component)
         dc(self, error, errorInfo)
-      case _ => // do nothing
+      case _ => // pass through?, should we throw as scala or js?
+        // we rewrap it so js or scala can catch it
+        throw new js.JavaScriptException(error)
     }
   }
 
@@ -360,6 +362,7 @@ trait CakeBase { cake =>
     // Use null to avoid allocation. Thes are the "unsubscribe" part of the subscriptions.
     override val componentWillUnmount =
       js.defined(_componentWillUnmount(subscriptions.getOrElse(Seq()), displayName))
+    // REMOVE TO ALLOW PROMISE PASS THROUGH UNHINDERED FOR THE MOMENTE?!?!?!
     override val componentDidCatch   = js.defined(_componentDidCatch(displayName))
     override val render              = _render(displayName)
     override val componentWillUpdate = js.defined(_componentWillUpdate(displayName))
@@ -727,6 +730,11 @@ trait StatelessComponentCake extends CakeBase { cake =>
   type Ops             = MyOpsLike
 
   trait MyOpsLike extends super.OpsLike {
+    /** 
+     * Without the need for a val anchor, add the render method. If you need to
+     * add other methods, more than just render, you need to use the long-form
+     * syntax.
+     */
     def render(f: Self => ReactNode) =
       cake.copy(new WithMethods {
         val render = f
@@ -734,7 +742,6 @@ trait StatelessComponentCake extends CakeBase { cake =>
   }
 
   val ops = new MyOpsLike {}
-  //val ops = new Ops {}
 
   def mkSelf(
       thisJs: ThisSelf,

@@ -98,8 +98,7 @@ object DailyWeatherSummary {
   val labelProps = new ILabelProps {}
 
   def make(summary: Daily) =
-    c.copy(new methods {
-      val render = _ => {
+    render{ self => 
         val cond = summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
         val props = new ReactWeatherDisplayProps {
           temperature = summary.temp
@@ -117,7 +116,6 @@ object DailyWeatherSummary {
           ReactWeatherDisplay.make(props)
         )
       }
-    })
 }
 
 object app {

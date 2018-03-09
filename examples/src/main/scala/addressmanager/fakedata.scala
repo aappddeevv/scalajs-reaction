@@ -47,7 +47,7 @@ object fakedata {
     def active: Address = _active
   }
 
-  val defaultAddresses = generateAddresses(50)
+  val defaultAddresses = generateAddresses(500)
 
   def generateAddresses(n: Int) = (1 to n).map(i => generateRandom(i.toString())).toJSArray
 

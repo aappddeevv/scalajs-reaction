@@ -87,7 +87,7 @@ object components {
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
   def ScrollablePane(props: IScrollablePane = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.ScrollablePane, props, children: _*)
-  def Sticky(props: IScrollablePane = null)(children: ReactNode*) =
+  def Sticky(props: IStickyProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Sticky, props, children: _*)
   def List[T <: js.Object](props: IListProps[T] = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.List, props, children: _*)
@@ -272,7 +272,7 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
   var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
     js.undefined
   var constrainMode: js.UndefOr[Int]    = js.undefined
-  var listProps: js.UndefOr[js.Dynamic] = js.undefined
+  var listProps: js.UndefOr[js.Dynamic] = js.undefined // should be IListProps but then items is required
   var getKey
     : js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
@@ -296,6 +296,10 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
   type OCHC =
     js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
   var onColumnHeaderClick: js.UndefOr[OCHC] = js.undefined
+
+  var renderedWindowsAhead: js.UndefOr[Int] = js.undefined
+  var renderedWindowsBehind: js.UndefOr[Int] = js.undefined
+  var onShouldVirtualize: js.UndefOr[js.Function1[IListProps[T], Boolean]] = js.undefined
 }
 
 trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[IDetailsList] {
@@ -342,7 +346,9 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
   var compact: js.UndefOr[Boolean]                    = js.undefined
   var checkboxCellClassName: js.UndefOr[String]       = js.undefined
   var enterModelSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
+
   var usePageCache: js.UndefOr[Boolean]               = js.undefined
+  var renderCount: js.UndefOr[Int] = js.undefined
 }
 
 trait IContextualMenuProps extends KeyAndRef {

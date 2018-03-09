@@ -12,24 +12,13 @@ import concurrent.ExecutionContext.Implicits.global
 
 package object movie {
 
-  //  export default function withCache(Component) {
-  //   return props => (
-  //     <SimpleCache.Consumer>
-  //       {cache => <Component cache={cache} {...props} />}
-  //     </SimpleCache.Consumer>
-  //   );
-  // }
+  def createResource[K, V](loadResource: K => Future[V]): Resource[K, V] =
+    SimpleCacheProvider.createResource((k: K) => loadResource(k).toJSPromise, js.undefined)
 
-  // NOT PIMPING PROPERLY
-  implicit class RichSimpleCacheProvider(c: SimpleCacheProvider.type) {
-    def createResource[K, V](
-      loadResource: K => Future[V]): Resource[K, V] =
-      c.createResource((k: K) => loadResource(k).toJSPromise, js.undefined)
-
-    def createResource[V](
-      loadResource: => Future[V]): Resource[js.UndefOr[Unit], V] =
-      c.createResource((k: js.UndefOr[Unit]) => loadResource.toJSPromise, js.undefined)
+  def cleanQueryString(v: String): String = {
+    v.trim()
   }
 
+  val configKey = "__config__"
 }
 

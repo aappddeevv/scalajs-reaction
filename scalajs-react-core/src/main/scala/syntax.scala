@@ -36,11 +36,15 @@ final case class JsObjectOps(o: js.Object) {
   @inline def asDict[A] = o.asInstanceOf[js.Dictionary[A]]
   @inline def asAnyDict = o.asInstanceOf[js.Dictionary[js.Any]]
   @inline def asDyn     = o.asInstanceOf[js.Dynamic]
+  @inline def add(that: js.Object) = merge(o, that)
+  @inline def add(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
 }
 
 final case class JsDictionaryOps(o: js.Dictionary[_]) {
   @inline def asJsObj = o.asInstanceOf[js.Object]
   @inline def asDyn   = o.asInstanceOf[js.Dynamic]
+  @inline def add(that: js.Dictionary[_]) =
+    merge(o.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dictionary[_]]
 }
 
 trait JsObjectSyntax {
@@ -88,6 +92,9 @@ final case class JsDynamicOps(val jsdyn: js.Dynamic) {
   def asOption[T <: js.Object]: Option[T] =
     if (js.DynamicImplicits.truthValue(jsdyn)) Some(jsdyn.asInstanceOf[T])
     else None
+
+  @inline def add(that: js.Dynamic) = mergeJSObjects(jsdyn, that)
+  //@inline def add(that: js.Object) = merge(jsdyn, that).asInstanceOf[js.Dynamic]
 }
 
 trait JsDynamicSyntax {

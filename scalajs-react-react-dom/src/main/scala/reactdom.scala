@@ -7,14 +7,17 @@ package react
 
 import scala.scalajs.js
 import js.annotation._
-import js.|
-import js._
-import js.Dynamic.{literal => lit}
+import js.JSConverters._
 
 import org.scalajs.dom
 
 trait CreateRootOptions extends js.Object {
   var hydrate: js.UndefOr[Boolean] = js.undefined
+}
+
+@js.native
+trait Root extends js.Object {
+  def render(el: ReactNode): Unit = js.native
 }
 
 @js.native
@@ -26,7 +29,7 @@ trait JSReactDOM extends js.Object {
   def unstable_deferredUpdates(f: js.Function0[Unit]): Unit = js.native
 
   /** 16.3 */
-  def createRoot(target: dom.Element, options: js.UndefOr[CreateRootOptions]): js.Function1[ReactNode, Unit] = js.native
+  def createRoot(target: dom.Element, options: js.UndefOr[CreateRootOptions]): Root = js.native
 }
 
 @js.native
@@ -34,6 +37,17 @@ trait JSReactDOM extends js.Object {
 object JSReactDOM extends JSReactDOM
 
 object reactdom {
+
+  /** 16.3 */
+  def createAndRenderWithId(el: ReactNode, id: String, opts: Option[CreateRootOptions] = None) = {
+    val target = Option(dom.document.getElementById(id))
+    target.fold(
+      throw new Exception(s"createAndRenderWithId: No element with id $id found in the HTML."))(
+      htmlel => {
+        val root = JSReactDOM.createRoot(htmlel, opts.orUndefined)
+        root.render(el)
+      })
+  }
 
   /** Render into the DOM given an element id. */
   def renderToElementWithId(el: ReactNode, id: String) = {
@@ -53,8 +67,9 @@ object reactdom {
   }
 
   /** Experimental API. */
-  def unstable_deferredUpdates(f: () => Unit): Unit = {
-    JSReactDOM.unstable_deferredUpdates(js.Any.fromFunction0(f))
+  @JSName("unstable_deferredUpdates")
+  def deferredUpdates(cb: () => Unit): Unit = {
+    JSReactDOM.unstable_deferredUpdates(js.Any.fromFunction0(cb))
   }
 
 }

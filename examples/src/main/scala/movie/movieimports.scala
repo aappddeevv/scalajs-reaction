@@ -26,20 +26,23 @@ trait Cache extends js.Object {
                      missArg: A): Unit = js.native
 }
 
+/** Next version will have a read func vs is a read func. */
 @js.native
-trait Resource[K, V] extends js.Object {
-  def read(cache: Cache, key: K): V = js.native
+trait Resource[K, V] extends js.Function2[Cache, K, V] {
   def preload(cache: Cache, key: K): Unit = js.native
 }
 
 @js.native
-@JSImport("simple-cache-provider", JSImport.Default)
+//@JSImport("Assets/simple-cache-provider.development", JSImport.Namespace)
+@JSImport("simple-cache-provider", JSImport.Namespace)
 object SimpleCacheProvider extends js.Object {
 
   def createCache(invalidator: js.Function0[js.Any|Unit]): Cache = js.native
 
-  def createResource[K, V, H <: (String|Number|Boolean)](
-    loadResource: js.Function1[K, js.Promise[V]],
+  /** Your loadResource must take a key to index into the future result. */
+  def createResource[K, V, H <: String](
+  //def createResource[K, V, H <: (String|Number|Boolean)](
+    loadResource: js.Function1[K, js.Thenable[V]],
     hash: js.UndefOr[js.Function1[K, H]]
   ): Resource[K, V] = js.native
 

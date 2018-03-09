@@ -220,7 +220,9 @@ trait tags {
     def withType(`type`: String) =
       new TagT[InputProps]("input", lit("type" -> `type`).asInstanceOf[InputProps])
 
+    /** Not supported? */
     lazy val button        = this withType "button"
+    /** Not supported? */
     lazy val checkbox      = this withType "checkbox"
     lazy val color         = this withType "color"
     lazy val date          = this withType "date"
@@ -228,15 +230,20 @@ trait tags {
     lazy val datetimeLocal = this withType "datetime-local"
     lazy val email         = this withType "email"
     lazy val file          = this withType "file"
+    /** Not supported? */
     lazy val hidden        = this withType "hidden"
+    /** Not supported? */
     lazy val image         = this withType "image"
     lazy val month         = this withType "month"
     lazy val number        = this withType "number"
     lazy val password      = this withType "password"
+    /** Not supported? */
     lazy val radio         = this withType "radio"
     lazy val range         = this withType "range"
+    /** Not supported? */
     lazy val reset         = this withType "reset"
     lazy val search        = this withType "search"
+    /** Not supported? */
     lazy val submit        = this withType "submit"
     lazy val tel           = this withType "tel"
     lazy val text          = this withType "text"

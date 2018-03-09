@@ -14,7 +14,6 @@ import js.Dynamic.{literal => lit}
 import org.scalajs.dom
 import ttg.react._
 import ttg.react.elements._
-import ttg.react.reactdom._
 import ttg.react.implicits._
 import ttg.react.redux
 import vdom._
@@ -131,7 +130,7 @@ object Pages {
     PivotItem(new IPivotItemProps {
       linkText = "Movies"
       itemKey = "movies"
-      className = estyles.scrollme.asString
+      //className = estyles.scrollme.asString
     })(
       movie.MoviesImpl.make()
     )
@@ -153,20 +152,20 @@ object Examples {
         gen.skip
       }
       val render = self =>
-        fragmentElement()(
-          Pivot()(
-            readme(examples.readmetext),
-            addressPage(addressDAO),
-            todoPage,
-            helloWorldPage,
-            changeReduxStatePage(),
-            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
-            tagTest(),
-            pressurePage,
-            graphPage,
-            movies(),
-          ),
-          HeaderC.make("header", headerTarget)
+      fragmentElement()(
+        Pivot()(
+          readme(examples.readmetext),
+          addressPage(addressDAO),
+          todoPage,
+          helloWorldPage,
+          changeReduxStatePage(),
+          labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
+          tagTest(),
+          pressurePage,
+          graphPage,
+          movies(),
+        ),
+        HeaderC.make("header", headerTarget)
       )
     })
 }
@@ -185,11 +184,11 @@ object Main {
   val container       = "container"
 
   /**
-    * This will be exported from the ES module that scala.js outputs.  How you
-    *  access it depends on your bundler. webpack can be configured to output a
-    *  "library", say named, "Scala" so you would call this function as
-    *  `Scala.App()`.
-    */
+   * This will be exported from the ES module that scala.js outputs.  How you
+   *  access it depends on your bundler. webpack can be configured to output a
+   *  "library", say named, "Scala" so you would call this function as
+   *  `Scala.App()`.
+   */
   @JSExportTopLevel("App")
   def App(): Unit = {
     println("Running examples app")
@@ -202,15 +201,19 @@ object Main {
     // init message for store, although it does not do anything :-)
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
-    renderToElementWithId(
-      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
-        store = StoreNS.store
-      })(
-        Fabric(new IFabricProps {
-          className = estyles.toplevel.asString
+
+    reactdom.createAndRenderWithId(
+      TimeoutWithFallback.make(2000)(
+        "Examples What?",
+        React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
+          store = StoreNS.store
         })(
-          logContext.makeProvider(ExamplesApp.make())
-        )),
+          Fabric(new IFabricProps {
+            className = estyles.toplevel.asString
+          })(
+            logContext.makeProvider(ExamplesApp.make())
+          ))
+      ),
       "container"
     )
   }

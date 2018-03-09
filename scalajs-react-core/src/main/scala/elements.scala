@@ -22,7 +22,7 @@ object elements {
   //type NativeCreateElement = js.Function3[js.Any|String, js.UndefOr[Nothing], Seq[ReactNode], Unit]
 
   /** Create a DOM element, which is always a string, lowercase. */
-  def createDomElement(
+  def createDOMElement(
       n: String,
       props: js.Object | js.Dynamic,
       children: ReactElement*): ReactDOMElement = {

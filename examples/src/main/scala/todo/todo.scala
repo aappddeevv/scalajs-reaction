@@ -85,8 +85,7 @@ object ToDoC {
   println(s"classnames\n${PrettyJson.render(cn)}")
 
   def make(todo: ToDo, remove: Unit => Unit) =
-    ToDo.copy(new methods {
-      val render = self => {
+    render{ self =>
         div(new DivProps { className = cn.todo })(
           Label(new ILabelProps {
             className = cn.title
@@ -99,7 +98,6 @@ object ToDoC {
           })()
         )
       }
-    })
 }
 
 object ToDoListHeader {
@@ -107,13 +105,7 @@ object ToDoListHeader {
   import ToDoListHeader.ops._
 
   def make(length: Int) =
-    ToDoListHeader.copy(new methods {
-      val render = self => {
-        div(
-          Label()(s"# To Dos - ${length}")
-        )
-      }
-    })
+    render{ self =>  div(Label()(s"# To Dos - ${length}")) }
 }
 
 object ToDoListC {

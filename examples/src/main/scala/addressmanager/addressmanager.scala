@@ -108,14 +108,16 @@ object AddressListC {
             layoutMode = DetailsListLayoutMode.fixedColumns
             constrainMode = ConstrainMode.unconstrained
             onRenderDetailsHeader = js.defined { (props, defaultRender) =>
-              Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
+              Sticky(new IStickyProps { stickyPosition = 1 } )(defaultRender.fold[ReactNode]("...render me...")(_(props)))
             }
+            onShouldVirtualize = js.defined(_ => false)
           }
-          // add data-is-scrollable
           div.merge(lit("data-is-scrollable" -> true))(new DivProps {
             className = amstyles.master.asString
           })(
             ScrollablePane()(
+              Sticky(new IStickyProps { stickyPosition = 1 })("sticky header1"),
+              Sticky(new IStickyProps { stickyPosition = 1 } )("sticky header2"),
               DetailsList[Address](listopts)()
             )
           )
@@ -217,7 +219,7 @@ object AddressManagerC {
     self.send(FetchRequest)
     dao
       .fetch("no id")
-      .then[Unit] { addresses =>
+      .`then`[Unit] { addresses =>
         self.send(FetchResult(Right(addresses)))
       }
   }

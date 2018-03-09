@@ -20,18 +20,20 @@ package object react {
   trait ReactRef extends js.Object
 
   /**
-    * Something that can be rendered in reactjs. We need to restrict this a bit
-    * more when returning values from the scala side API. reactjs allows this to
-    * be quity flexible including strings, numbers, booleans in additon to
-    * classes, functions, etc. This should probably be a js.Any as any API
-    * used in this library will ensure that the right types are used and
-    * this would get rid of the ugly `stringToElement` type functions below.
-    * js.Object is technically not correct.
+    * Output from createElement and something that can be rendered in
+    * reactjs. We need to restrict this a bit more when returning values from
+    * the scala side API. reactjs allows this to be quity flexible including
+    * strings, numbers, booleans in additon to classes, functions, etc. This
+    * should probably be a js.Any as any API used in this library will ensure
+    * that the right types are used and this would get rid of the ugly
+    * `stringToElement` type functions below.  js.Object is technically not
+    * correct.
     */
   @js.native
   trait ReactNode extends js.Object
 
-  /** Something you can render reactjs wth key and ref accessors. */
+  /** Output from createElement and something you can render reactjs wth key and ref
+    * accessors. */
   @js.native
   trait ReactElement extends js.Object with ReactNode {
     val key: UndefOr[String]
@@ -39,8 +41,10 @@ package object react {
   }
 
   /** 
-   * A standard HTML element that has been created using React.createElement. 
-   * Props are optional of course. 
+   * Something to be used in createElement. A standard HTML element that has
+   * been created using React.createElement.  Props are optional of course.  We
+   * use this tag it to show that it came from the standard DOM components vs a
+   * custom one.
    */
   @js.native
   trait ReactDOMElement extends ReactElement {
@@ -51,19 +55,25 @@ package object react {
   }
 
   /**
-    * A js-object that is returned from create-react-class. Represents class
-    * component that can be passed to the javascript React.createElement
-    * function.
+    * Something to be used in createElement. A js-object that is returned from
+    * create-react-class. Represents class component that can be passed to the
+    * javascript React.createElement function.
     */
   @js.native
   trait ReactClass extends js.Object
 
+  /** Something that can be used in createElement. Need to add js.Function that
+   * returns a ReadNode.
+   */
+  type ReactType = ReactClass | String
+
   /**
-    * A type used only to imported javascript side components. Typically this is
-    * used to annotate a type imported from javascript or created via other
-    * js-interop mechanisms such as redux integration. By using a separate type
-    * not related to ReactNode, you must use scalajs-react's API to create an
-    * element.
+    * Something to be used in some jsinterop functions that are the equivalent
+    * of createElement. A type used only to imported javascript side
+    * components. Typically this is used to annotate a component type imported
+    * from javascript or created via other js-interop mechanisms such as redux
+    * integration. By using a separate type, you must use then scalajs-react's
+    * API to create an element.
     */
   @js.native
   trait ReactJsComponent extends js.Object

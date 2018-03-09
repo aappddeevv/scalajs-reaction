@@ -5,26 +5,28 @@
 package ttg
 package react
 package examples
+// not in movie package!
 
 import scala.scalajs.js
 import js.Dynamic.{literal => lit}
 
 import elements._
 
-// object Loading {
-//   def make(key: Option[String] = None)(renderPropsChild: js.Function[Boolean, ReactNode]) = {
-//     val props = js.Dictionary.empty[js.Any]
-//     key.foreach(props("key") = _)
-//     React.createElement(JSReact.Loading, props, js.Any.fromFunction1(renderPropsChild))
-//   }
-// }
+object Loading {
+  def make(key: Option[String] = None)(isLoading: Boolean => ReactNode) = {
+    val props = js.Dictionary.empty[js.Any]
+    key.foreach(props("key") = _)
+    JSReact.createElement(JSReact.Loading, props,
+      js.Any.fromFunction1(isLoading).asInstanceOf[ReactNode])
+  }
+}
 
 object Timeout {
   def make(ms: Long, key: Option[String] = None)(
     renderPropsChild: Boolean => ReactNode) = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
-    props("ms") = ms
+    props("ms") = ms.toDouble
     JSReact.createElement(JSReact.Timeout, props,
       js.Any.fromFunction1(renderPropsChild).asInstanceOf[ReactNode])
   }
@@ -32,13 +34,13 @@ object Timeout {
 
 object TimeoutWithFallback {
   def make(ms: Long, key: Option[String] =None)(fallback: ReactNode, children: ReactNode*) =
-    Timeout.make(ms, key)(
-      didTimeout => {
+    Timeout.make(ms, key){
+      didTimeout =>
         elements.fragmentElement()(
           React.createElement("span", lit("hidden"->didTimeout))(children:_*),
           if(didTimeout) fallback else null
         )
-      })
+      }
 }
 
 object Delay {
@@ -73,8 +75,8 @@ trait AsyncValueTemplate[V] {
 
   def make(value: V, defaultValue: V)(children: V => ReactNode) =
     av.copy(new methods {
-      val initialState = _ => State(defaultValue)
-      val retainedProps = value
+      val initialState = _ => State(defaultValue) 
+     val retainedProps = value
       val reducer = (action, state, gen) => {
         action match {
           case SetValue(v) => gen.update(State(v))
@@ -82,14 +84,14 @@ trait AsyncValueTemplate[V] {
         }
       }
       didMount = js.defined{ (self, gen) =>
-        reactdom.unstable_deferredUpdates{ () =>
+        reactdom.deferredUpdates{ () =>
           self.send(SetValue(self.retainedProps))
         }
         gen.skip
       }
       didUpdate = js.defined{ on =>
         if(on.newSelf.retainedProps != on.oldSelf.retainedProps)
-          reactdom.unstable_deferredUpdates{ () =>
+          reactdom.deferredUpdates{ () =>
             on.newSelf.send(SetValue(value))
           }
       }

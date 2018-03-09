@@ -57,6 +57,7 @@ val commonScalacOptions = Seq(
     "-Ywarn-numeric-widen",
     "-Xfuture",
   "-Ypartial-unification",
+  //"-Xlog-implicits",
   )
 
 //scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }

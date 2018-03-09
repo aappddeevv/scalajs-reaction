@@ -11,39 +11,16 @@ import js.|
 import js.annotation._
 import js.Dynamic.{literal => lit}
 import ttg.react.vdom._
+import js.JSConverters._
 
 /**
   * You can create styling for css-in-js fabric style using literals but its not
-  * typesafe. Use the types and imports below to be more, but not completely,
-  * typesafe. Importing the object's contents brings a few simple, implicit type
-  * converters into scope so you can use js.Array and StyleAttr directly from the
-  * vdom package.
+  * typesafe. Use the types and imports below to be *more*, but *not*
+  * completely, typesafe. Importing the object's contents brings a few implicit
+  * type converters into scope so you can use some "type inference driving"
+  * functions to create your style parts.
   */
 object styling {
-
-  /*
-  type ICSSRule = String
-
-  /** "number"% */
-  type ICSSPercentageRuleType = String
-
-  type ICSSPercentageRule = String
-
-  /** "number"px */
-  type ICSSPixelUnitRule = String | Int
-
-  /** normal|bold|bolder|lighter, 100|200|... */
-  type IFontWeight = ICSSRule
-   */
-
-  // no property checks and untyped, but concise
-  // val test2 = lit(
-  //   "background" -> "red",
-  //   "selectors" -> lit(
-  //     ":hover" -> lit(
-  //       "background" -> "green"
-  //     )
-  //   ))
 
   type IRawStyleBase = RawStyleBase
 
@@ -61,11 +38,17 @@ object styling {
 
   trait IRawStyleArray extends js.Array[IStyle]
 
+  /** Create an array of styles. */
+  object stylearray {
+    def apply(styles: IStyleBase*): IStyle = js.Array[IStyleBase](styles:_*).asInstanceOf[IStyle]
+  }
+
   /**
-    * @todo: Remove boolean from this and in merge* func sigs. Added js.Dynamic so you can
-    * add anything dynamically. Should we add js.Object?
-    */
-  type IStyleBase = IRawStyle | String | Boolean | Null | Unit | js.UndefOr[Nothing] | js.Dynamic
+   * Added js.Dynamic so you can add anything dynamically, which is not typesafe
+   * but it is convenient! Should we add js.Object to the union?  Note: Removed
+   * Boolean since in does not apply in scala, use a "zero".
+   */
+  type IStyleBase = IRawStyle | String | Null | js.UndefOr[Nothing] | js.Dynamic
   type IStyle     = IStyleBase | IRawStyleArray
 
   /**
@@ -74,13 +57,13 @@ object styling {
     */
   type IStyleSet = js.Dictionary[IStyle]
 
+  /** Create a style set. */
   object styleset {
-    def apply(stylePairs: (String, IStyle)*): IStyleSet = js.Dictionary[IStyle](stylePairs: _*)
+    def apply(stylePairs: (String, IStyleBase|IRawStyleArray)*): IStyleSet = js.Dictionary[IStyle](stylePairs: _*)
   }
 
-  /** Allows you to write js.Array(...styles...) but have it map to IRawStyleArray. */
-  implicit def jsArr2RawStyleArray(arr: js.Array[IStyle]): IRawStyleArray =
-    arr.asInstanceOf[IRawStyleArray]
+  implicit def opt2IStyle(vopt: Option[IStyle]): IStyle =
+    vopt.getOrElse[IStyle](null)
 
   /** Allows you to use StyleAttr as a IRawStyleBase. */
   implicit def styleAttr2IRawStyleBase(arr: StyleAttr): IRawStyle = arr.asInstanceOf[IRawStyle]

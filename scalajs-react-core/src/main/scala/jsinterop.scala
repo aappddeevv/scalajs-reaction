@@ -19,7 +19,7 @@ private[react] trait JSReact extends js.Object {
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
   def createElement[P](
-      el: js.Any | String,
+      el: js.Any | ReactType, // any means when using this raw interop, anything goes!
       props: UndefOr[P],
       children: ReactNode*): ReactDOMElement = js.native
 
@@ -40,7 +40,9 @@ private[react] trait JSReact extends js.Object {
   val Timeout: ReactClass = js.native
 
   /** Experimental. */
-  val unstable_AsyncMode: js.Any = js.native
+  //val unstable_AsyncMode: ReactClass = js.native
+  @JSName("unstable_AsyncMode")
+  val AsyncMode: ReactClass = js.native
 
   /** Experimental. */
   val StrictMode: ReactClass = js.native
@@ -51,19 +53,13 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
-  @inline def createElement(tag: String, props: js.Object)(children: ReactNode*): ReactDOMElement =
+  /** Create an element with props and children. */
+  @inline def createElement(tag: ReactType, props: js.Object)(children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, props, children: _*)
 
-  @inline def createElement(tag: ReactClass, props: js.Object)(
-      children: ReactNode*): ReactDOMElement =
-    JSReact.createElement(tag, props, children: _*)
-
-  @inline def createElement(tag: String)(children: ReactNode*): ReactDOMElement =
+  /** Create an element without props but with children. */
+  @inline def createElement(tag: ReactType)(children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, js.undefined, children: _*)
-
-  @inline def createElement(
-      c: ReactClass
-  ): ReactDOMElement = JSReact.createElement(c, js.undefined)
 
   /**
     * Create a react fragment. Fragments are created as an "element" with a specific

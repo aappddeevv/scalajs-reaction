@@ -112,7 +112,7 @@ The "render" method copies the internal proxy component and adds a callback from
 
 ```
 
-The `val` is required on required methods, you must define it. Other methods are optional are defined as show immediately above.
+The `val` is required on required methods, such as render, you must define it otherwise you will get a syntax error. Optional methods are defined as shown immediately above.
 
 ### Exporting a Component to Javascript
 
