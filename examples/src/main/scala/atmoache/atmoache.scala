@@ -98,24 +98,24 @@ object DailyWeatherSummary {
   val labelProps = new ILabelProps {}
 
   def make(summary: Daily) =
-    render{ self => 
-        val cond = summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
-        val props = new ReactWeatherDisplayProps {
-          temperature = summary.temp
-          currentTemperature = summary.temp
-          width = 150
-          height = 150
-          condition = cond
-          currentCondition = cond
-        }
-        div(new DivProps {
-          className = "daily"
-          style = layout
-        })(
-          Label(labelProps)(summary.dateStr),
-          ReactWeatherDisplay.make(props)
-        )
+    render { self =>
+      val cond = summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
+      val props = new ReactWeatherDisplayProps {
+        temperature = summary.temp
+        currentTemperature = summary.temp
+        width = 150
+        height = 150
+        condition = cond
+        currentCondition = cond
       }
+      div(new DivProps {
+        className = "daily"
+        style = layout
+      })(
+        Label(labelProps)(summary.dateStr),
+        ReactWeatherDisplay.make(props)
+      )
+    }
 }
 
 object app {

@@ -40,14 +40,14 @@ object styling {
 
   /** Create an array of styles. */
   object stylearray {
-    def apply(styles: IStyleBase*): IStyle = js.Array[IStyleBase](styles:_*).asInstanceOf[IStyle]
+    def apply(styles: IStyleBase*): IStyle = js.Array[IStyleBase](styles: _*).asInstanceOf[IStyle]
   }
 
   /**
-   * Added js.Dynamic so you can add anything dynamically, which is not typesafe
-   * but it is convenient! Should we add js.Object to the union?  Note: Removed
-   * Boolean since in does not apply in scala, use a "zero".
-   */
+    * Added js.Dynamic so you can add anything dynamically, which is not typesafe
+    * but it is convenient! Should we add js.Object to the union?  Note: Removed
+    * Boolean since in does not apply in scala, use a "zero".
+    */
   type IStyleBase = IRawStyle | String | Null | js.UndefOr[Nothing] | js.Dynamic
   type IStyle     = IStyleBase | IRawStyleArray
 
@@ -59,7 +59,8 @@ object styling {
 
   /** Create a style set. */
   object styleset {
-    def apply(stylePairs: (String, IStyleBase|IRawStyleArray)*): IStyleSet = js.Dictionary[IStyle](stylePairs: _*)
+    def apply(stylePairs: (String, IStyleBase | IRawStyleArray)*): IStyleSet =
+      js.Dictionary[IStyle](stylePairs: _*)
   }
 
   implicit def opt2IStyle(vopt: Option[IStyle]): IStyle =

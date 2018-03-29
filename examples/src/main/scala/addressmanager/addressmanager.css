@@ -17,8 +17,13 @@
         height: calc(100% - var(--cbar) - var(--footer));
         & .master {
             flex-basis: 50%;
+            position: relative;
+            height: 100%;
             & .list {
-                height: 100%;
+                /*
+                overflow-y: visible;
+                position: relative;
+                */
             }
         }
         & .detail {

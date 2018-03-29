@@ -65,7 +65,7 @@ object ToDoStyling {
 
   // example of memoizing, you need a js.Function to use memoizeFunction
   val memoized = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassNames))
-  val cn = memoized(500)
+  val cn       = memoized(500)
 }
 
 case class ToDo(id: Int, name: String, added: js.Date = null)
@@ -74,7 +74,7 @@ sealed trait ToDoAction
 case class Add(todo: ToDo)                     extends ToDoAction
 case class Remove(id: Int)                     extends ToDoAction
 case class InputChanged(input: Option[String]) extends ToDoAction
-case class SetTextFieldRef(ref: ITextField)    extends ToDoAction
+//case class SetTextFieldRef(ref: ITextField)    extends ToDoAction
 case class Complete(id: Int) extends ToDoAction
 
 object ToDoC {
@@ -85,19 +85,19 @@ object ToDoC {
   println(s"classnames\n${PrettyJson.render(cn)}")
 
   def make(todo: ToDo, remove: Unit => Unit) =
-    render{ self =>
-        div(new DivProps { className = cn.todo })(
-          Label(new ILabelProps {
-            className = cn.title
-          })(
-            todo.name
-          ),
-          DefaultButton(new IButtonProps {
-            text = "Remove"
-            onClick = js.defined(_ => remove(()))
-          })()
-        )
-      }
+    render { self =>
+      div(new DivProps { className = cn.todo })(
+        Label(new ILabelProps {
+          className = cn.title
+        })(
+          todo.name
+        ),
+        DefaultButton(new IButtonProps {
+          text = "Remove"
+          onClick = js.defined(_ => remove(()))
+        })()
+      )
+    }
 }
 
 object ToDoListHeader {
@@ -105,7 +105,9 @@ object ToDoListHeader {
   import ToDoListHeader.ops._
 
   def make(length: Int) =
-    render{ self =>  div(Label()(s"# To Dos - ${length}")) }
+    render { self =>
+      div(Label()(s"# To Dos - ${length}"))
+    }
 }
 
 object ToDoListC {
@@ -133,7 +135,7 @@ object ToDosC {
   case class State(
       todos: Seq[ToDo] = Seq(),
       input: Option[String] = None,
-      textFieldRef: Option[ITextField] = None)
+      var textFieldRef: Option[ITextField] = None)
 
   case class RP(title: Option[String] = None)
   val ToDos = reducerComponentWithRetainedProps[State, RP, ToDoAction]("ToDos")
@@ -162,8 +164,8 @@ object ToDosC {
             gen.updateAndEffect(state.copy(todos = state.todos.filterNot(_.id == id)))
           case InputChanged(iopt) =>
             gen.updateAndEffect(state.copy(input = iopt))
-          case SetTextFieldRef(ref) =>
-            gen.silent(state.copy(textFieldRef = Some(ref)))
+          //case SetTextFieldRef(ref) =>
+          //  gen.silent(state.copy(textFieldRef = Some(ref)))
           case _ =>
             gen.skip
         }
@@ -179,7 +181,7 @@ object ToDosC {
             div(new DivProps { className = cn.dataEntry })(
               TextField(new ITextFieldProps {
                 placeholder = "enter new todo"
-                componentRef = js.defined((r: ITextField) => self.send(SetTextFieldRef(r)))
+                componentRef = js.defined((r: ITextField) => self.state.textFieldRef = Option(r))
                 onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
                 value = self.state.input.getOrElse[String]("")
                 autoFocus = true

@@ -152,20 +152,20 @@ object Examples {
         gen.skip
       }
       val render = self =>
-      fragmentElement()(
-        Pivot()(
-          readme(examples.readmetext),
-          addressPage(addressDAO),
-          todoPage,
-          helloWorldPage,
-          changeReduxStatePage(),
-          labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
-          tagTest(),
-          pressurePage,
-          graphPage,
-          movies(),
-        ),
-        HeaderC.make("header", headerTarget)
+        fragmentElement()(
+          Pivot()(
+            readme(examples.readmetext),
+            addressPage(addressDAO),
+            todoPage,
+            helloWorldPage,
+            changeReduxStatePage(),
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
+            tagTest(),
+            pressurePage,
+            graphPage,
+            movies(),
+          ),
+          HeaderC.make("header", headerTarget)
       )
     })
 }
@@ -184,11 +184,11 @@ object Main {
   val container       = "container"
 
   /**
-   * This will be exported from the ES module that scala.js outputs.  How you
-   *  access it depends on your bundler. webpack can be configured to output a
-   *  "library", say named, "Scala" so you would call this function as
-   *  `Scala.App()`.
-   */
+    * This will be exported from the ES module that scala.js outputs.  How you
+    *  access it depends on your bundler. webpack can be configured to output a
+    *  "library", say named, "Scala" so you would call this function as
+    *  `Scala.App()`.
+    */
   @JSExportTopLevel("App")
   def App(): Unit = {
     println("Running examples app")
@@ -200,7 +200,6 @@ object Main {
 
     // init message for store, although it does not do anything :-)
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
-
 
     reactdom.createAndRenderWithId(
       TimeoutWithFallback.make(2000)(

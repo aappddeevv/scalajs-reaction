@@ -33,10 +33,10 @@ trait JsAnySyntax {
 }
 
 final case class JsObjectOps(o: js.Object) {
-  @inline def asDict[A] = o.asInstanceOf[js.Dictionary[A]]
-  @inline def asAnyDict = o.asInstanceOf[js.Dictionary[js.Any]]
-  @inline def asDyn     = o.asInstanceOf[js.Dynamic]
-  @inline def add(that: js.Object) = merge(o, that)
+  @inline def asDict[A]                   = o.asInstanceOf[js.Dictionary[A]]
+  @inline def asAnyDict                   = o.asInstanceOf[js.Dictionary[js.Any]]
+  @inline def asDyn                       = o.asInstanceOf[js.Dynamic]
+  @inline def add(that: js.Object)        = merge(o, that)
   @inline def add(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
 }
 

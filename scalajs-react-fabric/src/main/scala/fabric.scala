@@ -46,6 +46,7 @@ object FabricNS extends js.Object {
   val Label: ReactJsComponent                 = js.native
   val Link: ReactJsComponent                  = js.native
   val List: ReactJsComponent                  = js.native
+  val MarqueeSelection: ReactJsComponent      = js.native
   val Pivot: ReactJsComponent                 = js.native
   val PivotItem: ReactJsComponent             = js.native
   val PrimaryButton: ReactJsComponent         = js.native
@@ -73,16 +74,21 @@ object components {
     wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
   def DefaultButton(props: IButtonProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
-  def Pivot(props: IPivotProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.Pivot, props, children: _*)
-  def PivotItem(props: IPivotItemProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.PivotItem, props, children: _*)
   def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.DetailsList, props, children: _*)
   def CommandBar(props: Attr*)(children: ReactNode*) =
     wrapJsForScala(FabricNS.CommandBar, new Attrs(props).toJs, children: _*)
   def CommandBar(props: ICommandBarProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.CommandBar, props, children: _*)
+
+  def MarqueeSelection[T <: js.Object](props: IMarqueeSelectionProps[T] = null)(
+      children: ReactNode*) =
+    wrapJsForScala(FabricNS.MarqueeSelection, props, children: _*)
+
+  def Pivot(props: IPivotProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Pivot, props, children: _*)
+  def PivotItem(props: IPivotItemProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.PivotItem, props, children: _*)
   def Spinner(props: ISpinnerProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
   def ScrollablePane(props: IScrollablePane = null)(children: ReactNode*) =
@@ -271,10 +277,10 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
   var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
   var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
     js.undefined
-  var constrainMode: js.UndefOr[Int]    = js.undefined
-  var listProps: js.UndefOr[js.Dynamic] = js.undefined // should be IListProps but then items is required
-  var getKey
-    : js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
+  var constrainMode: js.UndefOr[Int] = js.undefined
+  var listProps
+    : js.UndefOr[js.Dynamic] = js.undefined // should be IListProps but then items is required
+  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
   var initialFocusedIndex: js.UndefOr[Int]                                       = js.undefined
   var selection: js.UndefOr[ISelection[T]]                                       = js.undefined
@@ -297,8 +303,8 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
     js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
   var onColumnHeaderClick: js.UndefOr[OCHC] = js.undefined
 
-  var renderedWindowsAhead: js.UndefOr[Int] = js.undefined
-  var renderedWindowsBehind: js.UndefOr[Int] = js.undefined
+  var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
+  var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
   var onShouldVirtualize: js.UndefOr[js.Function1[IListProps[T], Boolean]] = js.undefined
 }
 
@@ -347,8 +353,8 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
   var checkboxCellClassName: js.UndefOr[String]       = js.undefined
   var enterModelSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
 
-  var usePageCache: js.UndefOr[Boolean]               = js.undefined
-  var renderCount: js.UndefOr[Int] = js.undefined
+  var usePageCache: js.UndefOr[Boolean] = js.undefined
+  var renderCount: js.UndefOr[Int]      = js.undefined
 }
 
 trait IContextualMenuProps extends KeyAndRef {
@@ -430,8 +436,7 @@ object SelectionMode {
 }
 
 trait ISelectionOptions[T <: js.Object] extends js.Object {
-  var getKey
-    : js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
+  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
   var selectionMode: js.UndefOr[Int]                     = js.undefined
   var onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
@@ -543,3 +548,14 @@ trait ILink extends Focusable
 //export interface ILinkProps extends React.AllHTMLAttributes<HTMLAnchorElement | HTMLButtonElement | HTMLElement | Link>
 
 trait ILinkProps extends AllHTMLAttributes[dom.html.Anchor] with ComponentRef[ILink]
+@js.native
+trait IMarqueeSelection extends js.Object {}
+
+trait IMarqueeSelectionProps[T <: js.Object] extends ComponentRef[IMarqueeSelection] {
+  var selection: js.UndefOr[ISelection[T]]                              = js.undefined
+  var rootProps: js.UndefOr[HTMLAttributes[dom.html.Div]]               = js.undefined
+  var onShouldStartSelection: js.UndefOr[js.Function1[js.Any, Boolean]] = js.undefined
+  var isEnabled: js.UndefOr[Boolean]                                    = js.undefined
+  var isDraggingConstrainedToRoot: js.UndefOr[Boolean]                  = js.undefined
+
+}

@@ -16,31 +16,31 @@ object Loading {
   def make(key: Option[String] = None)(isLoading: Boolean => ReactNode) = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
-    JSReact.createElement(JSReact.Loading, props,
-      js.Any.fromFunction1(isLoading).asInstanceOf[ReactNode])
+    JSReact.createElement(JSReact.Loading,
+                          props,
+                          js.Any.fromFunction1(isLoading).asInstanceOf[ReactNode])
   }
 }
 
 object Timeout {
-  def make(ms: Long, key: Option[String] = None)(
-    renderPropsChild: Boolean => ReactNode) = {
+  def make(ms: Long, key: Option[String] = None)(renderPropsChild: Boolean => ReactNode) = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
     props("ms") = ms.toDouble
-    JSReact.createElement(JSReact.Timeout, props,
-      js.Any.fromFunction1(renderPropsChild).asInstanceOf[ReactNode])
+    JSReact.createElement(JSReact.Timeout,
+                          props,
+                          js.Any.fromFunction1(renderPropsChild).asInstanceOf[ReactNode])
   }
 }
 
 object TimeoutWithFallback {
-  def make(ms: Long, key: Option[String] =None)(fallback: ReactNode, children: ReactNode*) =
-    Timeout.make(ms, key){
-      didTimeout =>
-        elements.fragmentElement()(
-          React.createElement("span", lit("hidden"->didTimeout))(children:_*),
-          if(didTimeout) fallback else null
-        )
-      }
+  def make(ms: Long, key: Option[String] = None)(fallback: ReactNode, children: ReactNode*) =
+    Timeout.make(ms, key) { didTimeout =>
+      elements.fragmentElement()(
+        React.createElement("span", lit("hidden" -> didTimeout))(children: _*),
+        if (didTimeout) fallback else null
+      )
+    }
 }
 
 object Delay {
@@ -52,15 +52,15 @@ object Delay {
 
   /** Well, this is a bit knot of nasty casting, but we are "throwing a promise" that "never" resolves. */
   private def Never(whatsNever: FiniteDuration = 10 seconds): ReactNode =
-    ({() => throw
-      js.JavaScriptException(delayPromise[Unit](whatsNever)(())) }: js.Function0[Unit]).asInstanceOf[ReactNode]
+    ({ () =>
+      throw js.JavaScriptException(delayPromise[Unit](whatsNever)(()))
+    }: js.Function0[Unit]).asInstanceOf[ReactNode]
 
   def make(ms: Long, key: Option[String]): ReactNode = {
-    Timeout.make(ms, key)(
-      didTimeout => {
-        if(didTimeout) null
-        else Never()
-      })
+    Timeout.make(ms, key)(didTimeout => {
+      if (didTimeout) null
+      else Never()
+    })
   }
 }
 
@@ -75,27 +75,26 @@ trait AsyncValueTemplate[V] {
 
   def make(value: V, defaultValue: V)(children: V => ReactNode) =
     av.copy(new methods {
-      val initialState = _ => State(defaultValue) 
-     val retainedProps = value
+      val initialState  = _ => State(defaultValue)
+      val retainedProps = value
       val reducer = (action, state, gen) => {
         action match {
           case SetValue(v) => gen.update(State(v))
-          case _ => gen.skip
+          case _           => gen.skip
         }
       }
-      didMount = js.defined{ (self, gen) =>
-        reactdom.deferredUpdates{ () =>
+      didMount = js.defined { (self, gen) =>
+        reactdom.deferredUpdates { () =>
           self.send(SetValue(self.retainedProps))
         }
         gen.skip
       }
-      didUpdate = js.defined{ on =>
-        if(on.newSelf.retainedProps != on.oldSelf.retainedProps)
-          reactdom.deferredUpdates{ () =>
+      didUpdate = js.defined { on =>
+        if (on.newSelf.retainedProps != on.oldSelf.retainedProps)
+          reactdom.deferredUpdates { () =>
             on.newSelf.send(SetValue(value))
           }
       }
       val render = self => children(self.state.asyncValue)
     })
 }
-

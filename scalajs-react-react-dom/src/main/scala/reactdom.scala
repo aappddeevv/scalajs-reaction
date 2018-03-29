@@ -25,8 +25,8 @@ trait JSReactDOM extends js.Object {
   def render(node: ReactNode, target: dom.Element): Unit               = js.native
   def createPortal(node: ReactNode, target: dom.Element): ReactElement = js.native
   def unmountComponentAtNode(el: dom.Element): Unit                    = js.native
-  def findDOMNode(componentOrElement: js.Any): dom.Element = js.native
-  def unstable_deferredUpdates(f: js.Function0[Unit]): Unit = js.native
+  def findDOMNode(componentOrElement: js.Any): dom.Element             = js.native
+  def unstable_deferredUpdates(f: js.Function0[Unit]): Unit            = js.native
 
   /** 16.3 */
   def createRoot(target: dom.Element, options: js.UndefOr[CreateRootOptions]): Root = js.native

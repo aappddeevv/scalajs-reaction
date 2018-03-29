@@ -40,12 +40,12 @@ package object react {
     // ...add ref here...is it a string or a callback?
   }
 
-  /** 
-   * Something to be used in createElement. A standard HTML element that has
-   * been created using React.createElement.  Props are optional of course.  We
-   * use this tag it to show that it came from the standard DOM components vs a
-   * custom one.
-   */
+  /**
+    * Something to be used in createElement. A standard HTML element that has
+    * been created using React.createElement.  Props are optional of course.  We
+    * use this tag it to show that it came from the standard DOM components vs a
+    * custom one.
+    */
   @js.native
   trait ReactDOMElement extends ReactElement {
     def `type`: String = js.native
@@ -63,8 +63,8 @@ package object react {
   trait ReactClass extends js.Object
 
   /** Something that can be used in createElement. Need to add js.Function that
-   * returns a ReadNode.
-   */
+    * returns a ReadNode.
+    */
   type ReactType = ReactClass | String
 
   /**
@@ -157,7 +157,7 @@ package object react {
   }
 
   /** Merge objects and Ts together. Good for merging props with data- attributes. */
-  @inline def merge[T <: js.Object](objs: T | js.Dynamic *): T = {
+  @inline def merge[T <: js.Object](objs: T | js.Dynamic*): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])

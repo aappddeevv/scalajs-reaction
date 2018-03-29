@@ -21,4 +21,3 @@ package object movie {
 
   val configKey = "__config__"
 }
-

@@ -26,9 +26,9 @@ object HelloWorldC {
   import HelloWorld.ops._
 
   def make(name: Option[String] = None) =
-    render{ self => 
-        div("hello world" + name.map(" and welcome " + _).getOrElse("") )
-      }
+    render { self =>
+      div("hello world" + name.map(" and welcome " + _).getOrElse(""))
+    }
 
   trait HelloWorldProps extends js.Object {
     val name: js.UndefOr[String] = js.undefined
@@ -42,7 +42,7 @@ object HelloWorldC {
   // Alternative scala `make` definition, render must convert to scala objects if needed
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps) =
-    render{ self => 
-        div("hello world" + props.name.toOption.map(" and welcome " + _).getOrElse(""))
-      }
+    render { self =>
+      div("hello world" + props.name.toOption.map(" and welcome " + _).getOrElse(""))
+    }
 }

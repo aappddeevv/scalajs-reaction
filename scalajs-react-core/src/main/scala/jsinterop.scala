@@ -53,8 +53,10 @@ private[react] trait JSReact extends js.Object {
 private[react] object JSReact extends JSReact
 
 object React {
+
   /** Create an element with props and children. */
-  @inline def createElement(tag: ReactType, props: js.Object)(children: ReactNode*): ReactDOMElement =
+  @inline def createElement(tag: ReactType, props: js.Object)(
+      children: ReactNode*): ReactDOMElement =
     JSReact.createElement(tag, props, children: _*)
 
   /** Create an element without props but with children. */

@@ -64,7 +64,7 @@ trait CakeBase { cake =>
   /** Component self for most clent API methods which may or may not contain state. */
   type Self <: SelfLike
 
-  /** Self used for component.willUnmount. andle/send do not work there */
+  /** Self used for component.willUnmount. "handle/send" do not work during willUnmount. */
   type SelfForUnmount <: SelfForUnmountLike
 
   trait SelfForUnmountLike {
@@ -142,9 +142,9 @@ trait CakeBase { cake =>
 
   type Ops <: OpsLike
   trait OpsLike {
-    type Self = cake.Self
+    type Self           = cake.Self
     type SelfForUnmount = cake.SelfForUnmount
-    type ComponentType = cake.ComponentType
+    type ComponentType  = cake.ComponentType
 
     /** Use this as `myComponent.copy(new methods { ... })`. */
     type methods = cake.WithMethods
@@ -454,8 +454,10 @@ trait CakeWithState extends CakeBase { cake =>
 
   type Ops <: OpsLike
   trait OpsLike extends super.OpsLike {
+
     /** State type S. Kept as S to avoid clash with common name "State" */
     type S = cake.S
+
     /** Action type A. Kept as A to avoid clash with common name "Action" */
     type A = cake.A
 
@@ -713,11 +715,11 @@ trait CakeWithState extends CakeBase { cake =>
   }
 }
 
-/** 
- * A ComponentCake that only requires a render method. To reduce boilerplate
- * after importing ops, just use `[ops.]render(self => { ... })` in your make
- * function *if* you only have a render method.
- */
+/**
+  * A ComponentCake that only requires a render method. To reduce boilerplate
+  * after importing ops, just use `[ops.]render(self => { ... })` in your make
+  * function *if* you only have a render method.
+  */
 trait StatelessComponentCake extends CakeBase { cake =>
 
   /** No RP, no S, no A. You do get a handle(). */
@@ -730,11 +732,12 @@ trait StatelessComponentCake extends CakeBase { cake =>
   type Ops             = MyOpsLike
 
   trait MyOpsLike extends super.OpsLike {
-    /** 
-     * Without the need for a val anchor, add the render method. If you need to
-     * add other methods, more than just render, you need to use the long-form
-     * syntax.
-     */
+
+    /**
+      * Without the need for a val anchor, add the render method. If you need to
+      * add other methods, more than just render, you need to use the long-form
+      * syntax.
+      */
     def render(f: Self => ReactNode) =
       cake.copy(new WithMethods {
         val render = f
@@ -752,6 +755,7 @@ trait StatelessComponentCake extends CakeBase { cake =>
       def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
       var ptr                      = thisJs.asInstanceOf[js.Any] // future hack!
     }
+
   def mkSelfForUnmount(
       thisJs: ThisSelf,
       reactjsState: State,
@@ -860,7 +864,7 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
   type SelfForUnmount      = SelfForUnmountLike
   type SelfForInitialState = SelfForInitialStateLike
   protected type State     = StateLike
-  type Ops = OpsLike
+  type Ops                 = OpsLike
   trait OpsLike extends super[CakeWithRP].OpsLike with super[CakeWithState].OpsLike
 
   val ops = new Ops {}
@@ -972,12 +976,12 @@ trait ReducerResult[S, SLF] {
   type UpdateEffect = SLF => Unit
   type UpdateType   = StateUpdate[S, SLF]
 
-  lazy val skip: UpdateType                    = NoUpdate()
-  def update(s: S): UpdateType                 = Update(s)
-  def silent(s: S): UpdateType                 = SilentUpdate(s)
+  lazy val skip: UpdateType    = NoUpdate()
+  def update(s: S): UpdateType = Update(s)
+  //def silent(s: S): UpdateType                 = SilentUpdate(s)
   def effect(effect: UpdateEffect): UpdateType = SideEffects(effect)
   def updateAndEffect(s: S, effect: UpdateEffect = _ => Unit): UpdateType =
     UpdateWithSideEffects(s, effect)
-  def silentAndEffect(s: S, effect: UpdateEffect = _ => Unit): UpdateType =
-    SilentUpdateWithSideEffects(s, effect)
+  //def silentAndEffect(s: S, effect: UpdateEffect = _ => Unit): UpdateType =
+  //  SilentUpdateWithSideEffects(s, effect)
 }

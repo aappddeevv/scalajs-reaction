@@ -85,44 +85,35 @@ object AddressListC {
       addresses: AddressList = emptyAddressList,
       activeCB: Option[Address] => Unit,
       ifx: Option[Int] = None) =
-    AddressList.copy(new methods {
-      val render =
-        self => {
-          println(s"AddressListC.render: ifx ${ifx}")
-          val listopts = new IDetailsListProps[Address] {
-            val items = addresses.toJSArray
-            className = amstyles.list.asString
-            selectionPreservedOnEmptyClick = true
-            columns = icolumns
-            getKey = getAddressKey
-            //initialFocusedIndex = 2 //ifx.orUndefined
-            onActiveItemChanged = js.defined({ (aundef, _, _) =>
-              activeCB(aundef.toNonNullOption)
-            })
-            /* or
-           onActiveItemChanged = { (aundef, _, _) =>
-           activeCB(aundef.toNonNullOption)
-           }: OAIC
-             */
-            selection = sel
-            layoutMode = DetailsListLayoutMode.fixedColumns
-            constrainMode = ConstrainMode.unconstrained
-            onRenderDetailsHeader = js.defined { (props, defaultRender) =>
-              Sticky(new IStickyProps { stickyPosition = 1 } )(defaultRender.fold[ReactNode]("...render me...")(_(props)))
-            }
-            onShouldVirtualize = js.defined(_ => false)
-          }
-          div.merge(lit("data-is-scrollable" -> true))(new DivProps {
-            className = amstyles.master.asString
-          })(
-            ScrollablePane()(
-              Sticky(new IStickyProps { stickyPosition = 1 })("sticky header1"),
-              Sticky(new IStickyProps { stickyPosition = 1 } )("sticky header2"),
-              DetailsList[Address](listopts)()
-            )
-          )
-        }
-    })
+    render { self =>
+      println(s"AddressListC.render: ifx ${ifx}")
+      val listopts = new IDetailsListProps[Address] {
+        val items = addresses.toJSArray
+        className = amstyles.list.asString
+        selectionPreservedOnEmptyClick = true
+        columns = icolumns
+        getKey = getAddressKey
+        //initialFocusedIndex = 2 //ifx.orUndefined
+        onActiveItemChanged = js.defined({ (aundef, _, _) =>
+          activeCB(aundef.toNonNullOption)
+        })
+        /* or
+         onActiveItemChanged = { (aundef, _, _) =>
+         activeCB(aundef.toNonNullOption)
+         }: OAIC
+         */
+        selection = sel
+        layoutMode = DetailsListLayoutMode.fixedColumns
+        constrainMode = ConstrainMode.unconstrained
+        // onRenderDetailsHeader = js.defined { (props, defaultRender) =>
+        //   Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
+        // }
+        onShouldVirtualize = js.defined(_ => false)
+      }
+      div.merge(lit("data-is-scrollable" -> true))(new DivProps {
+        className = amstyles.master.asString
+      })(ScrollablePane()(DetailsList[Address](listopts)()))
+    }
 }
 
 /**

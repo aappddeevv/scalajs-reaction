@@ -131,9 +131,9 @@ object elements {
     */
   def reducerComponentWithRetainedProps[TheState, RetainedProps, Action](debugNameArg: String) =
     new KitchenSinkComponentCake {
-      type S   = TheState
-      type RP  = RetainedProps
-      type A   = Action
+      type S         = TheState
+      type RP        = RetainedProps
+      type A         = Action
       type ProxyType = ProxyLike
 
       class ProxyLike extends super.ProxyLike {
@@ -167,10 +167,10 @@ object elements {
     WrapProps.wrapJsForScala(reactClass, props, children: _*)
   }
 
-  /** 
-   * Create a fragment element. Per the API, you are only allowed an optional key.
-   * @deprecated Use `Fragment.make()`.
-   */
+  /**
+    * Create a fragment element. Per the API, you are only allowed an optional key.
+    * @deprecated Use `Fragment.make()`.
+    */
   def fragmentElement(key: Option[String] = None)(children: ReactNode*) =
     React.createFragment(key, children: _*)
 
