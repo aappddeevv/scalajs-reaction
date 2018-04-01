@@ -21,9 +21,10 @@ trait ErrorInfo extends js.Object {
 }
 
 /**
-  * Basic scala component.  It only includes the parts of a component not
-  * dependent on specific types. A scala component is a javascript object with
-  * some callback "fields" that the reactjs methods call.
+  * Basic scala-side react component.  This trait only includes the parts of a
+  * component not dependent on specific types (see the cake layers). A scala
+  * component is a javascript object (non-native JS trait) with some callback
+  * "fields" that the reactjs methods call.
   */
 trait ComponentSpec extends js.Object {
   var debugName: String
@@ -32,16 +33,16 @@ trait ComponentSpec extends js.Object {
   var jsElementWrapped: js.UndefOr[JsElementWrapped] = js.undefined
 }
 
+/** The scala-side view of reactjs "this.props". */
 @js.native
 protected trait JsComponentThisProps extends js.Object {
-
   /** We hang our interop component on this property. */
   val scalaProps: js.UndefOr[ComponentSpec] = js.native
 }
 
+/** The scala-side view of reactjs "this". */
 @js.native
 protected trait JsComponentThis[State] extends js.Object {
-
   /** this.state */
   def state: State
 
@@ -76,7 +77,6 @@ trait CakeBase { cake =>
     * may create additional "Self"s for use in client API methods.
     */
   trait SelfLike extends SelfForUnmountLike {
-
     /**
       * You should need not need to use this in scala.js vs reason-react, given
       * that we have a separate Self type.
@@ -92,14 +92,15 @@ trait CakeBase { cake =>
   type ComponentType <: ComponentLike
 
   /**
-    * A component is just a javascript object. All of these methods should be
-    * defined in the ProxyLike class in this cake layer. The component
-    * has all optional values but WithMethods sets required attributes based on
-    * the type of component being built so user is forced to create them.
+    * A component is just a javascript object. The component has all valuese as
+   * optional. The WithMethods trait, that clients fill out to add their
+   * methodsd, sets required attributes based on the type of component
+   * (stateless or statefull, etc.) being built so user is forced to create
+   * them.
     */
   protected trait ComponentLike extends ComponentSpec {
     var render: js.UndefOr[Self => ReactNode]                     = js.undefined
-    var subscriptions: js.UndefOr[Self => Seq[Subscription]]      = js.undefined
+    var subscriptions: js.UndefOr[Self => js.Array[Subscription]]      = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
@@ -117,15 +118,16 @@ trait CakeBase { cake =>
   protected trait StateLike extends js.Object
 
   /**
-    * Methods exposed for the public component API. Clients add their own methods to
-    * this js object and then it is merged into copy of the component to
-    * create a new component. Copying is a javascript "Object.assign".
+    * Methods exposed for the public component API. Clients add their own
+    * methods to this js object and then it is merged into copy of the component
+    * to create a new component. Copying is via a javascript "Object.assign"
+    * like method.
     */
   type WithMethods <: WithMethodsLike
 
   trait WithMethodsLike extends js.Object {
     val render: Self => ReactNode
-    var subscriptions: js.UndefOr[Self => Seq[Subscription]]      = js.undefined
+    var subscriptions: js.UndefOr[Self => js.Array[Subscription]]      = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     //var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
@@ -165,11 +167,15 @@ trait CakeBase { cake =>
   def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec): ReactJsComponent =
     elements.wrapScalaForJs(component, jsPropsToScala)
 
+  /** 
+   * The type of object used in React.createClass that the javascript side
+   * consumes.
+   */
   protected type ProxyType <: ProxyLike
 
   /**
-    * The basic proxy object for this component. We only need one. It calls into
-    * the public API methods found on ComponentType.
+    * The proxy object for this component. Each scala Component needs one. The
+   * methods on Proxy call into the API methods found on ComponentType.
     */
   protected val proxy: ProxyType
 
@@ -222,14 +228,17 @@ trait CakeBase { cake =>
       component: ComponentType,
       displayName: String = null): SelfForUnmount
 
-  /** Common didMount functionality. Runs subscriptions. */
+  /** 
+   * Common didMount functionality. Runs subscriptions and return the OnMount
+   * effects.
+   */
   protected def _componentDidMountCommon(displayName: String)(
-      thisJs: ThisSelf): (ComponentType, Self, Seq[() => Unit]) = {
+      thisJs: ThisSelf): (ComponentType, Self, js.Array[OnUnmount]) = {
     val component =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     val self = mkSelf(thisJs, thisJs.state, component, displayName)
     // call subscriptions
-    val subscriptions = component.subscriptions.map(_(self).map(_())).getOrElse(Seq())
+    val subscriptions = component.subscriptions.map(_(self).map(_())).getOrElse(js.Array())
     (component, self, subscriptions)
   }
 
@@ -249,7 +258,7 @@ trait CakeBase { cake =>
   }
 
   /** The basic unmount runs the unsubscribes. */
-  protected def _componentWillUnmount(subscriptions: Seq[() => Unit], displayName: String)(
+  protected def _componentWillUnmount(subscriptions: js.Array[OnUnmount], displayName: String)(
       thisJs: ThisSelf): Unit = {
     val component =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
@@ -355,13 +364,15 @@ trait CakeBase { cake =>
 
   /**
     * Factored out methods that assume no state or retained props.  The methods
-    * defined in any layer should only be based on the data model for that layer,
-    * obviously. One proxy serves all components created from the same cake.
+    * defined in any layer should only be based on the data model for that
+    * layer, obviously. One proxy serves all components created from the same
+    * cake. The "methods" on this object are called by the reactjs machinery
+    * directly.
     */
   protected abstract class ProxyLike extends Proxy[Self, State, JsComponentThisProps, ThisSelf] {
     // Use null to avoid allocation. Thes are the "unsubscribe" part of the subscriptions.
     override val componentWillUnmount =
-      js.defined(_componentWillUnmount(subscriptions.getOrElse(Seq()), displayName))
+      js.defined(_componentWillUnmount(subscriptions.getOrElse(js.Array()), displayName))
     // REMOVE TO ALLOW PROMISE PASS THROUGH UNHINDERED FOR THE MOMENTE?!?!?!
     override val componentDidCatch   = js.defined(_componentDidCatch(displayName))
     override val render              = _render(displayName)
@@ -568,7 +579,7 @@ trait CakeWithState extends CakeBase { cake =>
 
   /** Unlike the base case with no state, allow state to be returned and acted upon. */
   protected def _componentDidMountWithState(displayName: String)(
-      thisJs: ThisSelf): Seq[() => Unit] = {
+      thisJs: ThisSelf): js.Array[OnUnmount] = {
     //println(s"$debugName:CreateClassOpts.componentDidMount")
     val (component, self, subs) = _componentDidMountCommon(displayName)(thisJs)
     component.didMount.toOption match {
@@ -707,7 +718,7 @@ trait CakeWithState extends CakeBase { cake =>
   abstract protected class ProxyLike extends super.ProxyLike {
     override val componentDidMount = js.defined { thisJs =>
       val subs = _componentDidMountWithState(displayName)(thisJs)
-      subscriptions = subs
+      subscriptions = subs //mutate
     }
     override val getInitialState           = js.defined(_getInitialState(displayName) _)
     override val componentWillReceiveProps = js.defined(_componentWillReceiveProps(displayName) _)

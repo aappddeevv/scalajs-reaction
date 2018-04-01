@@ -27,4 +27,68 @@ package object cytoscape {
   //   Arbor,
   //   CoseBilkent,
   // )
+
+  val InputDeviceEvents = Seq(
+    "mousedown",
+    "mouseup",
+    "click",
+    "mouseover",
+    "mouseout",
+    "mousemove",
+    "touchstart",
+    "touchmove",
+    "touchend"
+  )
+
+  val OtherEvents = Seq(
+    "tapstart", "vmousedown",
+    "tapdrag", "vmousemove",
+    "tapdragover",
+    "tapdrougout",
+    "tapend", "vmouseup",
+    "taphold",
+    "ctxtapstart",
+    "ctxtapend",
+    "ctxtap",
+    "ctxdrag",
+    "cxtdragover",
+    "boxstart",
+    "boxend",
+    "boxselect",
+    "box"
+  )
+
+  val CollectionEvents = Seq(
+    "add",
+    "remove",
+    "select",
+    "unselect",
+    "lock",
+    "unlock",
+    "grabon",
+    "grab",
+    "drag",
+    "free",
+    "position",
+    "data",
+    "scratch",
+    "style",
+    "background"
+  )
+
+  val GraphEvents = Seq(
+    "layoutstart",
+    "layoutready",
+    "layoutstop",
+    "ready",
+    "destroy",
+    "render",
+    "pan",
+    "zoom",
+    "viewport",
+    "resize"
+  )
+
+
+
 }

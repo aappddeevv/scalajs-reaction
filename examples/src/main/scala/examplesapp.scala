@@ -34,7 +34,7 @@ object ExamplesApp {
         gen.update(state.copy(route = action))
       }
       subscriptions = js.defined { self =>
-        Seq(
+        js.Array(
           () => {
             val token = router.watchUrl { url =>
               println(s"url: $url")

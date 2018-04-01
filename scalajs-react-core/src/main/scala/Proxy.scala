@@ -20,7 +20,7 @@ trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
     * Subscription "unmount" callbacks. Mount callbacks are stored on the
     * scala component.
     */
-  var subscriptions: js.UndefOr[Seq[() => Unit]] = js.undefined
+  var subscriptions: js.UndefOr[js.Array[OnUnmount]] = js.undefined
 
   /** react js method. @deprecated */
   val getInitialState: js.UndefOr[js.ThisFunction0[ThisSelf, State]] = js.undefined

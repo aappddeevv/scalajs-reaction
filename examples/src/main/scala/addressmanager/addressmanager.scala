@@ -265,7 +265,7 @@ object AddressManagerC {
         }
 
       subscriptions = js.defined({ self =>
-        Seq(() => () => vm.setActive(null, null))
+        js.Array(() => () => vm.setActive(null, null))
       })
 
       val reducer =
