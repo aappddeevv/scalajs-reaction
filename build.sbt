@@ -60,8 +60,6 @@ val commonScalacOptions = Seq(
   //"-Xlog-implicits",
   )
 
-//scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
-
 lazy val commonSettings = Seq(
   scalacOptions ++= commonScalacOptions ++
         (if (scalaJSVersion.startsWith("0.6."))
@@ -71,6 +69,7 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "latest.version"),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
+  autoAPIMappings := true,
 )
 
 lazy val libsettings = buildSettings ++ commonSettings

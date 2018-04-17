@@ -24,8 +24,11 @@ final case class JsAnyOps(a: js.Any) {
   @inline def toNonNullOption[T <: js.Any]: Option[T] = {
     // also defined in react package, repeated here
     if (js.isUndefined(a)) None
-    else Option(a.asInstanceOf[T])
+    else Option(a.asInstanceOf[T])    
   }
+  @inline def toTruthy: Boolean =
+    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
+    else false    
 }
 
 trait JsAnySyntax {
@@ -36,14 +39,15 @@ final case class JsObjectOps(o: js.Object) {
   @inline def asDict[A]                   = o.asInstanceOf[js.Dictionary[A]]
   @inline def asAnyDict                   = o.asInstanceOf[js.Dictionary[js.Any]]
   @inline def asDyn                       = o.asInstanceOf[js.Dynamic]
-  @inline def add(that: js.Object)        = merge(o, that)
-  @inline def add(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
+  @inline def asUndefOr[A]: js.UndefOr[A] = o.asInstanceOf[js.UndefOr[A]]  
+  @inline def combine(that: js.Object)        = merge(o, that)
+  @inline def combine(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
 }
 
 final case class JsDictionaryOps(o: js.Dictionary[_]) {
   @inline def asJsObj = o.asInstanceOf[js.Object]
   @inline def asDyn   = o.asInstanceOf[js.Dynamic]
-  @inline def add(that: js.Dictionary[_]) =
+  @inline def combine(that: js.Dictionary[_]) =
     merge(o.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dictionary[_]]
 }
 
@@ -66,6 +70,9 @@ final case class JsUndefOrOps[A](a: UndefOr[A]) {
   @inline def isEmpty         = isNull || !a.isDefined
   @inline def toNonNullOption = if (a.isEmpty) None else a.toOption
   @inline def toStringJs      = a.asInstanceOf[js.Any].toString()
+  @inline def toTruthy: Boolean =
+    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
+    else false  
 }
 
 trait JsUndefOrSyntax {
@@ -89,12 +96,14 @@ final case class JsDynamicOps(val jsdyn: js.Dynamic) {
   def asUndefOr[A]: js.UndefOr[A] = jsdyn.asInstanceOf[js.UndefOr[A]]
   def asJsObjSub[A <: js.Object]  = jsdyn.asInstanceOf[A] // assumes its there!
   def asJsArray[A <: js.Object]   = jsdyn.asInstanceOf[js.Array[A]]
-  def asOption[T <: js.Object]: Option[T] =
+  def toOption[T <: js.Object]: Option[T] =
     if (js.DynamicImplicits.truthValue(jsdyn)) Some(jsdyn.asInstanceOf[T])
     else None
-
-  @inline def add(that: js.Dynamic) = mergeJSObjects(jsdyn, that)
-  //@inline def add(that: js.Object) = merge(jsdyn, that).asInstanceOf[js.Dynamic]
+  @inline def toNonNullOption[T <: js.Object]: Option[T] = JsUndefOrOps(asUndefOr).toNonNullOption
+  @inline def combine(that: js.Dynamic) = mergeJSObjects(jsdyn, that)
+  @inline def toTruthy: Boolean =
+        if (js.DynamicImplicits.truthValue(jsdyn)) true
+        else false
 }
 
 trait JsDynamicSyntax {

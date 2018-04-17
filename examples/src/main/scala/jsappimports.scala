@@ -2,8 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package react
+package ttg.react
 package examples
 
 import scala.scalajs.js
@@ -103,4 +102,33 @@ object ReadmeText extends js.Object
 object cx extends js.Object {
   def apply(args: String | Number | js.UndefOr[js.Any] | js.Object | js.Dynamic | Null*): String =
     js.native
+}
+
+@js.native
+@JSImport("react-content-loader", JSImport.Namespace)
+object ReactContentLoader extends js.Object {
+  val BulletList: ReactJsComponent = js.native
+  val List: ReactJsComponent = js.native
+  val Code: ReactJsComponent = js.native
+  val Instagram: ReactJsComponent = js.native
+  val Facebook: ReactJsComponent = js.native  
+}
+
+class ReactContentLoaderOptions(
+  val animate: js.UndefOr[Boolean] = js.undefined,
+  val speed: js.UndefOr[Int] = js.undefined,
+  val className: js.UndefOr[String] = js.undefined,
+  val width: js.UndefOr[Double] = js.undefined,
+  val height: js.UndefOr[Double] = js.undefined,
+  val preserveAspectRatio: js.UndefOr[String] = js.undefined,
+  val primaryColor: js.UndefOr[String] = js.undefined,
+  val secondaryColor: js.UndefOr[String] = js.undefined,
+  val style: js.UndefOr[js.Object|js.Dynamic] = js.undefined,
+  val uniquekey: js.UndefOr[String] = js.undefined
+) extends js.Object
+
+object ReactContentLoaderComponents {
+  import ttg.react.elements.wrapJsForScala
+  def BulletList(props: ReactContentLoaderOptions = null)(children: ReactNode*) =
+    wrapJsForScala(ReactContentLoader.List, props, children:_*)
 }

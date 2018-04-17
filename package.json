@@ -148,6 +148,7 @@
         "react": "^16.4.0-alpha.0911da3",
         "react-aria": "^0.9.2",
         "react-big-calendar": "^0.15.0",
+        "react-content-loader": "^3.1.1",
         "react-dom": "^16.4.0-alpha.0911da3",
         "react-edit": "^6.4.0",
         "react-markdown": "^3.2.0",

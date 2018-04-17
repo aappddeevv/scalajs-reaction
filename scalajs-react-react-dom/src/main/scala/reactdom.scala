@@ -11,34 +11,10 @@ import js.JSConverters._
 
 import org.scalajs.dom
 
-trait CreateRootOptions extends js.Object {
-  var hydrate: js.UndefOr[Boolean] = js.undefined
-}
+/** scala.js entry point of react-dom but using reason-react API. */
+package object reactdom {
 
-@js.native
-trait Root extends js.Object {
-  def render(el: ReactNode): Unit = js.native
-}
-
-@js.native
-trait JSReactDOM extends js.Object {
-  def render(node: ReactNode, target: dom.Element): Unit               = js.native
-  def createPortal(node: ReactNode, target: dom.Element): ReactElement = js.native
-  def unmountComponentAtNode(el: dom.Element): Unit                    = js.native
-  def findDOMNode(componentOrElement: js.Any): dom.Element             = js.native
-  def unstable_deferredUpdates(f: js.Function0[Unit]): Unit            = js.native
-
-  /** 16.3 */
-  def createRoot(target: dom.Element, options: js.UndefOr[CreateRootOptions]): Root = js.native
-}
-
-@js.native
-@JSImport("react-dom", JSImport.Namespace)
-object JSReactDOM extends JSReactDOM
-
-object reactdom {
-
-  /** 16.3 */
+  /** Render el into the html element 'id'. react 16.3 */
   def createAndRenderWithId(el: ReactNode, id: String, opts: Option[CreateRootOptions] = None) = {
     val target = Option(dom.document.getElementById(id))
     target.fold(

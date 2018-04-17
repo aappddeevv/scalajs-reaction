@@ -24,6 +24,8 @@ import vdom.tags._
 import fabric._
 import fabric.components._
 
+import ReactContentLoaderComponents._
+
 @js.native
 @JSImport("Examples/addressmanager/addressmanager.css", JSImport.Namespace)
 object componentStyles extends js.Object
@@ -329,7 +331,18 @@ object AddressManagerC {
           div(new DivProps { className = cx(amstyles.component, className.getOrElse(null)) })(
             CommandBar(cbopts(self))(),
             div(new DivProps { className = amstyles.masterAndDetail.asString })(
-              AddressListC.make(self.state.selection, self.state.addresses, activecb(self), ifx),
+              if(self.state.fetching)
+                ReactContentLoaderComponents.BulletList(new ReactContentLoaderOptions(
+                  animate = true,
+                  speed = 1,
+                  className = amstyles.master.asString,
+                  height = 500,
+                  width = 500,
+                  primaryColor = "#f3f3f3",
+                  secondaryColor = "#ecebeb",
+                ))()
+              else
+                AddressListC.make(self.state.selection, self.state.addresses, activecb(self), ifx),
               AddressDetailC.make(selAddrOpt),
             ),
             div(new DivProps { className = amstyles.footer.asString })(

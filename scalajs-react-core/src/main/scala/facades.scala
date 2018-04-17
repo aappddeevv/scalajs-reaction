@@ -60,6 +60,27 @@ protected trait JsComponentThis[State] extends js.Object {
   def jsPropsToScala: js.UndefOr[js.Object => ComponentSpec]
 }
 
+/**
+ * The lowest level of cake base that acts as a "factory" for creating
+ * components. A scala.js react component is a non-native js trait. This factory
+ * creates the component. Each layer of the cake adds functionality specific to
+ * that layer e.g. a stateful layer will provide a public API to set the initial
+ * state.
+ * 
+ * There are several types with the base layer. There are also multiple
+ * variations of a specific type such as "Self", which represents the javascript
+ * "self" concept but in the scala.js world. The non-native js trait
+ * representing react component on the scala.js side is based on
+ * `ComponentSpec`. `WithMethods` provides the public API for adding specific
+ * functions for rendering, changing state, etc., and only used in
+ * "building/specifying" the scala.js side of the component. `Proxy` is the
+ * non-native js trait object provided by scala.js to the reactjs system that
+ * represents the javascript side of the component. Methods in the proxy are
+ * forwarded to methods in `ComponentSpec`. `Ops` is the object that can be
+ * imported by clients to bring the cake types and values into scope for use in
+ * building the scala side component. For example, importing Ops brings
+ * `WithMethods` into scope.
+ */
 trait CakeBase { cake =>
 
   /** Component self for most clent API methods which may or may not contain state. */
