@@ -9,18 +9,20 @@ import scala.scalajs.js
 
 /**
   * Data structure used to create js side react class. These are the lifecycle
-  * react APIs that we do use.  Most of the methods below recover the scala side
+  * react APIs that we do use. Most of the methods below recover the scala side
   * "element" (the component spec) and then forwards the respective call to the
-  * scala side "element."
+  * scala side "element." The same proxy is used for creating each component
+  * instances for all component instances of the same component "type."
   */
 trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   val displayName: String
 
   /**
-    * Subscription "unmount" callbacks. Mount callbacks are stored on the
-    * scala component.
+    * Subscription "unmount" callbacks. The subscriptions are stored on the
+    * scala.js component but once they are run, they are stored on the reactjs
+    * side in the proxy.
     */
-  var subscriptions: js.UndefOr[js.Array[OnUnmount]] = js.undefined
+  var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.undefined
 
   /** react js method. @deprecated */
   val getInitialState: js.UndefOr[js.ThisFunction0[ThisSelf, State]] = js.undefined

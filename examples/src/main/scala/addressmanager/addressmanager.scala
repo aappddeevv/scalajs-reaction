@@ -248,6 +248,7 @@ object AddressManagerC {
       lastActiveAddressId: Option[Id] = None,
       className: Option[String] = None) =
     AddressManager.copy(new methods {
+
       val initialState =
         self => {
           val selcb = () => {

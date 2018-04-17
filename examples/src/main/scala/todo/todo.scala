@@ -155,6 +155,12 @@ object ToDosC {
 
   def make(title: Option[String] = None, todos: Seq[ToDo] = Seq()) =
     ToDos.copy(new methods {
+      subscriptions = js.defined{self =>
+        js.Array(() => {
+          println("ToDo: subscriptions: called during mount")
+            () => println("ToDo: subscriptions: unmounted")
+        })
+      }
       val retainedProps = RP(title)
       val reducer = (action, state, gen) => {
         action match {

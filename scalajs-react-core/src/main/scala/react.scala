@@ -125,10 +125,13 @@ package object react {
   /** No children value. */
   val noChildren: PropsChildren = js.Array()
 
-  /** A function (effect) called when a component unmounts. */
+  /** A function (effect) called (a callback) when a component unmounts. */
   type OnUnmount = () => Unit
 
-  /** A subscription called after mount and after unmount. */
+  /** 
+   * A subscription called after mount and then its return value called after
+   * unmount.
+   */
   type Subscription = () => OnUnmount
 
   /**
