@@ -9,7 +9,6 @@ package examples
 import scala.scalajs.js
 import ttg.react._
 import vdom._
-import prefix_<^._
 import implicits._
 import fabric._
 import elements._

@@ -100,10 +100,24 @@ trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
   @inline implicit def cvtDynamicToAttrValue(attrs: js.Dynamic): AttrValue =
     AttrValue(attrs)
   //@inline implicit def cvtJsObjectToAttrValue(attrs: js.Object): AttrValue = AttrValue(attrs)
+}
 
-  /** Create tag that takes a list of attributes. */
-  @inline def tag(name: String): Tag = new Tag(name)
 
-  /** Create a tag that takes a typed js.Object. */
-  @inline def tagt[P <: js.Object](name: String): TagT[P] = new TagT[P](name)
+/**
+ * Import this to use the list-style attribute syntax.
+ */
+object attrlist extends VDOMSyntax {
+  val noAttributes = Attrs.zero
+
+  /** For now, style attributes are just attributes so fake it out. */
+  val Style = Attrs
+
+  /**
+    * Default tags and attributes you can use. You can import all of the actual
+    * values using `import ^._, <._`.
+    */
+  object prefix_<^ {
+    object ^ extends HtmlAttrs
+    object < extends HtmlTags
+  }
 }

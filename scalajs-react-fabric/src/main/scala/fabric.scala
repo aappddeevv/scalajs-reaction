@@ -12,20 +12,6 @@ import js.|
 import ttg.react.vdom._
 import org.scalajs.dom
 
-/** Misc attributes to use individually, we should use traits instead. */
-trait FabricAttrs {
-  final lazy val text      = attr("text")
-  final lazy val disabled  = attr("disabled")
-  final lazy val onChanged = attr("onChanged")
-
-  /** reactjs component => unit. */
-  final lazy val componentRef = attr("componentRef")
-}
-
-object prefix_F {
-  object F extends FabricAttrs
-}
-
 @js.native
 @JSImport("@uifabric/icons", JSImport.Namespace)
 object uifabric_icons extends js.Object {
@@ -54,6 +40,7 @@ object FabricNS extends js.Object {
   def Selection[T <: js.Object]: Selection[T] = js.native
   val ScrollablePane: ReactJsComponent        = js.native
   val Sticky: ReactJsComponent                = js.native
+  val FocusZone: ReactJsComponent = js.native
 }
 
 /**
@@ -62,41 +49,58 @@ object FabricNS extends js.Object {
 object components {
   import ttg.react.elements.wrapJsForScala
 
-  def Fabric(props: IFabricProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.Fabric, props, children: _*)
-  def TextField(props: ITextFieldProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.TextField, props, children: _*)
-  def Label(props: ILabelProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.Label, props, children: _*)
-  def Link(props: ILinkProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.Link, props, children: _*)
-  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
-  def DefaultButton(props: IButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
-  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.DetailsList, props, children: _*)
   def CommandBar(props: Attr*)(children: ReactNode*) =
     wrapJsForScala(FabricNS.CommandBar, new Attrs(props).toJs, children: _*)
+
   def CommandBar(props: ICommandBarProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.CommandBar, props, children: _*)
+
+  def DefaultButton(props: IButtonProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
+
+  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.DetailsList, props, children: _*)
+
+  def Fabric(props: IFabricProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Fabric, props, children: _*)
+
+  def FocusZone[T <: js.Object](props: IFocusZoneProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.FocusZone, props, children: _*)
+
+  def Label(props: ILabelProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Label, props, children: _*)
+
+  def Link(props: ILinkProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Link, props, children: _*)
+
+  def List[T <: js.Object](props: IListProps[T] = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.List, props, children: _*)
 
   def MarqueeSelection[T <: js.Object](props: IMarqueeSelectionProps[T] = null)(
       children: ReactNode*) =
     wrapJsForScala(FabricNS.MarqueeSelection, props, children: _*)
 
+  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
+
   def Pivot(props: IPivotProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Pivot, props, children: _*)
+
   def PivotItem(props: IPivotItemProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.PivotItem, props, children: _*)
+
   def Spinner(props: ISpinnerProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
+
   def ScrollablePane(props: IScrollablePane = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.ScrollablePane, props, children: _*)
+
   def Sticky(props: IStickyProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Sticky, props, children: _*)
-  def List[T <: js.Object](props: IListProps[T] = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.List, props, children: _*)
+
+  def TextField(props: ITextFieldProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.TextField, props, children: _*)
+
 }
 
 //
@@ -140,7 +144,9 @@ trait ILabelProps
     extends LabelHTMLAttributes[dom.html.Label]
     with ComponentRef[js.Any]
     with Disabled
-    with Theme
+    with Theme {
+  var required: js.UndefOr[Boolean] = js.undefined
+}
 
 trait IPivotItemProps extends HTMLAttributes[dom.html.Div] {
   var linkText: js.UndefOr[String]                                   = js.undefined
@@ -558,4 +564,48 @@ trait IMarqueeSelectionProps[T <: js.Object] extends ComponentRef[IMarqueeSelect
   var isEnabled: js.UndefOr[Boolean]                                    = js.undefined
   var isDraggingConstrainedToRoot: js.UndefOr[Boolean]                  = js.undefined
 
+}
+
+
+@js.native 
+trait IFocusZone extends js.Object {
+  def focus(forceIntoFirstElement: js.UndefOr[Boolean]): Boolean = js.native
+  def focusElement(childElement: js.UndefOr[dom.html.Element]): Boolean = js.native
+}
+
+trait IFocusZoneProps extends ComponentRef[IFocusZone] with HTMLAttributes[dom.html.Div] {
+  //var className: js.UndefOr[String] = js.undefined
+  var direction: js.UndefOr[Int] = js.undefined
+  var defaultActiveElement: js.UndefOr[String] = js.undefined
+  var disabled:  js.UndefOr[Boolean]  = js.undefined
+  /** e.g. div */
+  var elementType: js.UndefOr[String] = js.undefined
+  var isCircularNavigation: js.UndefOr[Boolean]  = js.undefined
+  var isInnerZoneKeyStroke: js.UndefOr[js.Function1[SyntheticKeyboardEvent[dom.html.Element], Boolean]] = js.undefined
+  var ariaLabelledBy: js.UndefOr[String] = js.undefined
+  var ariaDescribedBy: js.UndefOr[String] = js.undefined
+  var onActiveElementChanged: js.UndefOr[
+    js.Function0[Unit] |
+      js.Function2[js.UndefOr[dom.html.Element], js.UndefOr[SyntheticFocusEvent[dom.html.Element]], Unit]
+  ] = js.undefined
+  var rootProps: js.UndefOr[HTMLAttributes[dom.html.Div]] = js.undefined
+  var onBeforeFocus: js.UndefOr[js.Function1[dom.html.Element, Boolean]|js.Function0[Boolean]] = js.undefined
+  var allowFocusRoot: js.UndefOr[Boolean]  = js.undefined
+  var allowTabKey: js.UndefOr[Boolean] = js.undefined
+  /** FocusZoneTabbableElements */
+  var handleTabKey: js.UndefOr[Int] = js.undefined
+  var shouldInputLoseFocusOnArrowKey: js.UndefOr[js.Function1[dom.html.Input, Boolean]] = js.undefined
+  var checkForNoWrap:js.UndefOr[Boolean] = js.undefined
+}
+
+object FocusZoneDirection {
+  val vertical = 0
+  val horizontal = 1
+  val biderectional = 2
+}
+
+object FocusZoneTabbableElements {
+  val none = 0
+  val all = 1
+  val inputOnly = 2
 }

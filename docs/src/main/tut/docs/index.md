@@ -60,10 +60,31 @@ import vdom.svgtags._
 
 // import this if you are using the office-ui-fabric-react library, otherwise skip
 import fabric
+import fabric._
 
 // import the core components
 import fabric.components._
+import fabric.styling._
 ```
+
+You can use some import compression as well:
+
+```scala
+import scala.scalajs.js
+import js.annotation._
+import js.JSConverters._
+import js.Dynamic.{literal => jsobj}
+
+import ttg.react.{implicits, fabric, vdom, _}
+import fabric.{styling, components, _}
+import components._
+import styling._
+import implicits._
+import vdom.{tags, _}
+import tags._
+```
+
+but this could lead to some conflicts depending on what else you import.
 
 ## Implicits
 Most facade libraries and scala.js use implicit conversion to automatically convert scala world objects to javascript objects. Since this is a facade library that is designed to be integrated into other javascript/reason react applications, you will most likely need to use javascript objects on your imported objects as well as your exported components.

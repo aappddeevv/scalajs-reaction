@@ -8,29 +8,19 @@ package ttg.react
 
 import scalajs.js
 import org.scalajs.dom
-import scala.annotation.unchecked.{uncheckedVariance => uv}
+//import scala.annotation.unchecked.{uncheckedVariance => uv}
+import scala.language.implicitConversions
 
 /**
-  * Simple vdom. This vdom implemntation uses attribute lists instead of
-  * non-native JS traits so you may or may not create a valid list of
-  * attributes.
-  */
-package object vdom extends vdom.Events with VDOMSyntax {
+ * Simple vdom. There are two styles, one with list of attributes like many
+ * other scalajs react bindings.  The preferred approach is using typed
+ * js.Objects so that properties presence/absence can be checked.
+ */
+package object vdom extends vdom.Events {
 
-  import scala.language.implicitConversions
+  /** Create tag that takes a list of attributes. */
+  @inline def tag(name: String): Tag = new Tag(name)
 
-  val noAttributes = Attrs.zero
-
-  /** For now, style attributes are just attributes so fake it out. */
-  val Style = Attrs
-
-  /**
-    * Default tags and attributes you can use. You can import all of the actual
-    * values using `import ^._, <._`.
-    */
-  object prefix_<^ {
-    object ^ extends HtmlAttrs
-    object < extends HtmlTags
-  }
-
+  /** Create a tag that takes a typed js.Object. */
+  @inline def tagt[P <: js.Object](name: String): TagT[P] = new TagT[P](name)
 }

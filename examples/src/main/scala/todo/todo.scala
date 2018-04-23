@@ -23,7 +23,6 @@ import fabric.styling._
 
 import vdom._
 import vdom.tags._
-import prefix_F._
 
 object ToDoStyling {
 
@@ -36,7 +35,7 @@ object ToDoStyling {
   }
 
   def getClassNames(randomArg: Int = 400) =
-    FabricStyling.mergeStyleSets[ToDoClassNames](
+   Styling.mergeStyleSets[ToDoClassNames](
       styleset(
         "root" -> new IRawStyle {
           selectors = selectorset(
@@ -64,7 +63,7 @@ object ToDoStyling {
       ))
 
   // example of memoizing, you need a js.Function to use memoizeFunction
-  val memoized = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassNames))
+  val memoized = fabric.Utilities.memoizeFunction(js.Any.fromFunction1(getClassNames))
   val cn       = memoized(500)
 }
 

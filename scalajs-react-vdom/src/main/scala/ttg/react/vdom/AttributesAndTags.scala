@@ -12,7 +12,6 @@ import js.annotation.JSName
 import js.Dynamic.{literal => lit}
 import js.|
 import org.scalajs.dom
-import dom.html
 
 trait SetInnerHTML extends js.Object {
   val __html: String

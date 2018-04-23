@@ -33,7 +33,8 @@ package object react {
   trait ReactNode extends js.Object
 
   /** Output from createElement and something you can render reactjs wth key and ref
-    * accessors. */
+   * accessors.
+   */
   @js.native
   trait ReactElement extends js.Object with ReactNode {
     val key: UndefOr[String]
@@ -150,6 +151,7 @@ package object react {
   @inline def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
 
   /**
+   * Merge js.Dynamic. See [[merge]] and use that.
     * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
     */
   @inline def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
@@ -162,8 +164,11 @@ package object react {
     result.asInstanceOf[js.Dynamic]
   }
 
-  /** Merge objects and Ts together. Good for merging props with data- attributes. */
-  @inline def merge[T <: js.Object](objs: T | js.Dynamic*): T = {
+  /** 
+   * Merge objects and Ts together. Good for merging props with data- attributes. This is like 
+   * `Object.assign`.
+   */
+  @inline def merge[T <: js.Object](objs: js.Dynamic | js.Object *): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])

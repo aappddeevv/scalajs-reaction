@@ -164,11 +164,12 @@ trait CakeBase { cake =>
     var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
   }
 
-  /** reactjs this.state: The object stored in reactjs this.state. */
+  /** reactjs this.state: The object stored in reactjs this.state. (reason-react TotalState) */
   protected type State <: StateLike
 
   /**
-    * Keep it as js-object so you can still manipulate it from javascript.
+   * Keep it as js-object so you can still manipulate it from javascript. In the base 
+   * case we are non storing any real state.
     */
   protected trait StateLike extends js.Object
 

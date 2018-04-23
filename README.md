@@ -76,9 +76,10 @@ The latest react is recommended, v16.2+. If you wish to use the latest features 
 ### Create a Component
 You can quickly create a component and render it:
 ```scala
-object HelloWorldC {
-  val HelloWorld = statelessComponent("HelloWorld")
-  import HelloWorld.ops._
+object HelloWorld {
+  val c = statelessComponent("HelloWorld")
+  import c.ops._
+  // could also use "aplly" so that you do HelloWorld() instead of HelloWorld.make(), but make is ReasonReact friendly.
   def make(name: Option[String]) =
     render{ self =>
         div("hello world" + name.map(" and welcome " + _).getOrElse(""))
@@ -88,7 +89,7 @@ object HelloWorldC {
 object MyWebApp {
    def app() = {
      ReactDom.renderToElementId(
-      HelloWorldC.make(Some("John")),
+      HelloWorld.make(Some("John")),
       "container"
       )
    }
@@ -103,7 +104,7 @@ The "render" method copies the internal proxy component and adds a callback from
 
 ```scala
     def make(name: Option[String]) =
-      HelloWorld.copy(new methods  {
+      c.copy(new methods  {
         val render = self => { ... }
         didMount = js.defined{ oldNewSelf => 
             ... 
@@ -120,25 +121,27 @@ If you want to use it in javascript or have a different "make" interface, define
 the export and map the properties:
 
 ```scala
+// optionally define a trait to make it easier to typecheck component parameters
+trait HelloWorldProps extends js.Object {
+  var name: js.UndefOr[String] = js.undefined
+}
+
 object HelloWorld {
-  ...
-  // optionally define a trait to make it easier to typecheck component parameters
-  trait HelloWorldProps extends js.Object {
-    var name: js.UndefOr[String] = js.undefined
-  }
-  
+...
+
   // Exported to javascript world: <HelloWorld name={"John"} />
   @JSExportTopLevel("HelloWorld")
-  private val exported =
+  private val jsComponent =
     HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
 ```
+
 You can define your own "make" API to be whatever suits you:
+
 ```scala
   // Alternative scala `make` definition, render must convert to scala objects if needed
   // and internal scala code would need to create a HelloWorldProps object.
   def make2(props: HelloWorldProps = noProps()) =
-    HelloWorld
-      .render{ self =>
+    c.render{ self =>
         div(
           "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
         )
@@ -149,7 +152,7 @@ Attributes are type checked properly and restricted to what you
 specified. Here's how you would use it:
 
 ```scala
-  HelloWorldC.make2(new HelloWorldProps { name = "John" })
+  HelloWorld.make2(new HelloWorldProps { name = "John" })
 ```
 
 Most times the javascript interop has to deal with optional parameters and the conversion
@@ -169,7 +172,7 @@ object SomePackageNS extends js.Object {
 }
 object SomePackage {
   import ttg.react.elements._
-  def Label(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomePackageNS, new Attrs(props).toJs, children:_*)
+  def Label(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomePackageNS.label, new Attrs(props).toJs, children:_*)
 }
 ```
 
@@ -270,7 +273,7 @@ If you have dynamically calculated styles, its best to memoize the result so you
 
 ```scala
 // notice the fromFunction1 conversion from scala to js.Function, the "N" is for arity
-val memoizedClassNames = fabric.UitilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassName))
+val memoizedClassNames = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassName))
 val cn = memoized(500)
 ```
 
@@ -395,14 +398,14 @@ Libraries you may be interested in:
 js. The binding framework is at a individual element level like mobx. You can
 use xml syntax as well. The binding approach is called "precise"
 binding.
-* [diode](https://github.com/suzaku-io/diode): redux replacement
-* [laminar](https://github.com/raquo/laminar): a reactive web framework
-* [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom
+* [diode](https://github.com/suzaku-io/diode): redux replacement.
+* [laminar](https://github.com/raquo/laminar): a reactive web framework.
+* [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom.
 * [pine](https://github.com/sparsetech/pine): XML/HTML builder.
 * [scalacss](https://github.com/japgolly/scalacss): A solid css-in-scala solution.
-* [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes
+* [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes.
 * [scala-tags](https://github.com/lihaoyi/scalatags): XML/HTML builder.
-* [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework
+* [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework.
 * [udash](https://udash.io/) is another reactive framework that is not
 react based, but reactive.
 * [udash-css](https://udash.io): A css-in-scala framework.

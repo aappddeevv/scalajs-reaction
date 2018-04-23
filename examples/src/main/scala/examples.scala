@@ -20,6 +20,8 @@ import vdom._
 import ttg.react.fabric
 import fabric._
 import fabric.components._
+import fabric.styling._
+import Styling._
 
 @js.native
 @JSImport("Examples/examples.css", JSImport.Namespace)
@@ -78,7 +80,7 @@ object Pages {
     itemKey = "helloworld"
     className = estyles.scrollme.asString
   })(
-    helloworld.HelloWorldC.make()
+    helloworld.HelloWorld.make()
   )
 
   // the view model will come from redux to illustrate how it can be split up.
@@ -159,7 +161,7 @@ object Examples {
             todoPage,
             helloWorldPage,
             changeReduxStatePage(),
-            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorldC.make()),
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld.make()),
             tagTest(),
             pressurePage,
             graphPage,
@@ -193,7 +195,7 @@ object Main {
   def App(): Unit = {
     println("Running examples app")
     // use append so we can read/change the CSS in the browser debugger
-    StylesheetNS.Stylesheet.getInstance.setConfig(new IStylesheetConfig {
+    Stylesheet.getInstance.setConfig(new IStylesheetConfig {
       injectionMode = InjectMode.appendChild
     })
     uifabric_icons.initializeIcons()

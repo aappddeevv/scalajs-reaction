@@ -22,7 +22,8 @@ import context._ // new react context
 import SimpleCacheProvider._
 import fabric._
 import fabric.styling._
-import fabric.UtilitiesNS.memoizeFunction
+import fabric.Utilities.memoizeFunction
+import fabric.styling.Styling._
 
 object Image {
 
@@ -159,7 +160,7 @@ object Results {
 
   // we could just use inline styles or "mergeStyles" vs "mergeStyleSets"
   private def getClassNames() =
-    FabricStyling.mergeStyleSets[ResultsClassNames](
+    mergeStyleSets[ResultsClassNames](
       styleset(
         "root" -> new IRawStyle {
           display = "flex"
@@ -206,10 +207,11 @@ object Result {
     val content: String   = js.native
     val thumbnail: String = js.native
     val header: String    = js.native
+    val testempty: String = js.native
   }
 
   private def _getClassNames(w: Double, h: Double, isActive: Boolean = false) =
-    FabricStyling.mergeStyleSets[ResultClassNames](
+    mergeStyleSets[ResultClassNames](
       styleset(
         "button" -> stylearray(
           new IRawStyle {
@@ -245,7 +247,8 @@ object Result {
         },
         "header" -> new IRawStyle {
           fontSize = 16
-        }
+        },
+        "testempty" -> stylearray()
       ))
 
   private def getClassNames = memoizeFunction(js.Any.fromFunction3(_getClassNames))
@@ -312,7 +315,7 @@ object MasterDetail {
   }
 
   private def _getClassNames(showDetails: Boolean = false) =
-    FabricStyling.mergeStyleSets[MasterDetailClassNames](
+    mergeStyleSets[MasterDetailClassNames](
       styleset(
         "root" -> new IRawStyle {
           margin = "0 auto"

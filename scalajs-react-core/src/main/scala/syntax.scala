@@ -10,6 +10,46 @@ import js._
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
+/**
+ * It is common in interop code to model a value as A or null but not undefined.
+ */
+final case class OrNullOps[A <: js.Any](a: A | Null) {
+  /** Convert an A|Null to a well formed option. */
+  @inline def toNonNullOption: Option[A] =
+    if(a == null) Option.empty[A]
+    else Some(a.asInstanceOf[A])
+
+  /** If Null, then false, else true. */
+  @inline def toTruthy: Boolean =
+    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
+    else false
+
+  /** null => undefined, otherwise A. */
+  @inline def toUndefOr: js.UndefOr[A] =
+    if(a == null) js.undefined
+    else js.defined(a.asInstanceOf[A])
+}
+
+trait OrNullSyntax{
+  implicit def orNullSyntax[A <: js.Any](a: A|Null): OrNullOps[A] = OrNullOps[A](a)
+}
+
+// /**
+//  * It is common in interop code to model a value as A, null or undefined so
+//  * model it explicitly vs trying to let clients *not* have to use a bunch of
+//  * '.to*' calls in a row. Will this conflict with plain ole js.UndefOr syntax?
+//  */
+// final case class UndefOrNullOps[A <: js.Any|Null](a: js.UndefOr[A]) {
+//   /** Convert an js.UndefOr[A|Null] to a well formed option. */
+//   @inline def toNonNullOption: Option[A] =
+//     if(a.asInstanceOf[js.Any] == null) Option.empty[A]
+//     else Some(a.asInstanceOf[A])
+// }
+
+// trait UndefOrNullSyntax{
+//   implicit def undefOrNullSyntax[A|Null <: js.Any|Null](a: A|Null): UndefOrNullOps[A] = UndefOrNullOps[A](a)
+// }
+
 final case class JsAnyOps(a: js.Any) {
   @inline def asJsObj: js.Object        = a.asInstanceOf[js.Object]
   @inline def asDyn: js.Dynamic         = a.asInstanceOf[js.Dynamic]
@@ -23,37 +63,37 @@ final case class JsAnyOps(a: js.Any) {
   @inline def toStringJs                = a.asInstanceOf[js.Any].toString()
   @inline def toNonNullOption[T <: js.Any]: Option[T] = {
     // also defined in react package, repeated here
-    if (js.isUndefined(a)) None
-    else Option(a.asInstanceOf[T])    
+    if (js.isUndefined(a) || a==null) None
+    else Option(a.asInstanceOf[T])
   }
   @inline def toTruthy: Boolean =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
-    else false    
+    else false
 }
 
 trait JsAnySyntax {
-  implicit def jsAnyOpsSyntax(a: js.Any) = new JsAnyOps(a)
+  implicit def jsAnyOpsSyntax(a: js.Any): JsAnyOps = JsAnyOps(a)
 }
 
-final case class JsObjectOps(o: js.Object) {
-  @inline def asDict[A]                   = o.asInstanceOf[js.Dictionary[A]]
+final case class JsObjectOps[A <: js.Object](o: A) {
+  @inline def asDict[B]                   = o.asInstanceOf[js.Dictionary[B]]
   @inline def asAnyDict                   = o.asInstanceOf[js.Dictionary[js.Any]]
   @inline def asDyn                       = o.asInstanceOf[js.Dynamic]
   @inline def asUndefOr[A]: js.UndefOr[A] = o.asInstanceOf[js.UndefOr[A]]  
-  @inline def combine(that: js.Object)        = merge(o, that)
-  @inline def combine(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
+  @inline def combine[B <: js.Object](that: js.Object)        = react.merge(o, that).asInstanceOf[B]
+  //@inline def combine(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
 }
 
 final case class JsDictionaryOps(o: js.Dictionary[_]) {
   @inline def asJsObj = o.asInstanceOf[js.Object]
   @inline def asDyn   = o.asInstanceOf[js.Dynamic]
-  @inline def combine(that: js.Dictionary[_]) =
-    merge(o.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dictionary[_]]
+  // @inline def combine(that: js.Dictionary[_]) =
+  //   merge(o.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dictionary[_]]
 }
 
 trait JsObjectSyntax {
-  implicit def jsObjectOpsSyntax(a: js.Object)           = new JsObjectOps(a)
-  implicit def jsDictonaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
+  implicit def jsObjectOpsSyntax[A <: js.Object](a: A)           = new JsObjectOps(a)
+  implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
 }
 
 final case class JsUndefOrStringOps(a: UndefOr[String]) {
@@ -68,7 +108,9 @@ final case class JsUndefOrBooleanOps(a: UndefOr[Boolean]) {
 final case class JsUndefOrOps[A](a: UndefOr[A]) {
   @inline def isNull          = a == null
   @inline def isEmpty         = isNull || !a.isDefined
-  @inline def toNonNullOption = if (a.isEmpty) None else a.toOption
+  @inline def toNonNullOption =
+    if (a.isEmpty || a == null) None
+    else a.toOption
   @inline def toStringJs      = a.asInstanceOf[js.Any].toString()
   @inline def toTruthy: Boolean =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
@@ -134,6 +176,8 @@ trait AllSyntax
     with JsUndefOrSyntax
     with JsObjectSyntax
     with JsAnySyntax
+    with OrNullSyntax
+    //with UndefOrNullSyntax
 
 object syntax {
   object all       extends AllSyntax
@@ -143,10 +187,12 @@ object syntax {
   object jsundefor extends JsUndefOrSyntax
   object jsobject  extends JsObjectSyntax
   object jsany     extends JsAnySyntax
+  object ornull extends OrNullSyntax
+  //object undefornull extends UndefOrNullSyntax
 }
 
-trait C2E {
-  @inline implicit def c2E(c: Component): ReactNode = elements.element(c)
+trait Component2Elements {
+  @inline implicit def c2E(c: Component): ReactElement = elements.element(c)
   @inline implicit def cSeq2E(c: Seq[Component]): ReactNode =
     arrayToElement(c.map(elements.element(_)))
 }
@@ -155,32 +201,38 @@ trait C2E {
   * Mostly evil converters. Watch out for these automatic conversions. All are
   * prefixed with _ so you can define your own and not get tripped on namespace.
   */
-trait MiscConverters {
-  @inline implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) = arrayToElement(arr)
-  @inline implicit def _stringToElement(s: String): ReactNode              = stringToElement(s)
+trait ValueConverters {
+  @inline implicit def jsArrayToElement[T <: ReactNode](arr: js.Array[T]) = react.arrayToElement(arr)
+  @inline implicit def _stringToElement(s: String): ReactNode              = react.stringToElement(s)
 
-  @inline implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = arrayToElement(s)
-  @inline implicit def _intToElement(i: Int): ReactNode         = i.asInstanceOf[ReactNode]
-  @inline implicit def _doubleToElement(d: Double): ReactNode   = d.asInstanceOf[ReactNode]
-  @inline implicit def _floatToElement(f: Float): ReactNode     = f.asInstanceOf[ReactNode]
-  @inline implicit def _booleanToElement(b: Boolean): ReactNode = b.asInstanceOf[ReactNode]
-  @inline implicit def _optToElement(s: Option[ReactElement]): ReactNode =
+  @inline implicit def seqToElement[T <: ReactNode](s: Seq[T]) = react.arrayToElement(s)
+  @inline implicit def intToElement(i: Int): ReactNode         = i.asInstanceOf[ReactNode]
+  @inline implicit def doubleToElement(d: Double): ReactNode   = d.asInstanceOf[ReactNode]
+  @inline implicit def floatToElement(f: Float): ReactNode     = f.asInstanceOf[ReactNode]
+  @inline implicit def booleanToElement(b: Boolean): ReactNode = b.asInstanceOf[ReactNode]
+  @inline implicit def optToElement(s: Option[ReactElement]): ReactNode =
     s.getOrElse(null.asInstanceOf[ReactNode])
-  @inline implicit def _iterableToElement[T](s: Iterable[T])(
+  @inline implicit def iterableToElement[T](s: Iterable[T])(
       implicit cv: T => ReactNode): ReactNode = {
     s.map(cv).toJSArray.asInstanceOf[ReactElement]
   }
   // keep separate for *just* component conversion.
   //@inline implicit def _componentToElement(c: ComponentAny): ReactElement = elements.element(c)
+
+
+  @inline implicit def undefOrReactNodeToReactNode(n: js.UndefOr[ReactNode]): ReactNode =
+    n.getOrElse(null)
+  @inline implicit def undefOrReactNodeArrayToReactNode(n: js.UndefOr[js.Array[ReactNode]]): ReactNode =
+    n.map(i => iterableToElement(i)).getOrElse(null)
 }
 
-trait AllInstances extends C2E with MiscConverters
+trait AllInstances extends Component2Elements with ValueConverters
 
 /** Instances are the wrong word, converters would be better. */
 object instances {
   object all       extends AllInstances
-  object component extends C2E
-  object any       extends MiscConverters
+  object component extends Component2Elements
+  object value       extends ValueConverters
 }
 
 object implicits extends AllSyntax with AllInstances

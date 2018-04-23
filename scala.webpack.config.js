@@ -119,7 +119,7 @@ const common = (scalapath) => ({
             },
             {
                 test: /\.js$/,
-                use: ["source-map-loader"],
+                use: ["scalajs-friendly-source-map-loader"],
                 enforce: "pre",
                 exclude: [/node_modules/],
             },
@@ -140,10 +140,12 @@ function copies(dest) {
 
 const dev = {
     devtool: "source-map",
+    mode: "development",
 }
 
 const prod = {
     // skip source-map
+    mode: "production"
 }
 
 module.exports = function (env) {

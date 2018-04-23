@@ -1,0 +1,37 @@
+# -*- mode: snippet -*-
+# Author: aappddeevv
+# name: statelesswithstyles
+# key: statelesswithstyles
+# --
+
+// WIP, need to add getStyles, getNames
+
+trait ${1:enumerate}Styles extends js.Object {
+  var root: js.UndefOr[IStyle} = js.undefined
+}
+
+trait ${1}ClassNames extends js.Object {
+  var root: String
+}
+
+trait ${1}Props extends js.Object {
+  var className: js.UndefOr[String] = js.undefined
+  var styles: js.UndefOr[] = js.undefined  
+}
+
+object ${1:enumerate} {
+  val c = ttg.react.elements.statelessComponent("$1")
+  import c.ops._
+
+  def make(props: js.UndefOr[${1}Props] = js.undefined) =
+    c.copy(new methods {
+        val render = self => {
+           val styles = getStyles(props.map(_.styles).getOrElse(js.undefined))
+           val cn = getClassNams(props.map(_.className), styles)
+           div( new IDivProps {
+                className = cn.root
+           })("component $1")
+        }
+    })
+
+}
