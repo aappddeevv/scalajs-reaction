@@ -41,8 +41,6 @@ package object styling {
   /** Create an array of styles. This should really have IStyleBase as input. */
   object stylearray {
     def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
-    //def apply(styles: IStyleBase*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
-
     def apply(): IStyle = js.Array[IStyle]().asInstanceOf[IStyle]
   }
 
@@ -52,20 +50,32 @@ package object styling {
     * Allows us to define and use some non-native JS traits but is also a bit
     * loosely typed.
     */
-  //type IStyleBase = IRawStyle | String | Null | js.Dynamic | js.Object
   type IStyleBase = IRawStyle | String | js.Dynamic | js.Object
 
   /** A simple style object/string/thing or an array of those. A plain string becomes a classname in mergestyles. */
   type IStyle     = IStyleBase | IRawStyleArray
-  //type IStyle = IRawStyle | String | Null | js.Dynamic | js.Object | IRawStyleArray
 
   /**
     * Keys are usually logical names of your component, e.g. root, header, footer.
-    * Could just use a non-native JS trait.
     */
   type IStyleSet = js.Dictionary[IStyle]
 
-  /** Create a style set. */
+  /** 
+   * Create a style set. You can use this to help drive type inference or 
+   * you can use a JS trait directly.
+   * 
+   * @example {{{
+   *  mergeStyleSets[SomeClassNames](
+   *  styleset(
+   *    "root" -> stylearray(
+   *      "xx-PartName",
+   *      new IRawStyle { ... },
+   *      if(something) null else new IRawStyle { ... },
+   *      customStyles.flatMap(_.root)
+   *  )
+   * )
+   * }}}
+   */
   object styleset {
     @inline def apply(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
       js.Dictionary[IStyle](stylePairs: _*)
@@ -75,12 +85,14 @@ package object styling {
   // automatic converters to make this bearable syntax-wise. Should these be optional?
   //
 
+  /** Convert null to style. */
+  implicit def null2IStyle(n: Null): IStyle = n.asInstanceOf[IStyle]
+
+  /** Convert unit, which is "nothing" to a null. */
+  implicit def unit2IStyle(n: Null): IStyle = null.asInstanceOf[IStyle]
 
   /** Any old dynamic maps to a style since we don't know what's in it so be hopeful. */
   implicit def dyn2IStyle(d: js.Dynamic): IStyle = d.asInstanceOf[IStyle]
-
-  /** js.undefined is a js.UndefOr[Nothing]. Map it to a null value. */
-  //implicit def undefined2IStyle(u: js.UndefOr[Nothing]): IStyle = null.asInstanceOf[IStyle]
 
   /** Map a UndefOr <stuff> to IStyle directly. */
   implicit def undefOrJsObject2IStyle(u: js.UndefOr[js.Object]): IStyle =

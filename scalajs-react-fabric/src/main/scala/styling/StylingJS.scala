@@ -21,19 +21,13 @@ object Styling extends js.Object {
   /**
    * Merge styles and register in stylesheet. Return the "css" mangled name you
    * use as the attribute "className" in your components.
-   *
-   * @todo Work on the typing of inputs, not sure this is right.
-   * 
    */
   def mergeStyles(styles: IStyle*): String = js.native
 
   /**
-   * Merge style sets and register in stylesheet. js.Object is included to
-    * allow "partial" T's to be passed in. Note that it is not possble to ensure
-    * that all keys in T are defined based on the input parameters due to type
-    * differences between scala and typescript. T is typically a native trait
-    * with *no* "js.UndefOr" declarations because it is assumed that the inputs
-    * will properly fill out the T structure correctly.
+   * Merge style sets and register in stylesheet. js.Object is included to allow
+    * "partial" T's to be passed in. It is not possible to ensure that all keys
+    * in T are defined based on the input parameters alone.
     */
   def mergeStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
 

@@ -10,46 +10,48 @@ import js._
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
-/** Is this really doing anything with double hops? */
-object jsany {
-  /**
-   * Not syntax per-se, but helps drive type inference when we need to hop
-   * through 2 implicit conversions for non reference types. It's similar in
-   * usage as `js.undefined`. scala predef includes String and other
-   * mapped type conversions to js.Any, this makes it explicit.
-   * {{{
-   * val str = "blah"
-   * val x = jsany(str).toTruthyUndefOr
-   * }}}
-   */  
-  def apply[A <: String|Boolean|Int|Float|Double|Short|Byte|Unit](a: A): js.Any = a.asInstanceOf[js.Any]
+// /** Is this really necessary? */
+// object jsany {
+//   /**
+//    * Not syntax per-se, but helps drive type inference when we need to hop
+//    * through 2 implicit conversions for non reference types. It's similar in
+//    * usage as `js.undefined`. scala predef includes String and other
+//    * mapped type conversions to js.Any, this makes it explicit.
+//    * {{{
+//    * val str = "blah"
+//    * val x = jsany(str).toTruthyUndefOr
+//    * }}}
+//    */  
+//   def apply[A <: String|Boolean|Int|Float|Double|Short|Byte|Unit](a: A): js.Any = a.asInstanceOf[js.Any]
+// }
+
+/**
+ * It is common in interop code to model a value as A or null but not undefined even
+ * though null and undefined may both mean "absent value." See `|.merge` as well.
+ * Note that chaining many `js.|` together probably not work like you think.
+ */
+final case class OrNullOps[A <: js.Any](a: A | Null) {
+  /** Convert an A|Null to a well formed option. */
+  @inline def toNonNullOption: Option[A] =
+    if(a == null) Option.empty[A]
+    else Some(a.asInstanceOf[A])
+
+  /** If Null, then false, else true. */
+  @inline def toTruthy: Boolean =
+    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
+    else false
+
+  /** null => undefined, otherwise A. */
+  @inline def toUndefOr: js.UndefOr[A] =
+    if(a == null) js.undefined
+    else js.defined(a.asInstanceOf[A])
 }
 
-// /**
-//  * It is common in interop code to model a value as A or null but not undefined even
-//  * though null and undefined may both mean "absent value." See `|.merge` as well.
-//  */
-// final case class OrNullOps[A <: js.Any](a: A | Null) {
-//   /** Convert an A|Null to a well formed option. */
-//   @inline def toNonNullOption: Option[A] =
-//     if(a == null) Option.empty[A]
-//     else Some(a.asInstanceOf[A])
+trait OrNullSyntax{
+  @inline implicit def orNullSyntax[A <: js.Any](a: A|Null): OrNullOps[A] = OrNullOps[A](a)
+}
 
-//   /** If Null, then false, else true. */
-//   @inline def toTruthy: Boolean =
-//     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
-//     else false
-
-//   /** null => undefined, otherwise A. */
-//   @inline def toUndefOr: js.UndefOr[A] =
-//     if(a == null) js.undefined
-//     else js.defined(a.asInstanceOf[A])
-// }
-
-// trait OrNullSyntax{
-//   @inline implicit def orNullSyntax[A <: js.Any](a: A|Null): OrNullOps[A] = OrNullOps[A](a)
-// }
-
+/** Is this AnyVal or AnyRef or js.Any??? */
 trait AnyOps[T] {
   def a: T
 
@@ -93,12 +95,13 @@ trait AnyOps[T] {
    */
   @inline def toTruthyUndefOr: js.UndefOr[T] =
     if(js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
-    else js.undefined  
+    else js.undefined 
 }
 
 final case class JsAnyOps[T <: js.Any](val a: T) extends AnyOps[T] {}
 
 trait JsAnySyntax {
+  // this does not seem to pick p scala.js mapped types, ask gitter
   @inline implicit def jsAnyOpsSyntax[T <: js.Any](a: T): JsAnyOps[T] = JsAnyOps(a)
 }
 
@@ -110,6 +113,7 @@ final case class ScalaMappedOps[T <: scala.Any](val a: T) extends AnyOps[T] {}
 
 trait ScalaMappedSyntax {
   @inline implicit def stringScalaOpsSyntax[String](a: String): ScalaMappedOps[String] = ScalaMappedOps[String](a)
+  // all of these seem to conflict with the first String def above and are these needed if they are <: js.Any
   // these seem to conflict as scala things String and Boolean, Byte, etc. lead to ambiguous implicits
   //implicit def booleanScalaOpsSyntax[Boolean](a: Boolean): ScalaMappedOps[Boolean] = ScalaMappedOps[Boolean](a)
   //implicit def byteScalaOpsSyntax[Byte](a: Byte): ScalaMappedOps[Byte] = ScalaMappedOps[Byte](a)
@@ -125,14 +129,12 @@ final case class JsObjectOps[A <: js.Object](o: A) {
   @inline def asDyn                       = o.asInstanceOf[js.Dynamic]
   @inline def asUndefOr[A]: js.UndefOr[A] = o.asInstanceOf[js.UndefOr[A]]  
   @inline def combine[B <: js.Object](that: js.Object)        = react.merge(o, that).asInstanceOf[B]
-  //@inline def combine(that: js.Dictionary[_]) = merge(o, that.asInstanceOf[js.Object])
 }
 
+/** These should be picked by `<: js.Object` but don't seem to be. */
 final case class JsDictionaryOps(o: js.Dictionary[_]) {
   @inline def asJsObj = o.asInstanceOf[js.Object]
   @inline def asDyn   = o.asInstanceOf[js.Dynamic]
-  // @inline def combine(that: js.Dictionary[_]) =
-  //   merge(o.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dictionary[_]]
 }
 
 trait JsObjectSyntax {
@@ -140,28 +142,32 @@ trait JsObjectSyntax {
   @inline implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
 }
 
-final case class JsUndefOrStringOps(a: UndefOr[String]) {
-  @inline def orEmpty: String = a.getOrElse("")
-  @inline def filterTruthy: js.UndefOr[String] = a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))  
-}
-
-final case class JsUndefOrBooleanOps(a: UndefOr[Boolean]) {
-  @inline def orTrue: Boolean  = a.getOrElse(true)
-  @inline def orFalse: Boolean = a.getOrElse(false)
-  @inline def filterTruthy: js.UndefOr[Boolean] = a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))  
-}
-
-/** Note that js.UdefoOr already has a `.orNull` method. */
-final case class JsUndefOrOps[A](a: UndefOr[A]) {
+trait UndefOrCommon[A] {
+  val a: UndefOr[A]
   /** Tests for overall nullness which is different than `.isEmpty|.nonEmpty`. */
   @inline def isNull          = a == null
   @inline def isEmpty         = isNull || !a.isDefined
+  /** This could also be `_.toOption.filter(_ != null)` */
   @inline def toNonNullOption =
     if (a.isEmpty || a == null) None
     else a.toOption
   @inline def toStringJs      = a.asInstanceOf[js.Any].toString()
   @inline def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
-  @inline def filterTruthy: js.UndefOr[A] = a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
+  @inline def filterTruthy: js.UndefOr[A] = a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))  
+}
+
+final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommon[String] {
+  /** Return string's "zero" which is an empty string. */
+  @inline def orEmpty: String = a.getOrElse("")
+}
+
+final case class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
+  @inline def orTrue: Boolean  = a.getOrElse(true)
+  @inline def orFalse: Boolean = a.getOrElse(false)
+}
+
+/** Note that js.UdefoOr already has a `.orNull` method. */
+final case class JsUndefOrOps[A](a: UndefOr[A]) extends UndefOrCommon[A] {
 }
 
 trait JsUndefOrSyntax {
@@ -185,9 +191,11 @@ final case class JsDynamicOps(val jsdyn: js.Dynamic) {
   def asUndefOr[A]: js.UndefOr[A] = jsdyn.asInstanceOf[js.UndefOr[A]]
   def asJsObjSub[A <: js.Object]  = jsdyn.asInstanceOf[A] // assumes its there!
   def asJsArray[A <: js.Object]   = jsdyn.asInstanceOf[js.Array[A]]
+  /** Uses truthiness to determine None */
   def toOption[T <: js.Object]: Option[T] =
     if (js.DynamicImplicits.truthValue(jsdyn)) Some(jsdyn.asInstanceOf[T])
     else None
+  /** Not sure this works... */
   @inline def toNonNullOption[T <: js.Object]: Option[T] = JsUndefOrOps(asUndefOr).toNonNullOption
   @inline def combine(that: js.Dynamic) = mergeJSObjects(jsdyn, that)
   @inline def toTruthy: Boolean =js.DynamicImplicits.truthValue(jsdyn)
@@ -223,7 +231,7 @@ trait AllSyntax
     with JsDynamicSyntax
     with JsObjectSyntax
     with JsAnySyntax
-    //with OrNullSyntax
+    with OrNullSyntax
     with ScalaMappedSyntax
     with OptionSyntax
     with JsUndefOrSyntax
@@ -236,7 +244,7 @@ object syntax {
   object jsobject  extends JsObjectSyntax
   object jsany     extends JsAnySyntax
   object scalamapped  extends ScalaMappedSyntax
-  //object ornull extends OrNullSyntax
+  object ornull extends OrNullSyntax
   object option extends OptionSyntax
 }
 
