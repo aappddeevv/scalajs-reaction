@@ -11,8 +11,6 @@ import js.|
 import org.scalajs.dom
 import js.JSConverters._
 
-import tagging._
-
 object styling {
 
   /** Merge styles left to right. Right takes higher precedence. */

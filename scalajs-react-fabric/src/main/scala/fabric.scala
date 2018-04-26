@@ -29,6 +29,7 @@ object FabricNS extends js.Object {
   val CommandBar: ReactJsComponent            = js.native
   val DetailsList: ReactJsComponent           = js.native
   val DefaultButton: ReactJsComponent         = js.native
+  val IconButton: ReactJsComponent         = js.native  
   val Label: ReactJsComponent                 = js.native
   val Link: ReactJsComponent                  = js.native
   val List: ReactJsComponent                  = js.native
@@ -41,6 +42,7 @@ object FabricNS extends js.Object {
   val ScrollablePane: ReactJsComponent        = js.native
   val Sticky: ReactJsComponent                = js.native
   val FocusZone: ReactJsComponent = js.native
+  val TagPicker: ReactJsComponent = js.native
 }
 
 /**
@@ -66,6 +68,9 @@ object components {
 
   def FocusZone[T <: js.Object](props: IFocusZoneProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.FocusZone, props, children: _*)
+
+  def IconButton[T <: js.Object](props: IButtonProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.IconButton, props, children: _*)
 
   def Label(props: ILabelProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Label, props, children: _*)
@@ -97,6 +102,9 @@ object components {
 
   def Sticky(props: IStickyProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Sticky, props, children: _*)
+
+  def TagPicker(props: ITagPickerProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.TagPicker, props, children: _*)
 
   def TextField(props: ITextFieldProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.TextField, props, children: _*)
@@ -608,4 +616,60 @@ object FocusZoneTabbableElements {
   val none = 0
   val all = 1
   val inputOnly = 2
+}
+
+@js.native
+trait IBasePicker[T] extends Focusable {
+  var items: js.UndefOr[js.Array[T]] = js.undefined
+  var focusInput: js.Function0[Unit]
+}
+
+trait IInputProps extends InputHTMLAttributes[dom.html.Input] {
+  var `aria-label`: js.UndefOr[String] = js.undefined
+}
+
+object ValidationState {
+  val valid = 0
+  val warning = 1
+  val invalid = 2
+}
+
+trait IBasePickerProps[T <: js.Object] extends ComponentRef[IBasePicker[T]|Null] {
+  var defaultSelectedItems: js.UndefOr[js.Array[T]] = js.undefined
+  var onChange: js.UndefOr[js.Function1[js.Array[T], Unit]] = js.undefined
+  //onFocus:   onFocus?: React.FocusEventHandler<HTMLInputElement | BaseAutoFill>;
+  var onFocus: js.UndefOr[FocusEventHandler[dom.html.Input]] = js.undefined
+  //onBlur:   onBlur?: React.FocusEventHandler<HTMLInputElement | BaseAutoFill>;
+  var onBlur: js.UndefOr[FocusEventHandler[dom.html.Input]] = js.undefined
+  var getTextFromItem: js.UndefOr[js.Function2[T, String, String]] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var inputProps: js.UndefOr[IInputProps] = js.undefined
+  /** ValdationState */
+  var onValidateInput: js.UndefOr[js.Function1[String, Int]] =js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var itemLimit: js.UndefOr[Int] =js.undefined
+  var selectedItems: js.UndefOr[js.Array[T]] = js.undefined
+}
+
+trait IBasePickerSuggestionsProps extends js.Object {
+  var suggestionsHeaderText: js.UndefOr[String] = js.undefined
+  var mostRecentlyUsedHeaderText: js.UndefOr[String] = js.undefined
+  var noResultsFoundText: js.UndefOr[String] = js.undefined
+  var suggestionsClassName: js.UndefOr[String] = js.undefined
+  var suggestionsItemClassName: js.UndefOr[String] = js.undefined
+  var searchForMoreText: js.UndefOr[String] = js.undefined
+  var forceResolveText: js.UndefOr[String] = js.undefined
+  var loadingText: js.UndefOr[String] = js.undefined
+  var searchingText: js.UndefOr[String] = js.undefined
+  var resultMaximumNumber: js.UndefOr[Int] = js.undefined
+  var showRemoveButtons: js.UndefOr[Boolean] = js.undefined
+}
+
+trait ITag extends js.Object {
+  var key: String
+  var name: String
+}
+
+trait ITagPickerProps extends IBasePickerProps[ITag] {
+
 }

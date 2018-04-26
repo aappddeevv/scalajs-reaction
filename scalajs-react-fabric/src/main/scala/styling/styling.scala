@@ -52,7 +52,8 @@ package object styling {
     * Allows us to define and use some non-native JS traits but is also a bit
     * loosely typed.
     */
-  type IStyleBase = IRawStyle | String | Null | js.Dynamic | js.Object
+  //type IStyleBase = IRawStyle | String | Null | js.Dynamic | js.Object
+  type IStyleBase = IRawStyle | String | js.Dynamic | js.Object
 
   /** A simple style object/string/thing or an array of those. A plain string becomes a classname in mergestyles. */
   type IStyle     = IStyleBase | IRawStyleArray
@@ -82,7 +83,10 @@ package object styling {
   //implicit def undefined2IStyle(u: js.UndefOr[Nothing]): IStyle = null.asInstanceOf[IStyle]
 
   /** Map a UndefOr <stuff> to IStyle directly. */
-  implicit def undefOr2IStyle(u: js.UndefOr[js.Object|String|IRawStyle|Null]): IStyle =
+  implicit def undefOrJsObject2IStyle(u: js.UndefOr[js.Object]): IStyle =
+    u.asInstanceOf[IStyle]
+
+  implicit def undefOrIRawyStyle2IStyle(u: js.UndefOr[IRawStyle]): IStyle =
     u.asInstanceOf[IStyle]
 
   /** Unwrap the option or return null. */
@@ -99,8 +103,17 @@ package object styling {
 
   /** Unwrap the string or return null. */
   implicit def stringUndefOr2IStyle(sopt: js.UndefOr[String]): IStyle =
-    sopt.getOrElse(null).asInstanceOf[IStyle]
+    sopt.asInstanceOf[IStyle]
 
   /** Convert standard vdom StyleAttr to IStyle. */
   implicit def styleAttr2IRawStyleBase(arr: StyleAttr): IStyle = arr.asInstanceOf[IStyle]
+
+  //
+  // Support for mergeStyleSets/concatStyleSets. Using js.Object below is a bit
+  // broad, but works when you use a JS trait for your IStyleSet instead of
+  // using just a dictionary and `styleset`.
+  //
+  implicit def jsObject2IStyleSet[T <: js.Object](u: T): IStyleSet = u.asInstanceOf[IStyleSet]
+  implicit def jsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet = u.asInstanceOf[IStyleSet]
+
 }

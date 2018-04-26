@@ -23,9 +23,9 @@ object Styling extends js.Object {
    * use as the attribute "className" in your components.
    *
    * @todo Work on the typing of inputs, not sure this is right.
+   * 
    */
-  def mergeStyles(args: (IStyle | Array[IStyle] | Boolean | Null | js.UndefOr[String] | js.UndefOr[Nothing])*): String =
-    js.native
+  def mergeStyles(styles: IStyle*): String = js.native
 
   /**
    * Merge style sets and register in stylesheet. js.Object is included to
@@ -35,8 +35,7 @@ object Styling extends js.Object {
     * with *no* "js.UndefOr" declarations because it is assumed that the inputs
     * will properly fill out the T structure correctly.
     */
-  def mergeStyleSets[T <: js.Object](
-      cssSets: (js.Object | IStyleSet | Null | js.UndefOr[js.Object|IStyleSet|Null])*): T = js.native
+  def mergeStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
 
   /**
     * Combine styles together but do not register. This is useful for combining
@@ -44,8 +43,7 @@ object Styling extends js.Object {
     * of a function that computes some styles for use in a `getClassNames`
     * function you define to create your component's stylesheet.
     */
-  def concatStyleSets[T <: js.Object](args: (T | Null | IStyleSet | js.UndefOr[T])*): T =
-    js.native
+  def concatStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
 
   /** Register a font face */
   def fontFace(font: FontFace): Unit = js.native
