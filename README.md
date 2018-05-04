@@ -31,7 +31,8 @@ scalajs-react for your solution.
 
 [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
 
-scalajs-react supports fragments and the new context provider in react v16.3.
+scalajs-react supports fragments and the new context provider in react v16.3. A
+future version will support react-native.
 
 ## Usage
 Include the library in your build:
@@ -100,7 +101,9 @@ You can add a className to the div using: `div(new DivProps { className =
 "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
 ensure you only enter valid div props.
 
-The "render" method copies the internal proxy component and adds a callback from reactjs to scala. If you need to use other methods, use the full syntax as the render syntax is just a shortcut to:
+The "render" method copies the internal proxy component and adds a callback from
+reactjs to scala. If you need to use other methods, use the full syntax as the
+render syntax is just a shortcut to:
 
 ```scala
     def make(name: Option[String]) =
@@ -113,7 +116,12 @@ The "render" method copies the internal proxy component and adds a callback from
 
 ```
 
-The `val` is required on required methods, such as render, you must define it otherwise you will get a syntax error. Optional methods are defined as shown immediately above.
+The `val` is required on required methods, such as render, you must define it
+otherwise you will get a syntax error. Optional methods are defined as shown
+immediately above.
+
+Reason-react uses `make` for its function name. However, you could use `apply`
+which is more idiomatic scala.
 
 ### Exporting a Component to Javascript
 
@@ -211,7 +219,9 @@ There is no JSX support.
 
 ### Styling
 
-Styling can be performed different ways. For a quick summary of different aspects of styling designs see this [blog](http://appddeevvmeanderings.blogspot.com/2017/08/web-app-styling-interlude-how-to.html).
+Styling can be performed different ways. For a quick summary of different
+aspects of styling designs see this
+[blog](http://appddeevvmeanderings.blogspot.com/2017/08/web-app-styling-interlude-how-to.html).
 
 fabric's `merge-styles` is provided in the fabric package and you can use
 css-in-scala concepts to create your styles easily. See the ToDo example source
@@ -269,7 +279,10 @@ val props = new DivProps {
 }
 ```
 
-If you have dynamically calculated styles, its best to memoize the result so you do not incur the processing overhead on each component creation. The above was static so we just create it once. To memoize, use yours or fabric's memoize. Fabric's `memoize` needs a js function, so:
+If you have dynamically calculated styles, its best to memoize the result so you
+do not incur the processing overhead on each component creation. The above was
+static so we just create it once. To memoize, use yours or fabric's
+memoize. Fabric's `memoize` needs a js function, so:
 
 ```scala
 // notice the fromFunction1 conversion from scala to js.Function, the "N" is for arity
@@ -277,7 +290,8 @@ val memoizedClassNames = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1
 val cn = memoized(500)
 ```
 
-If you keep your CSS external and process it at build time, you can just import your style sheets and have them picked up by your bundler such as webpack:
+If you keep your CSS external and process it at build time, you can just import
+your style sheets and have them picked up by your bundler such as webpack:
 
 ```scala
 @js.native

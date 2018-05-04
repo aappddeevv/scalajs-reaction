@@ -88,52 +88,52 @@ trait FontFace extends RawFontStyle {
   * it will check the field themselves to ensure they are valid.
   */
 trait RawStyleBase extends RawFontStyle {
-  var azimuth: js.UndefOr[String]              = js.undefined
-  var background: js.UndefOr[String]           = js.undefined
-  var backgroundAttachment: js.UndefOr[String] = js.undefined
-  var backgroundColor: js.UndefOr[String]      = js.undefined
-  var backgroundImage: js.UndefOr[String]      = js.undefined
-  var backgroundPosition: js.UndefOr[String]   = js.undefined
-  var backgroundRepeat: js.UndefOr[String]     = js.undefined
-  var border: js.UndefOr[String|Int]               = js.undefined
-  var borderCollapse: js.UndefOr[String]       = js.undefined
-  var borderColor: js.UndefOr[String]          = js.undefined
-  var borderSpacing: js.UndefOr[String]        = js.undefined
-  var borderStyle: js.UndefOr[String]          = js.undefined
-  var borderTop: js.UndefOr[String|Double]            = js.undefined
-  var borderRight: js.UndefOr[String|Double]          = js.undefined
-  var borderBottom: js.UndefOr[String|Double]         = js.undefined
-  var borderLeft: js.UndefOr[String|Double]           = js.undefined
-  var borderTopColor: js.UndefOr[String]       = js.undefined
-  var borderRightColor: js.UndefOr[String]     = js.undefined
-  var borderBottomColor: js.UndefOr[String]    = js.undefined
-  var borderLeftColor: js.UndefOr[String]      = js.undefined
-  var borderTopStyle: js.UndefOr[String]       = js.undefined
-  var borderRightStyle: js.UndefOr[String]     = js.undefined
-  var borderBottomStyle: js.UndefOr[String]    = js.undefined
-  var borderLeftStyle: js.UndefOr[String]      = js.undefined
-  var borderTopWidth: js.UndefOr[String|Double]       = js.undefined
-  var borderRightWidth: js.UndefOr[String|Double]     = js.undefined
-  var borderBottomWidth: js.UndefOr[String|Double]    = js.undefined
-  var borderLeftWidth: js.UndefOr[String|Double]      = js.undefined
-  var borderWidth: js.UndefOr[String|Double]          = js.undefined
-  var bottom: js.UndefOr[String|Double]               = js.undefined
-  var captionSide: js.UndefOr[String]          = js.undefined
-  var clear: js.UndefOr[String]                = js.undefined
-  var clip: js.UndefOr[String]                 = js.undefined
-  var color: js.UndefOr[String]                = js.undefined
-  var content: js.UndefOr[String]              = js.undefined
-  var counterIncrement: js.UndefOr[String]     = js.undefined
-  var counterReset: js.UndefOr[String]         = js.undefined
-  var cue: js.UndefOr[String]                  = js.undefined
-  var cueAfter: js.UndefOr[String]             = js.undefined
-  var cueBefore: js.UndefOr[String]            = js.undefined
-  var cursor: js.UndefOr[String]               = js.undefined
-  var direction: js.UndefOr[String]            = js.undefined
-  var display: js.UndefOr[String]              = js.undefined
-  var elevation: js.UndefOr[String]            = js.undefined
-  var emptyCells: js.UndefOr[String]           = js.undefined
-  var float: js.UndefOr[String]                = js.undefined
+  var azimuth: js.UndefOr[String]                    = js.undefined
+  var background: js.UndefOr[String]                 = js.undefined
+  var backgroundAttachment: js.UndefOr[String]       = js.undefined
+  var backgroundColor: js.UndefOr[String]            = js.undefined
+  var backgroundImage: js.UndefOr[String]            = js.undefined
+  var backgroundPosition: js.UndefOr[String]         = js.undefined
+  var backgroundRepeat: js.UndefOr[String]           = js.undefined
+  var border: js.UndefOr[String | Int]               = js.undefined
+  var borderCollapse: js.UndefOr[String]             = js.undefined
+  var borderColor: js.UndefOr[String]                = js.undefined
+  var borderSpacing: js.UndefOr[String]              = js.undefined
+  var borderStyle: js.UndefOr[String]                = js.undefined
+  var borderTop: js.UndefOr[String | Double]         = js.undefined
+  var borderRight: js.UndefOr[String | Double]       = js.undefined
+  var borderBottom: js.UndefOr[String | Double]      = js.undefined
+  var borderLeft: js.UndefOr[String | Double]        = js.undefined
+  var borderTopColor: js.UndefOr[String]             = js.undefined
+  var borderRightColor: js.UndefOr[String]           = js.undefined
+  var borderBottomColor: js.UndefOr[String]          = js.undefined
+  var borderLeftColor: js.UndefOr[String]            = js.undefined
+  var borderTopStyle: js.UndefOr[String]             = js.undefined
+  var borderRightStyle: js.UndefOr[String]           = js.undefined
+  var borderBottomStyle: js.UndefOr[String]          = js.undefined
+  var borderLeftStyle: js.UndefOr[String]            = js.undefined
+  var borderTopWidth: js.UndefOr[String | Double]    = js.undefined
+  var borderRightWidth: js.UndefOr[String | Double]  = js.undefined
+  var borderBottomWidth: js.UndefOr[String | Double] = js.undefined
+  var borderLeftWidth: js.UndefOr[String | Double]   = js.undefined
+  var borderWidth: js.UndefOr[String | Double]       = js.undefined
+  var bottom: js.UndefOr[String | Double]            = js.undefined
+  var captionSide: js.UndefOr[String]                = js.undefined
+  var clear: js.UndefOr[String]                      = js.undefined
+  var clip: js.UndefOr[String]                       = js.undefined
+  var color: js.UndefOr[String]                      = js.undefined
+  var content: js.UndefOr[String]                    = js.undefined
+  var counterIncrement: js.UndefOr[String]           = js.undefined
+  var counterReset: js.UndefOr[String]               = js.undefined
+  var cue: js.UndefOr[String]                        = js.undefined
+  var cueAfter: js.UndefOr[String]                   = js.undefined
+  var cueBefore: js.UndefOr[String]                  = js.undefined
+  var cursor: js.UndefOr[String]                     = js.undefined
+  var direction: js.UndefOr[String]                  = js.undefined
+  var display: js.UndefOr[String]                    = js.undefined
+  var elevation: js.UndefOr[String]                  = js.undefined
+  var emptyCells: js.UndefOr[String]                 = js.undefined
+  var float: js.UndefOr[String]                      = js.undefined
 
   var height: js.UndefOr[String | Double]        = js.undefined
   var left: js.UndefOr[String]                   = js.undefined
@@ -211,21 +211,21 @@ trait RawStyleBase extends RawFontStyle {
   /* Backgrounds and Borders Level 3 - CR */
   /* backgroundRepeat - already defined by CSS2Properties */
   /* backgroundAttachment - already defined by CSS2Properties */
-  var backgroundOrigin: js.UndefOr[String]        = js.undefined
-  var backgroundSize: js.UndefOr[String]          = js.undefined
-  var backgroundClip: js.UndefOr[String]          = js.undefined
-  var borderRadius: js.UndefOr[String|Double]            = js.undefined
-  var borderTopLeftRadius: js.UndefOr[String|Double]     = js.undefined
-  var borderTopRightRadius: js.UndefOr[String|Double]    = js.undefined
-  var borderBottomLeftRadius: js.UndefOr[String|Double]  = js.undefined
-  var borderBottomRightRadius: js.UndefOr[String|Double] = js.undefined
-  var borderImage: js.UndefOr[String]             = js.undefined
-  var borderImageSource: js.UndefOr[String]       = js.undefined
-  var borderImageSlice: js.UndefOr[String]        = js.undefined
-  var borderImageWidth: js.UndefOr[String]        = js.undefined
-  var borderImageOutset: js.UndefOr[String]       = js.undefined
-  var borderImageRepeat: js.UndefOr[String]       = js.undefined
-  var boxShadow: js.UndefOr[String]               = js.undefined
+  var backgroundOrigin: js.UndefOr[String]                 = js.undefined
+  var backgroundSize: js.UndefOr[String]                   = js.undefined
+  var backgroundClip: js.UndefOr[String]                   = js.undefined
+  var borderRadius: js.UndefOr[String | Double]            = js.undefined
+  var borderTopLeftRadius: js.UndefOr[String | Double]     = js.undefined
+  var borderTopRightRadius: js.UndefOr[String | Double]    = js.undefined
+  var borderBottomLeftRadius: js.UndefOr[String | Double]  = js.undefined
+  var borderBottomRightRadius: js.UndefOr[String | Double] = js.undefined
+  var borderImage: js.UndefOr[String]                      = js.undefined
+  var borderImageSource: js.UndefOr[String]                = js.undefined
+  var borderImageSlice: js.UndefOr[String]                 = js.undefined
+  var borderImageWidth: js.UndefOr[String]                 = js.undefined
+  var borderImageOutset: js.UndefOr[String]                = js.undefined
+  var borderImageRepeat: js.UndefOr[String]                = js.undefined
+  var boxShadow: js.UndefOr[String]                        = js.undefined
   /* Multi-column Layout - CR */
   var columns: js.UndefOr[String]         = js.undefined
   var columnCount: js.UndefOr[String]     = js.undefined
@@ -259,18 +259,18 @@ trait RawStyleBase extends RawFontStyle {
   var imageOrientation: js.UndefOr[String] = js.undefined
 
   /* Flexible Box Layout - CR */
-  var alignContent: js.UndefOr[String]   = js.undefined
-  var alignItems: js.UndefOr[String]     = js.undefined
-  var alignSelf: js.UndefOr[String]      = js.undefined
-  var flex: js.UndefOr[String]           = js.undefined
-  var flexBasis: js.UndefOr[String]      = js.undefined
-  var flexDirection: js.UndefOr[String]  = js.undefined
-  var flexFlow: js.UndefOr[String]       = js.undefined
-  var flexGrow: js.UndefOr[String|Int]       = js.undefined
-  var flexShrink: js.UndefOr[String|Int]     = js.undefined
-  var flexWrap: js.UndefOr[String]       = js.undefined
-  var justifyContent: js.UndefOr[String] = js.undefined
-  var order: js.UndefOr[String]          = js.undefined
+  var alignContent: js.UndefOr[String]     = js.undefined
+  var alignItems: js.UndefOr[String]       = js.undefined
+  var alignSelf: js.UndefOr[String]        = js.undefined
+  var flex: js.UndefOr[String]             = js.undefined
+  var flexBasis: js.UndefOr[String]        = js.undefined
+  var flexDirection: js.UndefOr[String]    = js.undefined
+  var flexFlow: js.UndefOr[String]         = js.undefined
+  var flexGrow: js.UndefOr[String | Int]   = js.undefined
+  var flexShrink: js.UndefOr[String | Int] = js.undefined
+  var flexWrap: js.UndefOr[String]         = js.undefined
+  var justifyContent: js.UndefOr[String]   = js.undefined
+  var order: js.UndefOr[String]            = js.undefined
 
   /* Text Decoration Level 3 - CR */
   /* textDecoration - already defined by CSS2Properties */

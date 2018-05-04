@@ -332,16 +332,17 @@ object AddressManagerC {
           div(new DivProps { className = cx(amstyles.component, className.getOrElse(null)) })(
             CommandBar(cbopts(self))(),
             div(new DivProps { className = amstyles.masterAndDetail.asString })(
-              if(self.state.fetching)
-                ReactContentLoaderComponents.BulletList(new ReactContentLoaderOptions(
-                  animate = true,
-                  speed = 1,
-                  className = amstyles.master.asString,
-                  height = 500,
-                  width = 500,
-                  primaryColor = "#f3f3f3",
-                  secondaryColor = "#ecebeb",
-                ))()
+              if (self.state.fetching)
+                ReactContentLoaderComponents.BulletList(
+                  new ReactContentLoaderOptions(
+                    animate = true,
+                    speed = 1,
+                    className = amstyles.master.asString,
+                    height = 500,
+                    width = 500,
+                    primaryColor = "#f3f3f3",
+                    secondaryColor = "#ecebeb",
+                  ))()
               else
                 AddressListC.make(self.state.selection, self.state.addresses, activecb(self), ifx),
               AddressDetailC.make(selAddrOpt),

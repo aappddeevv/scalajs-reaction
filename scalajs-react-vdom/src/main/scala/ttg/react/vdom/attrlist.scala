@@ -102,10 +102,9 @@ trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
   //@inline implicit def cvtJsObjectToAttrValue(attrs: js.Object): AttrValue = AttrValue(attrs)
 }
 
-
 /**
- * Import this to use the list-style attribute syntax.
- */
+  * Import this to use the list-style attribute syntax.
+  */
 object attrlist extends VDOMSyntax {
   val noAttributes = Attrs.zero
 

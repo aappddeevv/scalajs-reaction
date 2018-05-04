@@ -21,40 +21,54 @@ trait ErrorInfo extends js.Object {
 }
 
 /**
-  * Basic scala-side react component.  This trait only includes the parts of a
+  * Scala-side react component.  This trait only includes the parts of a
   * component not dependent on specific types (see the cake layers for the
   * rest). A scala.js component is a javascript object (non-native JS trait)
-  * with some callback "fields" that the reactjs methods call via the proxy. The
-  * ComponentSpec is much like the "componentTemplate" in reason-react.
+  * with some callback "fields" that the reactjs methods calls via a proxy. The
+  * ComponentSpec is much like the "componentTemplate" in reason-react. The
+ *  proxy is another js object created with a 1-1 relationship to the scala-side
+ * component.
   */
 trait ComponentSpec extends js.Object {
+
   /** We have this on the proxy, don't think we need it here. Should be copied over... */
   var debugName: String
+
   /**
-   * The result of calling React.createClass(Proxy) is attached here.
-   */
+    * The result of calling React.createClass(proxy) is attached here.
+    */
   var reactClassInternal: ReactClass
+
   /** Needed potentially for some context integration. Remove at some point in react 17. */
   var contextTypes: js.UndefOr[js.Object]            = js.undefined
+
+  /** If ComponentSpec is just wrapping a reactjs component, the wrapped component
+   * is attached here.
+   */
   var jsElementWrapped: js.UndefOr[JsElementWrapped] = js.undefined
 }
 
-/** 
- * The scala-side view of reactjs "this.props". Used internally to call public
- * API methods.
- */
+/**
+  * The scala-side view of reactjs "this.props". Used internally to call public
+  * API methods. If you inspected a component in javascript, you would see this
+  * structure for the props.
+  */
 @js.native
 protected trait JsComponentThisProps extends js.Object {
-  /** We hang our interop component on this property. */
+
+  /** 
+   * The scala side interop ComponentSpec is attached here in the props.
+   */
   val scalaProps: js.UndefOr[ComponentSpec] = js.native
 }
 
 /**
- * The scala-side view of reactjs "this". Used internally to access reactjs
- * state and props which leads to the ComponentSpec instance.
- */
+  * The scala-side view of reactjs "this". Used internally to access reactjs
+  * state and props.
+  */
 @js.native
 protected trait JsComponentThis[State] extends js.Object {
+
   /** this.state */
   def state: State
 
@@ -67,7 +81,7 @@ protected trait JsComponentThis[State] extends js.Object {
   /**
     * Convert raw js this.props to a scala side object. This is only used when
     * wrapping a non-scala (js side defined) component. It is attached to the
-    * objects prototype so its present on all instances.
+    * objects prototype so its present on all instances of a component.
     */
   def jsPropsToScala: js.UndefOr[js.Object => ComponentSpec]
 
@@ -76,48 +90,49 @@ protected trait JsComponentThis[State] extends js.Object {
 }
 
 /**
- * The lowest level of cake base that brings together the reactjs proxy and the
- * scala.js ComponentSpec. Each layer of the cake adds functionality specific to
- * that layer e.g. a stateful layer will provide a public API to set the initial
- * state. There is one instance of the cake for each component "type/class" but
- * there is one instance of ComponentSpec for each component instance. The key
- * part at runtime is the (Proxy, ComponentSpec) pair inside the cake layer. The
- * pair acts as a "template." Proxy handles the reactjs world and forwards calls
- * to ComponentSpec, the scala.js representation. An instance of the cake holds
- * the types and an instance of these pairs together and becomes a factory for
- * using the (Proxy,ComponentSpec) "template" augmented with the specific client
- * methods, to create a component instance. In a way, the cake (and the single
- * instances of the Proxy and ComponentSpec "templates") is the equivalent of a
- * react class in ES5 terminology.
- * 
- * There are several types with the base layer. There are also multiple
- * variations of a specific type such as "Self", which represents the javascript
- * "self" concept but in the scala.js world. The non-native js trait
- * representing the react component on the scala.js side is based on
- * `ComponentSpec`. `WithMethods` provides the public API for adding specific
- * functions for rendering, changing state, etc., and only used in
- * "building/specifying" creating the ComponentSpec. `Proxy` is the non-native
- * js trait object provided by scala.js to the reactjs system that represents
- * the javascript side of the component. Methods in the proxy are forwarded to
- * methods in `ComponentSpec`. `Ops` is the object that can be imported by
- * clients to bring the cake types and values into scope for use in building the
- * component. For example, importing Ops brings `WithMethods` into scope.
- * 
- * Many methods used by the proxy are actually defined in the scala cake
- * instance to help improve readability but they *could* have been inlined into
- * the proxy method itself.
- * 
- */
+  * The lowest level of cake base that brings together the reactjs proxy and the
+  * scala.js ComponentSpec. Each layer of the cake adds functionality specific
+  * to that layer e.g. a stateful layer will provide a public API to set the
+  * initial state. There is one instance of the cake for each component
+  * "type/class" but there is one instance of ComponentSpec for each component
+  * instance. The key part at runtime is the (Proxy, ComponentSpec) pair inside
+  * the cake layer. The pair acts as a "template." Proxy handles the reactjs
+  * world and forwards calls to ComponentSpec, the scala.js representation. An
+  * instance of the cake holds the types and an instance of these pairs together
+  * and becomes a factory for using the (Proxy,ComponentSpec) "template"
+  * augmented with the specific client methods, to create a component
+  * instance. The cake (and the single instances of the Proxy and ComponentSpec
+  * "templates") is the equivalent of a react class in ES5 terminology.
+  *
+  * There are several types with the base layer. There are also multiple
+  * variations of a specific type such as "Self", which represents the javascript
+  * "self" concept but in the scala.js world. The non-native js trait
+  * representing the react component on the scala.js side is based on
+  * `ComponentSpec`. `WithMethods` provides the public API for adding specific
+  * functions for rendering, changing state, etc., and only used in
+  * "building/specifying" creating the ComponentSpec. `Proxy` is the non-native
+  * js trait object provided by scala.js to the reactjs system that represents
+  * the javascript side of the component. Methods in the proxy are forwarded to
+  * methods in `ComponentSpec`. `Ops` is the object that can be imported by
+  * clients to bring the cake types and values into scope for use in building the
+  * component. For example, importing Ops brings `WithMethods` into scope.
+  *
+  * Many methods used by the proxy are actually defined in the scala cake
+  * instance to help improve readability but they *could* have been inlined into
+  * the proxy method itself.
+  *
+  */
 trait CakeBase { cake =>
 
   /** Component self for most clent API methods which may or may not contain state. */
   type Self <: SelfLike
 
   /**
-   * Self for methods. At its simplest, you can execute callbacks. Subtraits
-   * may create additional "Self"s for use in client API methods.
-   */
+    * Self for methods. At its simplest, you can execute callbacks. Subtraits
+    * may create additional "Self"s for use in client API methods.
+    */
   trait SelfLike extends SelfForUnmountLike {
+
     /**
       * You should need not need to use this in scala.js vs reason-react, given
       * that we have a separate Self type.
@@ -126,9 +141,9 @@ trait CakeBase { cake =>
   }
 
   /**
-   * Self used for component.willUnmount, for example "handle/send" does not
-   * work during willUnmount.
-   */
+    * Self used for component.willUnmount, for example "handle/send" does not
+    * work during willUnmount.
+    */
   type SelfForUnmount <: SelfForUnmountLike
 
   trait SelfForUnmountLike {
@@ -138,24 +153,25 @@ trait CakeBase { cake =>
   /** reactjs this: Only the parts that we need or the interop. */
   type ThisSelf = JsComponentThis[State]
 
-  /** 
-   * The basic scala component that requires methods to cusomize its behavior.
-   * This base component is used as a "template" to create each component
-   * instance.
-   */
+  /**
+    * The basic scala component that requires methods to cusomize its behavior.
+    * This base component is used as a "template" to create each component
+    * instance.
+    */
   val component: ComponentType
   type ComponentType <: ComponentLike
 
   /**
     * The scala.js component is a javascript object and and has all values as
-   * optional. A client does not create a ComponentSpec directly, instead the
-   * WithMethods trait is used and the WithMethods are merged into the
-   * ComponentSpec.
+    * optional. A client does not create a ComponentSpec directly, instead the
+    * WithMethods trait is used and the WithMethods are merged into the
+    * ComponentSpec.
     */
   protected trait ComponentLike extends ComponentSpec {
-    var render: js.UndefOr[Self => ReactNode]                     = js.undefined
+    var render: js.UndefOr[Self => ReactNode] = js.undefined
+
     /** Once the subscriptions are "activated" the OnUnmount art is stored in the proxy. */
-    var subscriptions: js.UndefOr[Self => js.Array[Subscription]]      = js.undefined
+    var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
@@ -168,8 +184,8 @@ trait CakeBase { cake =>
   protected type State <: StateLike
 
   /**
-   * Keep it as js-object so you can still manipulate it from javascript. In the base 
-   * case we are non storing any real state.
+    * Keep it as js-object so you can still manipulate it from javascript. In the base
+    * case we are non storing any real state.
     */
   protected trait StateLike extends js.Object
 
@@ -183,13 +199,13 @@ trait CakeBase { cake =>
     */
   type WithMethods <: WithMethodsLike
 
-  /** 
-   * The methods on the base layer WithMethods are available for all components
-   * regardless of the type of component being created.
-   */
+  /**
+    * The methods on the base layer WithMethods are available for all components
+    * regardless of the type of component being created.
+    */
   trait WithMethodsLike extends js.Object {
     val render: Self => ReactNode
-    var subscriptions: js.UndefOr[Self => js.Array[Subscription]]      = js.undefined
+    var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     //var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
@@ -229,16 +245,16 @@ trait CakeBase { cake =>
   def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec): ReactJsComponent =
     elements.wrapScalaForJs(component, jsPropsToScala)
 
-  /** 
-   * The type of object used in React.createClass that the javascript side
-   * consumes.
-   */
+  /**
+    * The type of object used in React.createClass that the javascript side
+    * consumes.
+    */
   protected type ProxyType <: ProxyLike
 
   /**
-   * The proxy object for this component. Each scala Component needs one. The
-   * methods on Proxy call into the API methods found on ComponentType.
-   */
+    * The proxy object for this component. Each scala Component needs one. The
+    * methods on Proxy call into the API methods found on ComponentType.
+    */
   protected val proxy: ProxyType
 
   /**
@@ -296,21 +312,22 @@ trait CakeBase { cake =>
       thisJs.onUnmounts
         .map(_.concat(onUnmounts))
         .getOrElse(onUnmounts)
-    thisJs.onUnmounts = if(newUnmounts.length>0) newUnmounts else js.undefined
+    thisJs.onUnmounts = if (newUnmounts.length > 0) newUnmounts else js.undefined
   }
 
-  /** 
-   * Common didMount functionality. Runs subscriptions and return the OnMount
-   * effects to be run during component unmount if the caller wants those.
-   * `OnUnmount` callbacks are stored in the javascript component directly.
-   */
+  /**
+    * Common didMount functionality. Runs subscriptions and return the OnMount
+    * effects to be run during component unmount if the caller wants those.
+    * `OnUnmount` callbacks are stored in the javascript component directly.
+    */
   protected def _componentDidMountCommon(displayName: String)(
       thisJs: ThisSelf): (ComponentType, Self, js.Array[OnUnmount]) = {
     val component =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     val self = mkSelf(thisJs, thisJs.state, component, displayName)
     // call subscriptions
-    val onUnmounts: js.Array[OnUnmount] = component.subscriptions.map(_(self).map(_())).getOrElse(js.Array())
+    val onUnmounts: js.Array[OnUnmount] =
+      component.subscriptions.map(_(self).map(_())).getOrElse(js.Array())
     addOnUnmounts(thisJs, onUnmounts)
     (component, self, onUnmounts)
   }
@@ -330,11 +347,10 @@ trait CakeBase { cake =>
     cb(self)
   }
 
-  /** 
-   * The basic unmount runs the unsubscribes.
-   */
-  @inline protected def _componentWillUnmount(displayName: String)(
-      thisJs: ThisSelf): Unit = {
+  /**
+    * The basic unmount runs the unsubscribes.
+    */
+  @inline protected def _componentWillUnmount(displayName: String)(thisJs: ThisSelf): Unit = {
     val component =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     component.willUnmount.toOption match {
@@ -445,20 +461,20 @@ trait CakeBase { cake =>
     * machinery directly and are then forwarded to ComponentSpec. Hence there is
     * always a pair (proxy to be used in reactjs, componentspec to be used in
     * scala.js). Note that this object is only used to call "React.createClass".
-   * 
-   * We could have defined all of the methods the proxy calls inline with the
-   * class but we pulled them into the cake and just call them direcly to help
-   * improve readability.
+    *
+    * We could have defined all of the methods the proxy calls inline with the
+    * class but we pulled them into the cake and just call them direcly to help
+    * improve readability.
     */
   protected abstract class ProxyLike extends Proxy[Self, State, JsComponentThisProps, ThisSelf] {
     // componentWillMount is not used in scalajs-react...
     override val componentWillUnmount = js.defined(_componentWillUnmount(displayName))
     // REMOVE TO ALLOW PROMISE PASS THROUGH UNHINDERED FOR THE MOMENT?!?!?!
-    override val componentDidCatch   = js.defined(_componentDidCatch(displayName))
-    override val render              = _render(displayName)
-    override val componentWillUpdate = js.defined(_componentWillUpdate(displayName))
-    override val componentDidUpdate  = js.defined(_componentDidUpdate(displayName))
-    override val componentDidMount = js.defined(_componentDidMountCommon(displayName))
+    override val componentDidCatch     = js.defined(_componentDidCatch(displayName))
+    override val render                = _render(displayName)
+    override val componentWillUpdate   = js.defined(_componentWillUpdate(displayName))
+    override val componentDidUpdate    = js.defined(_componentDidUpdate(displayName))
+    override val componentDidMount     = js.defined(_componentDidMountCommon(displayName))
     override val shouldComponentUpdate = js.defined(_statelessShouldComponentUpdate(displayName))
   }
 }
@@ -791,7 +807,7 @@ trait CakeWithState extends CakeBase { cake =>
   }
 
   abstract protected class ProxyLike extends super.ProxyLike {
-    override val componentDidMount = js.defined(_componentDidMountWithState(displayName))
+    override val componentDidMount         = js.defined(_componentDidMountWithState(displayName))
     override val getInitialState           = js.defined(_getInitialState(displayName) _)
     override val componentWillReceiveProps = js.defined(_componentWillReceiveProps(displayName) _)
     override val shouldComponentUpdate     = js.defined(_shouldComponentUpdate(displayName))
@@ -1035,13 +1051,13 @@ case class NoUpdate[S, SLF]() extends StateUpdate[S, SLF]
 
 // things with state
 case class Update[S, SLF](s: S)                                     extends StateUpdate[S, SLF]
-case class SilentUpdate[S, SLF](s: S)                               extends StateUpdate[S, SLF]
+//case class SilentUpdate[S, SLF](s: S)                               extends StateUpdate[S, SLF]
 case class UpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit) extends StateUpdate[S, SLF]
 
 // things without state
 case class SideEffects[S, SLF](effect: SLF => Unit) extends StateUpdate[S, SLF]
-case class SilentUpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit)
-    extends StateUpdate[S, SLF]
+//case class SilentUpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit)
+//    extends StateUpdate[S, SLF]
 
 /**
   * Instead of exposing the ADT to the client, we use a smart constructor at the

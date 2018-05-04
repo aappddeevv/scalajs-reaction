@@ -29,7 +29,8 @@ object FabricNS extends js.Object {
   val CommandBar: ReactJsComponent            = js.native
   val DetailsList: ReactJsComponent           = js.native
   val DefaultButton: ReactJsComponent         = js.native
-  val IconButton: ReactJsComponent         = js.native  
+  val Dropdown: ReactJsComponent         = js.native  
+  val IconButton: ReactJsComponent            = js.native
   val Label: ReactJsComponent                 = js.native
   val Link: ReactJsComponent                  = js.native
   val List: ReactJsComponent                  = js.native
@@ -41,8 +42,8 @@ object FabricNS extends js.Object {
   def Selection[T <: js.Object]: Selection[T] = js.native
   val ScrollablePane: ReactJsComponent        = js.native
   val Sticky: ReactJsComponent                = js.native
-  val FocusZone: ReactJsComponent = js.native
-  val TagPicker: ReactJsComponent = js.native
+  val FocusZone: ReactJsComponent             = js.native
+  val TagPicker: ReactJsComponent             = js.native
 }
 
 /**
@@ -62,6 +63,9 @@ object components {
 
   def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.DetailsList, props, children: _*)
+
+  def Dropdown[T <: js.Object](props: IDropdownProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Dropdown, props, children: _*)
 
   def Fabric(props: IFabricProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Fabric, props, children: _*)
@@ -573,48 +577,53 @@ trait IMarqueeSelectionProps[T <: js.Object] extends ComponentRef[IMarqueeSelect
   var isDraggingConstrainedToRoot: js.UndefOr[Boolean]                  = js.undefined
 
 }
-
-
-@js.native 
+@js.native
 trait IFocusZone extends js.Object {
-  def focus(forceIntoFirstElement: js.UndefOr[Boolean]): Boolean = js.native
+  def focus(forceIntoFirstElement: js.UndefOr[Boolean]): Boolean        = js.native
   def focusElement(childElement: js.UndefOr[dom.html.Element]): Boolean = js.native
 }
 
 trait IFocusZoneProps extends ComponentRef[IFocusZone] with HTMLAttributes[dom.html.Div] {
   //var className: js.UndefOr[String] = js.undefined
-  var direction: js.UndefOr[Int] = js.undefined
+  var direction: js.UndefOr[Int]               = js.undefined
   var defaultActiveElement: js.UndefOr[String] = js.undefined
-  var disabled:  js.UndefOr[Boolean]  = js.undefined
+  var disabled: js.UndefOr[Boolean]            = js.undefined
+
   /** e.g. div */
-  var elementType: js.UndefOr[String] = js.undefined
-  var isCircularNavigation: js.UndefOr[Boolean]  = js.undefined
-  var isInnerZoneKeyStroke: js.UndefOr[js.Function1[SyntheticKeyboardEvent[dom.html.Element], Boolean]] = js.undefined
-  var ariaLabelledBy: js.UndefOr[String] = js.undefined
-  var ariaDescribedBy: js.UndefOr[String] = js.undefined
+  var elementType: js.UndefOr[String]           = js.undefined
+  var isCircularNavigation: js.UndefOr[Boolean] = js.undefined
+  var isInnerZoneKeyStroke
+    : js.UndefOr[js.Function1[SyntheticKeyboardEvent[dom.html.Element], Boolean]] = js.undefined
+  var ariaLabelledBy: js.UndefOr[String]                                          = js.undefined
+  var ariaDescribedBy: js.UndefOr[String]                                         = js.undefined
   var onActiveElementChanged: js.UndefOr[
-    js.Function0[Unit] |
-      js.Function2[js.UndefOr[dom.html.Element], js.UndefOr[SyntheticFocusEvent[dom.html.Element]], Unit]
-  ] = js.undefined
+    js.Function0[Unit] | js.Function2[
+      js.UndefOr[dom.html.Element],
+      js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
+      Unit]
+  ]                                                       = js.undefined
   var rootProps: js.UndefOr[HTMLAttributes[dom.html.Div]] = js.undefined
-  var onBeforeFocus: js.UndefOr[js.Function1[dom.html.Element, Boolean]|js.Function0[Boolean]] = js.undefined
-  var allowFocusRoot: js.UndefOr[Boolean]  = js.undefined
-  var allowTabKey: js.UndefOr[Boolean] = js.undefined
+  var onBeforeFocus: js.UndefOr[js.Function1[dom.html.Element, Boolean] | js.Function0[Boolean]] =
+    js.undefined
+  var allowFocusRoot: js.UndefOr[Boolean] = js.undefined
+  var allowTabKey: js.UndefOr[Boolean]    = js.undefined
+
   /** FocusZoneTabbableElements */
   var handleTabKey: js.UndefOr[Int] = js.undefined
-  var shouldInputLoseFocusOnArrowKey: js.UndefOr[js.Function1[dom.html.Input, Boolean]] = js.undefined
-  var checkForNoWrap:js.UndefOr[Boolean] = js.undefined
+  var shouldInputLoseFocusOnArrowKey: js.UndefOr[js.Function1[dom.html.Input, Boolean]] =
+    js.undefined
+  var checkForNoWrap: js.UndefOr[Boolean] = js.undefined
 }
 
 object FocusZoneDirection {
-  val vertical = 0
-  val horizontal = 1
+  val vertical      = 0
+  val horizontal    = 1
   val biderectional = 2
 }
 
 object FocusZoneTabbableElements {
-  val none = 0
-  val all = 1
+  val none      = 0
+  val all       = 1
   val inputOnly = 2
 }
 
@@ -629,40 +638,41 @@ trait IInputProps extends InputHTMLAttributes[dom.html.Input] {
 }
 
 object ValidationState {
-  val valid = 0
+  val valid   = 0
   val warning = 1
   val invalid = 2
 }
 
-trait IBasePickerProps[T <: js.Object] extends ComponentRef[IBasePicker[T]|Null] {
-  var defaultSelectedItems: js.UndefOr[js.Array[T]] = js.undefined
+trait IBasePickerProps[T <: js.Object] extends ComponentRef[IBasePicker[T] | Null] {
+  var defaultSelectedItems: js.UndefOr[js.Array[T]]         = js.undefined
   var onChange: js.UndefOr[js.Function1[js.Array[T], Unit]] = js.undefined
   //onFocus:   onFocus?: React.FocusEventHandler<HTMLInputElement | BaseAutoFill>;
   var onFocus: js.UndefOr[FocusEventHandler[dom.html.Input]] = js.undefined
   //onBlur:   onBlur?: React.FocusEventHandler<HTMLInputElement | BaseAutoFill>;
-  var onBlur: js.UndefOr[FocusEventHandler[dom.html.Input]] = js.undefined
+  var onBlur: js.UndefOr[FocusEventHandler[dom.html.Input]]        = js.undefined
   var getTextFromItem: js.UndefOr[js.Function2[T, String, String]] = js.undefined
-  var className: js.UndefOr[String] = js.undefined
-  var inputProps: js.UndefOr[IInputProps] = js.undefined
+  var className: js.UndefOr[String]                                = js.undefined
+  var inputProps: js.UndefOr[IInputProps]                          = js.undefined
+
   /** ValdationState */
-  var onValidateInput: js.UndefOr[js.Function1[String, Int]] =js.undefined
-  var disabled: js.UndefOr[Boolean] = js.undefined
-  var itemLimit: js.UndefOr[Int] =js.undefined
-  var selectedItems: js.UndefOr[js.Array[T]] = js.undefined
+  var onValidateInput: js.UndefOr[js.Function1[String, Int]] = js.undefined
+  var disabled: js.UndefOr[Boolean]                          = js.undefined
+  var itemLimit: js.UndefOr[Int]                             = js.undefined
+  var selectedItems: js.UndefOr[js.Array[T]]                 = js.undefined
 }
 
 trait IBasePickerSuggestionsProps extends js.Object {
-  var suggestionsHeaderText: js.UndefOr[String] = js.undefined
+  var suggestionsHeaderText: js.UndefOr[String]      = js.undefined
   var mostRecentlyUsedHeaderText: js.UndefOr[String] = js.undefined
-  var noResultsFoundText: js.UndefOr[String] = js.undefined
-  var suggestionsClassName: js.UndefOr[String] = js.undefined
-  var suggestionsItemClassName: js.UndefOr[String] = js.undefined
-  var searchForMoreText: js.UndefOr[String] = js.undefined
-  var forceResolveText: js.UndefOr[String] = js.undefined
-  var loadingText: js.UndefOr[String] = js.undefined
-  var searchingText: js.UndefOr[String] = js.undefined
-  var resultMaximumNumber: js.UndefOr[Int] = js.undefined
-  var showRemoveButtons: js.UndefOr[Boolean] = js.undefined
+  var noResultsFoundText: js.UndefOr[String]         = js.undefined
+  var suggestionsClassName: js.UndefOr[String]       = js.undefined
+  var suggestionsItemClassName: js.UndefOr[String]   = js.undefined
+  var searchForMoreText: js.UndefOr[String]          = js.undefined
+  var forceResolveText: js.UndefOr[String]           = js.undefined
+  var loadingText: js.UndefOr[String]                = js.undefined
+  var searchingText: js.UndefOr[String]              = js.undefined
+  var resultMaximumNumber: js.UndefOr[Int]           = js.undefined
+  var showRemoveButtons: js.UndefOr[Boolean]         = js.undefined
 }
 
 trait ITag extends js.Object {
@@ -670,6 +680,109 @@ trait ITag extends js.Object {
   var name: String
 }
 
-trait ITagPickerProps extends IBasePickerProps[ITag] {
+trait ITagPickerProps extends IBasePickerProps[ITag] {}
 
+@js.native
+trait IDropdown extends js.Object {
+  /** Should focus on open? */
+  var focus: js.Function1[Boolean, Unit]
+}
+
+
+/** This is not the complete set. */
+trait IPanelProps extends js.Object {
+  var isOpen: js.UndefOr[Boolean] = js.undefined
+  var hasCloseButton: js.UndefOr[Boolean] = js.undefined
+  var isLightDismiss: js.UndefOr[Boolean] = js.undefined
+  var isHiddenOnDismiss: js.UndefOr[Boolean] = js.undefined
+  var isBlocking: js.UndefOr[Boolean] = js.undefined
+  var isFooterAtBottom: js.UndefOr[Boolean] = js.undefined
+
+  var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
+
+  var `type`: js.UndefOr[Int] = js.undefined
+  var customWidth: js.UndefOr[String ] = js.undefined
+}
+
+object PanelType {
+  val smallFluid = 0
+  val smallFixedFar = 1
+  val smallFixedNear = 2
+  val medium = 3
+  val large = 4
+  val largeFixed = 5
+  val extraLarge = 6
+  val custom = 7
+}
+
+trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttributes[T] with ComponentRef[T] {
+  var label: js.UndefOr[String] = js.undefined
+  // these are in HTMLAttributes I think
+  // ariaLabel?: string;
+  // id?: string;
+  // className?: string;
+
+  var defaultSelectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]] = js.undefined
+  var selectedKey: js.UndefOr[String | Int | js.Array[String]| js.Array[Int]] = js.undefined
+  /** Any ??? */
+  var options: js.UndefOr[js.Any] = js.undefined
+  // onChanged?: (option: ISelectableOption, index?: number) => void;
+  // onRenderContainer?: IRenderFunction<ISelectableDroppableTextProps<T>>;
+  var onRenderList: js.UndefOr[IRenderFunction[ISelectableDroppableTextProps[T]]] = js.undefined
+  // onRenderItem?: IRenderFunction<ISelectableOption>;
+  // onRenderOption?: IRenderFunction<ISelectableOption>;
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+
+  //calloutProps?: ICalloutProps;
+  var panelProps: js.UndefOr[IPanelProps] = js.undefined
+  var errorMessage: js.UndefOr[String] = js.undefined
+}
+
+object ResponsiveMode {
+  val small = 0
+  val medium = 1
+  val large = 2
+  val xLarge = 3
+  val xxLarge = 4
+  val xxxLarge = 5
+}
+
+trait IDropdownProps extends ISelectableDroppableTextProps[dom.html.Div] {
+  var placeholder: js.UndefOr[String] = js.undefined
+  //var onChanged: js.UndefOr[js.Function1[IDropdownOption, Unit] | js.Function2[IDropdownOption, Int, Unit]] = js.undefined
+  var onChanged: js.UndefOr[js.Function2[IDropdownOption, js.UndefOr[Int], Unit]] = js.undefined
+  var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var onRenderPlaceholder: js.UndefOr[IRenderFunction[IDropdownProps]] = js.undefined
+  var onRenderTitle: js.UndefOr[IRenderFunction[IDropdownOption] |IRenderFunction[js.Array[IDropdownOption]]] = js.undefined
+  var onRenderCaretDown: js.UndefOr[IRenderFunction[IDropdownOption]] = js.undefined  
+  var dropdownWidth: js.UndefOr[Int] = js.undefined
+  /** Responsive mode */
+  var responsiveMode: js.UndefOr[Int] = js.undefined
+  var multiselect: js.UndefOr[Boolean] = js.undefined
+  var defaultSelectedKeys: js.UndefOr[js.Array[String]|js.Array[Int]] = js.undefined  
+  var selectedKeys: js.UndefOr[js.Array[String]|js.Array[Int]] = js.undefined
+  var multiSelectDelimiter: js.UndefOr[String] = js.undefined
+  var isDisabled: js.UndefOr[Boolean] = js.undefined
+}
+
+trait ISelectableOption extends js.Object {
+  var key: String | Int
+  var text: String
+  var itemType: js.UndefOr[Int] = js.undefined
+  var index: js.UndefOr[Int] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var selected: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+}
+
+object SelectableOptionMenuItemType {
+  val Normal = 0
+  val Divider = 1
+  val Header = 2
+}
+
+trait IDropdownOption extends ISelectableOption {
+  var data: js.UndefOr[js.Any] = js.undefined
+  var isSelected: js.UndefOr[Boolean] = js.undefined
 }

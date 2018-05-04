@@ -12,10 +12,10 @@ import org.scalajs.dom
 import scala.language.implicitConversions
 
 /**
- * Simple vdom. There are two styles, one with list of attributes like many
- * other scalajs react bindings.  The preferred approach is using typed
- * js.Objects so that properties presence/absence can be checked.
- */
+  * Simple vdom. There are two styles, one with list of attributes like many
+  * other scalajs react bindings.  The preferred approach is using typed
+  * js.Objects so that properties presence/absence can be checked.
+  */
 package object vdom extends vdom.Events {
 
   /** Create tag that takes a list of attributes. */

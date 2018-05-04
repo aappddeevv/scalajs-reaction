@@ -77,3 +77,6 @@ Show a graph of relationships. This does not show much "reducer" wise but does s
 Using r16.4 alphas, demonstrate some of the asynchronous rendering that react can perform if your rendering method throws a "promise" that completes when your component is ready to be rendered.
 
 This is bleeding edge stuff from an early March 2018 conference where Dan previewed some of their changes based on their react "fiber" core.
+
+## Plotly
+Show plots using plotly, one of the more advanced plotting/graphing library for both scientific and business plots.

@@ -22,24 +22,26 @@ import styling._
 @js.native
 @JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
 object Utilities extends js.Object {
+
   /** This is another tough one to type in scala.js. */
   def memoizeFunction[T <: js.Function](f: T): T = js.native
 
   /** string, serializable (has toString), dictionary, null, undefined, boolean...*/
   def css(various: js.Any*): String = js.native
 
-  def getNativeProps[T <: js.Object](props: js.Object,
-    allowedPropNames: js.Array[String],
-    excludedPropNames: js.UndefOr[js.Array[String]] = js.undefined): T =
+  def getNativeProps[T <: js.Object](
+      props: js.Object,
+      allowedPropNames: js.Array[String],
+      excludedPropNames: js.UndefOr[js.Array[String]] = js.undefined): T =
     js.native
 
-  val baseElementEvents: js.Array[String] = js.native
+  val baseElementEvents: js.Array[String]     = js.native
   val baseElementProperties: js.Array[String] = js.native
   val htmlElementProperties: js.Array[String] = js.native
-  val anchorProperties: js.Array[String] = js.native
-  val buttonProperties: js.Array[String] = js.native
-  val divProperties: js.Array[String] = js.native
-  val inputProperties: js.Array[String] = js.native
-  val textAreaProperties: js.Array[String] = js.native
-  val imageProperties: js.Array[String] = js.native      
+  val anchorProperties: js.Array[String]      = js.native
+  val buttonProperties: js.Array[String]      = js.native
+  val divProperties: js.Array[String]         = js.native
+  val inputProperties: js.Array[String]       = js.native
+  val textAreaProperties: js.Array[String]    = js.native
+  val imageProperties: js.Array[String]       = js.native
 }

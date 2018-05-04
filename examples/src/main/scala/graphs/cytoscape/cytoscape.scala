@@ -41,11 +41,14 @@ package object cytoscape {
   )
 
   val OtherEvents = Seq(
-    "tapstart", "vmousedown",
-    "tapdrag", "vmousemove",
+    "tapstart",
+    "vmousedown",
+    "tapdrag",
+    "vmousemove",
     "tapdragover",
     "tapdrougout",
-    "tapend", "vmouseup",
+    "tapend",
+    "vmouseup",
     "taphold",
     "ctxtapstart",
     "ctxtapend",
@@ -88,7 +91,5 @@ package object cytoscape {
     "viewport",
     "resize"
   )
-
-
 
 }

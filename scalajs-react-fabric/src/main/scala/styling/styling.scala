@@ -41,7 +41,7 @@ package object styling {
   /** Create an array of styles. This should really have IStyleBase as input. */
   object stylearray {
     def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
-    def apply(): IStyle = js.Array[IStyle]().asInstanceOf[IStyle]
+    def apply(): IStyle                = js.Array[IStyle]().asInstanceOf[IStyle]
   }
 
   /**
@@ -53,29 +53,29 @@ package object styling {
   type IStyleBase = IRawStyle | String | js.Dynamic | js.Object
 
   /** A simple style object/string/thing or an array of those. A plain string becomes a classname in mergestyles. */
-  type IStyle     = IStyleBase | IRawStyleArray
+  type IStyle = IStyleBase | IRawStyleArray
 
   /**
     * Keys are usually logical names of your component, e.g. root, header, footer.
     */
   type IStyleSet = js.Dictionary[IStyle]
 
-  /** 
-   * Create a style set. You can use this to help drive type inference or 
-   * you can use a JS trait directly.
-   * 
-   * @example {{{
-   *  mergeStyleSets[SomeClassNames](
-   *  styleset(
-   *    "root" -> stylearray(
-   *      "xx-PartName",
-   *      new IRawStyle { ... },
-   *      if(something) null else new IRawStyle { ... },
-   *      customStyles.flatMap(_.root)
-   *  )
-   * )
-   * }}}
-   */
+  /**
+    * Create a style set. You can use this to help drive type inference or
+    * you can use a JS trait directly.
+    *
+    * @example {{{
+    *  mergeStyleSets[SomeClassNames](
+    *  styleset(
+    *    "root" -> stylearray(
+    *      "xx-PartName",
+    *      new IRawStyle { ... },
+    *      if(something) null else new IRawStyle { ... },
+    *      customStyles.flatMap(_.root)
+    *  )
+    * )
+    * }}}
+    */
   object styleset {
     @inline def apply(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
       js.Dictionary[IStyle](stylePairs: _*)
@@ -126,6 +126,7 @@ package object styling {
   // using just a dictionary and `styleset`.
   //
   implicit def jsObject2IStyleSet[T <: js.Object](u: T): IStyleSet = u.asInstanceOf[IStyleSet]
-  implicit def jsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet = u.asInstanceOf[IStyleSet]
+  implicit def jsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet =
+    u.asInstanceOf[IStyleSet]
 
 }

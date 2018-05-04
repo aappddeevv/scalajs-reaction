@@ -200,19 +200,21 @@ object elements {
     c.reactClassInternal.asInstanceOf[ReactJsComponent]
   }
 
-  /** 
-   * Give a js.Object (or subclass), find a "children" property and assume its
-   * an array of ReactNodes. If not found, return an empty js array. This is
-   * used for interop where your scala "make" method takes children as a
-   * separate parameter but your props (event JS friendly props) does not
-   * contain the children property--it's there if there are children on the
-   * js side.
-   * 
-   * @todo Seems like this is an expensive call. Can we do better?
-   */
+  /**
+    * Give a js.Object (or subclass), find a "children" property and assume its
+    * an array of ReactNodes. If not found, return an empty js array. This is
+    * used for interop where your scala "make" method takes children as a
+    * separate parameter but your props (event JS friendly props) does not
+    * contain the children property--it's there if there are children on the
+    * js side.
+    *
+    * @todo Seems like this is an expensive call. Can we do better?
+    */
   @inline def extractChildren(item: js.UndefOr[js.Object]): js.Array[ReactNode] =
-    if(item == null) js.Array()
-    else item.toOption.flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
-      .getOrElse[js.Array[ReactNode]](js.Array())
+    if (item == null) js.Array()
+    else
+      item.toOption
+        .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
+        .getOrElse[js.Array[ReactNode]](js.Array())
 
 }

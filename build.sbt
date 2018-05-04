@@ -26,7 +26,7 @@ lazy val buildSettings = Seq(
   scalaVersion := "2.12.4",
   resolvers += Resolver.sonatypeRepo("releases"),
   resolvers += Resolver.jcenterRepo,
-  scalafmtVersion in ThisBuild := "1.4.0",
+  scalafmtVersion in ThisBuild := "1.5.1",
   autoCompilerPlugins := true
 ) ++ licenseSettings
 

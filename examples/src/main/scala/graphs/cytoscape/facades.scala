@@ -53,12 +53,12 @@ trait LayoutManipulation extends js.Object {
 
 @js.native
 trait LayoutEvents extends js.Object {
-  def on(events: String, cb: js.Function1[js.Any, Unit]): Unit = js.native
+  def on(events: String, cb: js.Function1[js.Any, Unit]): Unit               = js.native
   def on(events: String, data: js.Any, cb: js.Function1[js.Any, Unit]): Unit = js.native
-  def removeListener(events: String, cb: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined): Unit = js.native
+  def removeListener(
+      events: String,
+      cb: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined): Unit = js.native
 }
-
-
 @js.native
 trait BaseLayout extends js.Object {
   //var name: String
@@ -73,17 +73,17 @@ trait Layout extends js.Object {
 @js.native
 trait Graph extends js.Object with Layout {
   def container(): js.UndefOr[dom.html.Element] = js.native
-  def center(): Unit                   = js.native
-  def destroy(): Unit                  = js.native
-  def fit(): Unit                      = js.native
-  def reset(): Unit                    = js.native
-  def pan(): Position                  = js.native
-  def panningEnabled(): Boolean        = js.native
-  def userPanningEnabled(): Boolean    = js.native
-  def zoom(level: Double): Unit        = js.native
-  def zoom(options: ZoomOptions): Unit = js.native
-  def zoomingEnabled(): Boolean        = js.native
-  def userZoomingEnabled(): Boolean    = js.native
+  def center(): Unit                            = js.native
+  def destroy(): Unit                           = js.native
+  def fit(): Unit                               = js.native
+  def reset(): Unit                             = js.native
+  def pan(): Position                           = js.native
+  def panningEnabled(): Boolean                 = js.native
+  def userPanningEnabled(): Boolean             = js.native
+  def zoom(level: Double): Unit                 = js.native
+  def zoom(options: ZoomOptions): Unit          = js.native
+  def zoomingEnabled(): Boolean                 = js.native
+  def userZoomingEnabled(): Boolean             = js.native
 
   def minZoom(): Double        = js.native
   def minZoom(v: Double): Unit = js.native
@@ -130,18 +130,18 @@ object Cytoscape extends js.Object {
 }
 
 @js.native
-trait Event extends js.Object{
-  val cy: Graph = js.native
-  val cyTarget : Element = js.native
-  val `type`: String = js.native
+trait Event extends js.Object {
+  val cy: Graph         = js.native
+  val cyTarget: Element = js.native
+  val `type`: String    = js.native
   val namespace: String = js.native
-  val data: js.Object = js.native
-  val timeStamp: Long = js.native
+  val data: js.Object   = js.native
+  val timeStamp: Long   = js.native
 
   // for input device events only
-  val position: Position = js.native
+  val position: Position         = js.native
   val renderedPosition: Position = js.native
-  val originalEvent: js.Any = js.native
+  val originalEvent: js.Any      = js.native
 
   // layout events only
   val layout: js.Any = js.native

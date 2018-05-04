@@ -19,13 +19,13 @@ import js.JSConverters._
 object Styling extends js.Object {
 
   /**
-   * Merge styles and register in stylesheet. Return the "css" mangled name you
-   * use as the attribute "className" in your components.
-   */
+    * Merge styles and register in stylesheet. Return the "css" mangled name you
+    * use as the attribute "className" in your components.
+    */
   def mergeStyles(styles: IStyle*): String = js.native
 
   /**
-   * Merge style sets and register in stylesheet. js.Object is included to allow
+    * Merge style sets and register in stylesheet. js.Object is included to allow
     * "partial" T's to be passed in. It is not possible to ensure that all keys
     * in T are defined based on the input parameters alone.
     */

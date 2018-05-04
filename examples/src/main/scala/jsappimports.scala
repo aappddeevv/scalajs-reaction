@@ -108,27 +108,27 @@ object cx extends js.Object {
 @JSImport("react-content-loader", JSImport.Namespace)
 object ReactContentLoader extends js.Object {
   val BulletList: ReactJsComponent = js.native
-  val List: ReactJsComponent = js.native
-  val Code: ReactJsComponent = js.native
-  val Instagram: ReactJsComponent = js.native
-  val Facebook: ReactJsComponent = js.native  
+  val List: ReactJsComponent       = js.native
+  val Code: ReactJsComponent       = js.native
+  val Instagram: ReactJsComponent  = js.native
+  val Facebook: ReactJsComponent   = js.native
 }
 
 class ReactContentLoaderOptions(
-  val animate: js.UndefOr[Boolean] = js.undefined,
-  val speed: js.UndefOr[Int] = js.undefined,
-  val className: js.UndefOr[String] = js.undefined,
-  val width: js.UndefOr[Double] = js.undefined,
-  val height: js.UndefOr[Double] = js.undefined,
-  val preserveAspectRatio: js.UndefOr[String] = js.undefined,
-  val primaryColor: js.UndefOr[String] = js.undefined,
-  val secondaryColor: js.UndefOr[String] = js.undefined,
-  val style: js.UndefOr[js.Object|js.Dynamic] = js.undefined,
-  val uniquekey: js.UndefOr[String] = js.undefined
+    val animate: js.UndefOr[Boolean] = js.undefined,
+    val speed: js.UndefOr[Int] = js.undefined,
+    val className: js.UndefOr[String] = js.undefined,
+    val width: js.UndefOr[Double] = js.undefined,
+    val height: js.UndefOr[Double] = js.undefined,
+    val preserveAspectRatio: js.UndefOr[String] = js.undefined,
+    val primaryColor: js.UndefOr[String] = js.undefined,
+    val secondaryColor: js.UndefOr[String] = js.undefined,
+    val style: js.UndefOr[js.Object | js.Dynamic] = js.undefined,
+    val uniquekey: js.UndefOr[String] = js.undefined
 ) extends js.Object
 
 object ReactContentLoaderComponents {
   import ttg.react.elements.wrapJsForScala
   def BulletList(props: ReactContentLoaderOptions = null)(children: ReactNode*) =
-    wrapJsForScala(ReactContentLoader.List, props, children:_*)
+    wrapJsForScala(ReactContentLoader.List, props, children: _*)
 }

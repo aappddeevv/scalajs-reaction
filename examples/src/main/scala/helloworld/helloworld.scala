@@ -36,9 +36,9 @@ object HelloWorld {
       div("hello world" + name.map(" and welcome " + _).getOrElse(""))
     }
 
-  /** 
-   * The "apply" version.
-   */
+  /**
+    * The "apply" version.
+    */
   def apply(name: Option[String] = None) = make(name)
 
   // Exported to javascript world
@@ -47,11 +47,11 @@ object HelloWorld {
     c.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
 
   /**
-   * Alternative scala `make` definition, render must convert to scala objects
-   * if needed and internal scala code would need to create a HelloWorldProps
-   * object. To handle children use `extractChildren(props)` and pass to a
-   * version of "make" that takes props.
-   */
+    * Alternative scala `make` definition, render must convert to scala objects
+    * if needed and internal scala code would need to create a HelloWorldProps
+    * object. To handle children use `extractChildren(props)` and pass to a
+    * version of "make" that takes props.
+    */
   def make2(props: HelloWorldProps) =
     render { self =>
       div("hello world" + props.name.toOption.map(" and welcome " + _).getOrElse(""))
