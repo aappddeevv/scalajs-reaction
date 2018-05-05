@@ -73,7 +73,7 @@ protected trait JsComponentThis[State] extends js.Object {
   def state: State
 
   /** this.setState */
-  def setState(set: js.Function1[State, State | Null], onComplete: () => Unit = () => ()): Unit
+  def setState(set: js.Function1[State, State | Null], onComplete: js.Function0[Unit] = () => ()): Unit
 
   /** this.props */
   def props: JsComponentThisProps
@@ -85,8 +85,8 @@ protected trait JsComponentThis[State] extends js.Object {
     */
   def jsPropsToScala: js.UndefOr[js.Object => ComponentSpec]
 
-  /** Our array of unmounts, if there are any. */
-  var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.native
+  ///** Our array of unmounts, if there are any. */
+  //var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.native
 }
 
 /**
@@ -97,29 +97,31 @@ protected trait JsComponentThis[State] extends js.Object {
   * "type/class" but there is one instance of ComponentSpec for each component
   * instance. The key part at runtime is the (Proxy, ComponentSpec) pair inside
   * the cake layer. The pair acts as a "template." Proxy handles the reactjs
-  * world and forwards calls to ComponentSpec, the scala.js representation. An
-  * instance of the cake holds the types and an instance of these pairs together
-  * and becomes a factory for using the (Proxy,ComponentSpec) "template"
-  * augmented with the specific client methods, to create a component
-  * instance. The cake (and the single instances of the Proxy and ComponentSpec
+  * world, calls methods defined in the cake and the cake calls methods on a
+  * copy of the Component. An instance of the cake holds the types and an
+  * instance of the proxy and component "emplates" together and becomes a
+  * factory for creating "components" customized e.g. a specific render
+  * method. The cake (and the single instances of the Proxy and Component
   * "templates") is the equivalent of a react class in ES5 terminology.
   *
   * There are several types with the base layer. There are also multiple
-  * variations of a specific type such as "Self", which represents the javascript
-  * "self" concept but in the scala.js world. The non-native js trait
+  * variations of a specific type such as "Self", which represents the
+  * javascript "self" concept but in the scala.js world. The non-native js trait
   * representing the react component on the scala.js side is based on
   * `ComponentSpec`. `WithMethods` provides the public API for adding specific
   * functions for rendering, changing state, etc., and only used in
   * "building/specifying" creating the ComponentSpec. `Proxy` is the non-native
   * js trait object provided by scala.js to the reactjs system that represents
   * the javascript side of the component. Methods in the proxy are forwarded to
-  * methods in `ComponentSpec`. `Ops` is the object that can be imported by
-  * clients to bring the cake types and values into scope for use in building the
-  * component. For example, importing Ops brings `WithMethods` into scope.
+  * the cake, the cake calls methods in a copy of the `Component` stored in the
+  * reactjs props. `Ops` is the object that can be imported by clients to bring
+  * the cake types and values (the plain Component) into scope for use in
+  * building the final Component. For example, importing Ops brings
+  * `WithMethods` into scope.
   *
-  * Many methods used by the proxy are actually defined in the scala cake
-  * instance to help improve readability but they *could* have been inlined into
-  * the proxy method itself.
+ * The cake method of creating objects is less common today in scala as it
+ * creates a rigid structure of types all interdependent on each other. However,
+ * this is exactly what's needed in scalajs-react.
   *
   */
 trait CakeBase { cake =>
@@ -132,12 +134,17 @@ trait CakeBase { cake =>
     * may create additional "Self"s for use in client API methods.
     */
   trait SelfLike extends SelfForUnmountLike {
-
     /**
       * You should need not need to use this in scala.js vs reason-react, given
       * that we have a separate Self type.
       */
     def handle(cb: Self => Unit): Unit
+
+    /**
+     * Add a callback when unmount occurs. This method is obviously *not*
+     * present during the unmount method.
+    */
+    def onUnmount(cb: OnUnmount): Unit
   }
 
   /**
@@ -154,48 +161,66 @@ trait CakeBase { cake =>
   type ThisSelf = JsComponentThis[State]
 
   /**
-    * The basic scala component that requires methods to cusomize its behavior.
+    * The basic scala component that requires methods to customize its behavior.
     * This base component is used as a "template" to create each component
-    * instance.
+    * instance. The Proxy calls methods on this object. The scala-side component
+    * is placed in the reactjs component's props. component will call methods
+    * provided by the user, specific to the component, as well as lifecycle
+    * methods defined in the cake layers which are specific only to the cake
+    * layer.
     */
   val component: ComponentType
   type ComponentType <: ComponentLike
 
+  /** The signature of DidMount varies by cake layer. */
+  type DidMount
+
   /**
-    * The scala.js component is a javascript object and and has all values as
+    * The scala.js component is a javascript object and has all values as
     * optional. A client does not create a ComponentSpec directly, instead the
     * WithMethods trait is used and the WithMethods are merged into the
-    * ComponentSpec.
+    * ComponentSpec. When the cake layer instance, e.g. a stateless cake
+    * instance, is called by the proxy, the cake layer in turn locates the
+    * Component instance and calls those methods.
     */
   protected trait ComponentLike extends ComponentSpec {
     var render: js.UndefOr[Self => ReactNode] = js.undefined
 
-    /** Once the subscriptions are "activated" the OnUnmount art is stored in the proxy. */
     var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
+    var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
     var didUpdate: js.UndefOr[OldNewSelf[Self] => Unit]       = js.undefined
     var willUnmount: js.UndefOr[SelfForUnmount => Unit]       = js.undefined
     var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
+    var didMount: js.UndefOr[DidMount] = js.undefined
   }
 
-  /** reactjs this.state: The object stored in reactjs this.state. (reason-react TotalState) */
+  /** 
+   * reactjs this.state: The object stored in reactjs this.state. For stateless
+   * components, there is obviously no scala state to store. (reason-react
+   * TotalState).
+   */
   protected type State <: StateLike
 
   /**
-    * Keep it as js-object so you can still manipulate it from javascript. In the base
-    * case we are non storing any real state.
+    * Keep it as js-object so you can still manipulate it from javascript. In
+    * the base case we are not storing any real state of course because the base
+    * case is stateless.
     */
   protected trait StateLike extends js.Object
 
   /**
     * Methods exposed for the public component API. Clients add their own
-    * methods to this object and then it is merged into a ComponentSpec. Copying
-    * is via a javascript "Object.assign" like method. WithMethods should be
-    * read "create a component with these methods...". Methods on WithMethods
-    * are made optional or not depending on the type of component being
-    * created. WithMethods is the typesafe way to create a ComponentSpec.
+    * methods to this object and then it is merged into the the
+    * ComponentSpec. Copying is via a javascript "Object.assign" like
+    * method. WithMethods should be read "create a component with these
+    * methods...". Methods on WithMethods are made optional or not depending on
+    * the type of component being created. WithMethods is the typesafe way to
+    * create a Component. WithMethods support building components with
+    * customized behaviour, e.g. define a render method, but are not used
+    * otherwise.
     */
   type WithMethods <: WithMethodsLike
 
@@ -213,10 +238,13 @@ trait CakeBase { cake =>
     var didUpdate: js.UndefOr[OldNewSelf[Self] => Unit]       = js.undefined
     var willUnmount: js.UndefOr[SelfForUnmount => Unit]       = js.undefined
     var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
+
+    var didMount: js.UndefOr[DidMount] = js.undefined
   }
 
   /**
-    * Helpers exposed when the client imports them via `import myComponent.ops._`.
+    * Helpers exposed when the client imports them via `import
+    * myComponent.ops._`.
     */
   val ops: Ops
 
@@ -229,7 +257,9 @@ trait CakeBase { cake =>
     /** Use this as `myComponent.copy(new methods { ... })`. */
     type methods = cake.WithMethods
 
-    /** Alias for this component cake's `copy()` method but without the need for the val anchor. */
+    /** 
+     * Alias for this component cake's `copy()` method but without the need for the val anchor.
+     */
     def copyWith(newMethods: methods) = cake.copy(newMethods)
   }
 
@@ -252,8 +282,10 @@ trait CakeBase { cake =>
   protected type ProxyType <: ProxyLike
 
   /**
-    * The proxy object for this component. Each scala Component needs one. The
-    * methods on Proxy call into the API methods found on ComponentType.
+    * The proxy object for this component. Each cake instance defines a single
+   * proxy that proxies all Components created from that cake. The methods on
+   * Proxy call the cake layer methods which then call the specific customized
+   * Component methods.
     */
   protected val proxy: ProxyType
 
@@ -299,7 +331,7 @@ trait CakeBase { cake =>
       component: ComponentType,
       displayName: String = null): Self
 
-  /** Make a self for unmounting which may different than most general "self" needs. */
+  /** Make a self for unmounting which is different than most general "self". */
   protected def mkSelfForUnmount(
       thisJs: ThisSelf,
       jsState: State,
@@ -307,18 +339,22 @@ trait CakeBase { cake =>
       displayName: String = null): SelfForUnmount
 
   /** Helper function to mutate thisJs to add Onmount callbacks to ThisSelf. */
-  protected def addOnUnmounts(thisJs: ThisSelf, onUnmounts: js.Array[OnUnmount]): Unit = {
+  //protected def addOnUnmounts(thisJs: ThisSelf, onUnmounts: js.Array[OnUnmount]): Unit = {
+  protected def addOnUnmounts(c: ComponentType, onUnmounts: js.Array[OnUnmount]): Unit = {    
     val newUnmounts =
-      thisJs.onUnmounts
-        .map(_.concat(onUnmounts))
+      c.onUnmounts
+    //.map(_.concat(onUnmounts))
+        .map(_ ++ onUnmounts)
         .getOrElse(onUnmounts)
-    thisJs.onUnmounts = if (newUnmounts.length > 0) newUnmounts else js.undefined
+    c.onUnmounts = if (newUnmounts.length > 0) newUnmounts else js.undefined
   }
 
   /**
     * Common didMount functionality. Runs subscriptions and return the OnMount
     * effects to be run during component unmount if the caller wants those.
     * `OnUnmount` callbacks are stored in the javascript component directly.
+   * `mkSelf` is called so it should be the correct one created for the 
+   * layer of the cake you are in.
     */
   protected def _componentDidMountCommon(displayName: String)(
       thisJs: ThisSelf): (ComponentType, Self, js.Array[OnUnmount]) = {
@@ -328,7 +364,10 @@ trait CakeBase { cake =>
     // call subscriptions
     val onUnmounts: js.Array[OnUnmount] =
       component.subscriptions.map(_(self).map(_())).getOrElse(js.Array())
-    addOnUnmounts(thisJs, onUnmounts)
+    // remove subscriptions from component
+    component.subscriptions = js.undefined
+    //addOnUnmounts(thisJs, onUnmounts)
+    addOnUnmounts(component, onUnmounts)
     (component, self, onUnmounts)
   }
 
@@ -348,31 +387,29 @@ trait CakeBase { cake =>
   }
 
   /**
-    * The basic unmount runs the unsubscribes.
-    */
+   * The basic unmount runs the unsubscribes.
+   */
   @inline protected def _componentWillUnmount(displayName: String)(thisJs: ThisSelf): Unit = {
     val component =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
-    component.willUnmount.toOption match {
-      case Some(wu) =>
-        val self = mkSelfForUnmount(thisJs, thisJs.state, component, displayName)
-        wu(self)
-      case _ => // do nothing
+    component.willUnmount.foreach{ wu  =>
+      val self = mkSelfForUnmount(thisJs, thisJs.state, component, displayName)
+      wu(self)
     }
     // run unmount callbacks if they exist
-    thisJs.onUnmounts.foreach(_.foreach(_()))
+    //thisJs.onUnmounts.foreach(_.foreach(_()))
+    component.onUnmounts.foreach(_.foreach(_()))
   }
 
   @inline protected def _componentDidCatch(
-      displayName: String)(thisJs: ThisSelf, error: js.Error, errorInfo: ErrorInfo): Unit = {
+    displayName: String)(thisJs: ThisSelf, error: js.Error, errorInfo: ErrorInfo): Unit = {
     val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
-    component.didCatch.toOption match {
-      case Some(dc) =>
-        val self = mkSelf(thisJs, thisJs.state, component)
-        dc(self, error, errorInfo)
-      case _ => // pass through?, should we throw as scala or js?
-        // we rewrap it so js or scala can catch it
-        throw new js.JavaScriptException(error)
+    component.didCatch.fold(
+      // rewrap and throw
+      throw new js.JavaScriptException(error)
+    ){dc =>
+      val self = mkSelf(thisJs, thisJs.state, component)
+      dc(self, error, errorInfo)
     }
   }
 
@@ -385,88 +422,80 @@ trait CakeBase { cake =>
   }
 
   @inline protected def _componentWillUpdate(displayName: String)(
-      thisJs: ThisSelf,
-      nextProps: JsComponentThisProps,
-      nextState: State): Unit = {
+    thisJs: ThisSelf,
+    nextProps: JsComponentThisProps,
+    nextState: State): Unit = {
     //println(s"$debugName:CreateClassOpts.componentWillUpdate")
     val newComponent =
       convertProps(nextProps, thisJs.jsPropsToScala, displayName)
-    newComponent.willUpdate.toOption match {
-      case Some(wu) =>
-        val oldJsProps = thisJs.props
-        /* Avoid converting again the props that are just the same as curProps. */
-        val oldComponent =
-          if (nextProps == oldJsProps) newComponent
-          else convertProps(oldJsProps, thisJs.jsPropsToScala, displayName)
-        val curState = thisJs.state
-        val newSelf =
-          mkSelf(thisJs, nextState, newComponent, displayName)
-        val oldSelf =
-          mkSelf(thisJs, curState, oldComponent, displayName)
-        wu(new OldNewSelf(oldSelf, newSelf))
-      case _ => // do nothing
+    newComponent.willUpdate.foreach{ wu =>
+      val oldJsProps = thisJs.props
+      /* Avoid converting again the props that are just the same as curProps. */
+      val oldComponent =
+        if (nextProps == oldJsProps) newComponent
+        else convertProps(oldJsProps, thisJs.jsPropsToScala, displayName)
+      val curState = thisJs.state
+      val newSelf =
+        mkSelf(thisJs, nextState, newComponent, displayName)
+      val oldSelf =
+        mkSelf(thisJs, curState, oldComponent, displayName)
+      wu(new OldNewSelf(oldSelf, newSelf))
     }
   }
 
   @inline protected def _componentDidUpdate(displayName: String)(
-      thisJs: ThisSelf,
-      prevProps: JsComponentThisProps,
-      prevState: State): Unit = {
+    thisJs: ThisSelf,
+    prevProps: JsComponentThisProps,
+    prevState: State): Unit = {
     //println(s"$debugName:CreateClassOpts.componentDidUpdate:\nprevProps ${PrettyJson.render(prevProps)}\nprevState: ${PrettyJson.render(prevState)}")
     val newJsProps = thisJs.props
     val curState   = thisJs.state
     val newConvertedScalaProps =
       convertProps(newJsProps, thisJs.jsPropsToScala, displayName)
     val newComponent = newConvertedScalaProps
-    newComponent.didUpdate.toOption match {
-      case Some(du) =>
-        val oldComponent =
-          if (prevProps == newJsProps) newConvertedScalaProps
-          else convertProps(prevProps, thisJs.jsPropsToScala, displayName)
-        val ns =
-          mkSelf(thisJs, curState, newComponent, displayName)
-        val os =
-          mkSelf(thisJs, prevState, oldComponent, displayName)
-        du(new OldNewSelf(os, ns))
-      case _ => // do nothing!
+    newComponent.didUpdate.foreach{ du =>
+      val oldComponent =
+        if (prevProps == newJsProps) newConvertedScalaProps
+        else convertProps(prevProps, thisJs.jsPropsToScala, displayName)
+      val ns =
+        mkSelf(thisJs, curState, newComponent, displayName)
+      val os =
+        mkSelf(thisJs, prevState, oldComponent, displayName)
+      du(new OldNewSelf(os, ns))
     }
   }
 
   // simple versioin for stateless objects, the statefull one is more complicated
   @inline protected def _statelessShouldComponentUpdate(displayName: String)(
-      thisJs: ThisSelf,
-      nextJsProps: JsComponentThisProps,
-      nextState: State): Boolean = {
+    thisJs: ThisSelf,
+    nextJsProps: JsComponentThisProps,
+    nextState: State): Boolean = {
     val curJsProps           = thisJs.props
-    var propsWarrantRerender = nextJsProps != curJsProps
     val oldComponent         = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     val newComponent =
       if (nextJsProps == curJsProps) oldComponent
       else convertProps(nextJsProps, thisJs.jsPropsToScala, displayName)
-
-    newComponent.shouldUpdate.toOption match {
-      case Some(su) if (propsWarrantRerender) =>
+    newComponent.shouldUpdate.map{ su =>
         val curState = thisJs.state
         val newSelf  = mkSelf(thisJs, nextState, newComponent, displayName)
         val oldSelf  = mkSelf(thisJs, curState, oldComponent, displayName)
         su(new OldNewSelf(oldSelf, newSelf))
-      case _ => propsWarrantRerender
-    }
+    }.getOrElse(true)
   }
 
   /**
-    * Factored out methods that assume no state or retained props.  The methods
-    * defined in any layer should only be based on the data model for that
-    * layer, obviously. The "methods" on this object are called by the reactjs
-    * machinery directly and are then forwarded to ComponentSpec. Hence there is
-    * always a pair (proxy to be used in reactjs, componentspec to be used in
-    * scala.js). Note that this object is only used to call "React.createClass".
-    *
-    * We could have defined all of the methods the proxy calls inline with the
-    * class but we pulled them into the cake and just call them direcly to help
-    * improve readability.
-    */
-  protected abstract class ProxyLike extends Proxy[Self, State, JsComponentThisProps, ThisSelf] {
+   * Factored out methods that assume no state or retained props.  The methods
+   * defined in any layer should only be based on the data model for that
+   * layer, obviously. The "methods" on this object are called by the reactjs
+   * machinery directly and are then forwarded to ComponentSpec. Hence there is
+   * always a pair (proxy to be used in reactjs, componentspec to be used in
+   * scala.js). Note that this object is only used to call "React.createClass".
+   *
+   * We could have defined all of the methods the proxy calls inline with the
+   * class but we pulled them into the cake and just call them direcly to help
+   * improve readability.
+   */
+  abstract protected class ProxyLike extends Proxy[Self, State, JsComponentThisProps, ThisSelf] {
     // componentWillMount is not used in scalajs-react...
     override val componentWillUnmount = js.defined(_componentWillUnmount(displayName))
     // REMOVE TO ALLOW PROMISE PASS THROUGH UNHINDERED FOR THE MOMENT?!?!?!
@@ -476,6 +505,21 @@ trait CakeBase { cake =>
     override val componentDidUpdate    = js.defined(_componentDidUpdate(displayName))
     override val componentDidMount     = js.defined(_componentDidMountCommon(displayName))
     override val shouldComponentUpdate = js.defined(_statelessShouldComponentUpdate(displayName))
+  }
+}
+
+trait StatelessCakeBase extends CakeBase { cake =>
+  protected type ProxyType <: ProxyLike
+  type DidMount = Self => Unit
+
+  protected def _componentDidMountStateless(displayName: String)(
+    thisJs: ThisSelf): Unit = {
+    val (c, s, cbs) = _componentDidMountCommon(displayName)(thisJs)
+    component.didMount.foreach(_(s))
+  }
+
+  abstract protected class ProxyLike extends super.ProxyLike {
+    override val componentDidMount = js.defined(_componentDidMountStateless(displayName))
   }
 }
 
@@ -515,30 +559,26 @@ trait CakeWithState extends CakeBase { cake =>
 
   /** Component action type for built in reducer. */
   type A
-  protected type State <: StateLike
-  protected trait StateLike extends super.StateLike {
 
+  protected type State <: StateLike
+
+  /**
+   * In the reactjs State for a stateful cake layer, store the scala state.
+   * and potentially some side effects.
+   */
+  protected trait StateLike extends super.StateLike {
     /** Actual Component provided state. Can be null */
     val scalaState: S
-
-    /** Version number of state i.e. optimistic concurrency. */
-    val scalaStateVersion: Int
-
-    /** Versions tracing to sub-elements. */
-    var scalaStateVersionUsedToComputeSubelements: Int
-
-    /** Side effects to execute, if any. */
-    val sideEffects: Seq[Self => Unit]
   }
+
+  type DidMount = (Self, ReducerResult[S, Self]) => Unit
 
   type ComponentType <: ComponentLike
   trait ComponentLike extends super.ComponentLike {
     // we use UndefOr here so we can define it, but its required in WithMethods.
     var initialState: js.UndefOr[SelfForInitialState => S] = js.undefined
     var willReceiveProps: js.UndefOr[Self => S]            = js.undefined
-    var didMount: js.UndefOr[(Self, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType] =
-      js.undefined
-    // add didMount?
+    //var didMount: js.UndefOr[] = js.undefined
     var reducer: js.UndefOr[(A, S, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType] =
       js.undefined
     ///override val shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
@@ -549,8 +589,6 @@ trait CakeWithState extends CakeBase { cake =>
     // must be defined when trait is created
     val initialState: SelfForInitialState => S
     var willReceiveProps: js.UndefOr[Self => S] = js.undefined
-    var didMount: js.UndefOr[(Self, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType] =
-      js.undefined
     val reducer: (A, S, ReducerResult[S, Self]) => ReducerResult[S, Self]#UpdateType
   }
 
@@ -599,92 +637,53 @@ trait CakeWithState extends CakeBase { cake =>
   // allocate just once...
   object reducerResult extends ReducerResult[S, Self]
 
-  protected def mkState(s: S, v: Int, sv: Int, e: Seq[Self => Unit]): State
+  protected def mkState(s: S): State
 
   protected def sendMethod(thisJs: ThisSelf, action: A, displayName: String): Unit = {
     //println(s"$displayName:CreateClasOpts.sendMethod: $action")
     val convertedScalaProps =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     val component = convertedScalaProps
-    // Allow side-effects to be executed here. Return inside of setState
-    // means reactjs.setStates will not update the state.
-    thisJs.setState(curTotalState => {
-      val curScalaState = curTotalState.scalaState
-      val scalaStateUpdate =
-        component.reducer.map(_(action, curScalaState, reducerResult)).getOrElse(NoUpdate())
-
-      if (scalaStateUpdate == NoUpdate()) null // reactjs sees setState(null) so no update
-      else {
-        val nextTotalState =
-          transitionNextTotalState(curTotalState, scalaStateUpdate)
-        if (nextTotalState.scalaStateVersion != curTotalState.scalaStateVersion)
-          nextTotalState
-        else null
-      }
-    })
+    var sideEffect: Option[Self => Unit]= None
+    component.reducer.foreach{ reducer =>
+      thisJs.setState(curTotalState => {
+        val curScalaState = curTotalState.scalaState
+        val scalaStateUpdate =
+          component.reducer.map(_(action, curScalaState, reducerResult)).getOrElse(NoUpdate())
+        if (scalaStateUpdate == NoUpdate()) null // reactjs sees setState(null) so no update
+        else {
+          val (sideEffectOpt, nextTotalState) =
+            transitionNextTotalState(curTotalState, scalaStateUpdate)
+          sideEffect = sideEffectOpt
+          if(nextTotalState != curTotalState) nextTotalState
+          else null
+        }
+      },
+        () => sideEffect.foreach(cb => handleMethod(thisJs, cb, displayName))
+      )
+    }
   }
 
   protected type ProxyType <: ProxyLike
 
   // adding sideeffects to start of list is significant in the processing algorithm
   protected def transitionNextTotalState(
-      curTotalState: State,
-      scalaStateUpdate: StateUpdate[S, Self]): State =
+    curTotalState: State,
+    scalaStateUpdate: StateUpdate[S, Self]): (Option[Self => Unit], State) =
     scalaStateUpdate match {
-      case NoUpdate() => curTotalState
-      case Update(nextScalaState) =>
-        mkState(nextScalaState,
-                curTotalState.scalaStateVersion + 1,
-                curTotalState.scalaStateVersionUsedToComputeSubelements,
-                curTotalState.sideEffects)
-      case SilentUpdate(nextScalaState) =>
-        mkState(
-          nextScalaState,
-          curTotalState.scalaStateVersion + 1,
-          curTotalState.scalaStateVersionUsedToComputeSubelements + 1,
-          curTotalState.sideEffects
-        )
-      case SideEffects(effect) =>
-        mkState(
-          curTotalState.scalaState,
-          curTotalState.scalaStateVersion + 1,
-          curTotalState.scalaStateVersionUsedToComputeSubelements + 1,
-          Seq(effect) ++ curTotalState.sideEffects
-        )
+      case NoUpdate() => (None, curTotalState)
+      case Update(nextScalaState) => (None, mkState(nextScalaState))
+      case SideEffects(effect) => (Some(effect), curTotalState)
       case UpdateWithSideEffects(nextScalaState, effect) =>
-        mkState(
-          nextScalaState,
-          curTotalState.scalaStateVersion + 1,
-          curTotalState.scalaStateVersionUsedToComputeSubelements,
-          Seq(effect) ++ curTotalState.sideEffects
-        )
-      case SilentUpdateWithSideEffects(nextScalaState, effect) =>
-        mkState(
-          nextScalaState,
-          curTotalState.scalaStateVersion + 1,
-          curTotalState.scalaStateVersionUsedToComputeSubelements + 1,
-          Seq(effect) ++ curTotalState.sideEffects
-        )
-      case _ => curTotalState
+        (Some(effect), mkState(nextScalaState))
     }
 
   /** Unlike the base case with no state, allow state to be returned and acted upon. */
   protected def _componentDidMountWithState(displayName: String)(
-      thisJs: ThisSelf): js.Array[OnUnmount] = {
+    thisJs: ThisSelf): Unit = {
     //println(s"$debugName:CreateClassOpts.componentDidMount")
     val (component, self, onUnmounts) = _componentDidMountCommon(displayName)(thisJs)
-    component.didMount.toOption match {
-      case Some(dm) =>
-        val scalaStateUpdate = dm(self, reducerResult)
-        // can we check for NoUpdate() as well and skip the transition!
-        val curTotalState = thisJs.state
-        val nextTotalState =
-          transitionNextTotalState(curTotalState, scalaStateUpdate)
-        if (nextTotalState.scalaStateVersion != curTotalState.scalaStateVersion)
-          thisJs.setState(_ => nextTotalState)
-      case _ => // do nothing!
-    }
-    onUnmounts
+    component.didMount.foreach(_(self, reducerResult))
   }
 
   protected def _getInitialState(displayName: String)(thisJs: ThisSelf): State = {
@@ -696,45 +695,31 @@ trait CakeWithState extends CakeBase { cake =>
       component.initialState.fold(throw new Exception(
         s"""No initial state was defined for ${displayName} even though it is a stateful component."""))(
         _(self))
-    mkState(istate, 1, 1, Seq())
+    mkState(istate)
   }
 
   protected def _componentWillReceiveProps(
-      displayName: String)(thisJs: ThisSelf, nextProps: JsComponentThisProps): Unit = {
+    displayName: String)(thisJs: ThisSelf, nextProps: JsComponentThisProps): Unit = {
     //println(s"$displayName:CreateClassOpts.componentWillReceiveProps: nextProps ${PrettyJson.render(nextProps)}")
     val newConvertedScalaProps =
       convertProps(nextProps, thisJs.jsPropsToScala, displayName)
     val newComponent = newConvertedScalaProps
-    newComponent.willReceiveProps.toOption match {
-      case Some(wrp) =>
-        val oldJsProps = thisJs.props
-        val oldConvertedScalaProps =
-          if (nextProps == oldJsProps) newConvertedScalaProps
-          else convertProps(oldJsProps, thisJs.jsPropsToScala, displayName)
-        val oldComponent = oldConvertedScalaProps
-        thisJs.setState(curTotalState => {
-          val curScalaState        = curTotalState.scalaState
-          val curScalaStateVersion = curTotalState.scalaStateVersion
-          val os                   = mkSelf(thisJs, curTotalState, oldComponent)
-          val nextScalaState       = wrp(os)
-          val nextScalaStateVersion =
-            if (nextScalaState != curScalaState) curScalaStateVersion + 1
-            else curScalaStateVersion
-          // figure out which TotalState to return
-          if (nextScalaStateVersion != curScalaStateVersion) {
-            mkState(
-              nextScalaState,
-              nextScalaStateVersion,
-              curTotalState.scalaStateVersionUsedToComputeSubelements,
-              //val sideEffects = nextScalaState.sideEffects // this is what .re had but sideEffects is on TotalState
-              curTotalState.sideEffects
-            )
-          }
-          else {
-            curTotalState
-          }
-        })
-      case _ => // do nothing
+    newComponent.willReceiveProps.foreach{ wrp =>
+      val oldJsProps = thisJs.props
+      val oldConvertedScalaProps =
+        if (nextProps == oldJsProps) newConvertedScalaProps
+        else convertProps(oldJsProps, thisJs.jsPropsToScala, displayName)
+      val oldComponent = oldConvertedScalaProps
+      thisJs.setState(curTotalState => {
+        val curScalaState        = curTotalState.scalaState
+        val os                   = mkSelf(thisJs, curTotalState, oldComponent)
+        val nextScalaState       = wrp(os)
+        // figure out which TotalState to return
+        if (nextScalaState != curScalaState)
+          mkState(nextScalaState)
+        else
+          curTotalState
+      })
     }
   }
 
@@ -743,7 +728,6 @@ trait CakeWithState extends CakeBase { cake =>
       nextJsProps: JsComponentThisProps,
       nextState: State): Boolean = {
     val curJsProps           = thisJs.props
-    var propsWarrantRerender = nextJsProps != curJsProps
     val oldConvertedScalaProps =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     val newConvertedScalaProps =
@@ -752,58 +736,15 @@ trait CakeWithState extends CakeBase { cake =>
 
     val oldComponent          = oldConvertedScalaProps
     val newComponent          = newConvertedScalaProps
-    val nextScalaStateVersion = nextState.scalaStateVersion
-    val nextScalaStateVersionUsedToComputeSubelements =
-      nextState.scalaStateVersionUsedToComputeSubelements
-    val stateChangeWarrantsComputingSubelements = nextScalaStateVersionUsedToComputeSubelements != nextScalaStateVersion
-    val warrentsUpdate                          = propsWarrantRerender || stateChangeWarrantsComputingSubelements
-
-    //val nextScalaState = nextState.scalaState
+    val nextScalaState = nextState.scalaState
     val newSelf =
       mkSelf(thisJs, nextState, newComponent)
-    val ret =
-      newComponent.shouldUpdate.toOption match {
-        case Some(su) if (warrentsUpdate) =>
-          val curState = thisJs.state
-          //val curScalaState = curState.scalaState
-          /* bypass this##self call for small perf boost */
-          val oldSelf =
-            mkSelf(thisJs, curState, oldComponent, displayName)
-          su(new OldNewSelf(oldSelf, newSelf))
-        case _ => warrentsUpdate
-      }
-
-    // Mark ourselves as all caught up!, this is mutating, why???
-    nextState.scalaStateVersionUsedToComputeSubelements = nextScalaStateVersion
-    // run side effects and update list, run in reverse order
-    val nextSideEffects = nextState.sideEffects.reverse
-    if (nextSideEffects.length > 0) {
-      // running side effects can create new ones
-      nextSideEffects.foreach(_(newSelf))
-      thisJs.setState(futureTotalState => {
-        // this seems to be an obtuse way of .take
-        //   let rec initialSegment = (acc, n, l) =>
-        //     switch l {
-        //     | [x, ...nextL] when n > 0 => initialSegment([x, ...acc], n - 1, nextL)
-        //     | _ => List.rev(acc)
-        //     }
-        //   // Additional side effects are the initial segment.
-        //   val newSideEffects = {
-        //     val acc = []
-        //     val n = futureTotalState.sideEffects.size - nextState.sideEffects.size
-        //     initialSegment(acc, n, futureTotalState.sideEffects)
-        //   }
-        val n              = futureTotalState.sideEffects.size - nextState.sideEffects.size
-        val newSideEffects = futureTotalState.sideEffects.take(n)
-
-        // nextStateOnlyNewSideEffects
-        mkState(futureTotalState.scalaState,
-                futureTotalState.scalaStateVersion,
-                futureTotalState.scalaStateVersionUsedToComputeSubelements,
-                newSideEffects)
-      })
-    }
-    ret
+    newComponent.shouldUpdate.map{ su =>
+      val curState = thisJs.state
+      val oldSelf =
+        mkSelf(thisJs, curState, oldComponent, displayName)
+      su(new OldNewSelf(oldSelf, newSelf))
+    }.getOrElse(true)
   }
 
   abstract protected class ProxyLike extends super.ProxyLike {
@@ -819,11 +760,11 @@ trait CakeWithState extends CakeBase { cake =>
   * after importing ops, just use `[ops.]render(self => { ... })` in your make
   * function *if* you only have a render method.
   */
-trait StatelessComponentCake extends CakeBase { cake =>
+trait StatelessComponentCake extends StatelessCakeBase { cake =>
 
   /** No RP, no S, no A. You do get a handle(). */
   type Self            = SelfLike
-  type SelfForUnmount  = Self
+  type SelfForUnmount  = SelfForUnmountLike
   protected type State = StateLike
   type ProxyType       = ProxyLike
   type ComponentType   = ComponentLike
@@ -852,6 +793,7 @@ trait StatelessComponentCake extends CakeBase { cake =>
       displayName: String): Self =
     new Self {
       def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
+      def onUnmount(cb: OnUnmount) = addOnUnmounts(component, js.Array(cb))
       var ptr                      = thisJs.asInstanceOf[js.Any] // future hack!
     }
 
@@ -860,11 +802,15 @@ trait StatelessComponentCake extends CakeBase { cake =>
       reactjsState: State,
       component: ComponentType,
       displayName: String): SelfForUnmount =
-    mkSelf(thisJs, reactjsState, component, displayName)
-
+    new SelfForUnmount {
+      def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
+      var ptr                      = thisJs.asInstanceOf[js.Any] // future hack!
+    }
 }
 
-trait StatelessComponentWithRetainedPropsCake extends CakeWithRP { cake =>
+trait StatelessComponentWithRetainedPropsCake
+    extends StatelessCakeBase
+    with CakeWithRP { cake =>
 
   /** No S, A. You do get a handle. */
   type Self            = SelfLike
@@ -883,6 +829,7 @@ trait StatelessComponentWithRetainedPropsCake extends CakeWithRP { cake =>
           throw new Exception(
             s"""Internal error: Retained props was not defined for component ${displayName}."""))
       def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
+      def onUnmount(cb: OnUnmount): Unit = addOnUnmounts(component, js.Array(cb))
       var ptr                      = thisJs.asInstanceOf[js.Any] // future hack!
     }
   def mkSelfForUnmount(
@@ -916,12 +863,9 @@ trait ReducerComponentCake extends CakeWithState { cake =>
     * Helper to make reactjs this.state if this is all that there is. Subtraits
     *  will need to override if you add more to it.
     */
-  protected def mkState(s: S, v: Int, sv: Int, e: Seq[Self => Unit]): State =
+  protected def mkState(s: S): State =
     new StateLike {
       val scalaState                                = s
-      val scalaStateVersion                         = v
-      var scalaStateVersionUsedToComputeSubelements = sv
-      val sideEffects                               = e
     }
 
   override def mkSelf(
@@ -933,6 +877,7 @@ trait ReducerComponentCake extends CakeWithState { cake =>
       val state                    = jsState.scalaState
       def send(a: A)               = sendMethod(thisJs, a, displayName)
       def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
+      def onUnmount(cb: OnUnmount) = addOnUnmounts(component, js.Array(cb))
       var ptr                      = thisJs.asInstanceOf[js.Any] // future hack!
     }
 
@@ -954,6 +899,7 @@ trait ReducerComponentCake extends CakeWithState { cake =>
     new SelfForInitialState {
       def handle(cb: Self => Unit): Unit = handleMethod(thisJs, cb, displayName)
       def send(a: A)                     = sendMethod(thisJs, a, displayName)
+      def onUnmount(cb: OnUnmount) = addOnUnmounts(component, js.Array(cb))
       var ptr                            = thisJs.asInstanceOf[js.Any] // future hack!
     }
 }
@@ -992,12 +938,9 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
     * Helper to make reactjs this.state if this is all that there is. Subtraits
     *  will need to override if you add more to it.
     */
-  protected def mkState(s: S, v: Int, sv: Int, e: Seq[Self => Unit]): State =
+  protected def mkState(s: S): State =
     new State {
       val scalaState                                = s
-      val scalaStateVersion                         = v
-      var scalaStateVersionUsedToComputeSubelements = sv
-      val sideEffects                               = e
     }
 
   // s, p could be null
@@ -1013,6 +956,7 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
           s"""Internal error: Retained props were not defined for component ${displayName}"""))
     def send(a: A)               = sendMethod(thisJs, a, displayName)
     def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
+    def onUnmount(cb: OnUnmount) = addOnUnmounts(component, js.Array(cb))
     var ptr                      = thisJs.asInstanceOf[js.Any] // future hack!
   }
 
@@ -1037,7 +981,8 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
       displayName: String) =
     new SelfForInitialState {
       def send(a: A)                     = sendMethod(thisJs, a, displayName)
-      def handle(cb: Self => Unit): Unit = handleMethod(thisJs, cb, displayName)
+      def handle(cb: Self => Unit) = handleMethod(thisJs, cb, displayName)
+      def onUnmount(cb: OnUnmount) = addOnUnmounts(component, js.Array(cb))
       var ptr                            = thisJs.asInstanceOf[js.Any] // future hack!
     }
 }
@@ -1051,13 +996,10 @@ case class NoUpdate[S, SLF]() extends StateUpdate[S, SLF]
 
 // things with state
 case class Update[S, SLF](s: S)                                     extends StateUpdate[S, SLF]
-//case class SilentUpdate[S, SLF](s: S)                               extends StateUpdate[S, SLF]
 case class UpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit) extends StateUpdate[S, SLF]
 
 // things without state
 case class SideEffects[S, SLF](effect: SLF => Unit) extends StateUpdate[S, SLF]
-//case class SilentUpdateWithSideEffects[S, SLF](s: S, effect: SLF => Unit)
-//    extends StateUpdate[S, SLF]
 
 /**
   * Instead of exposing the ADT to the client, we use a smart constructor at the
@@ -1077,10 +1019,7 @@ trait ReducerResult[S, SLF] {
 
   lazy val skip: UpdateType    = NoUpdate()
   def update(s: S): UpdateType = Update(s)
-  //def silent(s: S): UpdateType                 = SilentUpdate(s)
   def effect(effect: UpdateEffect): UpdateType = SideEffects(effect)
   def updateAndEffect(s: S, effect: UpdateEffect = _ => Unit): UpdateType =
     UpdateWithSideEffects(s, effect)
-  //def silentAndEffect(s: S, effect: UpdateEffect = _ => Unit): UpdateType =
-  //  SilentUpdateWithSideEffects(s, effect)
 }

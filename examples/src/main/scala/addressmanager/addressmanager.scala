@@ -318,7 +318,7 @@ object AddressManagerC {
         }
 
       didMount = js.defined({ (self, gen) =>
-        gen.effect(fetchData(_, dao))
+        self.send(Refresh)
       })
 
       val render =

@@ -174,6 +174,7 @@ object elements {
   def fragmentElement(key: Option[String] = None)(children: ReactNode*) =
     React.createFragment(key, children: _*)
 
+  /** Create a React.fragment element. */
   object Fragment {
     def make(key: Option[String] = None)(children: ReactNode*) =
       React.createFragment(key, children: _*)

@@ -22,9 +22,9 @@ trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
     * scala.js component but once they are run, they are stored on the reactjs
     * side in the proxy.
     */
-  var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.undefined
+  //var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.undefined
 
-  /** react js method. @deprecated */
+  /** react js method. */
   val getInitialState: js.UndefOr[js.ThisFunction0[ThisSelf, State]] = js.undefined
 
   /** react js method. */
