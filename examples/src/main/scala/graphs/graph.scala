@@ -154,8 +154,7 @@ object Graph {
       didMount = js.defined { (self, gen) =>
         println("didMount")
         build(self.state)
-        //js.Dynamic.global.console.log("cy", self.state.ref, self.state.cy)
-        gen.skip
+      //js.Dynamic.global.console.log("cy", self.state.ref, self.state.cy)
       }
 
       willUnmount = js.defined { self =>

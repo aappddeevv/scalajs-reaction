@@ -87,7 +87,6 @@ trait AsyncValueTemplate[V] {
         reactdom.deferredUpdates { () =>
           self.send(SetValue(self.retainedProps))
         }
-        gen.skip
       }
       didUpdate = js.defined { on =>
         if (on.newSelf.retainedProps != on.oldSelf.retainedProps)

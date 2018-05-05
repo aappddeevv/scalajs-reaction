@@ -17,13 +17,6 @@ import scala.scalajs.js
 trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   val displayName: String
 
-  /**
-    * Subscription "unmount" callbacks. The subscriptions are stored on the
-    * scala.js component but once they are run, they are stored on the reactjs
-    * side in the proxy.
-    */
-  //var onUnmounts: js.UndefOr[js.Array[OnUnmount]] = js.undefined
-
   /** react js method. */
   val getInitialState: js.UndefOr[js.ThisFunction0[ThisSelf, State]] = js.undefined
 

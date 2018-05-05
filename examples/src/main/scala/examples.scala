@@ -23,6 +23,9 @@ import fabric.components._
 import fabric.styling._
 import Styling._
 
+import cats._
+import cats.implicits._
+
 @js.native
 @JSImport("Examples/examples.css", JSImport.Namespace)
 private object componentStyles extends js.Object
@@ -80,7 +83,9 @@ object Pages {
     itemKey = "helloworld"
     className = estyles.scrollme.asString
   })(
-    helloworld.HelloWorld.make()
+    helloworld.HelloWorld.make("make".some),
+    helloworld.HelloWorld.make2(new helloworld.HelloWorldProps { name = "make2" }),
+    helloworld.HelloWorld.makeWithMount("makeWithMount".some),
   )
 
   // the view model will come from redux to illustrate how it can be split up.

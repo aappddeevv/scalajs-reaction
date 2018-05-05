@@ -13,14 +13,14 @@ import js.Dynamic.{literal => lit}
 /*
 String | Unit  => Option[String]: provides a string when Some and js.undefined when None
 x.fold[String | Unit](())(x => x)
-*/
+ */
 
 /**
   * It is common in interop code to model a value as A or null but not undefined even
   * though null and undefined may both mean "absent value." See `|.merge` as well.
-  * Note that chaining many `js.|` together probably not work like you think and 
- * sometimes its better to create a new target type then target implicits to convert
- * from each individual type (in the or) to the new target type.
+  * Note that chaining many `js.|` together probably not work like you think and
+  * sometimes its better to create a new target type then target implicits to convert
+  * from each individual type (in the or) to the new target type.
   */
 final case class OrNullOps[A <: js.Any](a: A | Null) {
 
@@ -42,23 +42,23 @@ final case class OrNullOps[A <: js.Any](a: A | Null) {
   @inline def toTruthyUndefOr: js.UndefOr[A] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
       js.defined(a.asInstanceOf[A])
-    else js.undefined  
+    else js.undefined
 }
 
 trait OrNullSyntax {
   @inline implicit def orNullSyntax[A <: js.Any](a: A | Null): OrNullOps[A] = OrNullOps[A](a)
 }
 
-/** 
- * A data type commonly found when working with dropdown/labels.
- */
-final case class StringIntMiscOrSyntax(a: String|Int) {
-  @inline def asInt: Int = a.asInstanceOf[Int]
-  @inline def asString: String = a.asInstanceOf[String]  
+/**
+  * A data type commonly found when working with dropdown/labels.
+  */
+final case class StringIntMiscOrSyntax(a: String | Int) {
+  @inline def asInt: Int       = a.asInstanceOf[Int]
+  @inline def asString: String = a.asInstanceOf[String]
 }
 
 trait MiscOrSyntax {
-  @inline implicit def stringIntMiscOrSyntax(a: String|Int) = StringIntMiscOrSyntax(a)
+  @inline implicit def stringIntMiscOrSyntax(a: String | Int) = StringIntMiscOrSyntax(a)
 }
 
 trait AnyOps[T] {
@@ -174,7 +174,7 @@ trait UndefOrCommon[A] {
     else a.toOption
 
   /** Calls toString. I'm not sure this is needed at all. */
-  @inline def toStringJs        = a.asInstanceOf[js.Any].toString()
+  @inline def toStringJs = a.asInstanceOf[js.Any].toString()
 
   /** Equivalent to !!someJSValue */
   @inline def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
@@ -191,6 +191,7 @@ trait UndefOrCommon[A] {
 }
 
 final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommon[String] {
+
   /** Return string's "zero" which is an empty string. */
   @inline def orEmpty: String = a.getOrElse("")
 }
@@ -210,24 +211,24 @@ trait JsUndefOrSyntax {
 }
 
 final case class JsDynamicOps(val jsdyn: js.Dynamic) {
-  @inline def asJsAny: js.Any = jsdyn.asInstanceOf[js.Any]
+  @inline def asJsAny: js.Any         = jsdyn.asInstanceOf[js.Any]
   @inline def asString: String        = jsdyn.asInstanceOf[String]
-  @inline  def asInt: Int              = jsdyn.asInstanceOf[Int]
-  @inline  def asArray[A]: js.Array[A] = jsdyn.asInstanceOf[js.Array[A]]
-  @inline  def asBoolean: Boolean      = jsdyn.asInstanceOf[Boolean]
+  @inline def asInt: Int              = jsdyn.asInstanceOf[Int]
+  @inline def asArray[A]: js.Array[A] = jsdyn.asInstanceOf[js.Array[A]]
+  @inline def asBoolean: Boolean      = jsdyn.asInstanceOf[Boolean]
 
   /** @deprecated use asJsObj */
-  @inline  def asJSObj: js.Object = jsdyn.asInstanceOf[js.Object]
+  @inline def asJSObj: js.Object = jsdyn.asInstanceOf[js.Object]
   // was just asJsObj does the cast help? can we remove asJsObjSub
-  @inline  def asJsObj: js.Object          = jsdyn.asInstanceOf[js.Object]
-  @inline  def asDict[A]: js.Dictionary[A] = jsdyn.asInstanceOf[js.Dictionary[A]]
+  @inline def asJsObj: js.Object          = jsdyn.asInstanceOf[js.Object]
+  @inline def asDict[A]: js.Dictionary[A] = jsdyn.asInstanceOf[js.Dictionary[A]]
   // variance annotation needed?
-  @inline  def asUndefOr[A]: js.UndefOr[A] = jsdyn.asInstanceOf[js.UndefOr[A]]
-  @inline  def asJsObjSub[A <: js.Object]  = jsdyn.asInstanceOf[A] // assumes its there!
-  @inline  def asJsArray[A <: js.Object]   = jsdyn.asInstanceOf[js.Array[A]]
+  @inline def asUndefOr[A]: js.UndefOr[A] = jsdyn.asInstanceOf[js.UndefOr[A]]
+  @inline def asJsObjSub[A <: js.Object]  = jsdyn.asInstanceOf[A] // assumes its there!
+  @inline def asJsArray[A <: js.Object]   = jsdyn.asInstanceOf[js.Array[A]]
 
   /** Uses truthiness to determine None */
-  @inline  def toOption[T <: js.Object]: Option[T] =
+  @inline def toOption[T <: js.Object]: Option[T] =
     if (js.DynamicImplicits.truthValue(jsdyn)) Some(jsdyn.asInstanceOf[T])
     else None
 
@@ -243,14 +244,15 @@ trait JsDynamicSyntax {
 
 /** If you want js.UndefOr, use JSConverters and `.orUndefined`. */
 final case class OptionOps[T](val a: Option[T]) {
+
   /** If Some and value is truthy according to JS, then keep it, otherwise become a None. */
   @inline def filterTruthy: Option[T] =
     a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
 
-  /** 
-   * Filter nulls out in case it *might* be null. 
-   * @deprecated USe [[filterNull]].
-   */
+  /**
+    * Filter nulls out in case it *might* be null.
+    * @deprecated USe [[filterNull]].
+    */
   @inline def toNonNullOption = a.filter(_ != null)
 
   /** Filter nulls out in case it *might* be null. */
@@ -297,7 +299,7 @@ object syntax {
   object scalamapped extends ScalaMappedSyntax
   object ornull      extends OrNullSyntax
   object option      extends OptionSyntax
-  object miscor      extends MiscOrSyntax  
+  object miscor      extends MiscOrSyntax
 }
 
 trait Component2Elements {

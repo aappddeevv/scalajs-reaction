@@ -18,7 +18,7 @@ import tags._
 
 /** Props for make2. */
 trait HelloWorldProps extends js.Object {
-  val name: js.UndefOr[String] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
 }
 
 /**
@@ -33,8 +33,18 @@ object HelloWorld {
   /** No props data structure, just parameters. */
   def make(name: Option[String] = None) =
     render { self =>
-      div("hello world" + name.map(" and welcome " + _).getOrElse(""))
+      div("hello world" + name.map(": " + _).getOrElse(""))
     }
+
+  def makeWithMount(name: Option[String] = None) =
+    copyWith(new methods {
+      didMount = js.defined { self =>
+        println("HelloWorld.makeWithMount: didMount was called!")
+      }
+      val render = self => {
+        div("hello world" + name.map(": " + _).getOrElse(""))
+      }
+    })
 
   /**
     * The "apply" version.
@@ -54,6 +64,6 @@ object HelloWorld {
     */
   def make2(props: HelloWorldProps) =
     render { self =>
-      div("hello world" + props.name.toOption.map(" and welcome " + _).getOrElse(""))
+      div("hello world" + props.name.toOption.map(": " + _).getOrElse(""))
     }
 }

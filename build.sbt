@@ -68,7 +68,8 @@ lazy val commonSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "latest.version",
-    "org.scalatest"          %%% "scalatest"    % "latest.release" % "test"),
+    "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
+    "org.typelevel"          %%% "cats-core"    % "latest.release"),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
   autoAPIMappings := true,
 )

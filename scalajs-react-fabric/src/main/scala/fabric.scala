@@ -29,7 +29,7 @@ object FabricNS extends js.Object {
   val CommandBar: ReactJsComponent            = js.native
   val DetailsList: ReactJsComponent           = js.native
   val DefaultButton: ReactJsComponent         = js.native
-  val Dropdown: ReactJsComponent         = js.native  
+  val Dropdown: ReactJsComponent              = js.native
   val IconButton: ReactJsComponent            = js.native
   val Label: ReactJsComponent                 = js.native
   val Link: ReactJsComponent                  = js.native
@@ -684,38 +684,40 @@ trait ITagPickerProps extends IBasePickerProps[ITag] {}
 
 @js.native
 trait IDropdown extends js.Object {
+
   /** Should focus on open? */
   var focus: js.Function1[Boolean, Unit]
 }
 
-
 /** This is not the complete set. */
 trait IPanelProps extends js.Object {
-  var isOpen: js.UndefOr[Boolean] = js.undefined
-  var hasCloseButton: js.UndefOr[Boolean] = js.undefined
-  var isLightDismiss: js.UndefOr[Boolean] = js.undefined
+  var isOpen: js.UndefOr[Boolean]            = js.undefined
+  var hasCloseButton: js.UndefOr[Boolean]    = js.undefined
+  var isLightDismiss: js.UndefOr[Boolean]    = js.undefined
   var isHiddenOnDismiss: js.UndefOr[Boolean] = js.undefined
-  var isBlocking: js.UndefOr[Boolean] = js.undefined
-  var isFooterAtBottom: js.UndefOr[Boolean] = js.undefined
+  var isBlocking: js.UndefOr[Boolean]        = js.undefined
+  var isFooterAtBottom: js.UndefOr[Boolean]  = js.undefined
 
   var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
 
-  var `type`: js.UndefOr[Int] = js.undefined
-  var customWidth: js.UndefOr[String ] = js.undefined
+  var `type`: js.UndefOr[Int]         = js.undefined
+  var customWidth: js.UndefOr[String] = js.undefined
 }
 
 object PanelType {
-  val smallFluid = 0
-  val smallFixedFar = 1
+  val smallFluid     = 0
+  val smallFixedFar  = 1
   val smallFixedNear = 2
-  val medium = 3
-  val large = 4
-  val largeFixed = 5
-  val extraLarge = 6
-  val custom = 7
+  val medium         = 3
+  val large          = 4
+  val largeFixed     = 5
+  val extraLarge     = 6
+  val custom         = 7
 }
 
-trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttributes[T] with ComponentRef[T] {
+trait ISelectableDroppableTextProps[T <: dom.html.Element]
+    extends HTMLAttributes[T]
+    with ComponentRef[T] {
   var label: js.UndefOr[String] = js.undefined
   // these are in HTMLAttributes I think
   // ariaLabel?: string;
@@ -723,7 +725,8 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttribute
   // className?: string;
 
   var defaultSelectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]] = js.undefined
-  var selectedKey: js.UndefOr[String | Int | js.Array[String]| js.Array[Int]] = js.undefined
+  var selectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]]        = js.undefined
+
   /** Any ??? */
   var options: js.UndefOr[js.Any] = js.undefined
   // onChanged?: (option: ISelectableOption, index?: number) => void;
@@ -736,15 +739,15 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttribute
 
   //calloutProps?: ICalloutProps;
   var panelProps: js.UndefOr[IPanelProps] = js.undefined
-  var errorMessage: js.UndefOr[String] = js.undefined
+  var errorMessage: js.UndefOr[String]    = js.undefined
 }
 
 object ResponsiveMode {
-  val small = 0
-  val medium = 1
-  val large = 2
-  val xLarge = 3
-  val xxLarge = 4
+  val small    = 0
+  val medium   = 1
+  val large    = 2
+  val xLarge   = 3
+  val xxLarge  = 4
   val xxxLarge = 5
 }
 
@@ -752,37 +755,40 @@ trait IDropdownProps extends ISelectableDroppableTextProps[dom.html.Div] {
   var placeholder: js.UndefOr[String] = js.undefined
   //var onChanged: js.UndefOr[js.Function1[IDropdownOption, Unit] | js.Function2[IDropdownOption, Int, Unit]] = js.undefined
   var onChanged: js.UndefOr[js.Function2[IDropdownOption, js.UndefOr[Int], Unit]] = js.undefined
-  var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
-  var onRenderPlaceholder: js.UndefOr[IRenderFunction[IDropdownProps]] = js.undefined
-  var onRenderTitle: js.UndefOr[IRenderFunction[IDropdownOption] |IRenderFunction[js.Array[IDropdownOption]]] = js.undefined
-  var onRenderCaretDown: js.UndefOr[IRenderFunction[IDropdownOption]] = js.undefined  
-  var dropdownWidth: js.UndefOr[Int] = js.undefined
+  var onDismiss: js.UndefOr[js.Function0[Unit]]                                   = js.undefined
+  var onRenderPlaceholder: js.UndefOr[IRenderFunction[IDropdownProps]]            = js.undefined
+  var onRenderTitle
+    : js.UndefOr[IRenderFunction[IDropdownOption] | IRenderFunction[js.Array[IDropdownOption]]] =
+    js.undefined
+  var onRenderCaretDown: js.UndefOr[IRenderFunction[IDropdownOption]] = js.undefined
+  var dropdownWidth: js.UndefOr[Int]                                  = js.undefined
+
   /** Responsive mode */
-  var responsiveMode: js.UndefOr[Int] = js.undefined
-  var multiselect: js.UndefOr[Boolean] = js.undefined
-  var defaultSelectedKeys: js.UndefOr[js.Array[String]|js.Array[Int]] = js.undefined  
-  var selectedKeys: js.UndefOr[js.Array[String]|js.Array[Int]] = js.undefined
-  var multiSelectDelimiter: js.UndefOr[String] = js.undefined
-  var isDisabled: js.UndefOr[Boolean] = js.undefined
+  var responsiveMode: js.UndefOr[Int]                                   = js.undefined
+  var multiselect: js.UndefOr[Boolean]                                  = js.undefined
+  var defaultSelectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]] = js.undefined
+  var selectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]]        = js.undefined
+  var multiSelectDelimiter: js.UndefOr[String]                          = js.undefined
+  var isDisabled: js.UndefOr[Boolean]                                   = js.undefined
 }
 
 trait ISelectableOption extends js.Object {
   var key: String | Int
   var text: String
-  var itemType: js.UndefOr[Int] = js.undefined
-  var index: js.UndefOr[Int] = js.undefined
+  var itemType: js.UndefOr[Int]     = js.undefined
+  var index: js.UndefOr[Int]        = js.undefined
   var ariaLabel: js.UndefOr[String] = js.undefined
   var selected: js.UndefOr[Boolean] = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
 }
 
 object SelectableOptionMenuItemType {
-  val Normal = 0
+  val Normal  = 0
   val Divider = 1
-  val Header = 2
+  val Header  = 2
 }
 
 trait IDropdownOption extends ISelectableOption {
-  var data: js.UndefOr[js.Any] = js.undefined
+  var data: js.UndefOr[js.Any]        = js.undefined
   var isSelected: js.UndefOr[Boolean] = js.undefined
 }
