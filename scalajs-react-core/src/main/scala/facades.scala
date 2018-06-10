@@ -475,13 +475,13 @@ trait CakeBase { cake =>
     }
   }
 
-  // simple versioin for stateless objects, the statefull one is more complicated
+  // simple version for stateless objects, the stateful one is more complicated
   @inline protected def _statelessShouldComponentUpdate(displayName: String)(
       thisJs: ThisSelf,
       nextJsProps: JsComponentThisProps,
       nextState: State): Boolean = {
     val curJsProps   = thisJs.props
-    val oldComponent = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+    val oldComponent = convertProps(curJsProps, thisJs.jsPropsToScala, displayName)
     val newComponent =
       if (nextJsProps == curJsProps) oldComponent
       else convertProps(nextJsProps, thisJs.jsPropsToScala, displayName)

@@ -43,9 +43,9 @@ package object reactdom {
   }
 
   /** Experimental API. */
-  @JSName("unstable_deferredUpdates")
-  def deferredUpdates(cb: () => Unit): Unit = {
-    JSReactDOM.unstable_deferredUpdates(js.Any.fromFunction0(cb))
-  }
+  // @JSName("unstable_deferredUpdates")
+  // def deferredUpdates(cb: () => Unit): Unit = {
+  //   JSReactDOM.unstable_deferredUpdates(js.Any.fromFunction0(cb))
+  // }
 
 }

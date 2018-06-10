@@ -34,7 +34,7 @@ private[react] trait JSReact extends js.Object {
       calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
 
   /** Experimental. */
-  val Loading: ReactClass = js.native
+  //val Loading: ReactClass = js.native
 
   /** Experimental. */
   val Timeout: ReactClass = js.native
@@ -85,8 +85,6 @@ private[react] object reactCreateClass extends js.Object {
 
 /**
   * React's context object contains the consumer and provider "components".
-  *
-  * @todo Validate that current/default value are part of the public API.
   */
 @js.native
 trait ReactContext[T] extends js.Object {

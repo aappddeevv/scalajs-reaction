@@ -65,7 +65,7 @@ trait ReactWeatherDisplayProps extends js.Object {
   var width: js.UndefOr[String | Int]  = js.undefined
   var height: js.UndefOr[String | Int] = js.undefined
 
-  /** @deprecated?? */
+  /** not used anymore ??? */
   var currentTemperature: js.UndefOr[Float] = js.undefined
   var temperature: js.UndefOr[Float]        = js.undefined
   var currentCondition

@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (& 0.6.22, react v16.2+)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M3.svg)](https://www.scala-js.org) (& 0.6.22, react v16.4+)
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
@@ -32,7 +32,12 @@ scalajs-react for your solution.
 [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
 
 scalajs-react supports fragments and the new context provider in react v16.3. A
-future version will support react-native.
+future version will support react-native. The scalaj-react API roughly mimics
+ReasonReact 4.1 and the intent is to track that API and stick closely to
+it. Read those docs to understand this API.
+
+A g8 template is available. Use `sbt new aappddeevv/scalajs-react` to create a
+new project.
 
 ## Usage
 Include the library in your build:
@@ -40,7 +45,7 @@ Include the library in your build:
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "latest.version"
 //  or
-//val scalaJsReactVersion = "0.1.0-M2"
+//val scalaJsReactVersion = "0.1.0-M5"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(

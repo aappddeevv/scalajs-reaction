@@ -10,19 +10,20 @@ import js.Dynamic.{literal => lit}
 
 /**
   * Provide context using react 16.3+ context mechanism. Import this object to
-  * obtain a syntax enhancement to create provider's and consumers. The syntax is
-  * not included in the standard syntax module.
-  *
-  * @todo Consumer could take a bits argument but react's API is not settled yet.
+  * obtain a syntax enhancement to create provider's and consumers. The syntax
+  * is not included in the standard syntax module. Not using an "optional"
+  * concept in the below forces a zero to be created for every element you want
+  * to pass in the context, which may be burdonsome. Considering using
+  * js.UndefOr or Option as a wrapper around your value.
   */
 object context {
 
-  /** v16.3 API. */
   def make[T](defaultValue: T): ReactContext[T] =
-    JSReact.createContext[T](defaultValue, js.undefined)
+    JSReact.createContext(defaultValue, js.undefined)
 
-  def makeProvider[T](ctx: ReactContext[T])(value: Option[T])(children: ReactNode*): ReactNode = {
-    val v = lit("value" -> value.getOrElse(ctx.currentValue).asInstanceOf[js.Any])
+  def makeProvider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactNode = {
+    // not sure this is right, use previous value if current is missing?
+    val v = lit("value" -> value.asInstanceOf[js.Any])
     JSReact.createElement(ctx.Provider, v, children: _*)
   }
 
@@ -33,14 +34,16 @@ object context {
     JSReact.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
   }
 
-  /** `import context._` brings the syntax into scope. */
   implicit class ReactContextOps[T](ctx: ReactContext[T]) {
 
+    /** Create provider that provides an optional value. */
     def makeProvider(value: T)(children: ReactNode*) =
-      context.makeProvider[T](ctx)(Some(value))(children: _*)
+      context.makeProvider[T](ctx)(value)(children: _*)
 
-    def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(None)(children: _*)
+    ///** Create provider that provides None. */
+    //def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(js.undefined)(children: _*)
 
+    /** Create a consumer that takes an Option[T] */
     def makeConsumer(f: T => ReactNode, key: Option[String] = None) =
       context.makeConsumer[T](ctx)(js.Any.toFunction1(f))
   }

@@ -133,15 +133,15 @@ object Pages {
     )
   }
 
-  def movies() = {
-    PivotItem(new IPivotItemProps {
-      linkText = "Movies"
-      itemKey = "movies"
-      //className = estyles.scrollme.asString
-    })(
-      movie.MoviesImpl.make()
-    )
-  }
+  // def movies() = {
+  //   PivotItem(new IPivotItemProps {
+  //     linkText = "Movies"
+  //     itemKey = "movies"
+  //     //className = estyles.scrollme.asString
+  //   })(
+  //     movie.MoviesImpl.make()
+  //   )
+  // }
 }
 
 import Pages._
@@ -170,7 +170,7 @@ object Examples {
             tagTest(),
             pressurePage,
             graphPage,
-            movies(),
+            //movies(),
           ),
           HeaderC.make("header", headerTarget)
       )
@@ -180,7 +180,8 @@ object Examples {
 object Contexts {
   import react.context
   type ConsoleLog = js.Function1[js.Any, Unit]
-  val logContext = context.make[ConsoleLog](js.Dynamic.global.console.log.asInstanceOf[ConsoleLog])
+  val logger     = js.Dynamic.global.console.log.asInstanceOf[ConsoleLog]
+  val logContext = context.make[ConsoleLog](logger)
 }
 
 object Main {
@@ -209,16 +210,16 @@ object Main {
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     reactdom.createAndRenderWithId(
-      TimeoutWithFallback.make(2000)(
-        "Examples What?",
-        React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
-          store = StoreNS.store
+      //TimeoutWithFallback.make(2000)(
+      //  "Examples What?",
+      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
+        store = StoreNS.store
+      })(
+        Fabric(new IFabricProps {
+          className = estyles.toplevel.asString
         })(
-          Fabric(new IFabricProps {
-            className = estyles.toplevel.asString
-          })(
-            logContext.makeProvider(ExamplesApp.make())
-          ))
+          logContext.makeProvider(Contexts.logger)(ExamplesApp.make())
+        )
       ),
       "container"
     )

@@ -23,7 +23,7 @@ lazy val macroSettings = Seq (
 lazy val buildSettings = Seq(
   organization := "ttg",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  scalaVersion := "2.12.4",
+  scalaVersion := "2.12.6",
   resolvers += Resolver.sonatypeRepo("releases"),
   resolvers += Resolver.jcenterRepo,
   scalafmtVersion in ThisBuild := "1.5.1",
@@ -66,6 +66,7 @@ lazy val commonSettings = Seq(
       Seq("-P:scalajs:sjsDefinedByDefault")
         else Nil),
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
+  scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "latest.version",
     "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
