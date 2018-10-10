@@ -2,7 +2,7 @@
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
-documentation is located [here](https://reasonml.github.io/reason-react/docs)
+documentation is located [here](https://reasonml.github.io/reason-react)
 and provides a good description of how this library works since the API is very
 similar. While more advanced scala functionality could have been used, the
 scala.js implemetation was kept intentionally similar to ReasonReact so that the
@@ -51,18 +51,20 @@ val scalaJsReactVersion = "latest.version"
 libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-react-core" % scalaJsReactVersion,
     "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
-    
+
     // optionals
-    // Microsoft fabric UI components, "MS office", css-in-"scala"
-    // css-in-scala can be used independently of fabric
-    "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
-    // if you integrate with redux
-    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
     // if you need react-dom
     "ttg" %%% "scalajs-react-react-dom" % scalaJsReactVersion
+
+    // Microsoft fabric UI components, "MS office", css-in-"scala"
+    // css-in-scala can be used independently of fabric
+    "ttg" %%% scalajs-react-fabric" % scalaJsReactVersion,
+    
+    // if you integrate with redux
+    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
+    
     // if you need prop-types
     "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion)
-    
 ```
 
 Do not forget to include the react libraries in your execution environment. For
@@ -77,7 +79,7 @@ npm i --save react create-react-class
 npm i --save react-dom
 ```
 
-The latest react is recommended, v16.2+. If you wish to use the latest features such as the new context, use v16.3+.
+The latest react is recommended, v16.4. Note that using 16.4 will result on console messages for deprecated API that is still used by ReasonReact, and hence, scalajs-react.
 
 ### Create a Component
 You can quickly create a component and render it:

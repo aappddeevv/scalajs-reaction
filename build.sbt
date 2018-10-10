@@ -224,10 +224,10 @@ npmRunDemo := {
   "npm run examples:dev-start" !
 }
 
-// must run publish and release separately
-// don't forget bintray & unpublish
-// use packagedArtifacts to build artifacts in each project's target
-// to release: publish then bintrayRelease (to release them)
+// Run publish and release separately
+// Don't forget bintray & unpublish
+// You can use `packagedArtifacts` to build artifacts in each project's target.
+// To release: run `publish` then `bintrayRelease`.
 bintrayReleaseOnPublish in ThisBuild := false
 bintrayPackageLabels := Seq("scala.js", "react", "office")
 bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")

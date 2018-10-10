@@ -8,7 +8,7 @@ export interface Props {
 }
 
 /** Summarize address. */
-export const AddressSummary: React.SFC<Address> = (props?: Props) => {
+export const AddressSummary: React.SFC<Props> = (props?: Props) => {
     props = props || {}
     const name = (props && props.address && props.address.name) || "<unnamed address>"
     return (

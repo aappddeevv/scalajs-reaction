@@ -1,6 +1,6 @@
-// 1.0.0-M3 or 0.6.22 by default
+// 1.0.0-M3 or 0.6.25 by default
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.22")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.14")

@@ -30,7 +30,7 @@ trait JSReactDOM extends js.Object {
   def findDOMNode(componentOrElement: js.Any): dom.Element             = js.native
   //def unstable_deferredUpdates(f: js.Function0[Unit]): Unit            = js.native
 
-  /** 16.3 */
+  /** From 16.3+ */
   @JSName("unstable_createRoot")
   def createRoot(target: dom.Element, options: js.UndefOr[CreateRootOptions]): Root = js.native
 }

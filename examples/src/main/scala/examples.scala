@@ -98,7 +98,7 @@ object Pages {
       itemKey = "addressmanager"
     })(
       Label()(
-        "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes."),
+        "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes. NOT IMPLEMENTED :-)"),
       AddressManagerC.makeWithRedux(opts)
     )
   }
