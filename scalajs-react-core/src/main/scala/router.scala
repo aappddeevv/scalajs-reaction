@@ -9,9 +9,9 @@ import scala.scalajs.js
 import org.scalajs.dom
 
 /**
-  * Short router. Use pattern matching in the cb to match on the url structure
-  * `(path seq, hash, search)` and then call "send" on your component's
-  * router. Add your router as a Subscription and profit!
+  * Simple router. Use pattern matching in the callbacok to match on the url
+  * structure `(path seq, hash, search)` and then call "send" on your
+  * component's router. The router methods are enclosed by a singleton instance.
   */
 object router {
 

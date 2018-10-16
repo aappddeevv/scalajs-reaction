@@ -70,11 +70,11 @@ trait RawFontStyle extends js.Object {
   var font: js.UndefOr[String]              = js.undefined
   var fontFamily: js.UndefOr[String]        = js.undefined
   var fontSize: js.UndefOr[String | Double] = js.undefined
-  var fontSizeAdjust: js.UndefOr[String]    = js.undefined
-  var fontStretch: js.UndefOr[String]       = js.undefined
-  var fontStyle: js.UndefOr[String]         = js.undefined
-  var fontVariant: js.UndefOr[String]       = js.undefined
-  var fontWeight: js.UndefOr[String]        = js.undefined
+  var fontSizeAdjust: js.UndefOr[String|Double]    = js.undefined
+  var fontStretch: js.UndefOr[String|Double]       = js.undefined
+  var fontStyle: js.UndefOr[String|Double]         = js.undefined
+  var fontVariant: js.UndefOr[String|Double]       = js.undefined
+  var fontWeight: js.UndefOr[String|Double]        = js.undefined
 }
 
 trait FontFace extends RawFontStyle {
@@ -138,7 +138,7 @@ trait RawStyleBase extends RawFontStyle {
   var height: js.UndefOr[String | Double]        = js.undefined
   var left: js.UndefOr[String]                   = js.undefined
   var letterSpacing: js.UndefOr[String]          = js.undefined
-  var lineHeight: js.UndefOr[String]             = js.undefined
+  var lineHeight: js.UndefOr[String|Double]             = js.undefined
   var listStyle: js.UndefOr[String]              = js.undefined
   var listStyleImage: js.UndefOr[String]         = js.undefined
   var listStylePosition: js.UndefOr[String]      = js.undefined

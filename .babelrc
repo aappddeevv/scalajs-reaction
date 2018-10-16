@@ -1,8 +1,9 @@
 {
     "sourceMaps": true,
     "presets": [
+        "@babel/preset-react",    
         [
-            "env",
+            "@babel/preset-env",
             {
                 "targets": {
                     "browsers": [
@@ -10,15 +11,24 @@
                     ]
                 }
             }
-        ],
-        "react",
-        "stage-2"
+        ]
     ],
     "plugins": [
-        "transform-runtime",
-        "transform-decorators",
-        "transform-object-rest-spread",
-        "transform-es2015-modules-commonjs",
-        "dynamic-import-node",
+        "@babel/plugin-transform-runtime",
+        [
+            "@babel/plugin-proposal-decorators",
+            {
+                "legacy": true
+            }
+        ],
+        "@babel/plugin-proposal-object-rest-spread",
+        "@babel/plugin-transform-modules-commonjs",
+        "@babel/plugin-syntax-import-meta",
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-proposal-json-strings",
+        "@babel/plugin-proposal-function-sent",
+        "@babel/plugin-proposal-export-namespace-from",
+        "@babel/plugin-proposal-numeric-separator",
+        "@babel/plugin-proposal-throw-expressions"
     ]
 }

@@ -45,7 +45,7 @@ Include the library in your build:
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "latest.version"
 //  or
-//val scalaJsReactVersion = "0.1.0-M5"
+//val scalaJsReactVersion = "0.1.0-M6"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(

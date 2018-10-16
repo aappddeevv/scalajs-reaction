@@ -14,28 +14,37 @@ import js.Dynamic.{literal => lit}
 import ttg.react.vdom._
 import js.JSConverters._
 
+/**
+ * @uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
+ * also pulls in most of @uifabic/merge-styles.
+ */
 @js.native
-@JSImport("office-ui-fabric-react/lib/Styling", JSImport.Namespace)
+@JSImport("@uifabric/styling", JSImport.Namespace)
 object Styling extends js.Object {
 
   /**
-    * Merge styles and register in stylesheet. Return the "css" mangled name you
+    * Merge styles and register in a stylesheet. Return the "css" mangled name you
     * use as the attribute "className" in your components.
     */
   def mergeStyles(styles: IStyle*): String = js.native
 
   /**
-    * Merge style sets and register in stylesheet. js.Object is included to allow
-    * "partial" T's to be passed in. It is not possible to ensure that all keys
-    * in T are defined based on the input parameters alone.
+    * Merge style sets and register in a stylesheet. js.Object is included to
+    * allow "partial" T's to be passed in. It is not possible to ensure that all
+    * keys in T are defined based on the input parameters alone. This is the
+    * primary way to convert "code" to "styles" in the DOM. Generally, this
+    * function is called nside a `getClassNames(...)` type function specific to
+    * each component. The return value is typically an js.native trait whose
+    * member values are the string names of the styles that were registered.
     */
   def mergeStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
 
   /**
-    * Combine styles together but do not register. This is useful for combining
-    * different sets of styles, like a base and something more specific, inside
-    * of a function that computes some styles for use in a `getClassNames`
-    * function you define to create your component's stylesheet.
+    * Combine styles together but do not register the styles in a
+    * stylesheet. This is useful for combining different sets of styles, like a
+    * base and something more specific, inside of a function that computes some
+    * styles for use in a `getClassNames` function you define to create your
+    * component's stylesheet.
     */
   def concatStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
 
@@ -47,7 +56,17 @@ object Styling extends js.Object {
 
   /** Access the stylesheet created by fabric. */
   val Stylesheet: Stylesheet = js.native
+
+  /** Font class names from office-ui-fabric-react/lib/Styling or 
+   * @uifabric/styling/lib/classNames/FontClassNames.
+   */
+  //val FontClassNames: FontClassNames = js.native
 }
+
+// @js.native
+// trait FontClassNames {
+//   val 
+// }
 
 object InjectMode {
   val none        = 0

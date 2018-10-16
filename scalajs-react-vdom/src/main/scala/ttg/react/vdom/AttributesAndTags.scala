@@ -6,6 +6,7 @@ package ttg
 package react
 package vdom
 
+// needed because I could not figure out the propert variance construct
 import scala.annotation.unchecked.{uncheckedVariance => uv}
 import scalajs.js
 import js.annotation.JSName
@@ -18,7 +19,7 @@ trait SetInnerHTML extends js.Object {
 }
 
 trait Attributes extends js.Object {
-  var key: js.UndefOr[String] = js.undefined
+  var key: js.UndefOr[String|Int] = js.undefined
 }
 
 trait ClassAttributes[E] extends Attributes {
@@ -661,7 +662,10 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var lang: js.UndefOr[String]        = js.undefined
   var slot: js.UndefOr[String]        = js.undefined
   var spellCheck: js.UndefOr[Boolean] = js.undefined
-  // was js.Any, but use js.Object|js.Dynamic or other, can use StyleAttr here!
+  /** The react style attribute, which should be an object.  If you use this in
+   * the raw, you can use `StyleAttr` but its typed more open here to be any
+   * object.
+   */
   var style: js.UndefOr[js.Object | js.Dynamic] = js.undefined
   var tabIndex: js.UndefOr[Int]                 = js.undefined
   var title: js.UndefOr[String]                 = js.undefined

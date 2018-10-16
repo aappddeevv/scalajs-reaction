@@ -38,4 +38,4 @@ trait JSReactDOM extends js.Object {
 /** react-dom scala.js import. */
 @js.native
 @JSImport("react-dom", JSImport.Namespace)
-object JSReactDOM extends JSReactDOM
+object JSReactDOM extends JSReactDOM with Root

@@ -46,6 +46,9 @@ private[react] trait JSReact extends js.Object {
 
   /** Experimental. */
   val StrictMode: ReactClass = js.native
+
+  /** Create a ref to be assigned to a "ref" property on a component. */
+  def createRef(): react.ReactRef  = js.native
 }
 
 @js.native

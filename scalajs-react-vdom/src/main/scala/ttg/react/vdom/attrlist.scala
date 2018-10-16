@@ -14,8 +14,10 @@ import scala.annotation.unchecked.{uncheckedVariance => uv}
 case class AttrValue(value: js.Any)
 
 /**
-  * This definition won't stop you from assigning the wrong type of value
-  * to an attribute so be careful.
+  * This definition won't stop you from assigning the wrong type of value to an
+  * attribute so be careful. You can use the specific symbol syntax to reduce
+  * the danger slightly. The methods on this class are a builder pattern to
+  * ultimately create a Attr object.
   */
 case class AttrName(value: String) {
   def :=(value: AttrValue): Attr = Attr(this, value)
@@ -33,11 +35,15 @@ case class AttrName(value: String) {
     value.fold(Attrs.zero)(ft => Attrs(this ==> toJsFunction(ft)))
 }
 
+/**
+ * Attribute name and value.
+ */
 case class Attr(
     val name: AttrName,
     val value: AttrValue
 )
 
+/** List of attributes. Call `.toJs` to obtain a `js.Object`. */
 class Attrs(private val attrs: Seq[Attr]) {
   def toJs: js.Object =
     js.Dictionary(
@@ -48,30 +54,41 @@ class Attrs(private val attrs: Seq[Attr]) {
       .asInstanceOf[js.Object]
 }
 
+/**
+ * Instead of using the methods on this object directly, import `attrlist` and use
+ * `Style` or `Attribute` which has more semantic meeting.
+ */
 object Attrs {
 
   import scala.language.implicitConversions
 
+  /** Make a list of attributes. To obtain a `js.Object` call `.toJs` on the
+    * result.
+   */
   def apply(attrs: Attr*): Attrs                = new Attrs(attrs)
+
+  /** Make a list out of another list. */
   def apply(attr0: Attrs, attrs: Attrs*): Attrs = concat(attr0 +: attrs)
 
-  // Attrs is a monoid
+  /** Attrs is a monoid. This is the zero value. */
   def zero: Attrs = Attrs()
 
   def append(a: Attrs, b: Attrs): Attrs =
     Attrs(a.attrs ++: b.attrs: _*)
 
+  /** Lazy create a new list from existing lists. */
   def concat(as: Seq[Attrs]): Attrs =
     Attrs(as.flatMap(_.attrs): _*)
 
   implicit def attrToAttrs(attr: Attr): Attrs = Attrs(attr)
 }
 
-trait VDOMLowerOrderPriorityImplicits {
+trait AttributeListLowerOrderPriorityImplicits {
+  /** Convert an js value to a AttrValue. */
   @inline implicit def cvtJsAnyToAttrValue(v: js.Any): AttrValue = AttrValue(v)
 }
 
-trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
+trait AttributeListSyntax extends AttributeListLowerOrderPriorityImplicits {
 
   @inline def attr(name: String): AttrName = AttrName(name)
 
@@ -93,6 +110,7 @@ trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
   @inline implicit def cvtBoolToAttrValue(v: Boolean): AttrValue       = AttrValue(v)
   @inline implicit def cvtStyleAttroAttrValue(s: StyleAttr): AttrValue = AttrValue(s)
   @inline implicit def cvtIntToAttrValue(v: Int): AttrValue            = AttrValue(v)
+  @inline implicit def cvtDoubleToAttrValue(v: Double): AttrValue            = AttrValue(v)
   @inline implicit def cvtFunctionToAttrValue(v: js.Function): AttrValue =
     AttrValue(v)
   @inline implicit def cvtAttrsToAttrValue(attrs: Attrs): AttrValue =
@@ -103,17 +121,27 @@ trait VDOMSyntax extends VDOMLowerOrderPriorityImplicits {
 }
 
 /**
-  * Import this to use the list-style attribute syntax.
+ * Import this to use the list-style attribute syntax. Create an attribtute
+ * list using `Attrs` or after importing the contents of this object, if they
+ * are styles, `Style(<attribute list>)` and convert it to a `js.Object` using
+ * `.toJs()`. You can then use the js.Object when creating elements by merging
+ * that value into trait structures that represent only allowed attributes for a
+ * specific tag.
   */
-object attrlist extends VDOMSyntax {
-  val noAttributes = Attrs.zero
+object attrlist extends AttributeListSyntax {
+  lazy val noAttributes = Attrs.zero
 
   /** For now, style attributes are just attributes so fake it out. */
-  val Style = Attrs
+  lazy val Style = Attrs
+
+  /** Create a list of attribtes. */
+  lazy val Attributes = Attrs
 
   /**
     * Default tags and attributes you can use. You can import all of the actual
-    * values using `import ^._, <._`.
+    * values using `import ^._, <._`.  This style is popular with other
+    * scalajs-react facades but should really not be used in this library vs the
+    * more (but not perfectly) strongly typed versions in `vdom.tags`.
     */
   object prefix_<^ {
     object ^ extends HtmlAttrs

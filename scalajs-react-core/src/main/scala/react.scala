@@ -15,30 +15,37 @@ import js.JSConverters._
 package object react {
 
   /**
-    * Opaque type returned from a ref callback. It's really a js component.
-    */
-  trait ReactRef extends js.Object
+    * Opaque type returned from a ref callback. It's typically either js
+    * component or a DOM element both of which are js.Objects. You only use this
+    * type with the `React.createRef()` machinery. You can also use a ref
+    * callback and skip this type and `Reacat.createRef()`.
+   */
+  @js.native
+  trait ReactRef extends js.Object {
+    val current: js.Any | Null = js.native
+  }
 
   /**
-    * Output from createElement and something that can be rendered in
-    * reactjs. We need to restrict this a bit more when returning values from
-    * the scala side API. reactjs allows this to be quity flexible including
-    * strings, numbers, booleans in additon to classes, functions, etc. This
-    * should probably be a js.Any as any API used in this library will ensure
-    * that the right types are used and this would get rid of the ugly
+    * Output from scalajs' `react.createElement` and is something that can be
+    * rendered in reactjs. We need to restrict this a bit more when returning
+    * values from the scala side API. reactjs allows this to be quite flexible
+    * including strings, numbers, booleans in additon to classes, functions,
+    * etc. This should probably be a js.Any as any API used in this library will
+    * ensure that the right types are used and this would get rid of the ugly
     * `stringToElement` type functions below.  js.Object is technically not
     * correct.
     */
   @js.native
   trait ReactNode extends js.Object
 
-  /** Output from createElement and something you can render reactjs wth key and ref
-    * accessors.
+  /** Output from createElement and something you can render reactjs wth key and
+    * ref accessors. Essentially its a node but its known to have a key and ref.
+    * An element, like a node, can be rendered.
     */
   @js.native
   trait ReactElement extends js.Object with ReactNode {
     val key: UndefOr[String]
-    // ...add ref here...is it a string or a callback?
+    // ...add ref here...is it a string or a callback now?
   }
 
   /**
@@ -64,17 +71,21 @@ package object react {
   trait ReactClass extends js.Object
 
   /** Something that can be used in createElement. Need to add js.Function that
-    * returns a ReadNode.
+    * returns a ReactNode.
     */
   type ReactType = ReactClass | String
 
   /**
-    * Something to be used in some jsinterop functions that are the equivalent
-    * of createElement. A type used only to imported javascript side
-    * components. Typically this is used to annotate a component type imported
-    * from javascript or created via other js-interop mechanisms such as redux
-    * integration. By using a separate type, you must use then scalajs-react's
-    * API to create an element.
+    * Something to be used in some jsinterop functions where the functions are
+    * the equivalent of createElement. This type is used only to imported
+    * javascript side components. Typically this is used to annotate a component
+    * type imported from javascript or created via other js-interop mechanisms
+    * such as redux integration. By using a separate type, you must use then
+    * scalajs-react's API to create an element. Since `createElement` is used to
+    * create elements in scalajs-react and createElement can take both a
+    * function as well as an js object, you can use `ReactJsComponent` to
+    * annotate scalajs imports that are a function (such as a stateless function
+    * component) or a regular class specfication.
     */
   @js.native
   trait ReactJsComponent extends js.Object
@@ -137,7 +148,7 @@ package object react {
 
   /**
     * Constant val of a single, empty js.Object. Use carefully since js mutates and
-    * this will be a shared instance. Prefer noProps.
+    * this will be a shared instance. Prefer `noProps()`.
     */
   val noPropsVal: js.Object = new js.Object()
 
@@ -165,8 +176,8 @@ package object react {
   }
 
   /**
-    * Merge objects and Ts together. Good for merging props with data- attributes. This is like
-    * `Object.assign`.
+    * Merge objects and Ts together. Good for merging props with data-
+    * attributes. This is like `Object.assign`.
     */
   @inline def merge[T <: js.Object](objs: js.Dynamic | js.Object*): T = {
     val result = js.Dictionary.empty[Any]
@@ -181,9 +192,9 @@ package object react {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }
 
-  /** Safely wrap a value which could be undefined or null -> None, otherwise Some. */
+  /** Return None if undefined or null -> None, otherwise return a Some. */
   @inline def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
-    if (js.isUndefined(t)) None
+    if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])
   }
 }

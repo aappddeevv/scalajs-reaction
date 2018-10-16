@@ -30,13 +30,14 @@ object elements {
   }
 
   /**
-    * Scala side version of React.createElement given a scala-side ComponentSpec.
-    * It calls React.createElement. If component is a scala-side wrapper around a
-    * js component, create the js component. No children are allowed in this
-    * function as they come should through the props. This is called "element"
-    * instead of "createElement" to make it shorter to type if you are not using
-    * JSX. Do not use this if you not have a scala side component. You do *not*
-    * use this to create standad html elements like "div."
+    * Scala side version of React.createElement given a scala-side
+    * ComponentSpec/Component.  It calls React.createElement. If component is a
+    * scala-side wrapper around a js component, create the js component. No
+    * children are allowed in this function as they come should through the
+    * props. This is called "element" instead of "createElement" to make it
+    * shorter to type if you are not using JSX. Do not use this if you not have
+    * a scala side component. You do *not* use this to create standad html
+    * elements like "div."
     *
     * Since we return an untyped value, the types of the component are not important.
     */
@@ -178,6 +179,8 @@ object elements {
   object Fragment {
     def make(key: Option[String] = None)(children: ReactNode*) =
       React.createFragment(key, children: _*)
+    def make(children: ReactNode*) =
+      React.createFragment(None, children: _*)    
   }
 
   /**

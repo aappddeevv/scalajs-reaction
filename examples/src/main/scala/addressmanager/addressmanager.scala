@@ -178,7 +178,7 @@ object AddressManagerC {
       new IContextualMenuItem {
         val key = "footerSize"
         name = "Incr Footer Height (CSS Var)"
-        onClick = { () =>
+        onClick = (() => {
           val pattern    = "([0-9]+)px".r
           val pattern(h) = vdom.styling.getCSSVar("--footer").trim
           val hint       = h.toInt
@@ -186,7 +186,7 @@ object AddressManagerC {
           // This is really as side effect that should force a re-render.
           // So I should really call into the reducer, but I'm lazy.
           vdom.styling.setCSSVar("--footer", s"${newHeight}px")
-        }: OC0
+        }):IContextualMenuItem.OC0
         iconProps = lit("iconName" -> "Add")
       }
     )
@@ -200,9 +200,9 @@ object AddressManagerC {
         new IContextualMenuItem {
           val key = "refresh"
           name = "Refresh"
-          onClick = { () =>
+          onClick = (() => {
             self.send(Refresh)
-          }: OC0
+          }):IContextualMenuItem.OC0
           iconProps = lit("iconName" -> "Refresh")
         }
     )
@@ -317,7 +317,7 @@ object AddressManagerC {
           }
         }
 
-      didMount = js.defined({ (self, gen) =>
+      didMount = js.defined({ self =>
         self.send(Refresh)
       })
 

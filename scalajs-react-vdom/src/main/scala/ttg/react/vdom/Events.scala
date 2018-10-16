@@ -6,6 +6,7 @@ package ttg
 package react
 package vdom
 
+// needed because I could not figure out the proper variance model
 import scala.annotation.unchecked.{uncheckedVariance => uv}
 import scalajs.js
 import js.|
@@ -49,6 +50,7 @@ trait Events {
   type ChangeEventHandler[T <: dom.EventTarget]      = EventHandler[T, SyntheticChangeEvent[T]]
   type ClipboardEventHandler[T <: dom.EventTarget]   = EventHandler[T, SyntheticClipboardEvent[T]]
   type DragEventHandler[T <: dom.EventTarget]        = EventHandler[T, SyntheticDragEvent[T]]
+  type PointerEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticPointerEvent[T]]
   type TouchEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticTouchEvent[T]]
   type CompositionEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticCompositionEvent[T]]
   type WheelEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticWheelEvent[T]]
@@ -133,6 +135,19 @@ trait SyntheticCompositionEvent[+T <: dom.EventTarget] extends SyntheticEvent[T]
 trait SyntheticDragEvent[+T <: dom.EventTarget] extends SyntheticMouseEvent[T] {
   val dataTransfer: dom.DataTransfer      = js.native
   override val nativeEvent: dom.DragEvent = js.native
+}
+
+@js.native
+trait SyntheticPointerEvent[+T <: dom.EventTarget] extends SyntheticMouseEvent[T] {
+  val pointerId: Int = js.native
+  val pressure: Int = js.native
+  val tiltX: Int = js.native
+  val tiltY: Int = js.native
+  val width: Int = js.native
+  val height: Int = js.native
+  val pointerType: String  = js.native// mouse|pen|touch
+  val isPrimary: Boolean = js.native
+  override val nativeEvent: dom.PointerEvent = js.native
 }
 
 @js.native

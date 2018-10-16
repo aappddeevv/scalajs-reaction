@@ -302,6 +302,9 @@ object syntax {
   object miscor      extends MiscOrSyntax
 }
 
+/** Convert components to elements. Components are like templates that describe
+  * how to create an element. Elements are instances.
+ */
 trait Component2Elements {
   @inline implicit def c2E(c: Component): ReactElement = elements.element(c)
   @inline implicit def cSeq2E(c: Seq[Component]): ReactNode =
@@ -317,6 +320,7 @@ trait ValueConverters {
     react.arrayToElement(arr)
   @inline implicit def _stringToElement(s: String): ReactNode = react.stringToElement(s)
 
+  // shouldn't these just be collapsed into a scala.AnyVal?
   @inline implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = react.arrayToElement(s)
   @inline implicit def _intToElement(i: Int): ReactNode         = i.asInstanceOf[ReactNode]
   @inline implicit def _doubleToElement(d: Double): ReactNode   = d.asInstanceOf[ReactNode]
@@ -334,13 +338,23 @@ trait ValueConverters {
   @inline implicit def _undefOrReactNodeArrayToReactNode(
       n: js.UndefOr[js.Array[ReactNode]]): ReactNode =
     n.map(i => _iterableToElement(i)).getOrElse(null)
+
+  /** Since null is a valid react node, convert an optional string to null. */
+  @inline implicit def _optionStringToNull(n: Option[String]): ReactNode = n.getOrElse(null)
+  /** Convert scala.AnyVal into a react node. */
+  @inline implicit def _optionAnyValToNull(n: Option[scala.AnyVal]): ReactNode =
+    n.getOrElse(null).asInstanceOf[ReactNode]
+
+  // highly contraversial...this allows you to put any thing in for the react children and 
+  //@inline implicit def _scalaObject(o: scala.AnyRef): ReactNode = o.asInstanceOf[ReactNode]
 }
 
 trait AllInstances extends Component2Elements with ValueConverters
 
 /**
-  * Instances is the wrong concept here as these are not typeclass instances--but close enough as
-  * they are not syntax extensions "'element' converters" would be better.
+  * Instances is the wrong concept here as these are not typeclass
+  * instances--but close enough as they are not syntax extensions "'element'
+  * converters" would be better.
   */
 object instances {
   object all       extends AllInstances
@@ -348,4 +362,8 @@ object instances {
   object value     extends ValueConverters
 }
 
+/**
+ * Include these to get automatic type conversions. They are optional but
+ * exceptionally helpful.  These can be included ala carte.
+ */
 object implicits extends AllSyntax with AllInstances

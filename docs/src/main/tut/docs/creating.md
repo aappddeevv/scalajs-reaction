@@ -11,7 +11,9 @@ It's best to look to the [ReasonReact](https://reasonml.github.io/reason-react) 
 
 
 ## Creating a Component
+
 Here's a simple example that uses a non-native JS trait for the props:
+
 ```scala
 // You can use individual props or a trait or a scala object.
 // It's often convenient to use a subtype of js.Object
@@ -22,13 +24,13 @@ trait ToDoProps extends js.Object {
   // look no children on this props...
 }
 
-object ToDoC {
-  val ToDo = statelessComponent("ToDo")
-  import ToDo.ops._
+object ToDo {
+  val c = statelessComponent("ToDo")
+  import c.ops._
   // def make(todo: ToDo, remove: Unit => Unit) =
-  // or bundle them together into a trait
+  // or bundle them together into a trait like below
   def make(props: ToDoProps) =
-    ToDo.copy(new methods {
+    c.copy(new methods {
       val render = self => {
        div(new DivProps { style = new StyleAttr("display" = "flex")})(
           Label()("Item:"),
@@ -40,16 +42,28 @@ object ToDoC {
 }
 ```
 
-Notice that you use a `val` to define `render`. Render is required for all components so the `methods` that you are creating forces you to define the render method. Using standard scala syntax, you need to define `val` when you instantiate the trait.
+The parameter `ToDoProps` was set as a `js.Object` trait so it is slightly
+easier to interface into the reactjs world.
+
+Notice that you use a `val` to define `render`. Render is required for all
+components so the `methods` that you are creating forces you to define the
+render method. Using standard scala syntax, you need to define `val` when you
+instantiate the trait.
 
 Some methods are not required, such as `willMount`. The definition for `willMount` would look like:
 ```scala
   willMount = js.defined({ self => 
   })
 ```
-Since `willMount` is optional, it is defined as a var and defaults to `js.undefined`. You need the `js.defined` because of the scala.js environment requiring a double implicit search, which it can't do, so `js.defined()` helps with type inference. If you already use scala.js you are probably used to this.
 
-If you define a stateful component, you are required to define, using `val`, `reducer` and `initialState` in the same way you defined `render`. You do not need to define the parameter types although can if desired.
+Since `willMount` is optional, it is defined as a var and defaults to
+`js.undefined`. The `js.defined` is needed because scala.js cannot work trough
+two levels of implicits so `js.defined()` helps with type inference. If you
+already use scala.js you are probably used to this.
+
+If you define a stateful component, you are required to define, using `val`,
+`reducer` and `initialState` in the same way you defined `render`. You do not
+need to define the parameter types although can if desired.
 
 You can pass in children via your ToDoProps or just add them to the make call,
 if you need children. Here's an example where they are passed in as a
@@ -57,12 +71,84 @@ if you need children. Here's an example where they are passed in as a
 
 ```scala
 def make(props: ToDoProps, children: js.Array[ReactNode]) =
-  ToDo.copy(new methods {
+  c.copy(new methods {
     val render = self => {
        children
      })}
 ```
+
 Or you can use the spread `..., children: ReactNode*) = `.
+
+As a shortcut for stateless components, you can do:
+
+```scala
+object MyComponent {
+  val c = statelessComponent("MyComponent")
+  import c.ops._
+  
+  def make(arg: String) = 
+    render { self =>
+        "something renderable"
+    }
+}
+
+```
+
+This shortcut works because `c.ops._` imports a method that attaches itself to
+`c` and calls `c.copy(new methods { ... })` for you under the covers. If you
+want to use any other methods though you'll have to default back to the more
+verbose copy approach.
+
+There are a few different types of components:
+
+* stateless
+* stateless with retained props
+* reducer (stateful)
+* reducer (stateful) with retained props
+
+You can read the standard ReasonReact documentation to understand the
+differences between them.
+
+The methods and their parameters required for each component differ based on the
+component type. The "self" parameter also contains slightly different content
+based on the method being called. For example, in the unmount method, it does
+not make sense to provide access to `onUnmount` method in self. If retained
+props are used, `self` also contains those values.
+
+If you are creating a reducer component you need to have methods:
+
+* initialState
+* reducer
+
+in addition to the render method. All three are required and hence should be declared with `val`:
+
+```scala
+object MyComponent { 
+
+  case class State(...)
+  
+  sealed trait Action
+  case class ReducerAction1(arg: String)
+  case class ReducerAction2(arg: String)  
+  
+  val c = rdecureComponent[State, Action]("MyComponent")
+  import c.ops._
+  
+  def make(arg: String) = 
+    c.copy(new methods { 
+      val initialState = self => State()
+      val reducer = (action, state, gen) =>
+          action match { 
+            case ReducerAction1(arg) => gen.update(state.copy(...))
+            case ReducerAction2(arg) => gen.effect(slf => print("run a side effect with a self"))
+            case _ => gen.skip // no state update
+          }
+      val render = self => {
+         div()("Some renderable content")
+      }
+    })
+}
+```
 
 ## Attributes
 
@@ -114,30 +200,47 @@ val stringElement = stringToElement("blah")
 which can be quite verbose, hence the implicit conversions which will a wide range of  simple types to a `ReactNode` automatically.
 
 ## What's Ops?
-The import `myComponent.ops._` imports the "methods" trait so you can customize the component for your specific render, reducer, and processing needs. It also contains a few types you can use to help you break out methods into small parts. For example, it contains the "Self" type so that you can define a function separate from the methods:
+The import `c.ops._` imports the "methods" trait so you can customize the component for your specific render, reducer, and processing needs. It also contains a few types you can use to help you break out methods into small parts. For example, it contains the "Self" type so that you can define a function separate from the methods:
 ```scala
 def renderFooter(self: Self, ...): ReactNode = { ... }
 ```
-If you use state or retained props, it contains `S` and `RP` as well.
 
-The types from a component will *not* work anywhere else but for that component. The "Self" type is tied to the component as a dependent type. Another component will have another "Self" type...you cannot inappropriately mix things up. If you have common processing in your function call that takes a "Self" merely pass in the parts of "Self" that are needed and factor out the common processing.
+If you use state or retained props, it contains `S` and `RP` as well. Generally
+though you should not pass self around but the specific arguments you need to
+perform the rendering.
 
-When you create a component, you indicate whether it takes retainded props or initial state. You are forced to create those when you perform the copy by having to use a "val" in your "methods" definitions. Optional parameters can be specified just using "name=value". Functions have to be wrapped in "js.defined" due to some scala.js needs for type resolution but the initial state or retained prop values do not need that:
+The types from a component will *not* work anywhere else but for that
+component. The "Self" type is tied to the component as a dependent type. Another
+component will have another "Self" type...you cannot inappropriately mix things
+up. If you have common processing in your function call that takes a "Self"
+merely pass in the parts of "Self" that are needed and factor out the common
+processing.
+
+When you create a component, you indicate whether it takes retainded props or
+initial state. You are forced to create those when you perform the copy by
+having to use a "val" in your "methods" definitions. Optional parameters can be
+specified just using "name=value". Functions have to be wrapped in "js.defined"
+due to some scala.js needs for type resolution but the initial state or retained
+prop values do not need that:
+
 ```scala
 case class MyState(...)
-val c = reducerComponent[MyState]("component")
+sealed trait Action
+val c = reducerComponent[MyState, Action]("component")
 import c.ops._
 
 def make(...) = c.copy(new methods {
     // stateful component so you *must* define initialState
-    val initialState = MyState()
+    val initialState = self => MyState()
     // render and most everything else is optional, default render returns null
-    render = js.defined{self => ... }
+    val render = self => { ... }
+    val reducer = (action, state, gen) => { ... /* return a reducer result */ }
 })
 
 ```
 
 ## Implementation Note
+
 The object returned from "statelessComponent" is actually not the actually
 javascript proxy or the scala side component (ComponentSpec, which is a
 non-native JS trait). The returned value is a "cake" since the proxy and the

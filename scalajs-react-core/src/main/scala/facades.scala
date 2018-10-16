@@ -583,7 +583,8 @@ trait CakeWithState extends CakeBase { cake =>
     val scalaState: S
   }
 
-  type DidMount = (Self, ReducerResult[S, Self]) => Unit
+  //type DidMount = (Self, ReducerResult[S, Self]) => Unit
+  type DidMount = Self => Unit
 
   type ComponentType <: ComponentLike
   trait ComponentLike extends super.ComponentLike {
@@ -694,7 +695,7 @@ trait CakeWithState extends CakeBase { cake =>
   /** Unlike the base case with no state, allow state to be returned and acted upon. */
   protected def _componentDidMountWithState(displayName: String)(thisJs: ThisSelf): Unit = {
     val (c, s, o) = _componentDidMountCommon(displayName)(thisJs)
-    c.didMount.foreach(_(s, reducerResult))
+    c.didMount.foreach(_(s))
   }
 
   protected def _getInitialState(displayName: String)(thisJs: ThisSelf): State = {
@@ -789,7 +790,7 @@ trait StatelessComponentCake extends StatelessCakeBase { cake =>
     /**
       * Without the need for a val anchor, add the render method. If you need to
       * add other methods, more than just render, you need to use the long-form
-      * syntax.
+      * syntax `yourcomponent.copy(new methods { })`.
       */
     def render(f: Self => ReactNode) =
       cake.copy(new WithMethods {

@@ -56,7 +56,12 @@ package object styling {
   type IStyle = IStyleBase | IRawStyleArray
 
   /**
-    * Keys are usually logical names of your component, e.g. root, header, footer.
+    * Keys are usually logical names of your component, e.g. root, header,
+   * footer. Fabric also desginates `subComponentStyles` as a property that is
+   * an object with string->istyle mappings or a function that takes properties
+   * (an object) and returns string->istyle mappings. So fabric defines a style
+   * set as a potentially hierarchical specification of stylesets. When you want
+   * to be specific use a trait instead of IStyleSet.
     */
   type IStyleSet = js.Dictionary[IStyle]
 
@@ -81,9 +86,35 @@ package object styling {
       js.Dictionary[IStyle](stylePairs: _*)
   }
 
+  /** Tag your style trait to help drive style inference. You *must* promise to
+   * only have specific types of values in your trait. Generally, your member
+   * types will all be `js.UndefOr[IStyle]` so that you can specific a subset of
+   * the members based on your need.
+   */
+  trait IStyleSetTag extends js.Object { }
+
+  /** Tag for an object whose data memebers all returns strings, as in classnames.
+   * You *must* promise to only have these type of members in the object.
+   */
+  trait IClassNamesTag extends js.Object { }
+
+  /** Convert some style props to a style set. */
+  type IStyleFunction[StyleProps, IStyleSetTag] = (StyleProps) => IStyleSetTag
+
+  /** Something that is a style set or a style function. */
+  type IStyleFunctionOrObject[StyleProps, IStyleSetTag] =
+    IStyleFunction[StyleProps, IStyleSetTag] | IStyleSetTag
+
   //
-  // automatic converters to make this bearable syntax-wise. Should these be optional?
+  // Automatic converters to make this bearable syntax-wise. Should these be
+  // optional and intentionally imported if desired?
   //
+
+  /** Unsafe! Convert IStyleSetTag object to IStyleSet. */
+  implicit def iStyleSetTagToIStyleSet(s: IStyleSetTag) = s.asInstanceOf[IStyleSet]
+
+  /** Unsafe! Convert IStyleFunction to IStyleSet. */
+  implicit def iStyleFunctionToIStyleSet[P,T](f: IStyleFunction[P,T]) = f.asInstanceOf[IStyleSet]
 
   /** Convert null to style. */
   implicit def null2IStyle(n: Null): IStyle = n.asInstanceOf[IStyle]

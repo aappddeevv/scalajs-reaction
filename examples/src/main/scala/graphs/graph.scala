@@ -151,7 +151,7 @@ object Graph {
         State()
       }
 
-      didMount = js.defined { (self, gen) =>
+      didMount = js.defined { self =>
         println("didMount")
         build(self.state)
       //js.Dynamic.global.console.log("cy", self.state.ref, self.state.cy)

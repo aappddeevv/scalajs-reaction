@@ -11,6 +11,7 @@ import js.|
 
 import ttg.react.vdom._
 import org.scalajs.dom
+import styling.IStyle
 
 @js.native
 @JSImport("@uifabric/icons", JSImport.Namespace)
@@ -35,9 +36,13 @@ object FabricNS extends js.Object {
   val Link: ReactJsComponent                  = js.native
   val List: ReactJsComponent                  = js.native
   val MarqueeSelection: ReactJsComponent      = js.native
+  val MessageBar: ReactJsComponent = js.native
+  val Nav: ReactJsComponent      = js.native
+  val OverflowSet: ReactJsComponent      = js.native
   val Pivot: ReactJsComponent                 = js.native
   val PivotItem: ReactJsComponent             = js.native
   val PrimaryButton: ReactJsComponent         = js.native
+  val SearchBox: ReactJsComponent = js.native
   val Spinner: ReactJsComponent               = js.native
   def Selection[T <: js.Object]: Selection[T] = js.native
   val ScrollablePane: ReactJsComponent        = js.native
@@ -89,6 +94,15 @@ object components {
       children: ReactNode*) =
     wrapJsForScala(FabricNS.MarqueeSelection, props, children: _*)
 
+  def MessageBar(props: IMessageBarProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.MessageBar, props, children:_*)
+
+  def Nav(props: INavProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Nav, props, children: _*)
+
+  def OverflowSet(props: IOverflowSetProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.OverflowSet, props, children: _*)
+
   def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
 
@@ -97,6 +111,9 @@ object components {
 
   def PivotItem(props: IPivotItemProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.PivotItem, props, children: _*)
+
+  def SearchBox(props: ISearchBoxProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.SearchBox, props, children: _*)
 
   def Spinner(props: ISpinnerProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
@@ -169,7 +186,7 @@ trait IPivotItemProps extends HTMLAttributes[dom.html.Div] {
   var onRenderItemLink: js.UndefOr[IRenderFunction[IPivotItemProps]] = js.undefined
 }
 
-trait IPivotProps extends js.Object {
+trait IPivotProps extends Attributes {
   var initialSelectedKey: js.UndefOr[String] = js.undefined
   var initialSelectedIndex: js.UndefOr[Int]  = js.undefined
   var selectedKey: js.UndefOr[String]        = js.undefined
@@ -239,15 +256,64 @@ trait IDetailsList extends IList {
 trait IColumn extends js.Object {
   val key: String
   val name: String
-  val fieldName: String
-  val minWidth: Int
-  var data: js.UndefOr[scala.Any]        = js.undefined
+  val minWidth: Int  
+  var fieldName: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var isRowHeader: js.UndefOr[Boolean] = js.undefined
+  var maxwidth: js.UndefOr[Double] = js.undefined
+  var columnActionMode: js.UndefOr[Int] = js.undefined
+  var iconName: js.UndefOr[String] = js.undefined
+  var isIconOnly: js.UndefOr[Boolean] = js.undefined
   var isCollapsible: js.UndefOr[Boolean] = js.undefined
   var isSorted: js.UndefOr[Boolean]      = js.undefined
+  var isSortedDescending: js.UndefOr[Boolean] = js.undefined
+  var isMultiline: js.UndefOr[Boolean]      = js.undefined
+  // adjust so we can delayr item's type vs js.Any 
+  //def onRender[T <: js.Object]: js.UndefOr[js.Function3[T, Int, IColumn, js.Any]] = js.undefined
+  var onRender: js.UndefOr[js.Function3[js.Any, Int, IColumn, js.Any]] = js.undefined
+  // onRenderDivider
+  var isFiltered: js.UndefOr[Boolean]      = js.undefined
+  // onColumnClick
+  // onColumnContextMenu
+  var isGrouped: js.UndefOr[Boolean]      = js.undefined
+  var data: js.UndefOr[scala.Any]        = js.undefined
+  var headerClassName: js.UndefOr[String] = js.undefined
+  var isPadded: js.UndefOr[Boolean]      = js.undefined
+  var sortAscendingAriaLabel: js.UndefOr[String] = js.undefined
+  var groupAriaLabel: js.UndefOr[String] = js.undefined
+  var filterAriaLabel: js.UndefOr[String] = js.undefined
 }
 
 object IColumn {
   def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
+}
+
+trait IColumnReorderOptions extends js.Object {
+  var frozenColumnCountFromStart: js.UndefOr[Int] = js.undefined
+  var frozencolumnCountFromEnd:js.UndefOr[Int] = js.undefined
+  var onColumnDragStart: js.UndefOr[js.Function1[Boolean, Unit]] = js.undefined
+  var handleColumnReorder: js.UndefOr[js.Function2[Int, Int, Unit]] = js.undefined
+  var onColumnDrop: js.UndefOr[js.Function1[IColumnDragDropDetails, Unit]] = js.undefined
+  // ColumnDragEndLocation
+  var onDragEnd: js.UndefOr[js.Function1[Int, Unit]] = js.undefined
+}
+
+object ColumnActionsMode {
+  val disabled = 0
+  val clickable = 1
+  val hasDropdown = 2
+}
+
+object ColumnDragEndLocation {
+  val outside = 0
+  val surface = 1
+  val header = 2
+}
+
+trait IColumnDragDropDetails extends js.Object {
+  val draggedIndex: Int
+  val targetIndex: Int
 }
 
 object CheckboxVisibility {
@@ -287,7 +353,7 @@ trait IDetailsHeaderProps extends ComponentRef[IDetailsHeader] {
   var groupNestingDepth: js.UndefOr[Int] = js.undefined
 }
 
-trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] {
+trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with Attributes {
   val items: js.Array[T]
   var setKey: js.UndefOr[String]                      = js.undefined
   var className: js.UndefOr[String]                   = js.undefined
@@ -380,29 +446,36 @@ trait IContextualMenuProps extends KeyAndRef {
 }
 
 trait IContextualMenuItem extends WithIconProps {
+  import IContextualMenuItem._
   val key: String
   var name: js.UndefOr[String] = js.undefined
 
   /** 1 => divider, 0 => normal */
   var itemType: js.UndefOr[Int]     = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
-  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], js.UndefOr[IContextualMenuItem], Unit]
-  type OC0 = js.Function0[Unit]
+  //var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
   var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
   var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
   var className: js.UndefOr[String]                  = js.undefined
   var title: js.UndefOr[String]                      = js.undefined
+  var onRender: js.UndefOr[RF2 | RF0] = js.undefined
+}
+
+object IContextualMenuItem {
+  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], js.UndefOr[IContextualMenuItem], Unit]
+  type OC0 = js.Function0[Unit]
+
   // cast your func to this to make it easier
   type RF2 = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
   // cast your func to this to make it easier
   type RF0 = js.Function0[ReactNode]
-  var onRender: js.UndefOr[RF2 | RF0] = js.undefined
 }
+
 
 @js.native
 trait ICommandBar extends Focusable {}
 
-trait ICommandBarProps extends js.Object {
+trait ICommandBarProps extends Attributes {
   var componentRef: js.UndefOr[ICommandBar => Unit] = js.undefined
   var isSearchBoxVisble: js.UndefOr[Boolean]        = js.undefined
   var searchBoxPlaceholderText: js.UndefOr[String]  = js.undefined
@@ -530,7 +603,8 @@ trait IButton extends Focusable {
 trait IButtonProps
     extends ComponentRef[IButton]
     with WithIconProps
-    with AllHTMLAttributes[dom.html.Button] {
+    with AllHTMLAttributes[dom.html.Button]
+    with Attributes {
   // having variance problems
   //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
   //var href: js.UndefOr[String] = js.undefined
@@ -569,7 +643,7 @@ trait ILinkProps extends AllHTMLAttributes[dom.html.Anchor] with ComponentRef[IL
 @js.native
 trait IMarqueeSelection extends js.Object {}
 
-trait IMarqueeSelectionProps[T <: js.Object] extends ComponentRef[IMarqueeSelection] {
+trait IMarqueeSelectionProps[T <: js.Object] extends ComponentRef[IMarqueeSelection] with Attributes {
   var selection: js.UndefOr[ISelection[T]]                              = js.undefined
   var rootProps: js.UndefOr[HTMLAttributes[dom.html.Div]]               = js.undefined
   var onShouldStartSelection: js.UndefOr[js.Function1[js.Any, Boolean]] = js.undefined
@@ -791,4 +865,140 @@ object SelectableOptionMenuItemType {
 trait IDropdownOption extends ISelectableOption {
   var data: js.UndefOr[js.Any]        = js.undefined
   var isSelected: js.UndefOr[Boolean] = js.undefined
+}
+
+trait INavProps extends js.Object {
+}
+
+trait IKeytipProps extends js.Object {
+  val content: String
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var visible: js.UndefOr[Boolean] = js.undefined
+  val keySeqences: js.Array[String]
+}
+
+@js.native
+trait IOveflowSet extends js.Object {
+  var focus: js.Function1[Boolean, Unit]
+  var focusElement: js.Function1[dom.html.Element, Boolean]
+}
+
+trait IOverflowSetStyles extends js.Object {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var item: js.UndefOr[IStyle] = js.undefined
+  var overflowButton: js.UndefOr[IStyle] = js.undefined
+}
+
+/** Subclass to add your own properties. */
+trait IOverflowSetItemProps extends js.Object {
+  val key: String
+  var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
+}
+
+trait IOverflowSetProps extends js.Object {
+  var className: js.UndefOr[String] = js.undefined
+  var items:  js.UndefOr[Seq[IOverflowSetItemProps]] = js.undefined
+  var vertical: js.UndefOr[Boolean] = js.undefined
+  var overflowItems: js.UndefOr[Seq[IOverflowSetItemProps]] = js.undefined
+  var doNotContainWithinFocusZone: js.UndefOr[Boolean] = js.undefined
+  var role: js.UndefOr[String] = js.undefined
+  /** Always make this a function. */
+  var styles: js.UndefOr[IOverflowSetProps => IOverflowSetStyles] = js.undefined
+  @JSName("styles")
+  var stylesObj: js.UndefOr[IOverflowSetStyles] = js.undefined
+}
+
+@js.native
+trait ISearchBox extends Focusable {
+  def hasFocus(): Boolean = js.native
+}
+
+trait ISearchBoxStyles extends js.Object {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var iconContainer: js.UndefOr[IStyle] = js.undefined
+  var icon: js.UndefOr[IStyle] = js.undefined
+  var field: js.UndefOr[IStyle] = js.undefined
+  var clearButton: js.UndefOr[IStyle] = js.undefined  
+}
+
+trait ISearchBoxStyleProps extends Attributes {
+  //var theme: js.UndefOr[ITheme] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var hasFocus: js.UndefOr[Boolean] = js.undefined
+  var underlined: js.UndefOr[Boolean] = js.undefined
+  var hasInput: js.UndefOr[Boolean] = js.undefined
+  var disableAnimation: js.UndefOr[Boolean] = js.undefined  
+}
+
+trait ISearchBoxProps extends InputHTMLAttributes[dom.html.Input] with Attributes {
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  //var className: js.UndefOr[String] = js.undefined
+  var clearButtonProps: js.UndefOr[IButtonProps] = js.undefined
+  var disableAnimation: js.UndefOr[Boolean] = js.undefined
+  //var placeholder: js.UndefOr[String] = js.undefined
+  var underlined: js.UndefOr[Boolean] = js.undefined
+  //var value: js.UndefOr[String]                       = js.undefined
+
+  //var styles: js.UndefOr[IStyleFunction[ISearchBoxStyleProps, ISearchBoxStyles]] = js.undefined
+
+  /** new value, as you type */
+  //var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+  /** Event returned. */
+  var onClear: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+  /** Event returned. */
+  var onEscape: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+  /** For onChange & onSearch, return the string value or "" if no value.
+   * You can use implicit `.toTruthyUndefOr.toOption` to set "" => None.
+   */
+  var onSearch: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+}
+
+trait IMessageBar extends js.Object {
+}
+
+object MessageBarType {
+  val info = 0
+  val error = 1
+  val blocked = 2
+  val severeWarning = 3
+  val success = 4
+  val warning = 5
+}
+
+trait IMessageBarStyleProps extends js.Object {
+  var className : js.UndefOr[IStyle] = js.undefined
+  var messageBarType: js.UndefOr[Int] = js.undefined
+  var onDismiss: js.UndefOr[Boolean] = js.undefined
+  var truncated: js.UndefOr[Boolean] = js.undefined
+  var isMultiline: js.UndefOr[Boolean] = js.undefined
+  var expandSingleLine: js.UndefOr[Boolean] = js.undefined
+  var actions: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IMessageBarStyles extends js.Object {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var content: js.UndefOr[IStyle] = js.undefined
+  var iconContainer: js.UndefOr[IStyle] = js.undefined
+  var icon: js.UndefOr[IStyle] = js.undefined
+  var text: js.UndefOr[IStyle] = js.undefined
+  var innerText: js.UndefOr[IStyle] = js.undefined
+  var dismissal: js.UndefOr[IStyle] = js.undefined
+  var expand: js.UndefOr[IStyle] = js.undefined
+  var dismissSingleLine: js.UndefOr[IStyle] = js.undefined
+  var expandSingleLine: js.UndefOr[IStyle] = js.undefined
+  var actions: js.UndefOr[IStyle] = js.undefined
+}
+
+trait IMessageBarProps extends HTMLAttributes[dom.html.Element]
+    with ComponentRef[IMessageBar] with Theme with Attributes {
+  var messageBarType: js.UndefOr[Int] = js.undefined
+  var actions: js.UndefOr[ReactElement] = js.undefined
+  var arialLabel: js.UndefOr[String] = js.undefined
+  var onDimiss: js.UndefOr[js.Function1[js.Any, js.Any]] = js.undefined
+  var isMultiline: js.UndefOr[Boolean] = js.undefined
+  var dismissButtonAriaLabel: js.UndefOr[String] = js.undefined
+  var truncated: js.UndefOr[Boolean] = js.undefined
+  var overflowButtonAriaLabel: js.UndefOr[String] = js.undefined
+  var styles: js.UndefOr[styling.IStyleFunctionOrObject[IMessageBarStyleProps, IMessageBarStyles]] = js.undefined
 }
