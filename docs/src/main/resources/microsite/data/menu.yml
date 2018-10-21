@@ -17,6 +17,9 @@ options:
   - title: Virtual DOM
     url: docs/vdom.html
 
+  - title: Routing
+    url: docs/router.html
+
   - title: Redux
     url: docs/redux.html
 

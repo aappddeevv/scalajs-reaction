@@ -36,7 +36,7 @@ future version will support react-native. The scalaj-react API roughly mimics
 ReasonReact 4.1 and the intent is to track that API and stick closely to
 it. Read those docs to understand this API.
 
-A g8 template is available. Use `sbt new aappddeevv/scalajs-react.g8` to create a
+A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to create a
 new project.
 
 ## Usage

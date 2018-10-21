@@ -37,9 +37,9 @@ object ExamplesApp {
           () => {
             val token = router.watchUrl { url =>
               println(s"url: $url")
-              url._2.toLowerCase() match {
-                case "examples" => self.send(Home)
-                case "todo"     => self.send(ToDo)
+              url.hash.map(_.toLowerCase()) match {
+                case Some("examples") => self.send(Home)
+                case Some("todo")     => self.send(ToDo)
                 case _          => self.send(Home)
               }
             }
