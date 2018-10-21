@@ -20,8 +20,10 @@ package object reactdom {
     target.fold(
       throw new Exception(s"createAndRenderWithId: No element with id $id found in the HTML."))(
       htmlel => {
-        val root = JSReactDOM.createRoot(htmlel, opts.orUndefined)
-        root.render(el)
+        // this seemed to call initialState twice...so use the other standard API
+        //val root = JSReactDOM.createRoot(htmlel, opts.orUndefined)
+        //root.render(el)
+        JSReactDOM.render(el, htmlel)
       })
   }
 

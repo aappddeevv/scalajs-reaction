@@ -82,28 +82,70 @@ package object styling {
     * }}}
     */
   object styleset {
+    /** Return an IStyleSet which is useful for mergeStyleSets */
     @inline def apply(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
       js.Dictionary[IStyle](stylePairs: _*)
+
+    /** Return a T that is useful whwen using your own component's style object. */
+    @inline def make[T <: js.Object](stylePairs: (String, IStyle)*): T = // was IStyleBase|IRawStyleArray
+      js.Dictionary[IStyle](stylePairs: _*).asInstanceOf[T]
   }
 
   /** Tag your style trait to help drive style inference. You *must* promise to
    * only have specific types of values in your trait. Generally, your member
    * types will all be `js.UndefOr[IStyle]` so that you can specific a subset of
-   * the members based on your need.
+   * the members based on your need. This is the statically typed version of 
+   * `IStyleSet` where the members are statically declared.
    */
   trait IStyleSetTag extends js.Object { }
+
+  /**
+   * Convenience type declaration which handles either trait approach or
+   * dictionary approach of declaring styles.
+   */
+  type StyleType = IStyleSet | IStyleSetTag
 
   /** Tag for an object whose data memebers all returns strings, as in classnames.
    * You *must* promise to only have these type of members in the object.
    */
   trait IClassNamesTag extends js.Object { }
 
-  /** Convert some style props to a style set. */
-  type IStyleFunction[StyleProps, IStyleSetTag] = (StyleProps) => IStyleSetTag
+  /** 
+   * Convert some style props to a style set.
+   * 
+   * @tparam SP style props type
+   * @tparam style set type e.g. IStyleSet or IStyleSetTag
+   */
+  type IStyleFunction[SP <: js.Object, SST <: js.Object] = js.Function1[SP, SST]
 
-  /** Something that is a style set or a style function. */
-  type IStyleFunctionOrObject[StyleProps, IStyleSetTag] =
-    IStyleFunction[StyleProps, IStyleSetTag] | IStyleSetTag
+  /**
+   * Something that is a style set or a style function. This is the fabric
+   * signature, normally we would use a coproduct, perhaps a nice shapeless
+   * coproduct.
+   * 
+   * @tparam SP style props type
+   * @tparam SST style set type e.g. IStyleSet or IStyleSetTag
+   */
+  type IStyleFunctionOrObject[SP <: js.Object, SST <: js.Object] =
+    IStyleFunction[SP, SST] | SST// | IStyleSet | IStyleSetTag
+
+  /**
+   * Given some props and a list of IStyleFunctionOrObjects, resolve to a single
+   * (string->IStyle) by either calling the style function with the props or
+   * just using the props. Calls `concatStyleSheets`. This function is kept js
+   * oriented to match `_resolve` in the fabric `styled` HOC module.
+   */
+  def resolve[SP <: js.Object, SS <: js.Object](props: SP,
+    styles: js.UndefOr[IStyleFunctionOrObject[SP, SS]]*): SS = {
+    val x = js.Array[StyleType]()
+    for(s <- styles) {
+      s.foreach{ style =>
+        x.push(
+          if(js.typeOf(style.asInstanceOf[js.Object]) == "function") s.asInstanceOf[js.Function1[SP, StyleType]](props)
+          else style.asInstanceOf[StyleType]
+        )}}
+    Styling.concatStyleSets((x:collection.mutable.Seq[StyleType]):_*).asInstanceOf[SS]
+  }
 
   //
   // Automatic converters to make this bearable syntax-wise. Should these be
@@ -114,7 +156,7 @@ package object styling {
   implicit def iStyleSetTagToIStyleSet(s: IStyleSetTag) = s.asInstanceOf[IStyleSet]
 
   /** Unsafe! Convert IStyleFunction to IStyleSet. */
-  implicit def iStyleFunctionToIStyleSet[P,T](f: IStyleFunction[P,T]) = f.asInstanceOf[IStyleSet]
+  implicit def iStyleFunctionToIStyleSet[P <: js.Object,T <: js.Object](f: IStyleFunction[P,T]) = f.asInstanceOf[IStyleSet]
 
   /** Convert null to style. */
   implicit def null2IStyle(n: Null): IStyle = n.asInstanceOf[IStyle]

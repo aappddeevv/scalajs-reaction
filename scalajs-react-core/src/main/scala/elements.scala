@@ -30,16 +30,14 @@ object elements {
   }
 
   /**
-    * Scala side version of React.createElement given a scala-side
-    * ComponentSpec/Component.  It calls React.createElement. If component is a
+    * Create a scala side "element" from a scaal side Component definition using
+    * React.createElement by calling React.createElement. If component is a
     * scala-side wrapper around a js component, create the js component. No
     * children are allowed in this function as they come should through the
     * props. This is called "element" instead of "createElement" to make it
     * shorter to type if you are not using JSX. Do not use this if you not have
-    * a scala side component. You do *not* use this to create standad html
-    * elements like "div."
-    *
-    * Since we return an untyped value, the types of the component are not important.
+    * a scala side component. You do *not* use this to create standard html
+    * elements like "div" use `createDomElement`.
     */
   def element(
       component: Component,
@@ -56,7 +54,7 @@ object elements {
     }
   }
 
-  /** The long-named version of `element`. */
+  /** The long-named version of `element` that matches ReasonReact. */
   def createElement(component: Component, key: Option[String] = None, ref: Option[RefCb] = None) =
     element(component, key, ref)
 
@@ -67,15 +65,18 @@ object elements {
   private[this] def toDynamic(o: scala.Any): js.Dynamic =
     o.asInstanceOf[js.Dynamic]
 
-  /** Stateless component essentially it just has a render. */
+  /** Stateless component. It only has a render function. */
   def statelessComponent(debugNameArg: String) = {
     new StatelessComponentCake {
+      type ProxyType = ProxyLike
+      type ComponentType = ComponentLike
+
       class ProxyLike extends super.ProxyLike {
         val displayName: String = debugNameArg
       }
-      val proxy = new ProxyLike()
+      val proxy = new ProxyType()
       trait ComponentLike extends super.ComponentLike
-      val component = new ComponentLike {
+      val component = new ComponentType {
         var debugName          = debugNameArg
         var reactClassInternal = reactCreateClass(proxy)
       }
@@ -86,12 +87,15 @@ object elements {
   def statelessComponentWithRetainedProps[RetainedProps](debugNameArg: String) =
     new StatelessComponentWithRetainedPropsCake {
       type RP = RetainedProps
+      type ProxyType = ProxyLike
+      type ComponentType = ComponentLike
+
       class ProxyLike extends super.ProxyLike {
         val displayName: String = debugNameArg
       }
-      val proxy = new ProxyLike()
+      val proxy = new ProxyType()
       trait ComponentLike extends super.ComponentLike
-      val component = new ComponentLike {
+      val component = new ComponentType {
         var debugName          = debugNameArg
         var reactClassInternal = reactCreateClass(proxy)
       }
@@ -102,12 +106,15 @@ object elements {
     new ReducerComponentCake {
       type S = TheState
       type A = Action
+      type ProxyType = ProxyLike
+      type ComponentType = ComponentLike
+
       class ProxyLike extends super.ProxyLike {
         val displayName: String = debugNameArg
       }
-      val proxy = new ProxyLike()
+      val proxy = new ProxyType()
       trait ComponentLike extends super.ComponentLike
-      val component = new ComponentLike {
+      val component = new ComponentType {
         var debugName          = debugNameArg
         var reactClassInternal = reactCreateClass(proxy)
       }
@@ -136,19 +143,20 @@ object elements {
       type RP        = RetainedProps
       type A         = Action
       type ProxyType = ProxyLike
+      type ComponentType = ComponentLike
 
       class ProxyLike extends super.ProxyLike {
         val displayName: String = debugNameArg
       }
       val proxy = new ProxyType()
       trait ComponentLike extends super.ComponentLike
-      val component = new ComponentLike {
+      val component = new ComponentType {
         var debugName          = debugNameArg
         var reactClassInternal = reactCreateClass(proxy)
       }
     }
 
-  /** Like nullElement but a Component. Useful for optional children. */
+  /** Like nullElement but a Component. */
   val nullComponent = statelessComponent("null").component
 
   /** Clone a ReactElement and add new props. You should not use this if you can avoid it. */
@@ -170,7 +178,7 @@ object elements {
 
   /**
     * Create a fragment element. Per the API, you are only allowed an optional key.
-    * @deprecated Use `Fragment.make()`.
+    * @deprecated See `object Fragment`.
     */
   def fragmentElement(key: Option[String] = None)(children: ReactNode*) =
     React.createFragment(key, children: _*)
@@ -180,7 +188,9 @@ object elements {
     def make(key: Option[String] = None)(children: ReactNode*) =
       React.createFragment(key, children: _*)
     def make(children: ReactNode*) =
-      React.createFragment(None, children: _*)    
+      React.createFragment(None, children: _*)
+    def apply(children: ReactNode*) =
+      React.createFragment(None, children: _*)
   }
 
   /**
@@ -205,17 +215,18 @@ object elements {
   }
 
   /**
-    * Give a js.Object (or subclass), find a "children" property and assume its
-    * an array of ReactNodes. If not found, return an empty js array. This is
-    * used for interop where your scala "make" method takes children as a
-    * separate parameter but your props (event JS friendly props) does not
-    * contain the children property--it's there if there are children on the
-    * js side.
+    * Given a js.Object (or subclass), find a "children" property and assume its
+    * an array of ReactNodes. If not found, return an empty js array. This
+    * function is used for interop where your scala "make" method takes children
+    * as a separate parameter but your props (event JS friendly props) does not
+    * contain the children property--it's there if there are children on the js
+    * side. This is not needed in scalajs-react because the children are passed
+    * and managed explicitly.
     *
     * @todo Seems like this is an expensive call. Can we do better?
     */
   @inline def extractChildren(item: js.UndefOr[js.Object]): js.Array[ReactNode] =
-    if (item == null) js.Array()
+    if (item == null) js.Array() // need this since could be a "defined" null
     else
       item.toOption
         .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))

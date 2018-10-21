@@ -42,10 +42,10 @@ object FabricNS extends js.Object {
   val Pivot: ReactJsComponent                 = js.native
   val PivotItem: ReactJsComponent             = js.native
   val PrimaryButton: ReactJsComponent         = js.native
+  val ScrollablePane: ReactJsComponent = js.native
   val SearchBox: ReactJsComponent = js.native
   val Spinner: ReactJsComponent               = js.native
   def Selection[T <: js.Object]: Selection[T] = js.native
-  val ScrollablePane: ReactJsComponent        = js.native
   val Sticky: ReactJsComponent                = js.native
   val FocusZone: ReactJsComponent             = js.native
   val TagPicker: ReactJsComponent             = js.native
@@ -118,7 +118,7 @@ object components {
   def Spinner(props: ISpinnerProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
 
-  def ScrollablePane(props: IScrollablePane = null)(children: ReactNode*) =
+  def ScrollablePane(props: IScrollablePaneProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.ScrollablePane, props, children: _*)
 
   def Sticky(props: IStickyProps = null)(children: ReactNode*) =
@@ -135,6 +135,7 @@ object components {
 //
 // common parts
 //
+/** Provide a focs() method. */
 @js.native
 trait Focusable extends js.Object {
   def focus(): Unit = js.native
@@ -149,18 +150,24 @@ trait KeyAndRef extends js.Object {
   var ref: js.UndefOr[RefCb]  = js.undefined
 }
 
+/** Adds a componentRef member. */
 trait ComponentRef[T] extends js.Object {
   var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
 }
 
+/** Adds a disabled member. */
 trait Disabled extends js.Object {
   var disabled: js.UndefOr[Boolean] = js.undefined
 }
 
+trait ITheme extends js.Object
+
+/** Add a theme member. */
 trait Theme extends js.Object {
-  var theme: js.UndefOr[js.Any] = js.undefined
+  var theme: js.UndefOr[ITheme] = js.undefined
 }
 
+/** Adds an iconProps member. */
 trait WithIconProps extends js.Object {
   var iconProps: js.UndefOr[IIconProps | js.Dynamic] = js.undefined
 }
@@ -251,6 +258,8 @@ trait IList extends js.Object {
 @js.native
 trait IDetailsList extends IList {
   def forceUpdate(): Unit = js.native
+  def focusIndex(index: Int, forceIntoFirstElement: js.UndefOr[Boolean],
+    measureItem: js.UndefOr[js.Function1[Int, Int]], scrollToMode: js.UndefOr[Int]): Unit = js.native
 }
 
 trait IColumn extends js.Object {
@@ -265,6 +274,7 @@ trait IColumn extends js.Object {
   var columnActionMode: js.UndefOr[Int] = js.undefined
   var iconName: js.UndefOr[String] = js.undefined
   var isIconOnly: js.UndefOr[Boolean] = js.undefined
+  var iconClassName: js.UndefOr[String] = js.undefined
   var isCollapsible: js.UndefOr[Boolean] = js.undefined
   var isSorted: js.UndefOr[Boolean]      = js.undefined
   var isSortedDescending: js.UndefOr[Boolean] = js.undefined
@@ -322,14 +332,20 @@ object CheckboxVisibility {
   val hidden  = 2
 }
 
+@js.native
+sealed trait DetailsListLayoutMode extends js.Any
+
 object DetailsListLayoutMode {
-  val fixedColumns = 0
-  val justified    = 1
+  val fixedColumns = 0.asInstanceOf[DetailsListLayoutMode]
+  val justified    = 1.asInstanceOf[DetailsListLayoutMode]
 }
 
+@js.native
+sealed trait ConstrainMode extends js.Any
+
 object ConstrainMode {
-  val unconstrained         = 0
-  val horizontalConstrained = 1
+  val unconstrained         = 0.asInstanceOf[ConstrainMode]
+  val horizontalConstrained = 1.asInstanceOf[ConstrainMode]
 }
 
 trait IDetailsRowProps extends js.Object {
@@ -354,6 +370,7 @@ trait IDetailsHeaderProps extends ComponentRef[IDetailsHeader] {
 }
 
 trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with Attributes {
+  import IDetailsListProps._
   val items: js.Array[T]
   var setKey: js.UndefOr[String]                      = js.undefined
   var className: js.UndefOr[String]                   = js.undefined
@@ -361,15 +378,16 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with 
   var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
   var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
     js.undefined
-  var constrainMode: js.UndefOr[Int] = js.undefined
+  var constrainMode: js.UndefOr[ConstrainMode] = js.undefined
   var listProps
     : js.UndefOr[js.Dynamic] = js.undefined // should be IListProps but then items is required
   var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
   var initialFocusedIndex: js.UndefOr[Int]                                       = js.undefined
   var selection: js.UndefOr[ISelection[T]]                                       = js.undefined
+  var selectionMode: js.UndefOr[Int] = js.undefined
   var selectionPreservedOnEmptyClick: js.UndefOr[Boolean]                        = js.undefined
-  var layoutMode: js.UndefOr[Int]                                                = js.undefined
+  var layoutMode: js.UndefOr[DetailsListLayoutMode]                                                = js.undefined
   var isHeaderVisible: js.UndefOr[Boolean]                                       = js.undefined
   var compact: js.UndefOr[Boolean]                                               = js.undefined
   var usePageCache: js.UndefOr[Boolean]                                          = js.undefined
@@ -377,22 +395,39 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with 
   var onRenderItemColumn: js.UndefOr[js.Function3[js.Any, Int, IColumn, js.Any]] = js.undefined
   var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]                 = js.undefined
   var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]]    = js.undefined
-  type OAIC = js.Function3[
+  var onActiveItemChanged: js.UndefOr[OAIC[T]] = js.undefined
+  var onColumnHeaderClick: js.UndefOr[OCHC[T]] = js.undefined
+  var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
+  var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
+  var onShouldVirtualize: js.UndefOr[js.Function1[IListProps[T], Boolean]] = js.undefined
+  var styles: js.UndefOr[styling.IStyleFunctionOrObject[IDetailsListStyleProps, IDetailsListStyles]] = js.undefined
+}
+
+trait IDetailsListStyleProps extends js.Object {
+  var isHorizontalConstrained: js.UndefOr[Boolean] = js.undefined
+  var compact: js.UndefOr[Boolean] = js.undefined
+  var isFixed: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IDetailsListStyles extends styling.IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var focusZone: js.UndefOr[IStyle] = js.undefined
+}
+
+object IDetailsListProps {
+  type OAIC[T <: js.Object] = js.Function3[
     js.UndefOr[T],
     js.UndefOr[Int],
     js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
     Unit]
-  var onActiveItemChanged: js.UndefOr[OAIC] = js.undefined
-  type OCHC =
+  
+    type OCHC[T <: js.Object] =
     js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
-  var onColumnHeaderClick: js.UndefOr[OCHC] = js.undefined
-
-  var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
-  var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
-  var onShouldVirtualize: js.UndefOr[js.Function1[IListProps[T], Boolean]] = js.undefined
 }
 
 trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[IDetailsList] {
+  import IListProps._
+
   var getKey
     : js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] =
     js.undefined
@@ -411,26 +446,14 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
     js.undefined
   var constrainMode: js.UndefOr[Int] = js.undefined
 
-  type OII = js.Function3[
-    js.UndefOr[T],
-    js.UndefOr[Int],
-    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
-    Unit]
-  var onItemInvoked: js.UndefOr[OII] = js.undefined
+  var onItemInvoked: js.UndefOr[OII[T]] = js.undefined
 
   var onRenderRow: js.UndefOr[IRenderFunction[IDetailsRowProps]]              = js.undefined
   var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]              = js.undefined
   var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]] = js.undefined
 
-  type OAIC = js.Function3[
-    js.UndefOr[T],
-    js.UndefOr[Int],
-    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
-    Unit]
-  var onActiveItemChanged: js.UndefOr[OAIC] = js.undefined
-  type OCHC =
-    js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
-  var onColumnHeaderClick: js.UndefOr[OCHC] = js.undefined
+  var onActiveItemChanged: js.UndefOr[OAIC[T]] = js.undefined
+  var onColumnHeaderClick: js.UndefOr[OCHC[T]] = js.undefined
 
   var maximumPixelsForDrag: js.UndefOr[Int]           = js.undefined
   var compact: js.UndefOr[Boolean]                    = js.undefined
@@ -439,6 +462,24 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
 
   var usePageCache: js.UndefOr[Boolean] = js.undefined
   var renderCount: js.UndefOr[Int]      = js.undefined
+}
+
+object IListProps {
+
+  type OII[T <: js.Object] = js.Function3[
+    js.UndefOr[T],
+    js.UndefOr[Int],
+    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
+    Unit]
+
+  type OAIC[T <: js.Object] = js.Function3[
+    js.UndefOr[T],
+    js.UndefOr[Int],
+    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
+    Unit]
+
+  type OCHC[T <: js.Object] =
+    js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
 }
 
 trait IContextualMenuProps extends KeyAndRef {
@@ -578,11 +619,32 @@ trait IFabricProps extends HTMLAttributes[dom.html.Div] with Theme {
 @js.native
 trait IScrollablePane extends js.Object {
   def forceLayoutUpdate(): Unit = js.native
+  def getScrollPosition(): Double = js.native
 }
 
 trait IScrollablePaneProps
     extends HTMLAttributes[dom.html.Element]
-    with ComponentRef[IScrollablePane] {}
+    with ComponentRef[IScrollablePane] {
+  val initialScrollPosition: js.UndefOr[Double] = js.undefined
+  var scrollbarVisibility: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IScrollablePaneStyleProps extends js.Object {
+  val className: js.UndefOr[String] = js.undefined
+}
+
+trait IScrollablePaneStyles extends styling.IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var stickyAbove: js.UndefOr[IStyle] = js.undefined
+  var stickyBelow: js.UndefOr[IStyle] = js.undefined
+  var stickyBelowItems: js.UndefOr[IStyle] = js.undefined
+  var contentContainer: js.UndefOr[IStyle] = js.undefined
+}
+
+object ScrollbarVisibility {
+  var auto = "auto"
+  var always = "always"
+}
 
 trait IStickyProps extends ComponentRef[IStickyProps] {
   var stickyCassName: js.UndefOr[String] = js.undefined
@@ -634,12 +696,26 @@ trait IButtonProps
   //var data: js.UndefOr[scala.Any] = js.undefined
 }
 
+trait ILinkStyleProps extends js.Object {
+  var className: js.UndefOr[String] = js.undefined
+  var isButton: js.UndefOr[Boolean] = js.undefined
+  var isDisabled: js.UndefOr[Boolean] = js.undefined
+}
+
+trait ILinkStyles extends js.Object {
+  var root: js.UndefOr[IStyle] = js.undefined
+}
+
 @js.native
 trait ILink extends Focusable
 
 //export interface ILinkProps extends React.AllHTMLAttributes<HTMLAnchorElement | HTMLButtonElement | HTMLElement | Link>
 
-trait ILinkProps extends AllHTMLAttributes[dom.html.Anchor] with ComponentRef[ILink]
+trait ILinkProps extends AllHTMLAttributes[dom.html.Anchor] with ComponentRef[ILink] {
+  var styles: js.UndefOr[styling.IStyleFunctionOrObject[ILinkStyleProps, ILinkStyles]] = js.undefined
+  var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
+}
+
 @js.native
 trait IMarqueeSelection extends js.Object {}
 
@@ -774,19 +850,26 @@ trait IPanelProps extends js.Object {
 
   var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
 
-  var `type`: js.UndefOr[Int]         = js.undefined
+  var `type`: js.UndefOr[PanelType]         = js.undefined
   var customWidth: js.UndefOr[String] = js.undefined
+  var closeButtonAriaLabel: js.UndefOr[String] = js.undefined
+  var headerClassName: js.UndefOr[String] = js.undefined
+
+  var layerProps: js.UndefOr[ILayerProps] = js.undefined
 }
 
+@js.native
+sealed trait PanelType extends js.Any
+
 object PanelType {
-  val smallFluid     = 0
-  val smallFixedFar  = 1
-  val smallFixedNear = 2
-  val medium         = 3
-  val large          = 4
-  val largeFixed     = 5
-  val extraLarge     = 6
-  val custom         = 7
+  val smallFluid     = 0.asInstanceOf[PanelType]
+  val smallFixedFar  = 1.asInstanceOf[PanelType]
+  val smallFixedNear = 2.asInstanceOf[PanelType]
+  val medium         = 3.asInstanceOf[PanelType]
+  val large          = 4.asInstanceOf[PanelType]
+  val largeFixed     = 5.asInstanceOf[PanelType]
+  val extraLarge     = 6.asInstanceOf[PanelType]
+  val custom         = 7.asInstanceOf[PanelType]
 }
 
 trait ISelectableDroppableTextProps[T <: dom.html.Element]
@@ -816,13 +899,16 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element]
   var errorMessage: js.UndefOr[String]    = js.undefined
 }
 
+@js.native
+sealed trait ResponsiveMode extends js.Any
+
 object ResponsiveMode {
-  val small    = 0
-  val medium   = 1
-  val large    = 2
-  val xLarge   = 3
-  val xxLarge  = 4
-  val xxxLarge = 5
+  val small    = 0.asInstanceOf[ResponsiveMode]
+  val medium   = 1.asInstanceOf[ResponsiveMode]
+  val large    = 2.asInstanceOf[ResponsiveMode]
+  val xLarge   = 3.asInstanceOf[ResponsiveMode]
+  val xxLarge  = 4.asInstanceOf[ResponsiveMode]
+  val xxxLarge = 5.asInstanceOf[ResponsiveMode]
 }
 
 trait IDropdownProps extends ISelectableDroppableTextProps[dom.html.Div] {
@@ -838,7 +924,7 @@ trait IDropdownProps extends ISelectableDroppableTextProps[dom.html.Div] {
   var dropdownWidth: js.UndefOr[Int]                                  = js.undefined
 
   /** Responsive mode */
-  var responsiveMode: js.UndefOr[Int]                                   = js.undefined
+  var responsiveMode: js.UndefOr[ResponsiveMode]                                   = js.undefined
   var multiselect: js.UndefOr[Boolean]                                  = js.undefined
   var defaultSelectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]] = js.undefined
   var selectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]]        = js.undefined
@@ -957,18 +1043,21 @@ trait ISearchBoxProps extends InputHTMLAttributes[dom.html.Input] with Attribute
 trait IMessageBar extends js.Object {
 }
 
+@js.native
+sealed trait MessageBarType extends js.Any
+
 object MessageBarType {
-  val info = 0
-  val error = 1
-  val blocked = 2
-  val severeWarning = 3
-  val success = 4
-  val warning = 5
+  val info = 0.asInstanceOf[MessageBarType]
+  val error = 1.asInstanceOf[MessageBarType]
+  val blocked = 2.asInstanceOf[MessageBarType]
+  val severeWarning = 3.asInstanceOf[MessageBarType]
+  val success = 4.asInstanceOf[MessageBarType]
+  val warning = 5.asInstanceOf[MessageBarType]
 }
 
 trait IMessageBarStyleProps extends js.Object {
   var className : js.UndefOr[IStyle] = js.undefined
-  var messageBarType: js.UndefOr[Int] = js.undefined
+  var messageBarType: js.UndefOr[MessageBarType] = js.undefined
   var onDismiss: js.UndefOr[Boolean] = js.undefined
   var truncated: js.UndefOr[Boolean] = js.undefined
   var isMultiline: js.UndefOr[Boolean] = js.undefined
@@ -992,7 +1081,7 @@ trait IMessageBarStyles extends js.Object {
 
 trait IMessageBarProps extends HTMLAttributes[dom.html.Element]
     with ComponentRef[IMessageBar] with Theme with Attributes {
-  var messageBarType: js.UndefOr[Int] = js.undefined
+  var messageBarType: js.UndefOr[MessageBarType] = js.undefined
   var actions: js.UndefOr[ReactElement] = js.undefined
   var arialLabel: js.UndefOr[String] = js.undefined
   var onDimiss: js.UndefOr[js.Function1[js.Any, js.Any]] = js.undefined
@@ -1001,4 +1090,21 @@ trait IMessageBarProps extends HTMLAttributes[dom.html.Element]
   var truncated: js.UndefOr[Boolean] = js.undefined
   var overflowButtonAriaLabel: js.UndefOr[String] = js.undefined
   var styles: js.UndefOr[styling.IStyleFunctionOrObject[IMessageBarStyleProps, IMessageBarStyles]] = js.undefined
+}
+
+trait ILayerStyles extends Theme {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var content: js.UndefOr[IStyle] = js.undefined
+}
+
+trait ILayerStyleProps extends js.Object {
+  var className: js.UndefOr[String] = js.undefined
+  var isNotHost: js.UndefOr[Boolean] = js.undefined
+}
+
+@js.native
+trait ILayer extends js.Object
+
+trait ILayerProps extends HTMLAttributes[dom.html.Div] with ComponentRef[ILayer] {
+  var styles: js.UndefOr[styling.IStyleFunctionOrObject[ILayerStyleProps, ILayerStyles]] = js.undefined
 }

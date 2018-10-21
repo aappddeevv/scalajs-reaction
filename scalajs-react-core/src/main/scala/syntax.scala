@@ -194,6 +194,9 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
 
   /** Return string's "zero" which is an empty string. */
   @inline def orEmpty: String = a.getOrElse("")
+
+  /** Return null or the value. */
+  @inline def orNull: String = a.getOrElse(null)
 }
 
 final case class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
@@ -266,8 +269,14 @@ trait OptionSyntax {
   @inline implicit def optionSyntax[T](a: Option[T]): OptionOps[T] = OptionOps(a)
 }
 
+/** Given a component, provide some syntax for easily converting it into an
+ * element.  This is equivalent to using JSX syntax.
+ */
 final case class ComponentOps(c: Component) {
+  /** Create an element with no key or ref. */
   @inline def toEl: ReactElement = elements.element(c)
+
+  /** Create an element with an optional key and an optional ref. */
   @inline def toEl(key: Option[String] = None, ref: Option[RefCb] = None) =
     elements.element(c, key, ref)
 }
@@ -303,7 +312,9 @@ object syntax {
 }
 
 /** Convert components to elements. Components are like templates that describe
-  * how to create an element. Elements are instances.
+  * how to create an element. Elements are instances. These implicits are key
+  * for ease-of-use because they take a component into an element automatically
+  * much like JSX syntax.
  */
 trait Component2Elements {
   @inline implicit def c2E(c: Component): ReactElement = elements.element(c)
@@ -312,8 +323,11 @@ trait Component2Elements {
 }
 
 /**
-  * Mostly evil converters. Watch out for these automatic conversions. All are
-  * prefixed with _ so you can define your own and not get tripped on namespace.
+  * Mostly evil converters so you can have a variety of children tyes ond have
+ * themconvert to ReactNode/ReactElements as needed.  Watch out for these
+ * automatic conversions. All are prefixed with _ so you can define your own and
+ * not get tripped on namespace. Watch out for values thtat need to pass
+ * thrtough 2 implicits as that is not supported by scala.
   */
 trait ValueConverters {
   @inline implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =
@@ -341,8 +355,13 @@ trait ValueConverters {
 
   /** Since null is a valid react node, convert an optional string to null. */
   @inline implicit def _optionStringToNull(n: Option[String]): ReactNode = n.getOrElse(null)
+
   /** Convert scala.AnyVal into a react node. */
   @inline implicit def _optionAnyValToNull(n: Option[scala.AnyVal]): ReactNode =
+    n.getOrElse(null).asInstanceOf[ReactNode]
+
+  /** js.UndefOr to null. */
+  @inline implicit def _undefOrStringToNull(n: js.UndefOr[String]) =
     n.getOrElse(null).asInstanceOf[ReactNode]
 
   // highly contraversial...this allows you to put any thing in for the react children and 

@@ -25,9 +25,10 @@ import styling._
 @JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
 object Utilities extends js.Object {
 
-  /** This is another tough one to type in scala.js. If you use a scala function,
-   * an implicit will convert it to a js function automatically or you can use
-   * `js.Any.fromFunctionN()` to be explicit.
+  /** This is another tough one to type in scala.js. If you use a scala function
+   * to define f, an implicit will convert it to a js function automatically. Or
+   * you can use `js.Any.fromFunctionN()` to be explicit which you sometimes
+   * need to be to get the scala function to js function conversion correct.
    */
   def memoizeFunction[T <: js.Function](f: T): T = js.native
 
@@ -51,23 +52,31 @@ object Utilities extends js.Object {
   val imageProperties: js.Array[String]       = js.native
 
   /**
-   * Weakly typed function signature. We can do better at some point even
-   * without structural typing. This does not work on a straight `IStyleSet`
-   * since that's set as a dictionary (string->IStyle) but instead an object
-   * type `IStyleSetTag`. Ultimately, given a style function or style object and
-   * a set of properties that are either input into the style function or are
-   * properties to be merged with the first argument if its an object and not a
-   * function, return a set of classnames that represent style processing via
-   * 'mergeStyleSets'.
+   * Create a function that takes a function and props, calls that function with
+   * the props then calls mergeStyleSets on the result. Weakly typed function
+   * signature since scala does not have structural typing. We can do better at
+   * some point even without structural typing. This does not work on a straight
+   * `IStyleSet` since that's set as a dictionary (string->IStyle) but instead
+   * an object type `IStyleSetTag`. Ultimately, given a style function or style
+   * object and a set of properties that are either input into the style
+   * function or are properties to be merged with the first argument if its an
+   * object and not a function, return a set of classnames that represent style
+   * processing via 'mergeStyleSets'.
    * 
-   * You usually call this inside your class with a styles function
+   * You usually call this inside your component object with a styles function
    * (props=>styles) and properties passed in as props so that they are all
    * merged together to generate your classnames linked to stylesheet styles.
    * You need to tag your js.Object derived traits with IStyleSetTag and
    * IClassNamesTag to drive type recognition.
+   * 
+   * You are probably better off just defining your own `getClassNames` (and 
+   * memoizing it) and calling `mergeStyleSets` yourself. Your getClassNames
+   * can take a styles (function or object) parameter.
    */
-  def classNamesFunction[P <: js.Object, SST <: IStyleSetTag](
-    getStyles: js.UndefOr[IStyleFunctionOrObject[P, SST]],
-    styleProps: js.UndefOr[P] = js.undefined
-  ): js.Function2[IStyleFunctionOrObject[P, SST], P, IClassNamesTag] = js.native
+  // def classNamesFunction[P <: js.Object, SST <: IStyleSetTag](
+  //   getStyles: js.UndefOr[IStyleFunctionOrObject[P, SST]],
+  //   styleProps: js.UndefOr[P] = js.undefined
+  // ): js.Function2[IStyleFunctionOrObject[P, SST], P, IClassNamesTag] = js.native
+  def classNamesFunction[P <: js.Object, SST <: IStyleSetTag, CN <: IClassNamesTag]():
+      js.Function2[js.UndefOr[IStyleFunctionOrObject[P, SST]], js.UndefOr[P], CN] = js.native
 }

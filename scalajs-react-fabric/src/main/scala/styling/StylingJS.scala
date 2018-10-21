@@ -33,31 +33,38 @@ object Styling extends js.Object {
     * allow "partial" T's to be passed in. It is not possible to ensure that all
     * keys in T are defined based on the input parameters alone. This is the
     * primary way to convert "code" to "styles" in the DOM. Generally, this
-    * function is called nside a `getClassNames(...)` type function specific to
-    * each component. The return value is typically an js.native trait whose
-    * member values are the string names of the styles that were registered.
+    * function is called inside a `getClassNames(...)` type function specific to
+    * each component. The return value is typically a js.native trait whose
+    * member values are the string names of the styles that were registered
+    * (string -> classname string).
     */
-  def mergeStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
+  def mergeStyleSets[T <: js.Object](styleSets: StyleType*): T = js.native
 
   /**
     * Combine styles together but do not register the styles in a
     * stylesheet. This is useful for combining different sets of styles, like a
-    * base and something more specific, inside of a function that computes some
-    * styles for use in a `getClassNames` function you define to create your
-    * component's stylesheet.
+    * base and something more specific, inside of a function that computes
+    * styles but you want the output to be a (string -> style) mapping still.
+    * Last argument has higher precedence.
+   * 
+   * If this becomes a pain, I'll add js.Object to the allowed types.
     */
-  def concatStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
+  def concatStyleSets[T <: js.Object](styleSets: StyleType*): T = js.native
 
   /** Register a font face */
   def fontFace(font: FontFace): Unit = js.native
 
-  /** Convert styles to classname and register. You should be using mergeStyleSets/mergeStyles. */
+  /**
+   * Convert styles to classname and register. You should be using
+   * mergeStyleSets/mergeStyles.
+   */
   def styleToClassName(args: IStyle*): String = js.native
 
   /** Access the stylesheet created by fabric. */
   val Stylesheet: Stylesheet = js.native
 
-  /** Font class names from office-ui-fabric-react/lib/Styling or 
+  /**
+   * Font class names from office-ui-fabric-react/lib/Styling or 
    * @uifabric/styling/lib/classNames/FontClassNames.
    */
   //val FontClassNames: FontClassNames = js.native

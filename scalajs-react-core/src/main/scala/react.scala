@@ -58,7 +58,7 @@ package object react {
   trait ReactDOMElement extends ReactElement {
     def `type`: String = js.native
 
-    /** Raw JS props. */
+    /** Raw JS props. You don't normally access this. */
     def props: UndefOr[js.Object] = js.native
   }
 

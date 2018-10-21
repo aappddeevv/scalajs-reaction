@@ -43,6 +43,9 @@ trait ComponentSpec extends js.Object {
     * is attached here.
     */
   var jsElementWrapped: js.UndefOr[JsElementWrapped] = js.undefined
+
+  /** The debug name of the component. Mandatory in scalajs-react. */
+  var debugName: String
 }
 
 /**
@@ -163,11 +166,11 @@ trait CakeBase { cake =>
   /**
     * The basic scala component that requires methods to customize its behavior.
     * This base component is used as a "template" to create each component
-    * instance. The Proxy calls methods on this object. The scala-side component
-    * is placed in the reactjs component's props. component will call methods
-    * provided by the user, specific to the component, as well as lifecycle
-    * methods defined in the cake layers which are specific only to the cake
-    * layer.
+    * instance (= element). The Proxy calls methods on this object. The
+    * scala-side component is placed in the reactjs component's props. Component
+    * will call methods provided by the user, specific to the component, as well
+    * as lifecycle methods defined in the cake layers which are specific to that
+    * the cake layer.
     */
   val component: ComponentType
   type ComponentType <: ComponentLike
@@ -176,17 +179,19 @@ trait CakeBase { cake =>
   type DidMount
 
   /**
-    * The scala.js component is a javascript object and has all values as
-    * optional. A client does not create a ComponentSpec directly, instead the
-    * WithMethods trait is used and the WithMethods are merged into the
-    * ComponentSpec. When the cake layer instance, e.g. a stateless cake
-    * instance, is called by the proxy, the cake layer in turn locates the
-    * Component instance and calls those methods.
+    * The scala.js component is a javascript object (non-native trait) with all
+    * values optional. A client does not create a ComponentSpec directly,
+    * instead the WithMethods trait is used and the WithMethods are merged into
+    * a final ComponentSpec. When the scaal-side instance e.g. a stateless cake
+    * instance, is called by the proxy (see the Proxy type), the cake layer in
+    * turn locates the Component instance and calls the Component's methods like
+    * those below.
     */
   protected trait ComponentLike extends ComponentSpec {
     var render: js.UndefOr[Self => ReactNode] = js.undefined
 
     var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
+    /** This may be set to undefined if there are no unmounts registered. */
     var onUnmounts: js.UndefOr[js.Array[OnUnmount]]               = js.undefined
     var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
@@ -374,8 +379,8 @@ trait CakeBase { cake =>
     // call subscriptions
     val onUnmounts: js.Array[OnUnmount] =
       component.subscriptions.map(_(self).map(_())).getOrElse(js.Array())
-    // remove subscriptions from component
-    component.subscriptions = js.undefined
+    // remove subscriptions from component, they were just run!
+    component.subscriptions = js.undefined // it this right, what if we remount?
     //addOnUnmounts(thisJs, onUnmounts)
     addOnUnmounts(component, onUnmounts)
     (component, self, onUnmounts)
@@ -407,7 +412,6 @@ trait CakeBase { cake =>
       wu(self)
     }
     // run unmount callbacks if they exist
-    //thisJs.onUnmounts.foreach(_.foreach(_()))
     component.onUnmounts.foreach(_.foreach(_()))
   }
 
@@ -424,7 +428,6 @@ trait CakeBase { cake =>
   }
 
   @inline protected def _render(displayName: String)(thisJs: ThisSelf): ReactNode = {
-    // call the real render method!
     val component =
       convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     val self = mkSelf(thisJs, thisJs.state, component)
@@ -499,9 +502,12 @@ trait CakeBase { cake =>
     * Factored out methods that assume no state or retained props.  The methods
     * defined in any layer should only be based on the data model for that
     * layer, obviously. The "methods" on this object are called by the reactjs
-    * machinery directly and are then forwarded to ComponentSpec. Hence there is
+    * machinery directly and then the cake layer's methods, such as
+    * _componentWillUnmount, then call methods on the ComponentSpec, which are
+    * scala react component's methods defined by the programmer. Hence, there is
     * always a pair (proxy to be used in reactjs, componentspec to be used in
-    * scala.js). Note that this object is only used to call "React.createClass".
+    * scala.js) and the glue are the methods in the cake. Note that this
+    * instances of the Proxy type are only used in "React.createClass".
     *
     * We could have defined all of the methods the proxy calls inline with the
     * class but we pulled them into the cake and just call them direcly to help
@@ -583,7 +589,6 @@ trait CakeWithState extends CakeBase { cake =>
     val scalaState: S
   }
 
-  //type DidMount = (Self, ReducerResult[S, Self]) => Unit
   type DidMount = Self => Unit
 
   type ComponentType <: ComponentLike
@@ -617,11 +622,19 @@ trait CakeWithState extends CakeBase { cake =>
     type SelfForInitialState = cake.SelfForInitialState
   }
 
-  /** The "self" used for the initial state used for the initialState API. */
+  /** 
+   * The "self" used for the initial state used for the initialState API.  We
+   * need to think if send and handle are appropriate here. Clearly they need to
+   * run after the state has been set internally. They area included in case the
+   * information you put into state (which are really instance variables) need
+   * to send actions to the reduce and that must be present in the initial
+   * state.
+   */
   type SelfForInitialState <: SelfForInitialStateLike
   trait SelfForInitialStateLike {
     def send(a: A): Unit
     def handle(cb: Self => Unit): Unit
+    def onUnmount(cb: OnUnmount): Unit
     private[ttg] var ptr: js.Any
   }
 
@@ -647,7 +660,7 @@ trait CakeWithState extends CakeBase { cake =>
     def state: S
   }
 
-  // allocate just once...
+  // allocate just once per component
   object reducerResult extends ReducerResult[S, Self]
 
   protected def mkState(s: S): State
@@ -780,13 +793,10 @@ trait StatelessComponentCake extends StatelessCakeBase { cake =>
   type Self            = SelfLike
   type SelfForUnmount  = SelfForUnmountLike
   protected type State = StateLike
-  type ProxyType       = ProxyLike
-  type ComponentType   = ComponentLike
   type WithMethods     = WithMethodsLike
   type Ops             = MyOpsLike
 
   trait MyOpsLike extends super.OpsLike {
-
     /**
       * Without the need for a val anchor, add the render method. If you need to
       * add other methods, more than just render, you need to use the long-form
@@ -828,10 +838,9 @@ trait StatelessComponentWithRetainedPropsCake extends StatelessCakeBase with Cak
   type Self            = SelfLike
   type SelfForUnmount  = SelfForUnmountLike
   protected type State = StateLike
-  type ComponentType   = ComponentLike
-  type ProxyType       = ProxyLike
   type WithMethods     = WithMethodsLike
   type Ops             = OpsLike
+
   val ops = new Ops {}
 
   def mkSelf(thisJs: ThisSelf, reactjsState: State, component: ComponentType, displayName: String) =
@@ -864,10 +873,9 @@ trait ReducerComponentCake extends CakeWithState { cake =>
   type SelfForUnmount      = SelfForUnmountLike
   type SelfForInitialState = SelfForInitialStateLike
   protected type State     = StateLike
-  type ComponentType       = ComponentLike
-  type ProxyType           = ProxyLike
   type WithMethods         = WithMethodsLike
   type Ops                 = OpsLike
+
   trait OpsLike extends super.OpsLike
   val ops = new Ops {}
 
@@ -921,7 +929,10 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
   type SelfForUnmount      = SelfForUnmountLike
   type SelfForInitialState = SelfForInitialStateLike
   protected type State     = StateLike
+  type ComponentType <: ComponentLike
   type Ops                 = OpsLike
+  type WithMethods = WithMethodsLike  
+
   trait OpsLike extends super[CakeWithRP].OpsLike with super[CakeWithState].OpsLike
 
   val ops = new Ops {}
@@ -934,14 +945,11 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
 
   protected type ProxyType <: super[CakeWithRP].ProxyLike with super[CakeWithState].ProxyLike
 
-  type ComponentType = ComponentLike
-
   /** A component is just a javascript object. */
   protected trait ComponentLike
       extends super[CakeWithRP].ComponentLike
       with super[CakeWithState].ComponentLike
 
-  type WithMethods = WithMethodsLike
   trait WithMethodsLike
       extends super[CakeWithRP].WithMethodsLike
       with super[CakeWithState].WithMethodsLike
@@ -951,7 +959,7 @@ trait KitchenSinkComponentCake extends CakeWithRP with CakeWithState { cake =>
     *  will need to override if you add more to it.
     */
   protected def mkState(s: S): State =
-    new State {
+    new StateLike {
       val scalaState = s
     }
 
@@ -1021,7 +1029,7 @@ case class SideEffects[S, SLF](effect: SLF => Unit) extends StateUpdate[S, SLF]
   * self parameter to the side effect to obtain the most current state and not the
   * self parameter to the function that you call the methods from.
   *
-  * This trait is only used when "client state" is present.
+  * This trait is only used for stateful components.
   */
 trait ReducerResult[S, SLF] {
 
