@@ -23,8 +23,10 @@ import js.JSConverters._
 object Styling extends js.Object {
 
   /**
-    * Merge styles and register in a stylesheet. Return the "css" mangled name you
-    * use as the attribute "className" in your components.
+    * Merge styles and register in a stylesheet. Return the "css" mangled name
+    * you use as the attribute "className" in your components. You probably want
+    * to use a style set and `mergeStyleSets` to push a bunch of styles to the
+    * stylesheet at one time.
     */
   def mergeStyles(styles: IStyle*): String = js.native
 
@@ -38,7 +40,7 @@ object Styling extends js.Object {
     * member values are the string names of the styles that were registered
     * (string -> classname string).
     */
-  def mergeStyleSets[T <: js.Object](styleSets: StyleType*): T = js.native
+  def mergeStyleSets[T <: js.Any](styleSets: IStyleSet*): T = js.native
 
   /**
     * Combine styles together but do not register the styles in a
@@ -46,10 +48,8 @@ object Styling extends js.Object {
     * base and something more specific, inside of a function that computes
     * styles but you want the output to be a (string -> style) mapping still.
     * Last argument has higher precedence.
-   * 
-   * If this becomes a pain, I'll add js.Object to the allowed types.
     */
-  def concatStyleSets[T <: js.Object](styleSets: StyleType*): T = js.native
+  def concatStyleSets[T <: js.Any](styleSets: IStyleSet*): T = js.native
 
   /** Register a font face */
   def fontFace(font: FontFace): Unit = js.native

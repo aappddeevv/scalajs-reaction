@@ -73,10 +73,6 @@ object Utilities extends js.Object {
    * memoizing it) and calling `mergeStyleSets` yourself. Your getClassNames
    * can take a styles (function or object) parameter.
    */
-  // def classNamesFunction[P <: js.Object, SST <: IStyleSetTag](
-  //   getStyles: js.UndefOr[IStyleFunctionOrObject[P, SST]],
-  //   styleProps: js.UndefOr[P] = js.undefined
-  // ): js.Function2[IStyleFunctionOrObject[P, SST], P, IClassNamesTag] = js.native
-  def classNamesFunction[P <: js.Object, SST <: IStyleSetTag, CN <: IClassNamesTag]():
-      js.Function2[js.UndefOr[IStyleFunctionOrObject[P, SST]], js.UndefOr[P], CN] = js.native
+  def classNamesFunction[P <: js.Object, SS <: IStyleSetTag, CN <: IClassNamesTag]():
+      js.Function2[js.UndefOr[IStyleFunctionOrObject[P, SS]], js.UndefOr[P], CN] = js.native
 }

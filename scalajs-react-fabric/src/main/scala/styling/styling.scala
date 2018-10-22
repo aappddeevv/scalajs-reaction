@@ -56,18 +56,23 @@ package object styling {
   type IStyle = IStyleBase | IRawStyleArray
 
   /**
-    * Keys are usually logical names of your component, e.g. root, header,
+    * Keys are usually the logical names of your component, e.g. root, header,
    * footer. Fabric also desginates `subComponentStyles` as a property that is
    * an object with string->istyle mappings or a function that takes properties
    * (an object) and returns string->istyle mappings. So fabric defines a style
    * set as a potentially hierarchical specification of stylesets. When you want
-   * to be specific use a trait instead of IStyleSet.
+   * to be specific, use a trait instead of IStyleSet. Most of your code should
+   * use IStyleSetTag js objects with explicitly defined data members and rely
+   * on implicit conversions from IStyleSetTag to IStyleSet defined for
+   * convenience.
     */
   type IStyleSet = js.Dictionary[IStyle]
 
   /**
-    * Create a style set. You can use this to help drive type inference or
-    * you can use a JS trait directly.
+    * Create a style set. You can use this to help drive type inference or you
+    * can use a JS trait directly (see `make` and `IStyleSetTag`). Use this
+    * helper when you want an explicit IStyleSet but generally you should create
+    * style objects and tag them with IStyleSetTag.
     *
     * @example {{{
     *  mergeStyleSets[SomeClassNames](
@@ -82,41 +87,44 @@ package object styling {
     * }}}
     */
   object styleset {
-    /** Return an IStyleSet which is useful for mergeStyleSets */
+    /** Create an IStyleSet from pairs. Useful for mergeStyleSets */
     @inline def apply(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
       js.Dictionary[IStyle](stylePairs: _*)
 
-    /** Return a T that is useful whwen using your own component's style object. */
-    @inline def make[T <: js.Object](stylePairs: (String, IStyle)*): T = // was IStyleBase|IRawStyleArray
-      js.Dictionary[IStyle](stylePairs: _*).asInstanceOf[T]
+    /** Same as `apply` but cast to your final T type. Tyically T is the component's
+     * secific `Styles` trait.  You should not really need this function because
+     * if you have a IStyleSetTag derived JS trait, just instantitate that trait but
+     * if you prefer the "list of pairs" model, use this.
+     */
+    @inline def make(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
+      js.Dictionary[IStyle](stylePairs:_*)
   }
 
   /** Tag your style trait to help drive style inference. You *must* promise to
    * only have specific types of values in your trait. Generally, your member
-   * types will all be `js.UndefOr[IStyle]` so that you can specific a subset of
-   * the members based on your need. This is the statically typed version of 
-   * `IStyleSet` where the members are statically declared.
+   * types will all be `var stylename: js.UndefOr[IStyle]` so that you can
+   * specific a subset of the members based on your need. This is for use to
+   * create a statically typed version of `IStyleSet` (a dictionary) where the
+   * members are statically declared as trait data members. Implicit conversions
+   * are available to convert a js.Object to a IStyleSet to call the interop
+   * functions.
    */
-  trait IStyleSetTag extends js.Object { }
-
-  /**
-   * Convenience type declaration which handles either trait approach or
-   * dictionary approach of declaring styles.
-   */
-  type StyleType = IStyleSet | IStyleSetTag
+  trait IStyleSetTag extends js.Object
 
   /** Tag for an object whose data memebers all returns strings, as in classnames.
    * You *must* promise to only have these type of members in the object.
    */
-  trait IClassNamesTag extends js.Object { }
+  trait IClassNamesTag extends js.Object
 
   /** 
-   * Convert some style props to a style set.
+   * Convert style props to a style set. Declare your props=>styleset functions
+   * with this type e.g. `val getStyles: IStyleFunction[SP, SST] = props => ???`
    * 
    * @tparam SP style props type
    * @tparam style set type e.g. IStyleSet or IStyleSetTag
    */
-  type IStyleFunction[SP <: js.Object, SST <: js.Object] = js.Function1[SP, SST]
+  //type IStyleFunction[SP <: js.Any, SS <: StyleSetType] = js.Function1[SP, SS]
+  type IStyleFunction[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
   /**
    * Something that is a style set or a style function. This is the fabric
@@ -126,43 +134,40 @@ package object styling {
    * @tparam SP style props type
    * @tparam SST style set type e.g. IStyleSet or IStyleSetTag
    */
-  type IStyleFunctionOrObject[SP <: js.Object, SST <: js.Object] =
-    IStyleFunction[SP, SST] | SST// | IStyleSet | IStyleSetTag
+  type IStyleFunctionOrObject[SP <: js.Any, SS <: IStyleSetTag] =
+    IStyleFunction[SP, SS] | SS
 
   /**
    * Given some props and a list of IStyleFunctionOrObjects, resolve to a single
    * (string->IStyle) by either calling the style function with the props or
-   * just using the props. Calls `concatStyleSheets`. This function is kept js
-   * oriented to match `_resolve` in the fabric `styled` HOC module.
+   * just using the props. Calls `Styling.concatStyleSheets` to properly
+   * recursively merge the data. This function is kept js oriented to match
+   * `_resolve` in the fabric `styled` HOC module.
    */
-  def resolve[SP <: js.Object, SS <: js.Object](props: SP,
+  def resolve[SP <: js.Any, SS <: IStyleSetTag](props: SP,
     styles: js.UndefOr[IStyleFunctionOrObject[SP, SS]]*): SS = {
-    val x = js.Array[StyleType]()
+    val x = js.Array[IStyleSet]()
     for(s <- styles) {
       s.foreach{ style =>
         x.push(
-          if(js.typeOf(style.asInstanceOf[js.Object]) == "function") s.asInstanceOf[js.Function1[SP, StyleType]](props)
-          else style.asInstanceOf[StyleType]
+          if(js.typeOf(style.asInstanceOf[js.Object]) == "function")
+            s.asInstanceOf[js.Function1[SP, IStyleSet]](props)
+          else style.asInstanceOf[IStyleSet]
         )}}
-    Styling.concatStyleSets((x:collection.mutable.Seq[StyleType]):_*).asInstanceOf[SS]
+    Styling.concatStyleSets[SS](x)
   }
 
   //
   // Automatic converters to make this bearable syntax-wise. Should these be
-  // optional and intentionally imported if desired?
+  // optional and intentionally imported if desired? e.g. make in implicits object
+  // that needs to be imported.
   //
-
-  /** Unsafe! Convert IStyleSetTag object to IStyleSet. */
-  implicit def iStyleSetTagToIStyleSet(s: IStyleSetTag) = s.asInstanceOf[IStyleSet]
-
-  /** Unsafe! Convert IStyleFunction to IStyleSet. */
-  implicit def iStyleFunctionToIStyleSet[P <: js.Object,T <: js.Object](f: IStyleFunction[P,T]) = f.asInstanceOf[IStyleSet]
 
   /** Convert null to style. */
   implicit def null2IStyle(n: Null): IStyle = n.asInstanceOf[IStyle]
 
   /** Convert unit, which is "nothing" to a null. */
-  implicit def unit2IStyle(n: Null): IStyle = null.asInstanceOf[IStyle]
+  //implicit def unit2IStyle(n: Null): IStyle = null.asInstanceOf[IStyle]
 
   /** Any old dynamic maps to a style since we don't know what's in it so be hopeful. */
   implicit def dyn2IStyle(d: js.Dynamic): IStyle = d.asInstanceOf[IStyle]
@@ -194,12 +199,13 @@ package object styling {
   implicit def styleAttr2IRawStyleBase(arr: StyleAttr): IStyle = arr.asInstanceOf[IStyle]
 
   //
-  // Support for mergeStyleSets/concatStyleSets. Using js.Object below is a bit
-  // broad, but works when you use a JS trait for your IStyleSet instead of
-  // using just a dictionary and `styleset`.
+  // Support for mergeStyleSets/concatStyleSets. Convert IStyleSetTags to the
+  // canonical IStyleSet needed for the fabric functions.
   //
   implicit def jsObject2IStyleSet[T <: js.Object](u: T): IStyleSet = u.asInstanceOf[IStyleSet]
-  implicit def jsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet =
+
+  implicit def jsUndefOrJsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet =
     u.asInstanceOf[IStyleSet]
 
+  implicit def iStyleSetTagToIStyleSet[SS <: IStyleSetTag](s: SS): IStyleSet = s.asInstanceOf[IStyleSet]
 }

@@ -11,7 +11,7 @@ import js.|
 
 import ttg.react.vdom._
 import org.scalajs.dom
-import styling.IStyle
+import styling._
 
 @js.native
 @JSImport("@uifabric/icons", JSImport.Namespace)
@@ -400,7 +400,7 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with 
   var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
   var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
   var onShouldVirtualize: js.UndefOr[js.Function1[IListProps[T], Boolean]] = js.undefined
-  var styles: js.UndefOr[styling.IStyleFunctionOrObject[IDetailsListStyleProps, IDetailsListStyles]] = js.undefined
+  //var styles: js.UndefOr[styling.IStyleFunctionOrObject[IDetailsListStyleProps, IDetailsListStyles]] = js.undefined
 }
 
 trait IDetailsListStyleProps extends js.Object {
@@ -702,7 +702,7 @@ trait ILinkStyleProps extends js.Object {
   var isDisabled: js.UndefOr[Boolean] = js.undefined
 }
 
-trait ILinkStyles extends js.Object {
+trait ILinkStyles extends IStyleSetTag {
   var root: js.UndefOr[IStyle] = js.undefined
 }
 
@@ -712,7 +712,7 @@ trait ILink extends Focusable
 //export interface ILinkProps extends React.AllHTMLAttributes<HTMLAnchorElement | HTMLButtonElement | HTMLElement | Link>
 
 trait ILinkProps extends AllHTMLAttributes[dom.html.Anchor] with ComponentRef[ILink] {
-  var styles: js.UndefOr[styling.IStyleFunctionOrObject[ILinkStyleProps, ILinkStyles]] = js.undefined
+  //var styles: js.UndefOr[IStyleFunctionOrObject[ILinkStyleProps, ILinkStyles]] = js.undefined
   var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
 }
 
@@ -969,7 +969,7 @@ trait IOveflowSet extends js.Object {
   var focusElement: js.Function1[dom.html.Element, Boolean]
 }
 
-trait IOverflowSetStyles extends js.Object {
+trait IOverflowSetStyles extends IStyleSetTag {
   var root: js.UndefOr[IStyle] = js.undefined
   var item: js.UndefOr[IStyle] = js.undefined
   var overflowButton: js.UndefOr[IStyle] = js.undefined
@@ -989,9 +989,7 @@ trait IOverflowSetProps extends js.Object {
   var doNotContainWithinFocusZone: js.UndefOr[Boolean] = js.undefined
   var role: js.UndefOr[String] = js.undefined
   /** Always make this a function. */
-  var styles: js.UndefOr[IOverflowSetProps => IOverflowSetStyles] = js.undefined
-  @JSName("styles")
-  var stylesObj: js.UndefOr[IOverflowSetStyles] = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[IOverflowSetProps,IOverflowSetStyles]] = js.undefined
 }
 
 @js.native
@@ -999,7 +997,7 @@ trait ISearchBox extends Focusable {
   def hasFocus(): Boolean = js.native
 }
 
-trait ISearchBoxStyles extends js.Object {
+trait ISearchBoxStyles extends IStyleSetTag {
   var root: js.UndefOr[IStyle] = js.undefined
   var iconContainer: js.UndefOr[IStyle] = js.undefined
   var icon: js.UndefOr[IStyle] = js.undefined
@@ -1026,7 +1024,7 @@ trait ISearchBoxProps extends InputHTMLAttributes[dom.html.Input] with Attribute
   var underlined: js.UndefOr[Boolean] = js.undefined
   //var value: js.UndefOr[String]                       = js.undefined
 
-  //var styles: js.UndefOr[IStyleFunction[ISearchBoxStyleProps, ISearchBoxStyles]] = js.undefined
+  var styles: js.UndefOr[IStyleFunction[ISearchBoxStyleProps, ISearchBoxStyles]] = js.undefined
 
   /** new value, as you type */
   //var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
@@ -1065,7 +1063,7 @@ trait IMessageBarStyleProps extends js.Object {
   var actions: js.UndefOr[Boolean] = js.undefined
 }
 
-trait IMessageBarStyles extends js.Object {
+trait IMessageBarStyles extends IStyleSetTag {
   var root: js.UndefOr[IStyle] = js.undefined
   var content: js.UndefOr[IStyle] = js.undefined
   var iconContainer: js.UndefOr[IStyle] = js.undefined
@@ -1089,10 +1087,10 @@ trait IMessageBarProps extends HTMLAttributes[dom.html.Element]
   var dismissButtonAriaLabel: js.UndefOr[String] = js.undefined
   var truncated: js.UndefOr[Boolean] = js.undefined
   var overflowButtonAriaLabel: js.UndefOr[String] = js.undefined
-  var styles: js.UndefOr[styling.IStyleFunctionOrObject[IMessageBarStyleProps, IMessageBarStyles]] = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[js.Object, IStyleSetTag]] = js.undefined
 }
 
-trait ILayerStyles extends Theme {
+trait ILayerStyles extends IStyleSetTag with Theme {
   var root: js.UndefOr[IStyle] = js.undefined
   var content: js.UndefOr[IStyle] = js.undefined
 }
@@ -1106,5 +1104,5 @@ trait ILayerStyleProps extends js.Object {
 trait ILayer extends js.Object
 
 trait ILayerProps extends HTMLAttributes[dom.html.Div] with ComponentRef[ILayer] {
-  var styles: js.UndefOr[styling.IStyleFunctionOrObject[ILayerStyleProps, ILayerStyles]] = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[ILayerStyleProps, ILayerStyles]] = js.undefined
 }
