@@ -64,7 +64,7 @@ package object styling {
    * to be specific, use a trait instead of IStyleSet. Most of your code should
    * use IStyleSetTag js objects with explicitly defined data members and rely
    * on implicit conversions from IStyleSetTag to IStyleSet defined for
-   * convenience.
+   * convenience when calling the fabric style functions.
     */
   type IStyleSet = js.Dictionary[IStyle]
 
@@ -154,7 +154,7 @@ package object styling {
             s.asInstanceOf[js.Function1[SP, IStyleSet]](props)
           else style.asInstanceOf[IStyleSet]
         )}}
-    Styling.concatStyleSets[SS](x)
+    Styling.concatStyleSets[SS](x:_*)
   }
 
   //

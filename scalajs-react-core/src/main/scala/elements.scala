@@ -30,20 +30,23 @@ object elements {
   }
 
   /**
-    * Create a scala side "element" from a scaal side Component definition using
-    * React.createElement by calling React.createElement. If component is a
-    * scala-side wrapper around a js component, create the js component. No
-    * children are allowed in this function as they come should through the
-    * props. This is called "element" instead of "createElement" to make it
-    * shorter to type if you are not using JSX. Do not use this if you not have
-    * a scala side component. You do *not* use this to create standard html
-    * elements like "div" use `createDomElement`.
+    * Create a scala side "element" from a scala side Component definition using
+    * React.createElement. If component is a scala-side wrapper around a js
+    * component, create the js component. No children are allowed in this
+    * function as they come should through the props. This is called "element"
+    * instead of "createElement" to make it shorter to type if you are not using
+    * JSX. You do *not* use this to create standard html elements like "div" use
+    * `createDomElement` and you do not use this to create an element that is a
+    * function. This function does not take a wide variety of "components"
+    * similar to reactjs's version which can take a ReactClass, function, string,
+    * etc.
     */
   def element(
       component: Component,
       key: Option[String] = None,
       ref: Option[RefCb] = None): ReactElement = {
     component.jsElementWrapped.toOption match {
+      // this func is only put here from interop code
       case Some(func) => func(key, ref)
       case _ =>
         val props = js.Dictionary.empty[Any] // not js.Any! why?

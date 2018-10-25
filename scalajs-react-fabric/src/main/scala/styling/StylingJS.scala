@@ -20,8 +20,13 @@ import js.JSConverters._
  */
 @js.native
 @JSImport("@uifabric/styling", JSImport.Namespace)
-object Styling extends js.Object {
+object Styling
+    extends js.Object
+    with ThemeLike
+    with StylingLike
 
+@js.native
+trait StylingLike extends js.Object {
   /**
     * Merge styles and register in a stylesheet. Return the "css" mangled name
     * you use as the attribute "className" in your components. You probably want
@@ -51,8 +56,11 @@ object Styling extends js.Object {
     */
   def concatStyleSets[T <: js.Any](styleSets: IStyleSet*): T = js.native
 
-  /** Register a font face */
+  /** Register a font face. */
   def fontFace(font: FontFace): Unit = js.native
+
+  /** Register key frames. Keys are typically "from" and "to". */
+  def keyframes(timeline: js.Object): String = js.native
 
   /**
    * Convert styles to classname and register. You should be using
@@ -63,17 +71,7 @@ object Styling extends js.Object {
   /** Access the stylesheet created by fabric. */
   val Stylesheet: Stylesheet = js.native
 
-  /**
-   * Font class names from office-ui-fabric-react/lib/Styling or 
-   * @uifabric/styling/lib/classNames/FontClassNames.
-   */
-  //val FontClassNames: FontClassNames = js.native
 }
-
-// @js.native
-// trait FontClassNames {
-//   val 
-// }
 
 object InjectMode {
   val none        = 0
@@ -97,9 +95,3 @@ trait Stylesheet extends js.Object {
   def insertedRulesFromClassName(className: String): js.Array[String] = js.native
   def insertRule(rule: String): Unit                                  = js.native
 }
-
-// @js.native
-// @JSImport("@uifabric/merge-styles/lib/Stylesheet", JSImport.Namespace)
-// object Stylesheet extends js.Object {
-//   val Stylesheet: Stylesheet = js.native
-// }

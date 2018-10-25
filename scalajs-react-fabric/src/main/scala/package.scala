@@ -10,8 +10,13 @@ package object fabric {
   // export interface IRenderFunction<P> {
   // (props?: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null;
   //}
-  /** Return a node including potentially a nullElement. */
+  /** Given some props, return a node including potentially a nullElement. This is
+   * a javascript oriented render func matching found in fabric. For your own
+   * pure scala side components you can use standard scala function syntax.
+   */
   type IRenderFunction[P <: js.Object] =
-    js.Function2[P, js.UndefOr[js.Function1[P, ReactNode]], ReactNode]
-
+    //js.|[
+      js.Function2[P, js.Function1[P, ReactElement], ReactElement]
+      //,js.Function1[P, ReactNode]
+    //]
 }

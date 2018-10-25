@@ -252,8 +252,7 @@ final case class OptionOps[T](val a: Option[T]) {
   @inline def filterTruthy: Option[T] =
     a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
 
-  /**
-    * Filter nulls out in case it *might* be null.
+  /** Filter nulls out in case it *might* be null.
     * @deprecated USe [[filterNull]].
     */
   @inline def toNonNullOption = a.filter(_ != null)
@@ -286,9 +285,22 @@ trait ComponentSyntax {
     ComponentOps(c)
 }
 
+final case class ValueOps[T <: scala.Any](v: T) {
+  @inline def toNode: ReactNode = v.asInstanceOf[ReactNode]
+}
+
+trait ValueSyntax {
+  implicit def stringValueOpsSyntax(v: String) = ValueOps[String](v)
+  implicit def intValueOpsSyntax(v: Int) = ValueOps[Int](v)
+  implicit def floatValueOpsSyntax(v: Float) = ValueOps[Float](v)
+  implicit def doubleValueOpsSyntax(v: Double) = ValueOps[Double](v)
+  implicit def booleanValueOpsSyntax(v: Boolean) = ValueOps[Boolean](v)  
+}
+
 // order matters here based on implicit search through hierarchy
 trait AllSyntax
     extends ComponentSyntax
+    with ValueSyntax
     with JsDynamicSyntax
     with JsObjectSyntax
     with JsAnySyntax
@@ -301,6 +313,7 @@ trait AllSyntax
 object syntax {
   object all         extends AllSyntax
   object component   extends ComponentSyntax
+  object value   extends ValueSyntax
   object jsdynamic   extends JsDynamicSyntax
   object jsundefor   extends JsUndefOrSyntax
   object jsobject    extends JsObjectSyntax
@@ -322,12 +335,15 @@ trait Component2Elements {
     arrayToElement(c.map(elements.element(_)))
 }
 
-/**
-  * Mostly evil converters so you can have a variety of children tyes ond have
+/** Mostly evil converters so you can have a variety of children types ond have
  * themconvert to ReactNode/ReactElements as needed.  Watch out for these
  * automatic conversions. All are prefixed with _ so you can define your own and
- * not get tripped on namespace. Watch out for values thtat need to pass
- * thrtough 2 implicits as that is not supported by scala.
+ * not get tripped on namespace. Watch out for values thtat need to pass through
+ * 2 implicits as that is not supported by scala. So you may think that these
+ * conversions should apply but an `UndefOr` wrapper on the target type means
+ * either you use js.defined and these implicit conversions or you should use
+ * `.toNode` to convert the ReactNode value then let the general implicit create
+ * an `UndefOr[T]`.
   */
 trait ValueConverters {
   @inline implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =
@@ -370,8 +386,7 @@ trait ValueConverters {
 
 trait AllInstances extends Component2Elements with ValueConverters
 
-/**
-  * Instances is the wrong concept here as these are not typeclass
+/** Instances is the wrong concept here as these are not typeclass
   * instances--but close enough as they are not syntax extensions "'element'
   * converters" would be better.
   */
@@ -381,8 +396,7 @@ object instances {
   object value     extends ValueConverters
 }
 
-/**
- * Include these to get automatic type conversions. They are optional but
+/* Include these to get automatic type conversions. They are optional but
  * exceptionally helpful.  These can be included ala carte.
  */
 object implicits extends AllSyntax with AllInstances

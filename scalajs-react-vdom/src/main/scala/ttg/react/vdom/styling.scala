@@ -207,7 +207,7 @@ trait RawStyleBase extends RawFontStyle {
   var zIndex: js.UndefOr[String]                 = js.undefined
   /* Below properties based on https://www.w3.org/Style/CSS/all-properties */
   /* Color Level 3 - REC */
-  var opacity: js.UndefOr[String] = js.undefined
+  var opacity: js.UndefOr[String|Double] = js.undefined
   /* Backgrounds and Borders Level 3 - CR */
   /* backgroundRepeat - already defined by CSS2Properties */
   /* backgroundAttachment - already defined by CSS2Properties */

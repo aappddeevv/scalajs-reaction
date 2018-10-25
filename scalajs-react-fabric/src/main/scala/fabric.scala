@@ -160,8 +160,6 @@ trait Disabled extends js.Object {
   var disabled: js.UndefOr[Boolean] = js.undefined
 }
 
-trait ITheme extends js.Object
-
 /** Add a theme member. */
 trait Theme extends js.Object {
   var theme: js.UndefOr[ITheme] = js.undefined

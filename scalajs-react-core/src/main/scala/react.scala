@@ -26,46 +26,65 @@ package object react {
   }
 
   /**
-    * Output from scalajs' `react.createElement` and is something that can be
-    * rendered in reactjs. We need to restrict this a bit more when returning
-    * values from the scala side API. reactjs allows this to be quite flexible
-    * including strings, numbers, booleans in additon to classes, functions,
-    * etc. This should probably be a js.Any as any API used in this library will
-    * ensure that the right types are used and this would get rid of the ugly
-    * `stringToElement` type functions below.  js.Object is technically not
-    * correct.
+    * Something that can be rendered in reactjs. We need to restrict this a bit
+    * more when returning values from the scala side API. reactjs allows this to
+    * be quite flexible including strings, numbers, booleans in additon to
+    * classes, functions, etc. This should probably be a js.Any as any API used
+    * in this library will ensure that the right types are used and this would
+    * get rid of the ugly `stringToElement` type functions below.  js.Object is
+    * technically not correct.
     */
   @js.native
   trait ReactNode extends js.Object
 
-  /** Output from createElement and something you can render reactjs wth key and
-    * ref accessors. Essentially its a node but its known to have a key and ref.
-    * An element, like a node, can be rendered.
+  /** Output from `react.createElement` and is something you can render with key
+    * and ref accessors. A ReactNode with a key.
     */
   @js.native
-  trait ReactElement extends js.Object with ReactNode {
+  trait ReactElement extends ReactNode {
     val key: UndefOr[String]
+    val ref: UndefOr[RefCb]
     // ...add ref here...is it a string or a callback now?
   }
 
+  /** Use these to mix into your traits to ensure you have a a key and ref to
+   * set. For example, add this to a Props class so that you can specify a key
+   * when you create it.  These are not special or used for tags, you can not
+   * use this traiat and just define the key and/or ref in your Props trait
+   * directly.
+   */
+  trait ReactPropsJs extends js.Object {
+    var key: UndefOr[String|Int] = js.undefined
+    var ref: UndefOr[RefCb] = js.undefined
+  }
+
+  /** Scala side verson of ReactPropsJs. It assumed that you use key and/or ref to
+   * create your actual react or react dom components. Hence the use of Option.
+   * It usually better to define them as UndefOr instead of Option so you can
+   * directly place them into a DOM element's props in your render function.
+   */
+  trait ReactProps {
+    val key: Option[String] = None
+    val ref: Option[RefCb] = None
+  }
+
   /**
-    * Something to be used in createElement. A standard HTML element that has
-    * been created using React.createElement.  Props are optional of course.  We
-    * use this tag it to show that it came from the standard DOM components vs a
-    * custom one.
+    * A standard HTML element that has been created using React.createElement.
+    * Props are optional of course.  We use this tag it to show that it came
+    * from the standard DOM components vs a custom one. You generally do not use
+    * this type in your code.
     */
   @js.native
   trait ReactDOMElement extends ReactElement {
     def `type`: String = js.native
 
-    /** Raw JS props. You don't normally access this. */
+    /** Raw JS props. You don't normally access this. Don't use. */
     def props: UndefOr[js.Object] = js.native
   }
 
   /**
-    * Something to be used in createElement. A js-object that is returned from
-    * create-react-class. Represents class component that can be passed to the
-    * javascript React.createElement function.
+    * A js-object that is returned from create-react-class. In reactjs a react
+   * class is a js object created using the "class" construct.
     */
   @js.native
   trait ReactClass extends js.Object
@@ -76,16 +95,12 @@ package object react {
   type ReactType = ReactClass | String
 
   /**
-    * Something to be used in some jsinterop functions where the functions are
-    * the equivalent of createElement. This type is used only to imported
-    * javascript side components. Typically this is used to annotate a component
-    * type imported from javascript or created via other js-interop mechanisms
-    * such as redux integration. By using a separate type, you must use then
-    * scalajs-react's API to create an element. Since `createElement` is used to
-    * create elements in scalajs-react and createElement can take both a
-    * function as well as an js object, you can use `ReactJsComponent` to
-    * annotate scalajs imports that are a function (such as a stateless function
-    * component) or a regular class specfication.
+    * Something to be used in some jsinterop functions. This type is used only
+    * to imported javascript side components. Typically this is used to "tag" a
+    * component type imported from javascript or created via other js-interop
+    * mechanisms such as redux integration. By using a separate type, you must
+    * use then scalajs-react's API to create an element. You can use this to
+    * annotate a js function as well e.g. () => ReactNode.
     */
   @js.native
   trait ReactJsComponent extends js.Object
@@ -93,10 +108,10 @@ package object react {
   /** Alias for internal use. @deprecated */
   type ReactClassInternal = ReactClass
 
-  /** Return a "non render" element. */
-  val nullElement = null.asInstanceOf[ReactNode]
+  /** Return a "render nothing" element. React ignores nulls during rendering. */
+  val nullElement = null.asInstanceOf[ReactElement]
 
-  /** Convenience. Use implicits for automatic conversion. */
+  /** Convenience. Use implicits for syntax-based conversion. */
   @inline def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
 
   /** Convenience. Use implicits for automatic conversion. */
@@ -191,6 +206,13 @@ package object react {
   @inline private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }
+
+  /** Add a key. Mutates input object directyl because hey, this is javascript! */
+  @inline def withKey[T <: js.Object](element: T, key: String): ReactElement = {
+    element.asInstanceOf[js.Dynamic].key = key
+    return element.asInstanceOf[ReactElement]
+  }
+
 
   /** Return None if undefined or null -> None, otherwise return a Some. */
   @inline def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
