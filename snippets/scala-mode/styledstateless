@@ -1,0 +1,50 @@
+# -*- mode: snippet -*-
+# Author: aappddeevv
+# name: scalajs-react stateless component, fabric styling
+# key: styledstateless
+# --
+/**
+ * Component ${1:enumerate}.
+ */
+object $1 {
+
+  @js.native
+  trait ClassNames extends IClassNamesTag {
+    val root: String = js.native
+  }
+
+  trait Styles extends IStyleSetTag {
+    var root: js.UndefOr[IStyle] = js.undefined
+  }
+
+  trait StyleProps extends js.Object {
+    var className: js.UndefOr[String] = js.undefined
+  }
+
+  val getStyles: IStyleFunction[StyleProps, Styles] = 
+    props => new Styles {
+      root = stylearray(
+        "your-$1",
+        new IRawStyle {
+        })
+    }
+
+  def getClassNames(ss: Styles) = Styling.mergeStyleSets[ClassNames](ss)
+
+  val Name = "$1"
+  val c = statelessComponent(Name)
+  import c.ops._
+
+  def apply(
+    rootClassName: js.UndefOr[String] = js.undefined,
+    styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined  
+  ) =
+    render { self =>
+        val cn = getClassNames(resolve[StyleProps, Styles](new StyleProps {
+            className = rootClassName
+        }, getStyles, styles))
+          
+        $0div("component $1")
+        }
+    }
+}

@@ -16,7 +16,8 @@ import js.JSConverters._
 
 /**
  * @uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
- * also pulls in most of @uifabic/merge-styles.
+ * also pulls in most of @uifabic/merge-styles. Note that @uifabric/styling
+ * exports some of the merge-styles functions.
  */
 @js.native
 @JSImport("@uifabric/styling", JSImport.Namespace)
@@ -24,9 +25,10 @@ object Styling
     extends js.Object
     with ThemeLike
     with StylingLike
+    with MergeStyles
 
 @js.native
-trait StylingLike extends js.Object {
+trait MergeStyles extends js.Object {
   /**
     * Merge styles and register in a stylesheet. Return the "css" mangled name
     * you use as the attribute "className" in your components. You probably want
@@ -62,25 +64,35 @@ trait StylingLike extends js.Object {
   /** Register key frames. Keys are typically "from" and "to". */
   def keyframes(timeline: js.Object): String = js.native
 
+  /** Access the stylesheet created by fabric. */
+  val Stylesheet: Stylesheet = js.native
+}
+
+@js.native
+trait StylingLike extends js.Object {
+  def getIconClassName(name: String): String = js.native
+}
+
+/** Totally odd that this is not included in the overall Styling exports. */
+@js.native
+@JSImport("@uifabric/merge-styles/lib/styleToClassName", JSImport.Namespace)
+object StyleToClassName extends js.Object {
   /**
    * Convert styles to classname and register. You should be using
    * mergeStyleSets/mergeStyles.
    */
   def styleToClassName(args: IStyle*): String = js.native
-
-  /** Access the stylesheet created by fabric. */
-  val Stylesheet: Stylesheet = js.native
-
 }
 
-object InjectMode {
-  val none        = 0
-  val insertMode  = 1
-  val appendChild = 2
+@js.native sealed trait InjectionMode extends js.Any
+object InjectionMode {
+  val none        = 0.asInstanceOf[InjectionMode]
+  val insertMode  = 1.asInstanceOf[InjectionMode]
+  val appendChild = 2.asInstanceOf[InjectionMode]
 }
 
 trait IStylesheetConfig extends js.Object {
-  var injectionMode: js.UndefOr[Int]                       = js.undefined
+  var injectionMode: js.UndefOr[InjectionMode]                       = js.undefined
   var defaultPrefix: js.UndefOr[String]                    = js.undefined
   var onInsertRule: js.UndefOr[js.Function1[String, Unit]] = js.undefined
 }

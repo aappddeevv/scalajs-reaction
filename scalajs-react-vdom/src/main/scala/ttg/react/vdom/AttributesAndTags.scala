@@ -18,10 +18,12 @@ trait SetInnerHTML extends js.Object {
   val __html: String
 }
 
+/** Only the key. */
 trait Attributes extends js.Object {
-  var key: js.UndefOr[String|Int] = js.undefined
+  var key: js.UndefOr[KeyType] = js.undefined
 }
 
+/** Add a ref callback. */
 trait ClassAttributes[E] extends Attributes {
   var ref: js.UndefOr[RefCbE[E]] = js.undefined
 }
@@ -146,6 +148,12 @@ trait tags {
 
   trait DivProps extends HTMLAttributes[dom.html.Div] with ClassAttributes[dom.html.Div]
   final lazy val div = tagt[DivProps]("div")
+
+  /** A common scenario to wrap a div just to add the classname. */
+  def divWithClassname(
+    cn: js.UndefOr[String],
+    children: ReactNode*
+  ) = div(new DivProps { className = cn })(children:_*)
 
   // should be dom.html.Dl
   type DlProps = ElementAttributesOnly

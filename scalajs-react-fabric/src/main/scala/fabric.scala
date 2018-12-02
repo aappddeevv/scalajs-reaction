@@ -8,6 +8,7 @@ package fabric
 import scala.scalajs.js
 import js.annotation._
 import js.|
+//import scala.annotation.unchecked.{uncheckedVariance => uv}
 
 import ttg.react.vdom._
 import org.scalajs.dom
@@ -39,11 +40,13 @@ object FabricNS extends js.Object {
   val MessageBar: ReactJsComponent = js.native
   val Nav: ReactJsComponent      = js.native
   val OverflowSet: ReactJsComponent      = js.native
+  val Panel: ReactJsComponent                 = js.native
   val Pivot: ReactJsComponent                 = js.native
   val PivotItem: ReactJsComponent             = js.native
   val PrimaryButton: ReactJsComponent         = js.native
   val ScrollablePane: ReactJsComponent = js.native
   val SearchBox: ReactJsComponent = js.native
+  val ShimmeredDetailsList: ReactJsComponent = js.native
   val Spinner: ReactJsComponent               = js.native
   def Selection[T <: js.Object]: Selection[T] = js.native
   val Sticky: ReactJsComponent                = js.native
@@ -100,11 +103,13 @@ object components {
   def Nav(props: INavProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Nav, props, children: _*)
 
+  def Nav(props: INavProps) = wrapJsForScala(FabricNS.Nav, props)
+
   def OverflowSet(props: IOverflowSetProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.OverflowSet, props, children: _*)
 
-  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
+  def Panel(props: IPanelProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.Panel, props, children: _*)
 
   def Pivot(props: IPivotProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Pivot, props, children: _*)
@@ -112,8 +117,14 @@ object components {
   def PivotItem(props: IPivotItemProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.PivotItem, props, children: _*)
 
+  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
+
   def SearchBox(props: ISearchBoxProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.SearchBox, props, children: _*)
+
+  def ShimmeredDetailsList[T <: js.Object](props: IShimmeredDetailsListProps[T] = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.ShimmeredDetailsList, props, children: _*)
 
   def Spinner(props: ISpinnerProps = null)(children: ReactNode*) =
     wrapJsForScala(FabricNS.Spinner, props, children: _*)
@@ -182,22 +193,55 @@ trait ILabelProps
   var required: js.UndefOr[Boolean] = js.undefined
 }
 
+@js.native
+trait IPivot extends js.Object {
+  def focus(): Unit = js.native
+}
+
 trait IPivotItemProps extends HTMLAttributes[dom.html.Div] {
-  var linkText: js.UndefOr[String]                                   = js.undefined
+  var headerText: js.UndefOr[String]                                   = js.undefined
   var itemKey: js.UndefOr[String]                                    = js.undefined
+  var headerButtonProps: js.UndefOr[js.Object] = js.undefined
   var itemCount: js.UndefOr[Int]                                     = js.undefined
   var itemIcon: js.UndefOr[String]                                   = js.undefined
   var ariaLabel: js.UndefOr[String]                                  = js.undefined
   var onRenderItemLink: js.UndefOr[IRenderFunction[IPivotItemProps]] = js.undefined
+  var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
 }
 
-trait IPivotProps extends Attributes {
+trait IPivotStyleProps extends Theme {
+  var className: js.UndefOr[String] = js.undefined
+}
+
+trait IPivotStyles extends IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var link: js.UndefOr[IStyle] = js.undefined
+  var linkContent: js.UndefOr[IStyle] = js.undefined
+  var text: js.UndefOr[IStyle] = js.undefined
+  var count: js.UndefOr[IStyle] = js.undefined
+  var icon: js.UndefOr[IStyle] = js.undefined  
+}
+
+trait IPivotProps extends Attributes with Theme with ComponentRef[IPivot] {
+  var styles: js.UndefOr[IStyleFunctionOrObject[IPivotStyleProps, IPivotStyles]] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+
   var initialSelectedKey: js.UndefOr[String] = js.undefined
   var initialSelectedIndex: js.UndefOr[Int]  = js.undefined
   var selectedKey: js.UndefOr[String]        = js.undefined
   var onLinkClick: js.UndefOr[
     ((js.Object, js.UndefOr[ReactMouseEvent[dom.html.Element]]) => Unit) |(() => Unit)] =
     js.undefined
+  var linkSize: js.UndefOr[PivotLinkSize] = js.undefined
+  var headersOnly: js.UndefOr[Boolean] = js.undefined
+  var getTableId: js.UndefOr[js.Function2[String, Int, String]] = js.undefined
+}
+
+@js.native
+sealed trait PivotLinkSize extends js.Any
+object PivotLinkSize {
+  var normal = 0.asInstanceOf[PivotLinkSize]
+  val largeg = 1.asInstanceOf[PivotLinkSize]
 }
 
 @js.native
@@ -211,12 +255,19 @@ trait ITextField extends Focusable with ReactRef {
   var selectionEnd: Int                               = js.native
 }
 
+trait ITextFieldStyleProps extends js.Object {
+}
+
+trait ITextFieldStyles extends IStyleSetTag {
+}
+
 //export interface ITextFieldProps extends React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
 // withDisabled
 
 // should also included attributes from dom.html.TextArea
 trait ITextFieldProps
     extends WithIconProps
+    with Theme
     with ComponentRef[ITextField]
     with AllHTMLAttributes[dom.html.Input] {
   var multiline: js.UndefOr[Boolean]        = js.undefined
@@ -229,15 +280,23 @@ trait ITextFieldProps
   var description: js.UndefOr[String]                             = js.undefined
   var addonString: js.UndefOr[String]                             = js.undefined
   var onRenderAddon: js.UndefOr[IRenderFunction[ITextFieldProps]] = js.undefined
+  var prefix: js.UndefOr[String] = js.undefined
   //var iconProps?: IIconProps;
   // defined in HTMLAttributes
   //var defaultValue: js.UndefOr[String] = js.undefined
   //var value: js.UndefOr[String] = js.undefined
   var errorMessage: js.UndefOr[String]                       = js.undefined
-  var onChanged: js.UndefOr[js.Function1[String, Unit]]      = js.undefined
+  // should this be js.UndefOr[String] ?
+  @JSName("onChange")
+  var onChangeInput: js.UndefOr[js.Function2[SyntheticFormEvent[dom.html.Input], String, Unit]]      = js.undefined
+  @JSName("onChange")
+  var onChangeTextArea: js.UndefOr[js.Function2[SyntheticFormEvent[ dom.html.TextArea], String, Unit]]      = js.undefined
+  // onChanged is deprecated
   var onBeforeChange: js.UndefOr[js.Function1[String, Unit]] = js.undefined
-  //onNotifyValidationResult?: (errorMessage: string, value: string | undefined) => void;
-  //onGetErrorMessage?: (value: string) => string | PromiseLike<string> | undefined;
+  /** error message, value */
+  var onNotifyValidationResult: js.UndefOr[js.Function2[String, String, Unit]] = js.undefined
+  var onGetErrorMessage: js.UndefOr[String => js.Promise[String]] = js.undefined
+  //: string) => string | PromiseLike<string> | undefined;
   var deferredValidationTime: js.UndefOr[Long] = js.undefined
   //var className: js.UndefOr[String] = js.undefined
   var inputClassName: js.UndefOr[String]      = js.undefined
@@ -246,6 +305,8 @@ trait ITextFieldProps
   var validateOnFocusOut: js.UndefOr[Boolean] = js.undefined
   var validateOnLoad: js.UndefOr[Boolean]     = js.undefined
   var componentId: js.UndefOr[String]         = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[ITextFieldStyleProps, ITextFieldStyles]] =
+    js.undefined
 }
 
 @js.native
@@ -261,6 +322,7 @@ trait IDetailsList extends IList {
 }
 
 trait IColumn extends js.Object {
+  import IColumn._
   val key: String
   val name: String
   val minWidth: Int  
@@ -279,7 +341,7 @@ trait IColumn extends js.Object {
   var isMultiline: js.UndefOr[Boolean]      = js.undefined
   // adjust so we can delayr item's type vs js.Any 
   //def onRender[T <: js.Object]: js.UndefOr[js.Function3[T, Int, IColumn, js.Any]] = js.undefined
-  var onRender: js.UndefOr[js.Function3[js.Any, Int, IColumn, js.Any]] = js.undefined
+  var onRender: js.UndefOr[OnRender] = js.undefined
   // onRenderDivider
   var isFiltered: js.UndefOr[Boolean]      = js.undefined
   // onColumnClick
@@ -295,6 +357,7 @@ trait IColumn extends js.Object {
 
 object IColumn {
   def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
+  type OnRender = js.Function3[js.Any, Int, IColumn, js.Any]
 }
 
 trait IColumnReorderOptions extends js.Object {
@@ -369,7 +432,8 @@ trait IDetailsHeaderProps extends ComponentRef[IDetailsHeader] {
 
 trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with Attributes {
   import IDetailsListProps._
-  val items: js.Array[T]
+  //val items: js.Array[T]
+  var items: js.UndefOr[js.Array[T]] = js.undefined
   var setKey: js.UndefOr[String]                      = js.undefined
   var className: js.UndefOr[String]                   = js.undefined
   var checkboxCellClassName: js.UndefOr[String]       = js.undefined
@@ -465,19 +529,19 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
 object IListProps {
 
   type OII[T <: js.Object] = js.Function3[
-    js.UndefOr[T],
-    js.UndefOr[Int],
-    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
+    T,
+    Int,
+    SyntheticFocusEvent[dom.html.Element],
     Unit]
 
   type OAIC[T <: js.Object] = js.Function3[
-    js.UndefOr[T],
-    js.UndefOr[Int],
-    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
+    T,
+    Int,
+    SyntheticFocusEvent[dom.html.Element],
     Unit]
 
   type OCHC[T <: js.Object] =
-    js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
+    js.Function2[SyntheticMouseEvent[dom.html.Element], IColumn, Unit]
 }
 
 trait IContextualMenuProps extends KeyAndRef {
@@ -494,6 +558,8 @@ trait IContextualMenuItem extends WithIconProps {
   var disabled: js.UndefOr[Boolean] = js.undefined
   //var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
   var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
+  @JSName("onClick")
+  var onEmptyClick: js.UndefOr[OC0] = js.undefined
   var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
   var className: js.UndefOr[String]                  = js.undefined
   var title: js.UndefOr[String]                      = js.undefined
@@ -514,7 +580,7 @@ object IContextualMenuItem {
 @js.native
 trait ICommandBar extends Focusable {}
 
-trait ICommandBarProps extends Attributes {
+trait ICommandBarProps extends HTMLAttributes[dom.html.Div] {
   var componentRef: js.UndefOr[ICommandBar => Unit] = js.undefined
   var isSearchBoxVisble: js.UndefOr[Boolean]        = js.undefined
   var searchBoxPlaceholderText: js.UndefOr[String]  = js.undefined
@@ -522,22 +588,57 @@ trait ICommandBarProps extends Attributes {
   var farItems: js.UndefOr[js.Array[IContextualMenuItem]] = js.undefined
 }
 
+trait ICommandBarItemProps extends IContextualMenuItem {
+  var iconOnly: js.UndefOr[Boolean] = js.undefined
+  //tooltipHostPropsp
+  // buttonStyles
+  var cacheKey: js.UndefOr[Boolean] = js.undefined
+  var renderedInOverflow: js.UndefOr[Boolean] = js.undefined
+  //commandBarButtonAs is a IComponentAs<ICommandBarItemProps> is this something new?
+}
+
+trait ICommandBarStyleProps extends js.Object {
+  var theme: js.UndefOr[ITheme] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+}
+
+trait ICommandBarStyles extends IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var primarySet: js.UndefOr[IStyle] = js.undefined
+  var secondarySet: js.UndefOr[IStyle] = js.undefined
+}
+
 @js.native
-trait ISpinner extends js.Object {}
+trait ISpinner extends js.Object
+
+trait ISpinnerStyles extends IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var circle: js.UndefOr[IStyle] = js.undefined
+  var label: js.UndefOr[IStyle] = js.undefined
+  var screenReaderText: js.UndefOr[IStyle] = js.undefined  
+}
+
+trait ISpinnerStyleProps extends js.Object{
+  var className: js.UndefOr[String]              = js.undefined
+  var size: js.UndefOr[SpinnerSize] = js.undefined
+}
 
 trait ISpinnerProps extends KeyAndRef {
   var componentRef: js.UndefOr[ISpinner => Unit] = js.undefined
-  var size: js.UndefOr[Int]                      = js.undefined
+  var size: js.UndefOr[SpinnerSize]                      = js.undefined
   var label: js.UndefOr[String]                  = js.undefined
   var className: js.UndefOr[String]              = js.undefined
   var ariaLabel: js.UndefOr[String]              = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[ISpinnerStyleProps, ISpinnerStyles]] = js.undefined
 }
 
+@js.native
+trait SpinnerSize extends js.Any
 object SpinnerSize {
-  var xSmall = 0
-  var small  = 1
-  var medium = 2
-  var large  = 3
+  var xSmall = 0.asInstanceOf[SpinnerSize]
+  var small  = 1.asInstanceOf[SpinnerSize]
+  var medium = 2.asInstanceOf[SpinnerSize]
+  var large  = 3.asInstanceOf[SpinnerSize]
 }
 
 @js.native
@@ -837,39 +938,6 @@ trait IDropdown extends js.Object {
   var focus: js.Function1[Boolean, Unit]
 }
 
-/** This is not the complete set. */
-trait IPanelProps extends js.Object {
-  var isOpen: js.UndefOr[Boolean]            = js.undefined
-  var hasCloseButton: js.UndefOr[Boolean]    = js.undefined
-  var isLightDismiss: js.UndefOr[Boolean]    = js.undefined
-  var isHiddenOnDismiss: js.UndefOr[Boolean] = js.undefined
-  var isBlocking: js.UndefOr[Boolean]        = js.undefined
-  var isFooterAtBottom: js.UndefOr[Boolean]  = js.undefined
-
-  var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
-
-  var `type`: js.UndefOr[PanelType]         = js.undefined
-  var customWidth: js.UndefOr[String] = js.undefined
-  var closeButtonAriaLabel: js.UndefOr[String] = js.undefined
-  var headerClassName: js.UndefOr[String] = js.undefined
-
-  var layerProps: js.UndefOr[ILayerProps] = js.undefined
-}
-
-@js.native
-sealed trait PanelType extends js.Any
-
-object PanelType {
-  val smallFluid     = 0.asInstanceOf[PanelType]
-  val smallFixedFar  = 1.asInstanceOf[PanelType]
-  val smallFixedNear = 2.asInstanceOf[PanelType]
-  val medium         = 3.asInstanceOf[PanelType]
-  val large          = 4.asInstanceOf[PanelType]
-  val largeFixed     = 5.asInstanceOf[PanelType]
-  val extraLarge     = 6.asInstanceOf[PanelType]
-  val custom         = 7.asInstanceOf[PanelType]
-}
-
 trait ISelectableDroppableTextProps[T <: dom.html.Element]
     extends HTMLAttributes[T]
     with ComponentRef[T] {
@@ -951,7 +1019,75 @@ trait IDropdownOption extends ISelectableOption {
   var isSelected: js.UndefOr[Boolean] = js.undefined
 }
 
-trait INavProps extends js.Object {
+@js.native
+trait INav extends js.Object {
+  var selectedKey: js.UndefOr[String] = js.undefined
+}
+
+trait INavStyleProps extends js.Object {
+  var theme: js.UndefOr[ITheme] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var isOnTop: js.UndefOr[Boolean] = js.undefined
+  var isLink: js.UndefOr[Boolean] = js.undefined
+  var isGroup: js.UndefOr[Boolean] = js.undefined
+  var isExpanded: js.UndefOr[Boolean] = js.undefined
+  var isSelected: js.UndefOr[Boolean] = js.undefined
+  var isButtonEntry: js.UndefOr[Boolean] = js.undefined
+  var navHeight: js.UndefOr[Double] = js.undefined
+  var leftPadding: js.UndefOr[Double] = js.undefined
+  var leftPaddingExpanded: js.UndefOr[Double] = js.undefined
+  var rightPadding: js.UndefOr[Double] = js.undefined
+  var position: js.UndefOr[Int] = js.undefined
+  var groups: js.UndefOr[js.Array[INavLinkGroup]|Null] = js.undefined
+}
+
+trait INavStyles extends IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var linkText: js.UndefOr[IStyle] = js.undefined
+  var link: js.UndefOr[IStyle] = js.undefined
+  var compositeLink: js.UndefOr[IStyle] = js.undefined
+  var chevronButton: js.UndefOr[IStyle] = js.undefined
+  var chevronIcon: js.UndefOr[IStyle] = js.undefined
+  var navItems: js.UndefOr[IStyle] = js.undefined
+  var navItem: js.UndefOr[IStyle] = js.undefined
+  var group: js.UndefOr[IStyle] = js.undefined
+  var groupContent: js.UndefOr[IStyle] = js.undefined
+}
+
+trait INavProps extends ComponentRef[INav] {
+  var styles: js.UndefOr[IStyleFunctionOrObject[INavStyleProps, INavStyles]] = js.undefined
+  var theme: js.UndefOr[ITheme] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var groups: js.UndefOr[js.Array[INavLinkGroup]|Null] = js.undefined
+  var onLinkClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], INavLink, Unit]] = js.undefined
+  var onLinkExpandClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], INavLink, Unit]] = js.undefined  
+  var isOnTop: js.UndefOr[Boolean] = js.undefined
+  var initialSelectedKey: js.UndefOr[String] = js.undefined
+  var selectedKey: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var expandButtonAriaLabel: js.UndefOr[String] = js.undefined
+}
+
+trait INavLinkGroup extends js.Object {
+  var name: js.UndefOr[String] = js.undefined
+  var links: js.UndefOr[js.Array[INavLink]] = js.undefined
+  var automationId: js.UndefOr[String] = js.undefined
+  var collapseByDefault: js.UndefOr[Boolean] = js.undefined
+  var onHeaderClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element] ,Boolean, Unit]] = js.undefined
+}
+
+trait INavLink extends WithIconProps {
+  var name: js.UndefOr[String] = js.undefined
+  var url: js.UndefOr[String] = js.undefined
+  var key: js.UndefOr[String] = js.undefined
+  var links: js.UndefOr[js.Array[INavLink]] = js.undefined
+  var onClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], INavLink, Unit]] = js.undefined
+  var automationId: js.UndefOr[String] = js.undefined
+  var isExpanded: js.UndefOr[Boolean] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var title: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
+  var forceAnchor: js.UndefOr[Boolean] = js.undefined
 }
 
 trait IKeytipProps extends js.Object {
@@ -1036,6 +1172,86 @@ trait ISearchBoxProps extends InputHTMLAttributes[dom.html.Input] with Attribute
   var onSearch: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
 }
 
+@js.native
+trait IPanel extends js.Object {
+  def open(): Unit = js.native
+  def dismiss(ev: ReactKeyboardEvent[dom.html.Element]): Unit = js.native
+}
+
+trait IPanelStyleProps extends js.Object {
+  var className: js.UndefOr[String] = js.undefined
+  var isOpen: js.UndefOr[Boolean] = js.undefined
+  var isAnimating: js.UndefOr[Boolean] = js.undefined
+  var isOnRightSide: js.UndefOr[Boolean] = js.undefined
+  var isHiddenOnDismiss: js.UndefOr[Boolean] = js.undefined
+  var isFooterAtBottom: js.UndefOr[Boolean] = js.undefined
+  var isFooterSticky: js.UndefOr[Boolean] = js.undefined
+  var hasCloseButton: js.UndefOr[Boolean] = js.undefined
+  var `type`: js.UndefOr[PanelType] = js.undefined
+  var headerClassName: js.UndefOr[String] = js.undefined
+}
+
+trait IPanelStyles extends IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var overlay: js.UndefOr[IStyle] = js.undefined
+  var hiddenPanel: js.UndefOr[IStyle] = js.undefined
+  var main: js.UndefOr[IStyle] = js.undefined
+  var commands: js.UndefOr[IStyle] = js.undefined
+  var contentInner: js.UndefOr[IStyle] = js.undefined
+  var scrollableContent: js.UndefOr[IStyle] = js.undefined
+  var navigation: js.UndefOr[IStyle] = js.undefined
+  var closeButton: js.UndefOr[IStyle] = js.undefined
+  var header: js.UndefOr[IStyle] = js.undefined
+  var headerText: js.UndefOr[IStyle] = js.undefined
+  var content: js.UndefOr[IStyle] = js.undefined
+  var footer: js.UndefOr[IStyle] = js.undefined
+  var footerInner: js.UndefOr[IStyle] = js.undefined
+}
+
+@js.native
+sealed trait PanelType extends js.Any
+
+object PanelType {
+  val smallFluid = 0.asInstanceOf[PanelType]
+  val smallFixedFar = 1.asInstanceOf[PanelType]
+  val smallFixedNear = 2.asInstanceOf[PanelType]
+  val medium = 3.asInstanceOf[PanelType]
+  val large = 4.asInstanceOf[PanelType]
+  val largeFixed = 5.asInstanceOf[PanelType]
+  val extraLarge = 6.asInstanceOf[PanelType]
+  val custom = 7.asInstanceOf[PanelType]
+}
+
+trait IPanelProps extends ComponentRef[IPanel] {
+  var isOpen: js.UndefOr[Boolean] = js.undefined
+  var hasCloseButton: js.UndefOr[Boolean] = js.undefined
+  var isLightDismiss: js.UndefOr[Boolean] = js.undefined
+  var isHiddenOnDismiss: js.UndefOr[Boolean] = js.undefined
+  var isBlocking: js.UndefOr[Boolean] = js.undefined
+  var isFooterAtBottom: js.UndefOr[Boolean] = js.undefined
+  var headerText: js.UndefOr[String] = js.undefined
+  var onDismss: js.UndefOr[js.Function1[ReactEvent[dom.html.Element], Unit]] = js.undefined
+  var onDismissed: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[IPanelStyleProps, IPanelStyles]] = js.undefined
+  var theme: js.UndefOr[ITheme] = js.undefined
+  var `type`: js.UndefOr[PanelType] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var customWidth: js.UndefOr[String] = js.undefined
+  var closeButtonAriaLabel: js.UndefOr[String] = js.undefined
+  var headerClassName: js.UndefOr[String] = js.undefined
+  var elementToFocusOnDismiss: js.UndefOr[dom.html.Element] = js.undefined
+  var layerProps: js.UndefOr[ILayerProps] = js.undefined
+  var onLightDismissClick: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var onOuterClick: js.UndefOr[js.Function0[Unit]] = js.undefined
+
+  var onRenderNavigation: js.UndefOr[IRenderFunction[IPanelProps]] = js.undefined
+  /** This is not quite right. See API docs. */
+  var onRenderHeader: js.UndefOr[IRenderFunction[IPanelProps]] = js.undefined
+  var onRenderBody: js.UndefOr[IRenderFunction[IPanelProps]] = js.undefined
+  var onRenderFooter: js.UndefOr[IRenderFunction[IPanelProps]] = js.undefined
+  var onRenderFooterContent: js.UndefOr[IRenderFunction[IPanelProps]] = js.undefined
+}
+
 trait IMessageBar extends js.Object {
 }
 
@@ -1103,4 +1319,18 @@ trait ILayer extends js.Object
 
 trait ILayerProps extends HTMLAttributes[dom.html.Div] with ComponentRef[ILayer] {
   var styles: js.UndefOr[IStyleFunctionOrObject[ILayerStyleProps, ILayerStyles]] = js.undefined
+}
+
+trait IShimmeredDetailsListStyleProps extends js.Object {
+  var enableShimmer: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IShimmeredDetailsListStyles extends  {
+  var root: js.UndefOr[IStyle] = js.undefined
+}
+
+trait IShimmeredDetailsListProps[T <: js.Object] extends IDetailsListProps[T] {
+  var enableShimmer: js.UndefOr[Boolean] = js.undefined  
+  var shimmerLines: js.UndefOr[Int] = js.undefined
+  var onRenderCustomPlaceholder: js.UndefOr[js.Function0[ReactNode]] = js.undefined
 }

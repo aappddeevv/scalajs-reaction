@@ -35,6 +35,7 @@ object Utilities extends js.Object {
   /** string, serializable (has toString), dictionary, null, undefined, boolean...*/
   def css(various: js.Any*): String = js.native
 
+  /** Set to the type of return value you want. */
   def getNativeProps[T <: js.Object](
       props: js.Object,
       allowedPropNames: js.Array[String],

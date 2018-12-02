@@ -30,7 +30,6 @@ trait ErrorInfo extends js.Object {
   * behavior a specific rendering method.
   */
 trait ComponentSpec extends js.Object {
-
   /**
     * The result of calling React.createClass(proxy) is attached here.
     */
@@ -44,7 +43,9 @@ trait ComponentSpec extends js.Object {
     */
   var jsElementWrapped: js.UndefOr[JsElementWrapped] = js.undefined
 
-  /** The debug name of the component. Mandatory in scalajs-react. */
+  /** The debug name of the component. Mandatory in scalajs-react. This is also
+   * kept in the scala side component.
+   */
   var debugName: String
 }
 
@@ -55,7 +56,6 @@ trait ComponentSpec extends js.Object {
   */
 @js.native
 protected trait JsComponentThisProps extends js.Object {
-
   /**
     * The scala side interop ComponentSpec is attached here in the props.
     */
@@ -68,7 +68,6 @@ protected trait JsComponentThisProps extends js.Object {
   */
 @js.native
 protected trait JsComponentThis[State] extends js.Object {
-
   /** this.state */
   def state: State
 
@@ -139,7 +138,15 @@ trait CakeBase { cake =>
 
     /**
       * You should need not need to use this in scala.js vs reason-react, given
-      * that we have a separate Self type.
+      * that we have a separate Self type...or do we? I'm not sure when to use
+      * this in scalajs. It is different than ReasonReact in that you should use
+      * `_ => handle(func)` since `handle` returns Unit and cannot be used
+      * directly as the argument expecting a function. You will need to curry
+      * `func` down to a function taking a single `Self` argument. Self comes
+      * from importing `ops` from your component e.g. `import c.ops._`. Perhaps
+      * you use it when you want a callback to always have a fresh "self" object
+      * vs binding to the one that was mostly current when the callback was
+      * configured in a render method.
       */
     def handle(cb: Self => Unit): Unit
 
@@ -263,11 +270,11 @@ trait CakeBase { cake =>
     type methods = cake.WithMethods
 
     /**
-      * Alias for this component cake's `copy()` method but without the need for the val anchor.
+      * Alias for this component cake's `copy()` method but without the need for the val.
       * @example {{
       * val c = statelessComponent("MyComponent")
       * import c.ops._
-      * copyWith(new methods { ... })
+      * copyWith(new methods { ... }) // instead of c.copy(new methods{...})
       *  }}
       */
     def copyWith(newMethods: methods) = cake.copy(newMethods)
@@ -1040,6 +1047,6 @@ trait ReducerResult[S, SLF] {
   lazy val skip: UpdateType                    = NoUpdate()
   def update(s: S): UpdateType                 = Update(s)
   def effect(effect: UpdateEffect): UpdateType = SideEffects(effect)
-  def updateAndEffect(s: S, effect: UpdateEffect = _ => Unit): UpdateType =
+  def updateAndEffect(s: S)(effect: UpdateEffect = _ => Unit): UpdateType =
     UpdateWithSideEffects(s, effect)
 }

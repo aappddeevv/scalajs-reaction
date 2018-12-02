@@ -47,6 +47,8 @@ package object react {
     // ...add ref here...is it a string or a callback now?
   }
 
+  type KeyType = String | Int
+
   /** Use these to mix into your traits to ensure you have a a key and ref to
    * set. For example, add this to a Props class so that you can specify a key
    * when you create it.  These are not special or used for tags, you can not
@@ -54,7 +56,7 @@ package object react {
    * directly.
    */
   trait ReactPropsJs extends js.Object {
-    var key: UndefOr[String|Int] = js.undefined
+    var key: UndefOr[KeyType] = js.undefined
     var ref: UndefOr[RefCb] = js.undefined
   }
 
@@ -192,17 +194,23 @@ package object react {
 
   /**
     * Merge objects and Ts together. Good for merging props with data-
-    * attributes. This is like `Object.assign`.
+    * attributes. This is like `Object.assign`. Last parameter wins.
+   * Creates a new object.
     */
-  @inline def merge[T <: js.Object](objs: js.Dynamic | js.Object*): T = {
+  @inline def merge[T <: js.Object](objs: js.Dynamic | js.Object | Null *): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
-      for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-        result(key) = value
+      if(source != null)
+        for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+          result(key) = value
     }
     result.asInstanceOf[T]
   }
 
+  /** Shallow copy. Should we call Object.assign directly? Faster? */
+  @inline def copy[T <: js.Object](obj: js.Dynamic | js.Object): T = merge[T](obj)
+
+  /** Not sure this is useful. */
   @inline private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }

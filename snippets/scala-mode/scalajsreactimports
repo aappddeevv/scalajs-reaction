@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# Author: aappddeevv
+# name: scalajs-react imports for fabric styled component
+# key: scalajsreactimports
+# --
+import scala.scalajs.js
+import js.annotation._
+
+import ttg.react
+import react._
+import implicits._
+import elements._
+
+import vdom._
+import tags._
+import vdom.styling._

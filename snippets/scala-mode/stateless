@@ -1,16 +1,17 @@
 # -*- mode: snippet -*-
 # Author: aappddeevv
-# name: stateless
+# name: scalajs-react stateless component, unstyled
 # key: stateless
 # --
 object ${1:enumerate} {
-  val c = ttg.react.elements.statelessComponent("$1")
+  val Name = "$1"
+  val c = statelessComponent(Name)
   import c.ops._
 
-  def make() =
-    c.copy(new methods {
+  def apply() =
+    render { self =>
         val render = self => {
-        div("component $1")
+        $1div("component $1")
         }
-    })
+    }
 }

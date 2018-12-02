@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# Author: aappddeevv
+# name: styleargs
+# key: styleargs
+# --
+rootClassName: js.UndefOr[String] = js.undefined,
+styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined,
+theme: js.UndefOr[ITheme] = js.undefined

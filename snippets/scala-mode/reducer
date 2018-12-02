@@ -1,15 +1,18 @@
 # -*- mode: snippet -*-
 # Author: aappddeevv
-# name: reducer
+# name: scalajs-react reducer component, unstyled
 # key: reducer
 # --
 object ${1:enumerate} {
-  sealed trait ${2:enumerate}
-  case class ${3:enumerate}()
-  val c = ttg.react.elements.reducerComponent[$3, $2]("$1")
+
+  $0sealed trait Action
+  case class State()
+  
+  val Name = "$1"
+  val c = reducerComponent[State, Action](Name)
   import c.ops._
 
-  def make() =
+  def apply() =
     c.copy(new methods {
        val initialState = self => State()
        val reducer = (action, state, gen) => {

@@ -234,5 +234,4 @@ object elements {
       item.toOption
         .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
         .getOrElse[js.Array[ReactNode]](js.Array())
-
 }

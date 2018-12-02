@@ -7,9 +7,8 @@
 package ttg.react
 
 import scalajs.js
+import js.|
 import org.scalajs.dom
-//import scala.annotation.unchecked.{uncheckedVariance => uv}
-import scala.language.implicitConversions
 
 /**
   * Simple vdom. There are two styles, one with list of attributes like many

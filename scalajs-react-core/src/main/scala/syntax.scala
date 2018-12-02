@@ -196,12 +196,16 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
   @inline def orEmpty: String = a.getOrElse("")
 
   /** Return null or the value. */
-  @inline def orNull: String = a.getOrElse(null)
+  //@inline def orNull: String = a.getOrElse(null)
+
+  /** Filter out empty string and null. */
+  @inline def filterEmpty = a.filter(str => str != "" && str != null)
 }
 
 final case class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
   @inline def orTrue: Boolean  = a.getOrElse(true)
   @inline def orFalse: Boolean = a.getOrElse(false)
+  @inline def notUndef: UndefOr[Boolean] = a.map(!_)
 }
 
 /** Note that js.UdefoOr already has a `.orNull` method. */
@@ -336,7 +340,7 @@ trait Component2Elements {
 }
 
 /** Mostly evil converters so you can have a variety of children types ond have
- * themconvert to ReactNode/ReactElements as needed.  Watch out for these
+ * them convert to ReactNode/ReactElements as needed.  Watch out for these
  * automatic conversions. All are prefixed with _ so you can define your own and
  * not get tripped on namespace. Watch out for values thtat need to pass through
  * 2 implicits as that is not supported by scala. So you may think that these
@@ -382,6 +386,9 @@ trait ValueConverters {
 
   // highly contraversial...this allows you to put any thing in for the react children and 
   //@inline implicit def _scalaObject(o: scala.AnyRef): ReactNode = o.asInstanceOf[ReactNode]
+
+  // contraversial but highly useful for classname
+  @inline implicit def _optionStringToUndefOrString(n: Option[String]): js.UndefOr[String] = n.orUndefined
 }
 
 trait AllInstances extends Component2Elements with ValueConverters

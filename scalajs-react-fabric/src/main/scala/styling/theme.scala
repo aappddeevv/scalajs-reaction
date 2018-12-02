@@ -13,6 +13,7 @@ import ttg.react.vdom._
 import org.scalajs.dom
 import styling._
 
+/** Color values, typically hex. */
 @js.native
 trait IPalette extends js.Object {
   val themeDarker:js.UndefOr[String] = js.native
@@ -81,6 +82,7 @@ trait IFontStyles extends js.Object {
   val mega: js.UndefOr[IRawStyle] = js.native
 }
 
+/** Color values, typically hex. */
 @js.native
 trait ISemanticTextColors extends js.Object {
   val bodyText: js.UndefOr[String] = js.native

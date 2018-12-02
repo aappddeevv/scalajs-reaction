@@ -29,7 +29,8 @@ solution can manage the model of scala.js's output (one large module for all
 scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
 
-[Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
+* [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
+* [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
 scalajs-react supports fragments and the new context provider in react v16.3. A
 future version will support react-native. The scalaj-react API roughly mimics

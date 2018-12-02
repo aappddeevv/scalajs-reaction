@@ -26,7 +26,7 @@ lazy val buildSettings = Seq(
   scalaVersion := "2.12.6",
   resolvers += Resolver.sonatypeRepo("releases"),
   resolvers += Resolver.jcenterRepo,
-  scalafmtVersion in ThisBuild := "1.5.1",
+  //scalafmtVersion in ThisBuild := "1.5.1",
   autoCompilerPlugins := true
 ) ++ licenseSettings
 
@@ -83,7 +83,8 @@ lazy val root = project.in(file("."))
   .settings(name := "scalajs-react")
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
-    `scalajs-react-react-dom`, `scalajs-react-prop-types`)
+    `scalajs-react-react-dom`, `scalajs-react-prop-types`,
+    `scalajs-react-form`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
@@ -142,6 +143,14 @@ lazy val `scalajs-react-fabric` = project
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
   .settings(description := "microsoft office-ui-fabric facade.")
 
+lazy val `scalajs-react-form` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+  .settings(description := "scalajs-reaect form library.")
+
+
 // Watch non-scala assets as well, we add this to root project even
 // though its only relevant to examples project.
 watchSources += baseDirectory.value / "examples/src/main/assets"
@@ -150,7 +159,7 @@ lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
-    `scalajs-react-prop-types`)
+    `scalajs-react-prop-types`, `scalajs-react-form`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   //.settings(macroSettings)
@@ -170,7 +179,8 @@ lazy val docs = project
   .disablePlugins(BintrayPlugin)
   //.enablePlugins(SiteScaladocPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
-    `scalajs-react-fabric`, `scalajs-react-redux`)
+    `scalajs-react-fabric`, `scalajs-react-redux`,
+    `scalajs-react-form`)
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples)
   )
