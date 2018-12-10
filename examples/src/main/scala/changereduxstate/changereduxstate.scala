@@ -43,8 +43,8 @@ object ChangeReduxStateC {
           Label()("Redux Label"),
           TextField(new ITextFieldProps {
             className = cstyles.label.asString
-            onChanged =
-              js.defined((v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
+            onChangeInput =
+              js.defined((_, v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
             value = props.label.getOrElse[String]("no redux label")
           })()
         )

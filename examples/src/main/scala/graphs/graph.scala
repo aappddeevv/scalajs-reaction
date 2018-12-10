@@ -17,7 +17,6 @@ import implicits._
 
 import fabric._
 import fabric.components._
-import components._
 
 import cytoscape._
 

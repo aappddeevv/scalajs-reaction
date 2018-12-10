@@ -12,11 +12,12 @@ import js.Dynamic.{literal => lit, global => g}
 import js.JSConverters._
 
 import org.scalajs.dom
-import ttg.react._
-import ttg.react.elements._
-import ttg.react.reactdom._
-import ttg.react.implicits._
-import ttg.react.fabric
+import ttg.react
+import react._
+import react.elements._
+import react.reactdom._
+import react.implicits._
+import react.fabric
 import fabric._
 import fabric.components._
 import fabric.styling._
@@ -167,9 +168,9 @@ object ToDosC {
           case Add(t) =>
             gen.update(state.copy(todos = state.todos :+ t, input = None))
           case Remove(id) =>
-            gen.updateAndEffect(state.copy(todos = state.todos.filterNot(_.id == id)))
+            gen.update(state.copy(todos = state.todos.filterNot(_.id == id)))
           case InputChanged(iopt) =>
-            gen.updateAndEffect(state.copy(input = iopt))
+            gen.update(state.copy(input = iopt))
           //case SetTextFieldRef(ref) =>
           //  gen.silent(state.copy(textFieldRef = Some(ref)))
           case _ =>
@@ -188,7 +189,8 @@ object ToDosC {
               TextField(new ITextFieldProps {
                 placeholder = "enter new todo"
                 componentRef = js.defined((r: ITextField) => self.state.textFieldRef = Option(r))
-                onChanged = js.defined((e: String) => self.handle(inputChanged(Option(e))))
+                onChangeInput = js.defined((_, e: String) =>
+                  self.handle(inputChanged(Option(e))))
                 value = self.state.input.getOrElse[String]("")
                 autoFocus = true
                 onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) addit(self))

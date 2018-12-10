@@ -47,7 +47,7 @@ object Pages {
 
   def labelAndChild(name: String, c: Component) = {
     PivotItem(new IPivotItemProps {
-      linkText = s"$name"
+      headerText = s"$name"
       itemKey = s"$name-tab"
       className = estyles.scrollme.asString
     })(
@@ -57,20 +57,20 @@ object Pages {
 
   val graphPage =
     PivotItem(new IPivotItemProps {
-      linkText = "Graph"
+      headerText = "Graph"
       itemKey = "graph"
       // don't scroll this!?!?
     })(Graph.make())
 
   val pressurePage =
     PivotItem(new IPivotItemProps {
-      linkText = "Weather"
+      headerText = "Weather"
       itemKey = "weather"
       className = estyles.scrollme.asString
     })(atmoache.app.make())
 
   val todoPage = PivotItem(new IPivotItemProps {
-    linkText = "To Do"
+    headerText = "To Do"
     itemKey = "todo"
     className = estyles.scrollme.asString
   })(
@@ -79,7 +79,7 @@ object Pages {
   )
 
   val helloWorldPage = PivotItem(new IPivotItemProps {
-    linkText = "Hello World"
+    headerText = "Hello World"
     itemKey = "helloworld"
     className = estyles.scrollme.asString
   })(
@@ -94,7 +94,7 @@ object Pages {
       val dao = adao
     }
     PivotItem(new IPivotItemProps {
-      linkText = "Address Manager"
+      headerText = "Address Manager"
       itemKey = "addressmanager"
     })(
       Label()(
@@ -105,7 +105,7 @@ object Pages {
 
   def changeReduxStatePage() = {
     PivotItem(new IPivotItemProps {
-      linkText = "Change Redux State"
+      headerText = "Change Redux State"
       itemKey = "changeReduxState"
       className = estyles.scrollme.asString
     })(
@@ -115,7 +115,7 @@ object Pages {
 
   def readme(text: String) = {
     PivotItem(new IPivotItemProps {
-      linkText = "README"
+      headerText = "README"
       itemKey = "readme"
       className = cx(estyles.scrollme, estyles.readme)
     })(
@@ -125,7 +125,7 @@ object Pages {
 
   def tagTest() = {
     PivotItem(new IPivotItemProps {
-      linkText = "Tag Test"
+      headerText = "Tag Test"
       itemKey = "tagTest"
       className = estyles.scrollme.asString
     })(
@@ -202,7 +202,7 @@ object Main {
     println("Running examples app")
     // use append so we can read/change the CSS in the browser debugger
     Stylesheet.getInstance.setConfig(new IStylesheetConfig {
-      injectionMode = InjectMode.appendChild
+      injectionMode = InjectionMode.appendChild
     })
     uifabric_icons.initializeIcons()
 

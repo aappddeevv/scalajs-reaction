@@ -1,6 +1,6 @@
 // 1.0.0-M3 or 0.6.25 by default
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.25")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.26")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.5.1")
@@ -13,3 +13,4 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.0.0")
 addSbtPlugin("com.eed3si9n" % "sbt-unidoc" % "0.4.1")
 addSbtPlugin("org.tpolecat" % "tut-plugin" % "0.6.7")
 
+addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject"      % "0.6.0")

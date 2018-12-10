@@ -11,14 +11,13 @@ import js.annotation._
 import js.JSConverters._
 
 import org.scalajs.dom
+import ttg.react
 import ttg.react._
-import ttg.react.elements._
-import ttg.react.reactdom._
-import ttg.react.implicits._
-import ttg.react.fabric
-import ttg.react.redux
-import ttg.react.vdom.tags._
+import elements._
+import reactdom._
+import react.implicits._
 import redux._
+import react.redux
 import vdom._
 import vdom.tags._
 import fabric._
@@ -90,7 +89,7 @@ object AddressListC {
     render { self =>
       println(s"AddressListC.render: ifx ${ifx}")
       val listopts = new IDetailsListProps[Address] {
-        val items = addresses.toJSArray
+        items = addresses.toJSArray
         className = amstyles.list.asString
         selectionPreservedOnEmptyClick = true
         columns = icolumns
@@ -284,15 +283,14 @@ object AddressManagerC {
                     state.copy(fetching = false, addresses = emptyAddressList, message = Some(msg)))
                 case Right(addresses) =>
                   gen.updateAndEffect(
-                    state.copy(fetching = false, addresses = addresses),
-                    self => {
+                    state.copy(fetching = false, addresses = addresses)){
+                    self =>
                       silentlyChangeSelection(state, state.selection) { s =>
                         println("setting active after data fetch, but may not be the right time!")
                         js.Dynamic.global.console.log("active id", vm.activeId, addresses)
                         s.setItems(addresses, false)
                       }
-                    }
-                  )
+                  }
               }
             case ActiveChanged(p) =>
               // Tricky...the only change here is outside our state, which is kind of
@@ -309,10 +307,10 @@ object AddressManagerC {
               // redux state is like this component's state, so...
               // we can change it here *not* as an effect
               vm.setActive(null, null) // this forces a render to be queued via redux
-              // this forces a render as well
-              gen.updateAndEffect(state.copy(addresses = emptyAddressList), eslf => {
-                fetchData(eslf, dao)
-              })
+                                       // this forces a render as well
+              gen.updateAndEffect(state.copy(addresses = emptyAddressList)){self =>
+                fetchData(self, dao)
+              }
             case _ => gen.skip
           }
         }

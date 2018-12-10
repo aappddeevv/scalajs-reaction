@@ -1,6 +1,7 @@
 // Build file for ReasonRect like scala.js reactjs bindings.
 // Now that's a mouthful...
 import scala.sys.process._
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val licenseSettings = Seq(
   headerMappings := headerMappings.value +
@@ -11,7 +12,6 @@ lazy val licenseSettings = Seq(
          |For more information see LICENSE or https://opensource.org/licenses/MIT
          |""".stripMargin
     )))
-
 
 lazy val macroSettings = Seq (
   resolvers += Resolver.sonatypeRepo("releases"),
@@ -60,32 +60,40 @@ val commonScalacOptions = Seq(
   //"-Xlog-implicits",
   )
 
-lazy val commonSettings = Seq(
-  scalacOptions ++= commonScalacOptions ++
-        (if (scalaJSVersion.startsWith("0.6."))
-      Seq("-P:scalajs:sjsDefinedByDefault")
-        else Nil),
+lazy val jssettings = Seq(
+  scalacOptions ++= (
+    if (scalaJSVersion.startsWith("0.6.")) Seq("-P:scalajs:sjsDefinedByDefault")
+    else Nil
+  ),
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
     "org.scala-js" %%% "scalajs-dom" % "latest.version",
+  )
+)
+
+lazy val commonSettings = Seq(
+  scalacOptions ++= commonScalacOptions,
+  libraryDependencies ++= Seq(
     "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
     "org.typelevel"          %%% "cats-core"    % "latest.release"),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
   autoAPIMappings := true,
 )
 
-lazy val libsettings = buildSettings ++ commonSettings
+lazy val libsettings = buildSettings ++ commonSettings ++ jssettings
+lazy val jvmlibsettings = buildSettings ++ commonSettings
 
 lazy val root = project.in(file("."))
-  .settings(libsettings)
+  .settings(jvmlibsettings)
   .settings(noPublishSettings)
   .settings(name := "scalajs-react")
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
-    `scalajs-react-form`)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+    `scalajs-react-form`, dataValidationJS, dataValidationJVM)
+  .enablePlugins(AutomateHeaderPlugin)
+  //.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
 lazy val `scalajs-react-core` = project
@@ -93,6 +101,26 @@ lazy val `scalajs-react-core` = project
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(description := "reactjs package.")
+
+// jvm and js based project
+lazy val dataValidation =
+  crossProject(JSPlatform, JVMPlatform)
+    .crossType(CrossType.Pure)
+    .in(file("data-validation"))
+    .settings(jvmlibsettings)
+    .settings(publishSettings)
+    .settings(description :=
+      "General purpose data validation library based on cats and applicatives.")
+
+lazy val dataValidationJS = dataValidation.js
+lazy val dataValidationJVM = dataValidation.jvm
+
+// lazy val `data-validation` = project
+//   .settings(libsettings)
+//   .settings(publishSettings)
+//   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+//   .settings(
+//     description := "General purpose data validation library based on cats and applicatives.")
 
 lazy val `scalajs-react-macros` = project
   .settings(libsettings)

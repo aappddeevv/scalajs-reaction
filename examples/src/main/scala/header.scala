@@ -9,11 +9,11 @@ package examples
 import scala.scalajs.js
 import ttg.react._
 import fabric._
+import fabric.components._
 import implicits._
 import vdom._
 import vdom.tags._
 import elements._
-import components._
 
 object HeaderC {
 

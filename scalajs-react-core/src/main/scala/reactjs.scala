@@ -60,17 +60,9 @@ trait Hooks extends js.Object {
   React.useRef = useRef;
    *   React.useState = useState;
    */
-  def useState[T <: scala.Any](initialValue: T): UseState[T] = js.native
-  def useEffect(effect: (() => Unit) => Unit): Unit = js.native
+  def useState[T](initialValue: T): js.Tuple2[T, js.Function1[T, Unit]] = js.native
+  def useEffect(effect: js.Function1[js.Function0[Unit], Unit]): Unit = js.native
   def useContext[T](context: ReactContext[T]): T = js.native
-}
-
-class UseState[T](state: T, setState: js.Function1[T, Unit]) extends js.Object
-object UseState {
-  def unapply[T](us: UseState[T]): Option[(T, js.Function1[T, Unit])] = {
-    val a = us.asInstanceOf[js.Array[js.Any]]
-    Some((a(0).asInstanceOf[T], a(1).asInstanceOf[js.Function1[T, Unit]]))
-  }
 }
 
 /** Deprecated for ReactJS */
@@ -105,6 +97,11 @@ object React {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
     ReactJS.createElement(JSReact.Fragment, props, children: _*)
+  }
+
+  @inline def useState[T](default: T): (T, T => Unit) = {
+    val c = JSReact.useState(default)
+    (c._1, c._2)
   }
 }
 

@@ -21,7 +21,7 @@ import implicits._
 import ttg.react.vdom._
 import tags._
 import fabric._
-import components._
+import fabric.components._
 
 import concurrent.ExecutionContext.Implicits.global
 import util.control._
@@ -65,7 +65,7 @@ object Controls {
             defaultValue = cityName.getOrElse[String]("")
             onKeyPress =
               js.defined(e => if (e.which == dom.ext.KeyCode.Enter) onCitySet(self.state))
-            onChanged = js.defined(e => self.send(Changed(Option(e))))
+            onChangeInput = js.defined((_, v:String) => self.send(Changed(Option(v))))
           })(),
           PrimaryButton(new IButtonProps {
             text = "Get Weather Summary"
@@ -169,9 +169,9 @@ object app {
       val reducer = (action, state, gen) =>
         action match {
           case UpdateCity(cityNameOpt) =>
-            gen.updateAndEffect(state.copy(cityName = cityNameOpt), self => {
+            gen.updateAndEffect(state.copy(cityName = cityNameOpt)){self =>
               self.send(LoadPressure)
-            })
+            }
 
           case WeatherLoaded(daily) =>
             gen.update(state.copy(weather = daily, failed = false, errorMessage = None))
