@@ -238,7 +238,7 @@ trait IPivotProps extends Attributes with Theme with ComponentRef[IPivot] {
 }
 
 @js.native
-sealed trait PivotLinkSize extends js.Any
+abstract sealed trait PivotLinkSize extends js.Any
 object PivotLinkSize {
   var normal = 0.asInstanceOf[PivotLinkSize]
   val largeg = 1.asInstanceOf[PivotLinkSize]
@@ -394,7 +394,7 @@ object CheckboxVisibility {
 }
 
 @js.native
-sealed trait DetailsListLayoutMode extends js.Any
+abstract sealed trait DetailsListLayoutMode extends js.Any
 
 object DetailsListLayoutMode {
   val fixedColumns = 0.asInstanceOf[DetailsListLayoutMode]
@@ -402,7 +402,7 @@ object DetailsListLayoutMode {
 }
 
 @js.native
-sealed trait ConstrainMode extends js.Any
+abstract sealed trait ConstrainMode extends js.Any
 
 object ConstrainMode {
   val unconstrained         = 0.asInstanceOf[ConstrainMode]
@@ -413,7 +413,7 @@ trait IDetailsRowProps extends js.Object {
   var componentRef: js.UndefOr[js.Function0[Unit]] = js.undefined
   var item: js.Any
   var itemIndex: Int
-  var selectionMode: js.UndefOr[Int]               = js.undefined
+  var selectionMode: js.UndefOr[SelectionMode]               = js.undefined
   var selection: js.UndefOr[ISelection[js.Object]] = js.undefined
   var compact: js.UndefOr[Boolean]                 = js.undefined
   var checkboxCellClassName: js.UndefOr[String]    = js.undefined
@@ -436,6 +436,8 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with 
   var items: js.UndefOr[js.Array[T]] = js.undefined
   var setKey: js.UndefOr[String]                      = js.undefined
   var className: js.UndefOr[String]                   = js.undefined
+  //var groups: js.UndefOr[js.Array[IGroup]] = js.undefined
+  var indentWidth: js.UndefOr[Double] = js.undefined
   var checkboxCellClassName: js.UndefOr[String]       = js.undefined
   var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
   var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
@@ -447,7 +449,7 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with 
     js.undefined
   var initialFocusedIndex: js.UndefOr[Int]                                       = js.undefined
   var selection: js.UndefOr[ISelection[T]]                                       = js.undefined
-  var selectionMode: js.UndefOr[Int] = js.undefined
+  var selectionMode: js.UndefOr[SelectionMode] = js.undefined
   var selectionPreservedOnEmptyClick: js.UndefOr[Boolean]                        = js.undefined
   var layoutMode: js.UndefOr[DetailsListLayoutMode]                                                = js.undefined
   var isHeaderVisible: js.UndefOr[Boolean]                                       = js.undefined
@@ -459,6 +461,7 @@ trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with 
   var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]]    = js.undefined
   var onActiveItemChanged: js.UndefOr[OAIC[T]] = js.undefined
   var onColumnHeaderClick: js.UndefOr[OCHC[T]] = js.undefined
+  var onItemInvoked: js.UndefOr[OII[T]] = js.undefined  
   var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
   var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
   var onShouldVirtualize: js.UndefOr[js.Function1[IListProps[T], Boolean]] = js.undefined
@@ -477,12 +480,18 @@ trait IDetailsListStyles extends styling.IStyleSetTag {
 }
 
 object IDetailsListProps {
-  type OAIC[T <: js.Object] = js.Function3[
+  type OII[T <: js.Object] = js.Function3[
     js.UndefOr[T],
     js.UndefOr[Int],
     js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
     Unit]
   
+  type OAIC[T <: js.Object] = js.Function3[
+    js.UndefOr[T],
+    js.UndefOr[Int],
+    js.UndefOr[SyntheticFocusEvent[dom.html.Element]],
+    Unit]
+
     type OCHC[T <: js.Object] =
     js.Function2[js.UndefOr[SyntheticMouseEvent[dom.html.Element]], js.UndefOr[IColumn], Unit]
 }
@@ -499,7 +508,7 @@ trait IListProps[T <: js.Object] extends IWithViewportProps with ComponentRef[ID
   var initialFocusedIndex: js.UndefOr[Int] = js.undefined
   // do the groups thing
   var selection: js.UndefOr[ISelection[T]]                = js.undefined
-  var selectionMode: js.UndefOr[Int]                      = js.undefined
+  var selectionMode: js.UndefOr[SelectionMode]                      = js.undefined
   var selectionPreservedOnEmptyClick: js.UndefOr[Boolean] = js.undefined
   var layoutMode: js.UndefOr[Int]                         = js.undefined
   // checkbox visibility....
@@ -633,7 +642,7 @@ trait ISpinnerProps extends KeyAndRef {
 }
 
 @js.native
-trait SpinnerSize extends js.Any
+abstract sealed trait SpinnerSize extends js.Any
 object SpinnerSize {
   var xSmall = 0.asInstanceOf[SpinnerSize]
   var small  = 1.asInstanceOf[SpinnerSize]
@@ -660,16 +669,18 @@ trait ISelection[T <: js.Object] extends js.Object {
   def getSelectedCount(): Int
 }
 
+@js.native
+abstract sealed trait SelectionMode extends js.Any
 object SelectionMode {
-  val none     = 0
-  val single   = 1
-  val multiple = 2
+  val none     = 0.asInstanceOf[SelectionMode]
+  val single   = 1.asInstanceOf[SelectionMode]
+  val multiple = 2.asInstanceOf[SelectionMode]
 }
 
 trait ISelectionOptions[T <: js.Object] extends js.Object {
   var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
     js.undefined
-  var selectionMode: js.UndefOr[Int]                     = js.undefined
+  var selectionMode: js.UndefOr[SelectionMode]                     = js.undefined
   var onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
 }
 
@@ -966,7 +977,7 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element]
 }
 
 @js.native
-sealed trait ResponsiveMode extends js.Any
+abstract sealed trait ResponsiveMode extends js.Any
 
 object ResponsiveMode {
   val small    = 0.asInstanceOf[ResponsiveMode]
@@ -1209,7 +1220,7 @@ trait IPanelStyles extends IStyleSetTag {
 }
 
 @js.native
-sealed trait PanelType extends js.Any
+abstract sealed trait PanelType extends js.Any
 
 object PanelType {
   val smallFluid = 0.asInstanceOf[PanelType]
@@ -1256,7 +1267,7 @@ trait IMessageBar extends js.Object {
 }
 
 @js.native
-sealed trait MessageBarType extends js.Any
+sealed abstract trait MessageBarType extends js.Any
 
 object MessageBarType {
   val info = 0.asInstanceOf[MessageBarType]

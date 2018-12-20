@@ -171,6 +171,13 @@ lazy val `scalajs-react-fabric` = project
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
   .settings(description := "microsoft office-ui-fabric facade.")
 
+lazy val `scalajs-react-bootstrap` = project
+	.settings(libsettings)
+	.settings(publishSettings)
+	.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin),
+	.dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+	.settings(description: = "bootstrap facade.")
+
 lazy val `scalajs-react-form` = project
   .settings(libsettings)
   .settings(publishSettings)
