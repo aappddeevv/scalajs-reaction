@@ -91,6 +91,7 @@ lazy val root = project.in(file("."))
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
+    `scalajs-react-bootstrap`,
     `scalajs-react-form`, dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
   //.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
@@ -172,11 +173,11 @@ lazy val `scalajs-react-fabric` = project
   .settings(description := "microsoft office-ui-fabric facade.")
 
 lazy val `scalajs-react-bootstrap` = project
-	.settings(libsettings)
-	.settings(publishSettings)
-	.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin),
-	.dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
-	.settings(description: = "bootstrap facade.")
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+  .settings(description := "bootstrap facade.")
 
 lazy val `scalajs-react-form` = project
   .settings(libsettings)

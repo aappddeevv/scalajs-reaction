@@ -15,9 +15,7 @@ import vdom._
 import vdom.tags._
 import elements._
 
-object HeaderC {
-
-  val header = statelessComponent("Header")
+object Header {
 
   val hstyle = new StyleAttr {
     lineHeight = "40px"
@@ -27,10 +25,14 @@ object HeaderC {
     fontSize = "18px"
   }
 
-  import header.ops._
+  val c = statelessComponent("Header")
+  import c.ops._
 
-  def make(className: String, target: String) =
-    header.copy(new methods {
+  def apply(
+    className: String,
+    target: String
+  ) =
+    c.copy(new methods {
       val render = self => {
         reactdom.createPortalInElementWithId(
           div(new DivProps {

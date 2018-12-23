@@ -15,16 +15,20 @@ import vdom.SetInnerHTML
 import vdom.tags._
 import vdom.svgtags._
 
-object TagTestC {
+object TagTest {
+
   val c = statelessComponent("TagTest")
   import c.ops._
 
-  def make() =
+  def apply(
+    rootClassName: js.UndefOr[String] = js.undefined
+  ) =
     c.copy(new methods {
       val render =
         self => {
           div(new DivProps {
             style = new StyleAttr {
+              className = rootClassName
               display = "flex"
               flexDirection = "column"
               alignItems = "flex-start"

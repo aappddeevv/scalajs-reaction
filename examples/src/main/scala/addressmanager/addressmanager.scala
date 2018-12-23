@@ -41,36 +41,32 @@ case class FetchResult(result: Result)                      extends Actions
 case class ActiveChanged(active: Option[(String, Address)]) extends Actions
 case object Refresh                                         extends Actions
 
-object AddressDetailC {
+object AddressDetail {
   import examples.Contexts._
   import context._
 
-  val AddressDetail = statelessComponent("AddressDetail")
-  import AddressDetail.ops._
+  val c = statelessComponent("AddressDetail")
+  import c.ops._
 
-  def make(address: Option[Address]) =
-    AddressDetail.copy(new methods {
-      val render =
-        self => {
-          logContext.makeConsumer {
-            log =>
-              //js.Dynamic.global.console.log("context: log function:", log)
-              log(address.getOrElse("<no detail address provided>"))
-              div(new DivProps { className = amstyles.detail.asString })(
-                Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
-                Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
-                Label()(s"""State/Province: ${address
+  def apply(address: Option[Address]) = render{ self =>
+    logContext.makeConsumer {
+      log =>
+      //js.Dynamic.global.console.log("context: log function:", log)
+      log(address.getOrElse("<no detail address provided>"))
+      div(new DivProps { className = amstyles.detail.asString })(
+        Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
+        Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
+        Label()(s"""State/Province: ${address
                   .flatMap(_.stateorprovince.toOption)
                   .getOrElse("")}"""),
-                Label()(s"""Zipcode: ${address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
-                Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
-              )
-          }
-        }
-    })
+        Label()(s"""Zipcode: ${address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
+        Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
+      )
+    }
+  }
 }
 
-object AddressListC {
+object AddressList {
   import IColumn.toCol
 
   val icolumns = js.Array[js.Dynamic](
@@ -78,10 +74,10 @@ object AddressListC {
     lit("key" -> "id", "name"   -> "Id", "fieldName"   -> "customeraddressid", "minWidth" -> 150),
   )
 
-  val AddressList = statelessComponent("AddressList")
-  import AddressList.ops._
+  val c = statelessComponent("AddressList")
+  import c.ops._
 
-  def make(
+  def apply(
       sel: ISelection[Address],
       addresses: AddressList = emptyAddressList,
       activeCB: Option[Address] => Unit,
@@ -144,7 +140,7 @@ private[addressmanager] trait AddressManagerPropsRedux extends AddressManagerPro
   var address: js.UndefOr[Address]     = js.undefined
 }
 
-object AddressManagerC {
+object AddressManager {
 
   private[addressmanager] case class State(
       /** ignore selection changes. */
@@ -156,8 +152,8 @@ object AddressManagerC {
       var selection: ISelection[Address] = null
   )
 
-  private val AddressManager = reducerComponent[State, Actions]("AddressManager")
-  import AddressManager.ops._
+  val c = reducerComponent[State, Actions]("AddressManager")
+  import c.ops._
 
   private def cbopts(self: Self) = new ICommandBarProps {
     val isFetching = self.state.fetching
@@ -240,13 +236,13 @@ object AddressManagerC {
     * wrappers must take this into account. Note that we cerated the "ViewModel"
     * as a test as we would not normally break up the parameters this way.
     */
-  private def make(
+  def apply(
       dao: AddressDAO,
       vm: AddressesViewModel,
       label: Option[String] = None,
       lastActiveAddressId: Option[Id] = None,
       className: Option[String] = None) =
-    AddressManager.copy(new methods {
+    c.copy(new methods {
 
       val initialState =
         self => {
@@ -342,11 +338,11 @@ object AddressManagerC {
                     secondaryColor = "#ecebeb",
                   ))()
               else
-                AddressListC.make(self.state.selection, self.state.addresses, activecb(self), ifx),
-              AddressDetailC.make(selAddrOpt),
+                AddressList(self.state.selection, self.state.addresses, activecb(self), ifx),
+              AddressDetail(selAddrOpt),
             ),
             div(new DivProps { className = amstyles.footer.asString })(
-              AddressSummaryC.make(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
+              AddressSummary(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
               Label()(
                 "Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
             )
@@ -361,11 +357,11 @@ object AddressManagerC {
     * "mergeProps" argument to redux.connect.
     */
   @JSExportTopLevel("AddressManager")
-  private val jsComponent = AddressManager.wrapScalaForJs { (jsProps: AddressManagerPropsRedux) =>
+  private val jsComponent = c.wrapScalaForJs { (jsProps: AddressManagerPropsRedux) =>
     val viewModel = jsProps.viewModel.getOrElse {
       mkReduxAddressesViewModel(jsProps.rstate.get.asJsObj, jsProps.dispatch.get)
     }
-    make(jsProps.dao,
+    apply(jsProps.dao,
          viewModel,
          jsProps.reduxLabel.toOption,
          toSafeOption(jsProps.lastActiveAddressId))
@@ -398,7 +394,7 @@ object AddressManagerC {
     * in by redux so we only expose the base trait. Here, we only expose the
     * non-redux parts of the props interface which is why we split it up.
     */
-  def makeWithRedux(props: AddressManagerProps = noProps()) =
+  def withRedux(props: AddressManagerProps = noProps()) =
     wrapJsForScala(reduxJsComponent, props)
 
 }

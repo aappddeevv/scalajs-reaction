@@ -8,10 +8,11 @@ package helloworld
 import scala.scalajs.js
 import js.annotation._
 
-import ttg.react._
-import ttg.react.elements._
-import ttg.react.reactdom._
-import ttg.react.implicits._
+import ttg.react
+import react._
+import elements._
+import reactdom._
+import react.implicits._
 
 import vdom._
 import tags._
@@ -31,12 +32,12 @@ object HelloWorld {
   import c.ops._
 
   /** No props data structure, just parameters. */
-  def make(name: Option[String] = None) =
+  def apply(name: Option[String] = None) =
     render { self =>
       div("hello world" + name.map(": " + _).getOrElse(""))
     }
 
-  def makeWithMount(name: Option[String] = None) =
+  def withMount(name: Option[String] = None) =
     copyWith(new methods {
       didMount = js.defined { self =>
         println("HelloWorld.makeWithMount: didMount was called!")
@@ -46,15 +47,10 @@ object HelloWorld {
       }
     })
 
-  /**
-    * The "apply" version.
-    */
-  def apply(name: Option[String] = None) = make(name)
-
   // Exported to javascript world
   @JSExportTopLevel("HelloWorld")
   private val jsComponent =
-    c.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
+    c.wrapScalaForJs((jsProps: HelloWorldProps) => apply(jsProps.name.toOption))
 
   /**
     * Alternative scala `make` definition, render must convert to scala objects

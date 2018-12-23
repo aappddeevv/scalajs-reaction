@@ -2,9 +2,10 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package react
-package examples
+// Copyright (c) 2018 The Trapelo Group LLC
+// This software is licensed under the MIT License (MIT).
+// For more information see LICENSE or https://opensource.org/licenses/MIT
+package ttg.react.examples
 
 import scala.scalajs.js
 import js.annotation._
@@ -12,10 +13,11 @@ import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
 import org.scalajs.dom
-import ttg.react._
-import ttg.react.elements._
-import ttg.react.implicits._
-import ttg.react.redux
+import ttg.react
+import react._
+import elements._
+import react.implicits._
+import redux._
 import vdom._
 import ttg.react.fabric
 import fabric._
@@ -83,9 +85,9 @@ object Pages {
     itemKey = "helloworld"
     className = estyles.scrollme.asString
   })(
-    helloworld.HelloWorld.make("make".some),
+    helloworld.HelloWorld("make".some),
     helloworld.HelloWorld.make2(new helloworld.HelloWorldProps { name = "make2" }),
-    helloworld.HelloWorld.makeWithMount("makeWithMount".some),
+    helloworld.HelloWorld.withMount("makeWithMount".some),
   )
 
   // the view model will come from redux to illustrate how it can be split up.
@@ -99,7 +101,7 @@ object Pages {
     })(
       Label()(
         "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes. NOT IMPLEMENTED :-)"),
-      AddressManagerC.makeWithRedux(opts)
+      AddressManager.withRedux(opts)
     )
   }
 
@@ -109,7 +111,7 @@ object Pages {
       itemKey = "changeReduxState"
       className = estyles.scrollme.asString
     })(
-      examples.changereduxstate.ChangeReduxStateC.make()
+      examples.changereduxstate.ChangeReduxState()
     )
   }
 
@@ -129,9 +131,18 @@ object Pages {
       itemKey = "tagTest"
       className = estyles.scrollme.asString
     })(
-      TagTestC.make()
+      TagTest()
     )
   }
+
+  def bootstrapPage() =
+    PivotItem(new IPivotItemProps {
+      headerText = "Bootstrap Test"
+      itemKey = "bootstrapTest"
+      className = estyles.scrollme.asString
+    })(
+      examples.bootstrap.BootstrapPage()
+    )
 
   // def movies() = {
   //   PivotItem(new IPivotItemProps {
@@ -166,19 +177,19 @@ object Examples {
             todoPage,
             helloWorldPage,
             changeReduxStatePage(),
-            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld.make()),
+            labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld()),
             tagTest(),
             pressurePage,
             graphPage,
             //movies(),
+            bootstrapPage(),
           ),
-          HeaderC.make("header", headerTarget)
+          Header("header", headerTarget)
       )
     })
 }
 
 object Contexts {
-  import react.context
   type ConsoleLog = js.Function1[js.Any, Unit]
   val logger     = js.Dynamic.global.console.log.asInstanceOf[ConsoleLog]
   val logContext = context.make[ConsoleLog](logger)

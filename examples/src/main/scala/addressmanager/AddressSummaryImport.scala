@@ -18,8 +18,8 @@ private object AddressSummaryNS extends js.Object {
   val AddressSummary: ReactJsComponent = js.native
 }
 
-object AddressSummaryC {
-  def make(className: Option[String] = None, address: Option[Address] = None) = {
+object AddressSummary {
+  def apply(className: Option[String] = None, address: Option[Address] = None) = {
     val props = literal(
       "className" -> className.orUndefined,
       "address"   -> address.orUndefined

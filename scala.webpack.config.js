@@ -41,7 +41,7 @@ const finalStyleLoaders = [
 
 // in dev mode, we create a "dist" directory
 const devServer = {
-    publicPath: "dist",
+    //publicPath: "dist/",
     contentBase: "dist",
     compress: true,
     hot: true,
@@ -157,6 +157,7 @@ module.exports = function (env) {
         "process.env": { "NODE_ENV": JSON.stringify(nodeEnv || "development") }
     })
     const copyplugin = new CopyWebpackPlugin(staticAssets)
+	console.log("static assets copy command: ", staticAssets)
     console.log("isProd: ", isProd)
     console.log("scalapath: ", scalapath)
     const prodCopy = new CopyWebpackPlugin([
@@ -176,8 +177,8 @@ module.exports = function (env) {
                     sourceMap: true,
                     uglifyOptions: { ecma: 5, compress: true }
                 }),
-                copyplugin, // must be first
-                prodCopy
+                prodCopy,
+		copyplugin // must tbe first
             ]
         })
     }

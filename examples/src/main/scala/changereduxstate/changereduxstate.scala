@@ -26,7 +26,7 @@ object styles {
 }
 import styles._
 
-object ChangeReduxStateC {
+object ChangeReduxState {
   val c = statelessComponent("ChangeReduxState")
   import c.ops._
 
@@ -69,6 +69,6 @@ object ChangeReduxStateC {
     redux.connect(jsComponent, Some(mapStateToProps), Some(mapDispatchToProps))
   }
 
-  def make(props: ChangeReduxProps = noProps()) =
+  def apply(props: ChangeReduxProps = noProps()) =
     wrapJsForScala(reduxJsComponent, props)
 }
