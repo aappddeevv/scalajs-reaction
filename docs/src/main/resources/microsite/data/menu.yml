@@ -35,5 +35,5 @@ options:
   - title: React Interop
     url: docs/reactinterop.html
 
-  - title: macros
-    url: docs/macros.html
+  - title: Data Validation
+    url: docs/data-validation.html
