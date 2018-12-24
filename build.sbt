@@ -195,7 +195,8 @@ lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
-    `scalajs-react-prop-types`, `scalajs-react-form`)
+    `scalajs-react-prop-types`, `scalajs-react-form`,
+    `scalajs-react-bootstrap`)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   //.settings(macroSettings)

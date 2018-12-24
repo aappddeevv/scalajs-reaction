@@ -62,7 +62,7 @@ object Pages {
       headerText = "Graph"
       itemKey = "graph"
       // don't scroll this!?!?
-    })(Graph.make())
+    })(Graph())
 
   val pressurePage =
     PivotItem(new IPivotItemProps {
@@ -85,9 +85,9 @@ object Pages {
     itemKey = "helloworld"
     className = estyles.scrollme.asString
   })(
-    helloworld.HelloWorld("make".some),
+    helloworld.HelloWorld("apply".some),
     helloworld.HelloWorld.make2(new helloworld.HelloWorldProps { name = "make2" }),
-    helloworld.HelloWorld.withMount("makeWithMount".some),
+    helloworld.HelloWorld.withMount("withMount".some),
   )
 
   // the view model will come from redux to illustrate how it can be split up.

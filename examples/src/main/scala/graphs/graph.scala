@@ -20,19 +20,19 @@ import fabric.components._
 
 import cytoscape._
 
-object GraphPage {
-  val c = statelessComponent("GraphPage")
-  import c.ops._
+// object GraphPage {
+//   val c = statelessComponent("GraphPage")
+//   import c.ops._
 
-  render { self =>
-    div(new DivProps {})(
-      CommandBar(new ICommandBarProps {
-        val items = js.Array()
-      })(),
-      Graph.make()
-    )
-  }
-}
+//   render { self =>
+//     div(new DivProps {})(
+//       CommandBar(new ICommandBarProps {
+//         val items = js.Array()
+//       })(),
+//       Graph.make()
+//     )
+//   }
+// }
 
 /**
   * Treat the graph and ref as instance vars in State since State in reason-react
@@ -144,7 +144,7 @@ object Graph {
       )
     })
 
-  def make() =
+  def apply() =
     c.copy(new methods {
       val initialState = _ => {
         State()
@@ -177,7 +177,6 @@ object Graph {
       }
 
       val render = self => {
-        println("render")
         div(new DivProps {
           id = "cy"
           style = new StyleAttr {

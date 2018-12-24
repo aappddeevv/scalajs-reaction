@@ -46,6 +46,8 @@ const devServer = {
     compress: true,
     hot: true,
     open: true,
+	host: "0.0.0.0",
+disableHostCheck: true,
     https: true,
     watchContentBase: true,
     headers: {
