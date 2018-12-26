@@ -37,3 +37,6 @@ options:
 
   - title: Data Validation
     url: docs/data-validation.html
+
+  - title: Forms
+    url: docs/forms.html

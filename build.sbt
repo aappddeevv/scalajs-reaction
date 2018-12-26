@@ -116,13 +116,6 @@ lazy val dataValidation =
 lazy val dataValidationJS = dataValidation.js
 lazy val dataValidationJVM = dataValidation.jvm
 
-// lazy val `data-validation` = project
-//   .settings(libsettings)
-//   .settings(publishSettings)
-//   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-//   .settings(
-//     description := "General purpose data validation library based on cats and applicatives.")
-
 lazy val `scalajs-react-macros` = project
   .settings(libsettings)
   .settings(publishSettings)
@@ -196,7 +189,7 @@ lazy val examples = project
   .settings(noPublishSettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
     `scalajs-react-prop-types`, `scalajs-react-form`,
-    `scalajs-react-bootstrap`)
+    `scalajs-react-bootstrap`, dataValidationJS)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   //.settings(macroSettings)
