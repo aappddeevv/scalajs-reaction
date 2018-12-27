@@ -24,6 +24,8 @@ trait Events {
   type ReactEvent[+T <: dom.EventTarget]         = SyntheticEvent[T]
   type ReactKeyboardEvent[+T <: dom.EventTarget] = SyntheticKeyboardEvent[T]
   type ReactMouseEvent[+T <: dom.EventTarget]    = SyntheticMouseEvent[T]
+  type ReactFocusEvent[+T <: dom.EventTarget]    = SyntheticFocusEvent[T]
+  type ReactTouchEvent[+T <: dom.EventTarget]    = SyntheticTouchEvent[T]    
   // add the rest of these....someday when I get time
 
   type ReactEventI         = SyntheticEvent[html.Input]

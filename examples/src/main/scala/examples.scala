@@ -131,7 +131,7 @@ object Pages {
       itemKey = "tagTest"
       className = estyles.scrollme.asString
     })(
-      TagTest()
+      tagtest.TagTest()
     )
   }
 
@@ -142,6 +142,15 @@ object Pages {
       className = estyles.scrollme.asString
     })(
       examples.bootstrap.BootstrapPage()
+    )
+
+    def materialUIPage() =
+    PivotItem(new IPivotItemProps {
+      headerText = "Material UI Test"
+      itemKey = "materialUITest"
+      className = estyles.scrollme.asString
+    })(
+      examples.materialui.MaterialUIPage()
     )
 
   // def movies() = {
@@ -183,6 +192,7 @@ object Examples {
             graphPage,
             //movies(),
             bootstrapPage(),
+            materialUIPage()
           ),
           Header("header", headerTarget)
       )

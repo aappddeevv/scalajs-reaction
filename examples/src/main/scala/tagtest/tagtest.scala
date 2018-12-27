@@ -5,15 +5,21 @@
 package ttg
 package react
 package examples
+package tagtest
 
 import scala.scalajs.js
 import js.Dynamic.{literal => lit}
+import js.annotation._
 import elements._
 import implicits._
 import vdom.StyleAttr
 import vdom.SetInnerHTML
 import vdom.tags._
 import vdom.svgtags._
+
+@js.native
+@JSImport("Examples/tagtest/README.md", JSImport.Default)
+object README_MD extends js.Any
 
 object TagTest {
 

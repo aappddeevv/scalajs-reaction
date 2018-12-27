@@ -80,3 +80,4 @@ This is bleeding edge stuff from an early March 2018 conference where Dan previe
 
 ## Plotly
 Show plots using plotly, one of the more advanced plotting/graphing library for both scientific and business plots.
+
