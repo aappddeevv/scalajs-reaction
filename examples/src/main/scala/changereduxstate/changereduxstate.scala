@@ -41,7 +41,7 @@ object ChangeReduxState {
       val render = self => {
         div(new DivProps { className = cstyles.component.asString })(
           Label()("Redux Label"),
-          TextField(new ITextFieldProps {
+          TextField(new TextField.Props {
             className = cstyles.label.asString
             onChangeInput =
               js.defined((_, v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))

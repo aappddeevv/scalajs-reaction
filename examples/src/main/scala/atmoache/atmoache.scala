@@ -56,7 +56,7 @@ object Controls {
         div(new DivProps {
           className = styles.controls.asString
         })(
-          TextField(new ITextFieldProps {
+          TextField(new TextField.Props {
             placeholder =
               "City Name (e.g. Boston, New York, or Los Angeles,US. See openweather.org)"
             autoFocus = true
@@ -95,7 +95,7 @@ object DailyWeatherSummary {
 
   val layout = new StyleAttr {}
 
-  val labelProps = new ILabelProps {}
+  val labelProps = new Label.Props {}
 
   def make(summary: Daily) =
     render { self =>

@@ -16,8 +16,8 @@ import vdom._
 object InputLabel {
   import ttg.react.elements.wrapJsForScala
 
-  @JSImport("@material-ui/core/InputLabel", JSImport.Default)
   @js.native
+  @JSImport("@material-ui/core/InputLabel", JSImport.Default)
   object InputLabelJS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =

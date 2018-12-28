@@ -155,7 +155,7 @@ object AddressManager {
   val c = reducerComponent[State, Actions]("AddressManager")
   import c.ops._
 
-  private def cbopts(self: Self) = new ICommandBarProps {
+  private def cbopts(self: Self) = new CommandBar.Props {
     val isFetching = self.state.fetching
     val items = js.Array(
       new IContextualMenuItem {

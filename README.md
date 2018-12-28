@@ -1,9 +1,9 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M5.svg)](https://www.scala-js.org) (& 0.6.25, react v16.4+)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M5.svg)](https://www.scala-js.org) (& 0.6.26, react v16.4+)
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
-documentation is located [here](https://reasonml.github.io/reason-react)
-and provides a good description of how this library works since the API is very
+documentation is located [here](https://reasonml.github.io/reason-react) and
+provides a good description of how this library works since the API is very
 similar. While more advanced scala functionality could have been used, the
 scala.js implemetation was kept intentionally similar to ReasonReact so that the
 documentation would apply.
@@ -60,7 +60,10 @@ libraryDependencies ++= Seq(
     // Microsoft fabric UI components, "MS office", css-in-"scala"
     // css-in-scala can be used independently of fabric
     "ttg" %%% scalajs-react-fabric" % scalaJsReactVersion,
-    
+
+    // Material UI components (WIP, waiting for v4)
+    "ttg" %%% scalajs-material-ui" % scalaJsReactVersion,
+
     // if you integrate with redux
     "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
     
@@ -69,8 +72,8 @@ libraryDependencies ++= Seq(
 ```
 
 Do not forget to include the react libraries in your execution environment. For
-react 16+, the libraries have been split out into multiple libraries. For
-the reactjs based modules, the javascript dependencies are:
+react 16+, the libraries have been split out into multiple libraries. For the
+reactjs based modules, the javascript dependencies are:
 
 * core: react, create-react-class
 * react-dom: react-dom
@@ -88,11 +91,17 @@ You can quickly create a component and render it:
 object HelloWorld {
   val c = statelessComponent("HelloWorld")
   import c.ops._
-  // could also use "aplly" so that you do HelloWorld() instead of HelloWorld.make(), but make is ReasonReact friendly.
+  // could also use "apply" so that you do HelloWorld() instead of HelloWorld.make(), but make is ReasonReact friendly.
   def make(name: Option[String]) =
     render{ self =>
         div("hello world" + name.map(" and welcome " + _).getOrElse(""))
       }
+  
+  // apply version with help render method shortcut for stateless components
+  def apply(name: Option[String]) = 
+    render { self =>
+      div("hello world" + name.map(" and welcome " + _).getOrElse(""))  a
+    }
 }
 
 object MyWebApp {
@@ -116,6 +125,7 @@ render syntax is just a shortcut to:
 ```scala
     def make(name: Option[String]) =
       c.copy(new methods  {
+        // required methods like render are a val in the methods trait
         val render = self => { ... }
         didMount = js.defined{ oldNewSelf => 
             ... 
@@ -126,7 +136,9 @@ render syntax is just a shortcut to:
 
 The `val` is required on required methods, such as render, you must define it
 otherwise you will get a syntax error. Optional methods are defined as shown
-immediately above.
+immediately above. Depending on the type of component e.g. stateless vs reducer,
+different methods are required. For example, with a reducer component, the
+reducer method is required and hence `val reducer = ...` must be declared.
 
 Reason-react uses `make` for its function name. However, you could use `apply`
 which is more idiomatic scala.
@@ -239,6 +251,9 @@ but not the UI part, and sill want a lean bundle. `merge-styles` creates
 stylesheets from scala code. Here's an example showing the use of CSS
 variables. `merge-styles` is a little like glamor (which we recommend as well)
 but is also a bit different in that it is explicit about "selectors".
+
+The slightly older idiom is below. See the examples for the updated fabric
+styling idioms which are much more flexible.
 
 ```scala
   // Each key indicates an area of our component.

@@ -87,7 +87,7 @@ object ToDoC {
   def make(todo: ToDo, remove: Unit => Unit) =
     render { self =>
       div(new DivProps { className = cn.todo })(
-        Label(new ILabelProps {
+        Label(new Label.Props {
           className = cn.title
         })(
           todo.name
@@ -135,7 +135,7 @@ object ToDosC {
   case class State(
       todos: Seq[ToDo] = Seq(),
       input: Option[String] = None,
-      var textFieldRef: Option[ITextField] = None)
+      var textFieldRef: Option[TextField.ITextField] = None)
 
   case class RP(title: Option[String] = None)
   val ToDos = reducerComponentWithRetainedProps[State, RP, ToDoAction]("ToDos")
@@ -186,9 +186,9 @@ object ToDosC {
           })(
             Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
             div(new DivProps { className = cn.dataEntry })(
-              TextField(new ITextFieldProps {
+              TextField(new TextField.Props {
                 placeholder = "enter new todo"
-                componentRef = js.defined((r: ITextField) => self.state.textFieldRef = Option(r))
+                componentRef = js.defined((r: TextField.ITextField) => self.state.textFieldRef = Option(r))
                 onChangeInput = js.defined((_, e: String) =>
                   self.handle(inputChanged(Option(e))))
                 value = self.state.input.getOrElse[String]("")

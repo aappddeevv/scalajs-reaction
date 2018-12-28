@@ -48,7 +48,7 @@ object Pages {
   val defaultTodos = Seq(ToDo(1, "Call Fred"))
 
   def labelAndChild(name: String, c: Component) = {
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = s"$name"
       itemKey = s"$name-tab"
       className = estyles.scrollme.asString
@@ -58,20 +58,20 @@ object Pages {
   }
 
   val graphPage =
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Graph"
       itemKey = "graph"
       // don't scroll this!?!?
     })(Graph())
 
   val pressurePage =
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Weather"
       itemKey = "weather"
       className = estyles.scrollme.asString
     })(atmoache.app.make())
 
-  val todoPage = PivotItem(new IPivotItemProps {
+  val todoPage = PivotItem(new PivotItem.Props {
     headerText = "To Do"
     itemKey = "todo"
     className = estyles.scrollme.asString
@@ -80,7 +80,7 @@ object Pages {
     todo.ToDosC.make(Some("Your To Do List"), todo.fakedata.initialToDos)
   )
 
-  val helloWorldPage = PivotItem(new IPivotItemProps {
+  val helloWorldPage = PivotItem(new PivotItem.Props {
     headerText = "Hello World"
     itemKey = "helloworld"
     className = estyles.scrollme.asString
@@ -95,7 +95,7 @@ object Pages {
     val opts = new AddressManagerProps {
       val dao = adao
     }
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Address Manager"
       itemKey = "addressmanager"
     })(
@@ -106,7 +106,7 @@ object Pages {
   }
 
   def changeReduxStatePage() = {
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Change Redux State"
       itemKey = "changeReduxState"
       className = estyles.scrollme.asString
@@ -116,7 +116,7 @@ object Pages {
   }
 
   def readme(text: String) = {
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "README"
       itemKey = "readme"
       className = cx(estyles.scrollme, estyles.readme)
@@ -126,7 +126,7 @@ object Pages {
   }
 
   def tagTest() = {
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Tag Test"
       itemKey = "tagTest"
       className = estyles.scrollme.asString
@@ -136,7 +136,7 @@ object Pages {
   }
 
   def bootstrapPage() =
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Bootstrap Test"
       itemKey = "bootstrapTest"
       className = estyles.scrollme.asString
@@ -145,7 +145,7 @@ object Pages {
     )
 
     def materialUIPage() =
-    PivotItem(new IPivotItemProps {
+    PivotItem(new PivotItem.Props {
       headerText = "Material UI Test"
       itemKey = "materialUITest"
       className = estyles.scrollme.asString
@@ -154,7 +154,7 @@ object Pages {
     )
 
   // def movies() = {
-  //   PivotItem(new IPivotItemProps {
+  //   PivotItem(new PivotItem.Props {
   //     linkText = "Movies"
   //     itemKey = "movies"
   //     //className = estyles.scrollme.asString
@@ -236,7 +236,7 @@ object Main {
       React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
         store = StoreNS.store
       })(
-        Fabric(new IFabricProps {
+        Fabric(new Fabric.Props {
           className = estyles.toplevel.asString
         })(
           logContext.makeProvider(Contexts.logger)(ExamplesApp.make())

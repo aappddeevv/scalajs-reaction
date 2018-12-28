@@ -1,0 +1,498 @@
+// Copyright (c) 2018 The Trapelo Group LLC
+// This software is licensed under the MIT License (MIT).
+// For more information see LICENSE or https://opensource.org/licenses/MIT
+
+package ttg.react
+package fabric
+package components
+
+import scala.scalajs.js
+import js.annotation._
+import js.|
+//import scala.annotation.unchecked.{uncheckedVariance => uv}
+
+import ttg.react.vdom._
+import org.scalajs.dom
+import fabric.styling
+import styling._
+
+@js.native
+@JSImport("@uifabric/icons", JSImport.Namespace)
+object uifabric_icons extends js.Object {
+  def initializeIcons(): Unit = js.native
+}
+
+// Import fabric components. This imports *everything* which is not what we usually want. */
+@js.native
+@JSImport("office-ui-fabric-react", JSImport.Namespace)
+object FabricNS extends js.Object {
+  val BaseButton: ReactJsComponent            = js.native
+  val Button: ReactJsComponent                = js.native
+  val DetailsList: ReactJsComponent           = js.native
+  val DefaultButton: ReactJsComponent         = js.native
+  val PrimaryButton: ReactJsComponent         = js.native
+  val ShimmeredDetailsList: ReactJsComponent = js.native
+}
+
+/**
+  * We could also define some native traits for the args...but that's more work...
+  */
+trait FabricComponents {
+  import ttg.react.elements.wrapJsForScala
+
+  def DefaultButton(props: IButtonProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
+
+  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.DetailsList, props, children: _*)
+
+  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
+
+  def ShimmeredDetailsList[T <: js.Object](props: IShimmeredDetailsListProps[T] = null)(children: ReactNode*) =
+    wrapJsForScala(FabricNS.ShimmeredDetailsList, props, children: _*)
+}
+
+//
+// common parts
+//
+/** Provide a focs() method. */
+@js.native
+trait Focusable extends js.Object {
+  def focus(): Unit = js.native
+}
+
+trait IWithViewportProps extends js.Object {
+  var skipViewportMeasures: js.UndefOr[Boolean] = js.undefined
+}
+
+trait KeyAndRef extends js.Object {
+  var key: js.UndefOr[String] = js.undefined
+  var ref: js.UndefOr[RefCb]  = js.undefined
+}
+
+/** Adds a componentRef member. */
+trait ComponentRef[T] extends js.Object {
+  var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+}
+
+/** Adds a disabled member. */
+trait Disabled extends js.Object {
+  var disabled: js.UndefOr[Boolean] = js.undefined
+}
+
+/** Add a theme member. */
+trait Theme extends js.Object {
+  var theme: js.UndefOr[ITheme] = js.undefined
+}
+
+/** Adds an iconProps member. */
+trait WithIconProps extends js.Object {
+  var iconProps: js.UndefOr[IIconProps | js.Dynamic] = js.undefined
+}
+
+trait IColumn extends js.Object {
+  import IColumn._
+  val key: String
+  val name: String
+  val minWidth: Int  
+  var fieldName: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var isRowHeader: js.UndefOr[Boolean] = js.undefined
+  var maxwidth: js.UndefOr[Double] = js.undefined
+  var columnActionMode: js.UndefOr[Int] = js.undefined
+  var iconName: js.UndefOr[String] = js.undefined
+  var isIconOnly: js.UndefOr[Boolean] = js.undefined
+  var iconClassName: js.UndefOr[String] = js.undefined
+  var isCollapsible: js.UndefOr[Boolean] = js.undefined
+  var isSorted: js.UndefOr[Boolean]      = js.undefined
+  var isSortedDescending: js.UndefOr[Boolean] = js.undefined
+  var isMultiline: js.UndefOr[Boolean]      = js.undefined
+  // adjust so we can delayr item's type vs js.Any 
+  //def onRender[T <: js.Object]: js.UndefOr[js.Function3[T, Int, IColumn, js.Any]] = js.undefined
+  var onRender: js.UndefOr[OnRender] = js.undefined
+  // onRenderDivider
+  var isFiltered: js.UndefOr[Boolean]      = js.undefined
+  // onColumnClick
+  // onColumnContextMenu
+  var isGrouped: js.UndefOr[Boolean]      = js.undefined
+  var data: js.UndefOr[scala.Any]        = js.undefined
+  var headerClassName: js.UndefOr[String] = js.undefined
+  var isPadded: js.UndefOr[Boolean]      = js.undefined
+  var sortAscendingAriaLabel: js.UndefOr[String] = js.undefined
+  var groupAriaLabel: js.UndefOr[String] = js.undefined
+  var filterAriaLabel: js.UndefOr[String] = js.undefined
+}
+
+object IColumn {
+  def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
+  type OnRender = js.Function3[js.Any, Int, IColumn, js.Any]
+}
+
+trait IColumnReorderOptions extends js.Object {
+  var frozenColumnCountFromStart: js.UndefOr[Int] = js.undefined
+  var frozencolumnCountFromEnd:js.UndefOr[Int] = js.undefined
+  var onColumnDragStart: js.UndefOr[js.Function1[Boolean, Unit]] = js.undefined
+  var handleColumnReorder: js.UndefOr[js.Function2[Int, Int, Unit]] = js.undefined
+  var onColumnDrop: js.UndefOr[js.Function1[IColumnDragDropDetails, Unit]] = js.undefined
+  // ColumnDragEndLocation
+  var onDragEnd: js.UndefOr[js.Function1[Int, Unit]] = js.undefined
+}
+
+@js.native
+sealed trait ColumnActionMode extends js.Any
+object ColumnActionsMode {
+  val disabled = 0.asInstanceOf[ColumnActionMode]
+  val clickable = 1.asInstanceOf[ColumnActionMode]
+  val hasDropdown = 2.asInstanceOf[ColumnActionMode]
+}
+
+@js.native
+sealed trait ColumnDragEndLocation extends js.Any
+object ColumnDragEndLocation {
+  val outside = 0.asInstanceOf[ColumnDragEndLocation]
+  val surface = 1.asInstanceOf[ColumnDragEndLocation]
+  val header = 2.asInstanceOf[ColumnDragEndLocation]
+}
+
+trait IColumnDragDropDetails extends js.Object {
+  val draggedIndex: Int
+  val targetIndex: Int
+}
+
+@js.native
+sealed trait CheckboxVisibility extends js.Any
+object CheckboxVisibility {
+  val onHover = 0.asInstanceOf[CheckboxVisibility]
+  val always  = 1.asInstanceOf[CheckboxVisibility]
+  val hidden  = 2.asInstanceOf[CheckboxVisibility]
+}
+
+@js.native
+sealed trait DetailsListLayoutMode extends js.Any
+object DetailsListLayoutMode {
+  val fixedColumns = 0.asInstanceOf[DetailsListLayoutMode]
+  val justified    = 1.asInstanceOf[DetailsListLayoutMode]
+}
+
+@js.native
+abstract sealed trait ConstrainMode extends js.Any
+object ConstrainMode {
+  val unconstrained         = 0.asInstanceOf[ConstrainMode]
+  val horizontalConstrained = 1.asInstanceOf[ConstrainMode]
+}
+
+@js.native
+trait IDetailsList extends List.IList {
+  def forceUpdate(): Unit = js.native
+  def focusIndex(index: Int, forceIntoFirstElement: js.UndefOr[Boolean],
+    measureItem: js.UndefOr[js.Function1[Int, Int]], scrollToMode: js.UndefOr[Int]): Unit = js.native
+}
+
+trait IDetailsRowProps extends js.Object {
+  var componentRef: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var item: js.Any
+  var itemIndex: Int
+  var selectionMode: js.UndefOr[SelectionMode]               = js.undefined
+  var selection: js.UndefOr[ISelection[js.Object]] = js.undefined
+  var compact: js.UndefOr[Boolean]                 = js.undefined
+  var checkboxCellClassName: js.UndefOr[String]    = js.undefined
+  var className: js.UndefOr[String]                = js.undefined
+  var columns: js.Array[IColumn]
+}
+
+trait ICellStyleProps extends js.Object {
+  var  cellLeftPadding: js.UndefOr[Double] = js.undefined
+  var  cellRightPadding: js.UndefOr[Double] = js.undefined
+  var  cellExtraRightPadding: js.UndefOr[Double] = js.undefined
+}
+
+trait IDetailsRowStyles extends js.Object {
+  var  root: js.UndefOr[IStyle] = js.undefined
+  var  cell: js.UndefOr[IStyle] = js.undefined
+  var  cellUnpadded: js.UndefOr[IStyle] = js.undefined
+  var  cellPadded: js.UndefOr[IStyle] = js.undefined
+  var  checkCell: js.UndefOr[IStyle] = js.undefined
+  var  isRowHeader: js.UndefOr[IStyle] = js.undefined
+  var  isMultiline: js.UndefOr[IStyle] = js.undefined
+  var  fields: js.UndefOr[IStyle] = js.undefined
+  var  cellMeasurer: js.UndefOr[IStyle] = js.undefined
+  var  checkCover: js.UndefOr[IStyle] = js.undefined
+  var  shimmer: js.UndefOr[IStyle] = js.undefined
+  var  shimmerIconPlaceholder: js.UndefOr[IStyle] = js.undefined
+  var  shimmerLeftBorder: js.UndefOr[IStyle] = js.undefined
+  var  shimmerBottomBorder: js.UndefOr[IStyle] = js.undefined
+  var  check: js.UndefOr[IStyle] = js.undefined
+}
+
+@js.native
+trait IDetailsHeader extends Focusable {}
+
+trait IDetailsHeaderProps extends ComponentRef[IDetailsHeader] {
+  var columns: js.Array[IColumn]
+  var layoutMode: js.UndefOr[Int]        = js.undefined
+  var groupNestingDepth: js.UndefOr[Int] = js.undefined
+}
+
+trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with Attributes {
+  //val items: js.Array[T]
+  var items: js.UndefOr[js.Array[T]] = js.undefined
+  var setKey: js.UndefOr[String]                      = js.undefined
+  var className: js.UndefOr[String]                   = js.undefined
+  //var groups: js.UndefOr[js.Array[IGroup]] = js.undefined
+  var indentWidth: js.UndefOr[Double] = js.undefined
+  var checkboxCellClassName: js.UndefOr[String]       = js.undefined
+  var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
+  var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
+    js.undefined
+  var constrainMode: js.UndefOr[ConstrainMode] = js.undefined
+  var listProps
+    : js.UndefOr[js.Dynamic] = js.undefined // should be IListProps but then items is required
+  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
+    js.undefined
+  var initialFocusedIndex: js.UndefOr[Int]                                       = js.undefined
+  var selection: js.UndefOr[ISelection[T]]                                       = js.undefined
+  var selectionMode: js.UndefOr[SelectionMode] = js.undefined
+  var selectionPreservedOnEmptyClick: js.UndefOr[Boolean]                        = js.undefined
+  var layoutMode: js.UndefOr[DetailsListLayoutMode]                                                = js.undefined
+  var isHeaderVisible: js.UndefOr[Boolean]                                       = js.undefined
+  var compact: js.UndefOr[Boolean]                                               = js.undefined
+  var usePageCache: js.UndefOr[Boolean]                                          = js.undefined
+  var onRenderRow: js.UndefOr[IRenderFunction[IDetailsRowProps]]                 = js.undefined
+  var onRenderItemColumn: js.UndefOr[js.Function3[js.Any, Int, IColumn, js.Any]] = js.undefined
+  var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]                 = js.undefined
+  var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]]    = js.undefined
+  var onActiveItemChanged: js.UndefOr[List.OAIC[T]] = js.undefined
+  var onColumnHeaderClick: js.UndefOr[List.OCHC[T]] = js.undefined
+  var onItemInvoked: js.UndefOr[List.OII[T]] = js.undefined  
+  var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
+  var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
+  var onShouldVirtualize: js.UndefOr[js.Function1[List.Props[T], Boolean]] = js.undefined
+  //var styles: js.UndefOr[styling.IStyleFunctionOrObject[IDetailsListStyleProps, IDetailsListStyles]] = js.undefined
+}
+
+trait IDetailsListStyleProps extends js.Object {
+  var isHorizontalConstrained: js.UndefOr[Boolean] = js.undefined
+  var compact: js.UndefOr[Boolean] = js.undefined
+  var isFixed: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IDetailsListStyles extends styling.IStyleSetTag {
+  var root: js.UndefOr[IStyle] = js.undefined
+  var focusZone: js.UndefOr[IStyle] = js.undefined
+}
+
+trait IContextualMenuProps extends KeyAndRef {
+  var items: js.Array[IContextualMenuItem]
+}
+
+trait IContextualMenuItem extends WithIconProps {
+  import IContextualMenuItem._
+  val key: String
+  var name: js.UndefOr[String] = js.undefined
+
+  /** 1 => divider, 0 => normal */
+  var itemType: js.UndefOr[Int]     = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  //var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
+  var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
+  @JSName("onClick")
+  var onEmptyClick: js.UndefOr[OC0] = js.undefined
+  var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
+  var className: js.UndefOr[String]                  = js.undefined
+  var title: js.UndefOr[String]                      = js.undefined
+  var onRender: js.UndefOr[RF2 | RF0] = js.undefined
+}
+
+object IContextualMenuItem {
+  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], js.UndefOr[IContextualMenuItem], Unit]
+  type OC0 = js.Function0[Unit]
+
+  // cast your func to this to make it easier
+  type RF2 = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
+  // cast your func to this to make it easier
+  type RF0 = js.Function0[ReactNode]
+}
+
+@js.native
+trait IObjectWithKey extends js.Object {
+  var key: String = js.native
+}
+
+@js.native
+sealed trait IconType extends js.Any
+object IconType {
+  val default = 0.asInstanceOf[IconType]
+  val image   = 1.asInstanceOf[IconType]
+}
+
+// export interface IIconStyles {
+//   root?: IStyle;
+//   rootHasPlaceHolder?: IStyle;
+//   imageContainer?: IStyle;
+// }
+
+trait IIconProps extends HTMLAttributes[dom.html.Element] {
+  var iconName: js.UndefOr[String] = js.undefined
+  //var styles?: IIconStyles;
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var iconType: js.UndefOr[Int]     = js.undefined //?: IconType;
+  //imageProps?: IImageProps;
+}
+
+@js.native
+trait IButton extends Focusable {
+  def dismissMenu(): Unit
+}
+
+trait IButtonProps
+    extends ComponentRef[IButton]
+    with WithIconProps
+    with AllHTMLAttributes[dom.html.Button]
+    with Attributes {
+  // having variance problems
+  //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
+  //var href: js.UndefOr[String] = js.undefined
+  var primary: js.UndefOr[Boolean] = js.undefined
+  //var disabled: js.UndefOr[Boolean] = js.undefined
+  var primaryDisabled: js.UndefOr[Boolean] = js.undefined
+  //var checked: js.UndefOr[Boolean] = js.undefined
+  var ariaLabel: js.UndefOr[String]         = js.undefined
+  var ariaDescription: js.UndefOr[String]   = js.undefined
+  var ariaHidden: js.UndefOr[Boolean]       = js.undefined
+  var text: js.UndefOr[String]              = js.undefined
+  var split: js.UndefOr[Boolean]            = js.undefined
+  var menuIconProps: js.UndefOr[IIconProps] = js.undefined
+  var onMenuClick: js.UndefOr[
+    js.Function2[SyntheticMouseEvent[dom.html.Element], js.UndefOr[IButtonProps], Unit]] =
+    js.undefined
+  var onRenderIcon: js.UndefOr[IRenderFunction[IButtonProps]]            = js.undefined
+  var onRenderText: js.UndefOr[IRenderFunction[IButtonProps]]            = js.undefined
+  var onRenderDescription: js.UndefOr[IRenderFunction[IButtonProps]]     = js.undefined
+  var onRenderAriaDescription: js.UndefOr[IRenderFunction[IButtonProps]] = js.undefined
+  var onRenderChildren: js.UndefOr[IRenderFunction[IButtonProps]]        = js.undefined
+  var onRenderMenuIcon: js.UndefOr[IRenderFunction[IButtonProps]]        = js.undefined
+  var onRenderMenu: js.UndefOr[IRenderFunction[IContextualMenuProps]]    = js.undefined
+  var description: js.UndefOr[String]                                    = js.undefined
+  var toggled: js.UndefOr[Boolean]                                       = js.undefined
+  // note scala.Any not js.Any
+  //var data: js.UndefOr[scala.Any] = js.undefined
+}
+
+@js.native
+trait IBasePicker[T] extends Focusable {
+  var items: js.UndefOr[js.Array[T]] = js.undefined
+  var focusInput: js.Function0[Unit]
+}
+
+trait IInputProps extends InputHTMLAttributes[dom.html.Input] {
+  var `aria-label`: js.UndefOr[String] = js.undefined
+}
+
+object ValidationState {
+  val valid   = 0
+  val warning = 1
+  val invalid = 2
+}
+
+trait IBasePickerProps[T <: js.Object] extends ComponentRef[IBasePicker[T] | Null] {
+  var defaultSelectedItems: js.UndefOr[js.Array[T]]         = js.undefined
+  var onChange: js.UndefOr[js.Function1[js.Array[T], Unit]] = js.undefined
+  //onFocus:   onFocus?: React.FocusEventHandler<HTMLInputElement | BaseAutoFill>;
+  var onFocus: js.UndefOr[FocusEventHandler[dom.html.Input]] = js.undefined
+  //onBlur:   onBlur?: React.FocusEventHandler<HTMLInputElement | BaseAutoFill>;
+  var onBlur: js.UndefOr[FocusEventHandler[dom.html.Input]]        = js.undefined
+  var getTextFromItem: js.UndefOr[js.Function2[T, String, String]] = js.undefined
+  var className: js.UndefOr[String]                                = js.undefined
+  var inputProps: js.UndefOr[IInputProps]                          = js.undefined
+
+  /** ValdationState */
+  var onValidateInput: js.UndefOr[js.Function1[String, Int]] = js.undefined
+  var disabled: js.UndefOr[Boolean]                          = js.undefined
+  var itemLimit: js.UndefOr[Int]                             = js.undefined
+  var selectedItems: js.UndefOr[js.Array[T]]                 = js.undefined
+}
+
+trait IBasePickerSuggestionsProps extends js.Object {
+  var suggestionsHeaderText: js.UndefOr[String]      = js.undefined
+  var mostRecentlyUsedHeaderText: js.UndefOr[String] = js.undefined
+  var noResultsFoundText: js.UndefOr[String]         = js.undefined
+  var suggestionsClassName: js.UndefOr[String]       = js.undefined
+  var suggestionsItemClassName: js.UndefOr[String]   = js.undefined
+  var searchForMoreText: js.UndefOr[String]          = js.undefined
+  var forceResolveText: js.UndefOr[String]           = js.undefined
+  var loadingText: js.UndefOr[String]                = js.undefined
+  var searchingText: js.UndefOr[String]              = js.undefined
+  var resultMaximumNumber: js.UndefOr[Int]           = js.undefined
+  var showRemoveButtons: js.UndefOr[Boolean]         = js.undefined
+}
+
+trait ISelectableDroppableTextProps[T <: dom.html.Element]
+    extends HTMLAttributes[T]
+    with ComponentRef[T] {
+  var label: js.UndefOr[String] = js.undefined
+  // these are in HTMLAttributes I think
+  // ariaLabel?: string;
+  // id?: string;
+  // className?: string;
+
+  var defaultSelectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]] = js.undefined
+  var selectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]]        = js.undefined
+
+  /** Any ??? */
+  var options: js.UndefOr[js.Any] = js.undefined
+  // onChanged?: (option: ISelectableOption, index?: number) => void;
+  // onRenderContainer?: IRenderFunction<ISelectableDroppableTextProps<T>>;
+  var onRenderList: js.UndefOr[IRenderFunction[ISelectableDroppableTextProps[T]]] = js.undefined
+  // onRenderItem?: IRenderFunction<ISelectableOption>;
+  // onRenderOption?: IRenderFunction<ISelectableOption>;
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+
+  //calloutProps?: ICalloutProps;
+  var panelProps: js.UndefOr[Panel.Props] = js.undefined
+  var errorMessage: js.UndefOr[String]    = js.undefined
+}
+
+trait ISelectableOption extends js.Object {
+  var key: String | Int
+  var text: String
+  var itemType: js.UndefOr[Int]     = js.undefined
+  var index: js.UndefOr[Int]        = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var selected: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+}
+
+object SelectableOptionMenuItemType {
+  val Normal  = 0
+  val Divider = 1
+  val Header  = 2
+}
+
+trait IDropdownOption extends ISelectableOption {
+  var data: js.UndefOr[js.Any]        = js.undefined
+  var isSelected: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IKeytipProps extends js.Object {
+  val content: String
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var visible: js.UndefOr[Boolean] = js.undefined
+  val keySeqences: js.Array[String]
+}
+
+trait IShimmeredDetailsListStyleProps extends js.Object {
+  var enableShimmer: js.UndefOr[Boolean] = js.undefined
+}
+
+trait IShimmeredDetailsListStyles extends  {
+  var root: js.UndefOr[IStyle] = js.undefined
+}
+
+trait IShimmeredDetailsListProps[T <: js.Object] extends IDetailsListProps[T] {
+  var enableShimmer: js.UndefOr[Boolean] = js.undefined  
+  var shimmerLines: js.UndefOr[Int] = js.undefined
+  var onRenderCustomPlaceholder: js.UndefOr[js.Function0[ReactNode]] = js.undefined
+}

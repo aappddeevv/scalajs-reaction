@@ -44,7 +44,7 @@ object Header {
               target = "_blank"
             })("scalajs-react"),
             " Examples (header via createPortal, inlines styles) ",
-            Link(new ILinkProps {
+            Link(new Link.Props {
               style = new StyleAttr { marginRight = "10px" }
               onClick = js.defined { _ =>
                 router.push("#todo")
