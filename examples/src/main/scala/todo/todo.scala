@@ -92,7 +92,7 @@ object ToDoC {
         })(
           todo.name
         ),
-        DefaultButton(new IButtonProps {
+        Button.Default(new Button.Props {
           text = "Remove"
           onClick = js.defined(_ => remove(()))
         })()
@@ -195,7 +195,7 @@ object ToDosC {
                 autoFocus = true
                 onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) addit(self))
               })(),
-              PrimaryButton(new IButtonProps {
+              Button.Primary(new Button.Props {
                 text = "Add"
                 disabled = self.state.input.size == 0
                 // demonstrates inline callback

@@ -57,7 +57,6 @@ val commonScalacOptions = Seq(
     "-Ywarn-numeric-widen",
     "-Xfuture",
   "-Ypartial-unification",
-  //"-Xlog-implicits",
   )
 
 lazy val jssettings = Seq(
@@ -65,6 +64,7 @@ lazy val jssettings = Seq(
     if (scalaJSVersion.startsWith("0.6.")) Seq("-P:scalajs:sjsDefinedByDefault")
     else Nil
   ),
+  //scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(

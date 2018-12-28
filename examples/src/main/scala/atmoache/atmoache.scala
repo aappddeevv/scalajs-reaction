@@ -67,7 +67,7 @@ object Controls {
               js.defined(e => if (e.which == dom.ext.KeyCode.Enter) onCitySet(self.state))
             onChangeInput = js.defined((_, v:String) => self.send(Changed(Option(v))))
           })(),
-          PrimaryButton(new IButtonProps {
+          Button.Primary(new Button.Props {
             text = "Get Weather Summary"
             disabled = self.state.map(_.size == 0).getOrElse[Boolean](true)
             onClick = js.defined(_ => onCitySet(self.state))

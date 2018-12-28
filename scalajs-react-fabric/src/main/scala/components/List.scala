@@ -24,7 +24,9 @@ object List {
   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
     wrapJsForScala(JS, props, children: _*)
 
-  trait Props[T <: js.Object] extends IWithViewportProps with ComponentRef[IList] {
+
+
+  trait Props[T <: js.Object] extends IViewportProps with ComponentRef[IList] {
 
     var getKey
         : js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] =
@@ -46,9 +48,10 @@ object List {
 
     var onItemInvoked: js.UndefOr[OII[T]] = js.undefined
 
-    var onRenderRow: js.UndefOr[IRenderFunction[IDetailsRowProps]]              = js.undefined
+    var onRenderRow: js.UndefOr[IRenderFunction[
+      Details.Row.Props]]              = js.undefined
     var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]              = js.undefined
-    var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]] = js.undefined
+    var onRenderDetailsHeader: js.UndefOr[IRenderFunction[Details.Header.Props]] = js.undefined
 
     var onActiveItemChanged: js.UndefOr[OAIC[T]] = js.undefined
     var onColumnHeaderClick: js.UndefOr[OCHC[T]] = js.undefined
@@ -83,4 +86,5 @@ object List {
   }
 
 }
+
 

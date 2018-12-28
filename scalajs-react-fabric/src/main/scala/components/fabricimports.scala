@@ -9,7 +9,6 @@ package components
 import scala.scalajs.js
 import js.annotation._
 import js.|
-//import scala.annotation.unchecked.{uncheckedVariance => uv}
 
 import ttg.react.vdom._
 import org.scalajs.dom
@@ -22,47 +21,18 @@ object uifabric_icons extends js.Object {
   def initializeIcons(): Unit = js.native
 }
 
-// Import fabric components. This imports *everything* which is not what we usually want. */
-@js.native
-@JSImport("office-ui-fabric-react", JSImport.Namespace)
-object FabricNS extends js.Object {
-  val BaseButton: ReactJsComponent            = js.native
-  val Button: ReactJsComponent                = js.native
-  val DetailsList: ReactJsComponent           = js.native
-  val DefaultButton: ReactJsComponent         = js.native
-  val PrimaryButton: ReactJsComponent         = js.native
-  val ShimmeredDetailsList: ReactJsComponent = js.native
-}
-
-/**
-  * We could also define some native traits for the args...but that's more work...
-  */
-trait FabricComponents {
-  import ttg.react.elements.wrapJsForScala
-
-  def DefaultButton(props: IButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.DefaultButton, props, children: _*)
-
-  def DetailsList[T <: js.Object](props: IDetailsListProps[T] = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.DetailsList, props, children: _*)
-
-  def PrimaryButton(props: IButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.PrimaryButton, props, children: _*)
-
-  def ShimmeredDetailsList[T <: js.Object](props: IShimmeredDetailsListProps[T] = null)(children: ReactNode*) =
-    wrapJsForScala(FabricNS.ShimmeredDetailsList, props, children: _*)
-}
-
-//
-// common parts
-//
 /** Provide a focs() method. */
 @js.native
 trait Focusable extends js.Object {
   def focus(): Unit = js.native
 }
 
-trait IWithViewportProps extends js.Object {
+@js.native
+trait Focusable2 extends js.Object {
+  def focus(): Boolean = js.native
+}
+
+trait IViewportProps extends js.Object {
   var skipViewportMeasures: js.UndefOr[Boolean] = js.undefined
 }
 
@@ -89,6 +59,10 @@ trait Theme extends js.Object {
 /** Adds an iconProps member. */
 trait WithIconProps extends js.Object {
   var iconProps: js.UndefOr[IIconProps | js.Dynamic] = js.undefined
+}
+
+trait ClassName extends js.Object {
+  var className: js.UndefOr[String] = js.undefined
 }
 
 trait IColumn extends js.Object {
@@ -170,117 +144,18 @@ object CheckboxVisibility {
 }
 
 @js.native
-sealed trait DetailsListLayoutMode extends js.Any
-object DetailsListLayoutMode {
-  val fixedColumns = 0.asInstanceOf[DetailsListLayoutMode]
-  val justified    = 1.asInstanceOf[DetailsListLayoutMode]
+trait IDropHintDetails extends js.Object {
+  var originX: js.UndefOr[Double] = js.undefined
+  var startX: js.UndefOr[Double] = js.undefined
+  var endX: js.UndefOr[Double] = js.undefined
+  var dropHintElementRef: js.UndefOr[dom.html.Element] = js.undefined
 }
 
 @js.native
-abstract sealed trait ConstrainMode extends js.Any
-object ConstrainMode {
-  val unconstrained         = 0.asInstanceOf[ConstrainMode]
-  val horizontalConstrained = 1.asInstanceOf[ConstrainMode]
-}
-
-@js.native
-trait IDetailsList extends List.IList {
-  def forceUpdate(): Unit = js.native
-  def focusIndex(index: Int, forceIntoFirstElement: js.UndefOr[Boolean],
-    measureItem: js.UndefOr[js.Function1[Int, Int]], scrollToMode: js.UndefOr[Int]): Unit = js.native
-}
-
-trait IDetailsRowProps extends js.Object {
-  var componentRef: js.UndefOr[js.Function0[Unit]] = js.undefined
-  var item: js.Any
-  var itemIndex: Int
-  var selectionMode: js.UndefOr[SelectionMode]               = js.undefined
-  var selection: js.UndefOr[ISelection[js.Object]] = js.undefined
-  var compact: js.UndefOr[Boolean]                 = js.undefined
-  var checkboxCellClassName: js.UndefOr[String]    = js.undefined
-  var className: js.UndefOr[String]                = js.undefined
-  var columns: js.Array[IColumn]
-}
-
-trait ICellStyleProps extends js.Object {
-  var  cellLeftPadding: js.UndefOr[Double] = js.undefined
-  var  cellRightPadding: js.UndefOr[Double] = js.undefined
-  var  cellExtraRightPadding: js.UndefOr[Double] = js.undefined
-}
-
-trait IDetailsRowStyles extends js.Object {
-  var  root: js.UndefOr[IStyle] = js.undefined
-  var  cell: js.UndefOr[IStyle] = js.undefined
-  var  cellUnpadded: js.UndefOr[IStyle] = js.undefined
-  var  cellPadded: js.UndefOr[IStyle] = js.undefined
-  var  checkCell: js.UndefOr[IStyle] = js.undefined
-  var  isRowHeader: js.UndefOr[IStyle] = js.undefined
-  var  isMultiline: js.UndefOr[IStyle] = js.undefined
-  var  fields: js.UndefOr[IStyle] = js.undefined
-  var  cellMeasurer: js.UndefOr[IStyle] = js.undefined
-  var  checkCover: js.UndefOr[IStyle] = js.undefined
-  var  shimmer: js.UndefOr[IStyle] = js.undefined
-  var  shimmerIconPlaceholder: js.UndefOr[IStyle] = js.undefined
-  var  shimmerLeftBorder: js.UndefOr[IStyle] = js.undefined
-  var  shimmerBottomBorder: js.UndefOr[IStyle] = js.undefined
-  var  check: js.UndefOr[IStyle] = js.undefined
-}
-
-@js.native
-trait IDetailsHeader extends Focusable {}
-
-trait IDetailsHeaderProps extends ComponentRef[IDetailsHeader] {
-  var columns: js.Array[IColumn]
-  var layoutMode: js.UndefOr[Int]        = js.undefined
-  var groupNestingDepth: js.UndefOr[Int] = js.undefined
-}
-
-trait IDetailsListProps[T <: js.Object] extends ComponentRef[IDetailsList] with Attributes {
-  //val items: js.Array[T]
-  var items: js.UndefOr[js.Array[T]] = js.undefined
-  var setKey: js.UndefOr[String]                      = js.undefined
-  var className: js.UndefOr[String]                   = js.undefined
-  //var groups: js.UndefOr[js.Array[IGroup]] = js.undefined
-  var indentWidth: js.UndefOr[Double] = js.undefined
-  var checkboxCellClassName: js.UndefOr[String]       = js.undefined
-  var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
-  var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
-    js.undefined
-  var constrainMode: js.UndefOr[ConstrainMode] = js.undefined
-  var listProps
-    : js.UndefOr[js.Dynamic] = js.undefined // should be IListProps but then items is required
-  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
-    js.undefined
-  var initialFocusedIndex: js.UndefOr[Int]                                       = js.undefined
-  var selection: js.UndefOr[ISelection[T]]                                       = js.undefined
-  var selectionMode: js.UndefOr[SelectionMode] = js.undefined
-  var selectionPreservedOnEmptyClick: js.UndefOr[Boolean]                        = js.undefined
-  var layoutMode: js.UndefOr[DetailsListLayoutMode]                                                = js.undefined
-  var isHeaderVisible: js.UndefOr[Boolean]                                       = js.undefined
-  var compact: js.UndefOr[Boolean]                                               = js.undefined
-  var usePageCache: js.UndefOr[Boolean]                                          = js.undefined
-  var onRenderRow: js.UndefOr[IRenderFunction[IDetailsRowProps]]                 = js.undefined
-  var onRenderItemColumn: js.UndefOr[js.Function3[js.Any, Int, IColumn, js.Any]] = js.undefined
-  var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]                 = js.undefined
-  var onRenderDetailsHeader: js.UndefOr[IRenderFunction[IDetailsHeaderProps]]    = js.undefined
-  var onActiveItemChanged: js.UndefOr[List.OAIC[T]] = js.undefined
-  var onColumnHeaderClick: js.UndefOr[List.OCHC[T]] = js.undefined
-  var onItemInvoked: js.UndefOr[List.OII[T]] = js.undefined  
-  var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
-  var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
-  var onShouldVirtualize: js.UndefOr[js.Function1[List.Props[T], Boolean]] = js.undefined
-  //var styles: js.UndefOr[styling.IStyleFunctionOrObject[IDetailsListStyleProps, IDetailsListStyles]] = js.undefined
-}
-
-trait IDetailsListStyleProps extends js.Object {
-  var isHorizontalConstrained: js.UndefOr[Boolean] = js.undefined
-  var compact: js.UndefOr[Boolean] = js.undefined
-  var isFixed: js.UndefOr[Boolean] = js.undefined
-}
-
-trait IDetailsListStyles extends styling.IStyleSetTag {
-  var root: js.UndefOr[IStyle] = js.undefined
-  var focusZone: js.UndefOr[IStyle] = js.undefined
+trait IColumnResizeDetails extends js.Object {
+  var  columnIndex: Double = js.native
+  var  originX: js.UndefOr[Double] = js.native
+  var  columnMinWidth: Double = js.native
 }
 
 trait IContextualMenuProps extends KeyAndRef {
@@ -341,44 +216,6 @@ trait IIconProps extends HTMLAttributes[dom.html.Element] {
   //imageProps?: IImageProps;
 }
 
-@js.native
-trait IButton extends Focusable {
-  def dismissMenu(): Unit
-}
-
-trait IButtonProps
-    extends ComponentRef[IButton]
-    with WithIconProps
-    with AllHTMLAttributes[dom.html.Button]
-    with Attributes {
-  // having variance problems
-  //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
-  //var href: js.UndefOr[String] = js.undefined
-  var primary: js.UndefOr[Boolean] = js.undefined
-  //var disabled: js.UndefOr[Boolean] = js.undefined
-  var primaryDisabled: js.UndefOr[Boolean] = js.undefined
-  //var checked: js.UndefOr[Boolean] = js.undefined
-  var ariaLabel: js.UndefOr[String]         = js.undefined
-  var ariaDescription: js.UndefOr[String]   = js.undefined
-  var ariaHidden: js.UndefOr[Boolean]       = js.undefined
-  var text: js.UndefOr[String]              = js.undefined
-  var split: js.UndefOr[Boolean]            = js.undefined
-  var menuIconProps: js.UndefOr[IIconProps] = js.undefined
-  var onMenuClick: js.UndefOr[
-    js.Function2[SyntheticMouseEvent[dom.html.Element], js.UndefOr[IButtonProps], Unit]] =
-    js.undefined
-  var onRenderIcon: js.UndefOr[IRenderFunction[IButtonProps]]            = js.undefined
-  var onRenderText: js.UndefOr[IRenderFunction[IButtonProps]]            = js.undefined
-  var onRenderDescription: js.UndefOr[IRenderFunction[IButtonProps]]     = js.undefined
-  var onRenderAriaDescription: js.UndefOr[IRenderFunction[IButtonProps]] = js.undefined
-  var onRenderChildren: js.UndefOr[IRenderFunction[IButtonProps]]        = js.undefined
-  var onRenderMenuIcon: js.UndefOr[IRenderFunction[IButtonProps]]        = js.undefined
-  var onRenderMenu: js.UndefOr[IRenderFunction[IContextualMenuProps]]    = js.undefined
-  var description: js.UndefOr[String]                                    = js.undefined
-  var toggled: js.UndefOr[Boolean]                                       = js.undefined
-  // note scala.Any not js.Any
-  //var data: js.UndefOr[scala.Any] = js.undefined
-}
 
 @js.native
 trait IBasePicker[T] extends Focusable {
@@ -483,16 +320,3 @@ trait IKeytipProps extends js.Object {
   val keySeqences: js.Array[String]
 }
 
-trait IShimmeredDetailsListStyleProps extends js.Object {
-  var enableShimmer: js.UndefOr[Boolean] = js.undefined
-}
-
-trait IShimmeredDetailsListStyles extends  {
-  var root: js.UndefOr[IStyle] = js.undefined
-}
-
-trait IShimmeredDetailsListProps[T <: js.Object] extends IDetailsListProps[T] {
-  var enableShimmer: js.UndefOr[Boolean] = js.undefined  
-  var shimmerLines: js.UndefOr[Int] = js.undefined
-  var onRenderCustomPlaceholder: js.UndefOr[js.Function0[ReactNode]] = js.undefined
-}

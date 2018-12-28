@@ -5,4 +5,4 @@
 package ttg.react
 package fabric
 
-package object components extends FabricComponents
+package object components

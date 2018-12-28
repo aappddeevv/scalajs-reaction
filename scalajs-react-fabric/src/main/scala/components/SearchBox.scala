@@ -50,7 +50,7 @@ object SearchBox {
   trait Props extends InputHTMLAttributes[dom.html.Input] with Attributes {
     var ariaLabel: js.UndefOr[String] = js.undefined
     //var className: js.UndefOr[String] = js.undefined
-    var clearButtonProps: js.UndefOr[IButtonProps] = js.undefined
+    var clearButtonProps: js.UndefOr[Button.Props] = js.undefined
     var disableAnimation: js.UndefOr[Boolean] = js.undefined
     //var placeholder: js.UndefOr[String] = js.undefined
     var underlined: js.UndefOr[Boolean] = js.undefined

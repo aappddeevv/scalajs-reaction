@@ -81,10 +81,10 @@ object AddressList {
       sel: ISelection[Address],
       addresses: AddressList = emptyAddressList,
       activeCB: Option[Address] => Unit,
-      ifx: Option[Int] = None) =
+    ifx: Option[Int] = None,
+  shimmer: Boolean = false) =
     render { self =>
-      println(s"AddressListC.render: ifx ${ifx}")
-      val listopts = new IDetailsListProps[Address] {
+      val listopts = new Details.Shimmered.Props[Address] {
         items = addresses.toJSArray
         className = amstyles.list.asString
         selectionPreservedOnEmptyClick = true
@@ -100,16 +100,20 @@ object AddressList {
          }: OAIC
          */
         selection = sel
-        layoutMode = DetailsListLayoutMode.fixedColumns
-        constrainMode = ConstrainMode.unconstrained
+        layoutMode = Details.List.LayoutMode.fixedColumns
+        constrainMode = Details.List.ConstrainMode.unconstrained
         // onRenderDetailsHeader = js.defined { (props, defaultRender) =>
         //   Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
         // }
         onShouldVirtualize = js.defined(_ => false)
+        //enableShimmer = shimmer
+        //shimmerLines = 5
       }
       div.merge(lit("data-is-scrollable" -> true))(new DivProps {
         className = amstyles.master.asString
-      })(ScrollablePane()(DetailsList[Address](listopts)()))
+      })(
+        ScrollablePane()(Details.Shimmered[Address](listopts)())
+      )
     }
 }
 
@@ -118,7 +122,6 @@ object AddressList {
   * to break out parameters if your "make" does not take an unified props object.
   * But having this trait makes writing some interop a little easier.
   */
-//@simplecreate
 trait AddressManagerProps extends js.Object {
   val dao: AddressDAO
   // derived from redux
@@ -322,26 +325,15 @@ object AddressManager {
           }
           println(s"AddressManager.render:initial focused index: ${ifx}")
           val selAddrOpt = toSafeOption(vm.active)
+          val shimmer = self.state.fetching
 
-          div(new DivProps { className = cx(amstyles.component, className.getOrElse(null)) })(
+          divWithClassname(cx(amstyles.component, className.getOrElse(null)),
             CommandBar(cbopts(self))(),
-            div(new DivProps { className = amstyles.masterAndDetail.asString })(
-              if (self.state.fetching)
-                ReactContentLoaderComponents.BulletList(
-                  new ReactContentLoaderOptions(
-                    animate = true,
-                    speed = 1,
-                    className = amstyles.master.asString,
-                    height = 500,
-                    width = 500,
-                    primaryColor = "#f3f3f3",
-                    secondaryColor = "#ecebeb",
-                  ))()
-              else
-                AddressList(self.state.selection, self.state.addresses, activecb(self), ifx),
+            divWithClassname(amstyles.masterAndDetail.asString,
+              AddressList(self.state.selection, self.state.addresses, activecb(self), ifx, shimmer=shimmer),
               AddressDetail(selAddrOpt),
             ),
-            div(new DivProps { className = amstyles.footer.asString })(
+            divWithClassname(amstyles.footer.asString,
               AddressSummary(amstyles.footer.asUndefOr[String].toOption, selAddrOpt),
               Label()(
                 "Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),

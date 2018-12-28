@@ -143,6 +143,7 @@ package object react {
   /** Callback for react ref. Pure string refs are not supported. */
   type RefCb = js.Function1[ReactElement, Unit]
 
+  /** Callback for react ref with settable E. */
   type RefCbE[E] = js.Function1[E, Unit]
 
   /** noop ref callback */
