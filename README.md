@@ -62,7 +62,7 @@ libraryDependencies ++= Seq(
     "ttg" %%% scalajs-react-fabric" % scalaJsReactVersion,
 
     // Material UI components (WIP, waiting for v4)
-    "ttg" %%% scalajs-material-ui" % scalaJsReactVersion,
+    "ttg" %%% scalajs-react-material-ui" % scalaJsReactVersion,
 
     // if you integrate with redux
     "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
@@ -116,7 +116,7 @@ object MyWebApp {
 
 You can add a className to the div using: `div(new DivProps { className =
 "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
-ensure you only enter valid div props.
+ensure you only enter valid div props. Even simpler, use `divWithClassname(cname), children...)`.
 
 The "render" method copies the internal proxy component and adds a callback from
 reactjs to scala. If you need to use other methods, use the full syntax as the
@@ -355,6 +355,18 @@ redux enhanced props. Please see the extended documentation for details.
 ### Routing
 A simple 100-line router is included based on the reason-react router
 implementation. See the example app for an example of how to use it.
+
+### Widget Libraries
+
+Libraries (at the start of them) are provided for bootstrap, material ui and fabric.
+
+### Forms & Data Validation
+
+A scalajs-react independent data-validation library is also provided that
+helps abstract out data validation and it supports general form use. 
+
+The form library (scalajs-react dependent) draws on several different reasonreact
+and advanced js form libraries for inspiration of the API. 
 
 # Documentation
 

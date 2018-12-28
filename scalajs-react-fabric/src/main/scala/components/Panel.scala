@@ -39,7 +39,7 @@ object Panel {
     var isFooterAtBottom: js.UndefOr[Boolean] = js.undefined
     var isFooterSticky: js.UndefOr[Boolean] = js.undefined
     var hasCloseButton: js.UndefOr[Boolean] = js.undefined
-    var `type`: js.UndefOr[PanelType] = js.undefined
+    var `type`: js.UndefOr[Type] = js.undefined
     var headerClassName: js.UndefOr[String] = js.undefined
   }
 
@@ -61,16 +61,16 @@ object Panel {
   }
 
   @js.native
-  abstract sealed trait PanelType extends js.Any
-  object PanelType {
-    val smallFluid = 0.asInstanceOf[PanelType]
-    val smallFixedFar = 1.asInstanceOf[PanelType]
-    val smallFixedNear = 2.asInstanceOf[PanelType]
-    val medium = 3.asInstanceOf[PanelType]
-    val large = 4.asInstanceOf[PanelType]
-    val largeFixed = 5.asInstanceOf[PanelType]
-    val extraLarge = 6.asInstanceOf[PanelType]
-    val custom = 7.asInstanceOf[PanelType]
+  abstract sealed trait Type extends js.Any
+  object Type {
+    val smallFluid = 0.asInstanceOf[Type]
+    val smallFixedFar = 1.asInstanceOf[Type]
+    val smallFixedNear = 2.asInstanceOf[Type]
+    val medium = 3.asInstanceOf[Type]
+    val large = 4.asInstanceOf[Type]
+    val largeFixed = 5.asInstanceOf[Type]
+    val extraLarge = 6.asInstanceOf[Type]
+    val custom = 7.asInstanceOf[Type]
   }
 
   trait Props extends ComponentRef[IPanel] {
@@ -85,7 +85,7 @@ object Panel {
     var onDismissed: js.UndefOr[js.Function0[Unit]] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var theme: js.UndefOr[ITheme] = js.undefined
-    var `type`: js.UndefOr[PanelType] = js.undefined
+    var `type`: js.UndefOr[Type] = js.undefined
     var className: js.UndefOr[String] = js.undefined
     var customWidth: js.UndefOr[String] = js.undefined
     var closeButtonAriaLabel: js.UndefOr[String] = js.undefined

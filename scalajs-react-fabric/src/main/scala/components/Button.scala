@@ -74,7 +74,7 @@ object Button {
       wrapJsForScala(JS, props, children: _*)
   }
 
-  object IconButton {
+  object Icon {
     @js.native
     @JSImport("office-ui-fabric-react/lib/Button", "IconButton")
     object JS extends ReactJsComponent

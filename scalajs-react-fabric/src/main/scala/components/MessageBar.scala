@@ -27,20 +27,20 @@ object MessageBar {
   trait IMessageBar extends js.Object
 
   @js.native
-  sealed abstract trait MessageBarType extends js.Any
+  sealed abstract trait Type extends js.Any
 
-  object MessageBarType {
-    val info = 0.asInstanceOf[MessageBarType]
-    val error = 1.asInstanceOf[MessageBarType]
-    val blocked = 2.asInstanceOf[MessageBarType]
-    val severeWarning = 3.asInstanceOf[MessageBarType]
-    val success = 4.asInstanceOf[MessageBarType]
-    val warning = 5.asInstanceOf[MessageBarType]
+  object Type {
+    val info = 0.asInstanceOf[Type]
+    val error = 1.asInstanceOf[Type]
+    val blocked = 2.asInstanceOf[Type]
+    val severeWarning = 3.asInstanceOf[Type]
+    val success = 4.asInstanceOf[Type]
+    val warning = 5.asInstanceOf[Type]
   }
 
   trait StyleProps extends js.Object {
     var className : js.UndefOr[IStyle] = js.undefined
-    var messageBarType: js.UndefOr[MessageBarType] = js.undefined
+    var messageBarType: js.UndefOr[Type] = js.undefined
     var onDismiss: js.UndefOr[Boolean] = js.undefined
     var truncated: js.UndefOr[Boolean] = js.undefined
     var isMultiline: js.UndefOr[Boolean] = js.undefined
@@ -64,7 +64,7 @@ object MessageBar {
 
   trait Props extends HTMLAttributes[dom.html.Element]
       with ComponentRef[IMessageBar] with Theme with Attributes {
-    var messageBarType: js.UndefOr[MessageBarType] = js.undefined
+    var messageBarType: js.UndefOr[Type] = js.undefined
     var actions: js.UndefOr[ReactElement] = js.undefined
     var arialLabel: js.UndefOr[String] = js.undefined
     var onDimiss: js.UndefOr[js.Function1[js.Any, js.Any]] = js.undefined

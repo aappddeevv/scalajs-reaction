@@ -24,8 +24,6 @@ object List {
   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
     wrapJsForScala(JS, props, children: _*)
 
-
-
   trait Props[T <: js.Object] extends IViewportProps with ComponentRef[IList] {
 
     var getKey
