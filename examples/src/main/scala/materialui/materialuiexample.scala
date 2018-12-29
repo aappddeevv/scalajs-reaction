@@ -47,6 +47,27 @@ object MaterialUIPage {
           color = "primary"
           onClick = js.defined(_ => println("Click!"))
         })("Default")
+      ),
+      MaterialUIExample(
+        Radio(new Radio.Props {
+          color = Radio.Color.primary
+          checked = true
+        })("My Radio Button")
+      ),
+      MaterialUIExample(
+        Fragment(
+          Tabs(new Tabs.Props {
+            var value: js.Any = 0
+          })(
+            Tab(new Tab.Props {
+              label = "Tab 1".toNode
+            }),
+            Tab(new Tab.Props {
+              label = "Tab 2".toNode
+            }),
+          ),
+          "add some tab content here"
+        )
       )
     )
   }

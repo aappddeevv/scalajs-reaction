@@ -18,10 +18,10 @@ object InputLabel {
 
   @js.native
   @JSImport("@material-ui/core/InputLabel", JSImport.Default)
-  object InputLabelJS extends ReactJsComponent
+  object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(InputLabelJS, props, children:_*)
+    wrapJsForScala(JS, props, children:_*)
 
   @js.native
   sealed trait Margin extends js.Any
