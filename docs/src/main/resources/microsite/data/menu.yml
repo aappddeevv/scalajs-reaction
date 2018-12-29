@@ -26,8 +26,8 @@ options:
   - title: Data interop
     url: docs/datainterop.html
 
-  - title: office-fabric-ui-react
-    url: docs/fabric.html
+  - title: Widget Facades
+    url: docs/facades.html
 
   - title: Mixed Projects
     url: docs/mixedproject.html

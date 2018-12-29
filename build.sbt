@@ -13,20 +13,19 @@ lazy val licenseSettings = Seq(
          |""".stripMargin
     )))
 
-lazy val macroSettings = Seq (
-  resolvers += Resolver.sonatypeRepo("releases"),
-  resolvers += Resolver.bintrayRepo("scalameta", "maven"),
-  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
-  scalacOptions += "-Xplugin-require:macroparadise",
-)
+// lazy val macroSettings = Seq (
+//   resolvers += Resolver.sonatypeRepo("releases"),
+//   resolvers += Resolver.bintrayRepo("scalameta", "maven"),
+//   addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
+//   scalacOptions += "-Xplugin-require:macroparadise",
+// )
 
 lazy val buildSettings = Seq(
   organization := "ttg",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  scalaVersion := "2.12.6",
+  scalaVersion := "2.12.7",
   resolvers += Resolver.sonatypeRepo("releases"),
   resolvers += Resolver.jcenterRepo,
-  //scalafmtVersion in ThisBuild := "1.5.1",
   autoCompilerPlugins := true
 ) ++ licenseSettings
 
@@ -40,7 +39,7 @@ lazy val noPublishSettings = Seq(
 lazy val exampleSettings = Seq(
   libraryDependencies ++= Seq(
     // any special ones??
-  )
+  ),
 )
 
 lazy val publishSettings = Seq(
@@ -92,7 +91,7 @@ lazy val root = project.in(file("."))
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
     `scalajs-react-bootstrap`, `scalajs-react-material-ui`,
-    `scalajs-react-form`, dataValidationJS, dataValidationJVM)
+    `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
   //.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
@@ -100,15 +99,17 @@ lazy val root = project.in(file("."))
 lazy val `scalajs-react-core` = project
   .settings(libsettings)
   .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs package.")
+  .settings(buildInfoPackage := "ttg.react")
 
 // jvm and js based project
 lazy val dataValidation =
   crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
     .in(file("data-validation"))
-    .settings(jvmlibsettings)
+    .jvmSettings(jvmlibsettings)
+    .jsSettings(libsettings)
     .settings(publishSettings)
     .settings(description :=
       "General purpose data validation library based on cats and applicatives.")
@@ -116,17 +117,17 @@ lazy val dataValidation =
 lazy val dataValidationJS = dataValidation.js
 lazy val dataValidationJVM = dataValidation.jvm
 
-lazy val `scalajs-react-macros` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .settings(macroSettings)
-  .settings(
-    description := "Helpful macros.",
-    libraryDependencies ++= Seq(
-      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-      "org.scalameta" %% "scalameta" % "1.8.0" // old version required
-    ))
+// lazy val `scalajs-react-macros` = project
+//   .settings(libsettings)
+//   .settings(publishSettings)
+//   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+//   .settings(macroSettings)
+//   .settings(
+//     description := "Helpful macros.",
+//     libraryDependencies ++= Seq(
+//       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+//       "org.scalameta" %% "scalameta" % "1.8.0" // old version required
+//     ))
 
 lazy val `scalajs-react-prop-types` = project
   .settings(libsettings)
@@ -201,27 +202,23 @@ lazy val examples = project
     dataValidationJS)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
-  //.settings(macroSettings)
   .settings(exampleSettings)
 
-// val CoreConfig = config("scalajs-react-core")
-// val VDOMConfig = config("scalajs-react-vdom")
-// val FabricConfig = config("scalajs-react-fabric")
-// val ReduxConfig = config("scalajs-react-redux")
 
-// macro project was removed
 lazy val docs = project
-  .settings(buildSettings)
+  .settings(exampleSettings ++ libsettings)
   .settings(noPublishSettings)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .disablePlugins(BintrayPlugin)
-  //.enablePlugins(SiteScaladocPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
     `scalajs-react-fabric`, `scalajs-react-redux`,
-    `scalajs-react-form`)
+    `scalajs-react-form`)//, dataValidation)
   .settings(
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples)
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject --
+      inProjects(examples)
+      -- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
   )
   .settings(
     micrositeName := "scalajs-react",
@@ -235,23 +232,10 @@ lazy val docs = project
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     micrositePushSiteWith := GitHub4s
   )
-  .settings(exampleSettings)
   .settings(
     siteSubdirName in ScalaUnidoc := "api",
     addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
-    // SiteScaladocPlugin.scaladocSettings(CoreConfig,
-    //   mappings in (Compile, packageDoc) in `scalajs-react-core`, "api/scalajs-react-core"),
-    // SiteScaladocPlugin.scaladocSettings(VDOMConfig,
-    //   mappings in (Compile, packageDoc) in `scalajs-react-vdom`, "api/scalajs-react-vdom"),
-    // SiteScaladocPlugin.scaladocSettings(FabricConfig,
-    //   mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-fabric"),
-    // SiteScaladocPlugin.scaladocSettings(ReduxConfig,
-    //   mappings in (Compile, packageDoc) in `scalajs-react-fabric`, "api/scalajs-react-redux"),
-      // you need this if you use SiteScaladocPlugin so that the push uses gh-pages vs GitHub4s
-      //micrositePushSiteWith := GHPagesPlugin
   )
-  .settings(unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(`scalajs-react-macros`))
-//.settings(macroSettings)
 
 addCommandAlias("fmt", ";scalafmt")
 

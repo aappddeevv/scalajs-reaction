@@ -5,10 +5,6 @@
 package ttg.data
 package validation
 
-//import scala.scalajs.js
-//import js.annotation._
-//import org.scalajs.dom
-
 import util.{Try, Success, Failure}
 import scala.util.matching.Regex
 import java.util.regex.Pattern

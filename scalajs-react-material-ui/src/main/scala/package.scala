@@ -4,5 +4,4 @@
 
 package ttg.react
 
-package object materialui {
-}
+package object materialui

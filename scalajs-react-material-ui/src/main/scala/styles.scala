@@ -6,7 +6,6 @@ package ttg.react
 package materialui
 
 import scala.scalajs.js
-import js.|
 import js.annotation._
 
 @js.native
@@ -17,3 +16,4 @@ trait StylesJS extends js.Object {
 @js.native
 @JSImport("@material-ui/styles", JSImport.Namespace)
 object styles extends StylesJS
+        
