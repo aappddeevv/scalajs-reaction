@@ -90,7 +90,7 @@ lazy val root = project.in(file("."))
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
-    `scalajs-react-bootstrap`, `scalajs-react-material-ui`,
+    `scalajs-react-bootstrap`, `scalajs-react-mui`,
     `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
   //.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
@@ -173,12 +173,12 @@ lazy val `scalajs-react-bootstrap` = project
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
   .settings(description := "bootstrap facade.")
 
-lazy val `scalajs-react-material-ui` = project
+lazy val `scalajs-react-mui` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
-  .settings(description := "materiala ui facade.")
+  .settings(description := "material ui facade.")
 
 lazy val `scalajs-react-form` = project
   .settings(libsettings)
@@ -198,7 +198,7 @@ lazy val examples = project
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
     `scalajs-react-prop-types`, `scalajs-react-form`,
     `scalajs-react-bootstrap`,
-    `scalajs-react-material-ui`,
+    `scalajs-react-mui`,
     dataValidationJS)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)

@@ -24,6 +24,7 @@ import fabric._
 import fabric.components._
 import fabric.styling._
 import Styling._
+import react.mui._
 
 import cats._
 import cats.implicits._
@@ -226,22 +227,27 @@ object Main {
       injectionMode = InjectionMode.appendChild
     })
     uifabric_icons.initializeIcons()
+    react.mui.install()
+    val myjss = JSS.create(jssPreset())
 
     // init message for store, although it does not do anything :-)
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
 
     reactdom.createAndRenderWithId(
-      //TimeoutWithFallback.make(2000)(
-      //  "Examples What?",
       React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
         store = StoreNS.store
       })(
-        Fabric(new Fabric.Props {
-          className = estyles.toplevel.asString
+        // mui
+        StylesProvider(new StylesProvider.Props {
+          jss = myjss
         })(
-          logContext.makeProvider(Contexts.logger)(ExamplesApp.make())
-        )
-      ),
+          // fabric
+          Fabric(new Fabric.Props {
+            className = estyles.toplevel.asString
+          })(
+            logContext.makeProvider(Contexts.logger)(ExamplesApp.make())
+          )
+        )),
       "container"
     )
   }

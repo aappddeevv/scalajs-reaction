@@ -3,7 +3,7 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg.react
-package materialui
+package mui
 package components
 
 import scala.scalajs.js
@@ -23,13 +23,42 @@ object Button {
   def apply(props: Props = null)(children: ReactNode*) =
     wrapJsForScala(ButtonJS, props, children:_*)
 
+  @js.native
+  sealed trait Color extends js.Any
+  object Color {
+    val default = "default".asInstanceOf[Color]
+    val inherit = "inherit".asInstanceOf[Color]
+    val primary = "primary".asInstanceOf[Color]
+    val secondary = "secondary".asInstanceOf[Color]
+  }
+
+  @js.native
+  sealed trait Size extends js.Any
+  object Size {
+    val small = "small".asInstanceOf[Size]
+    val medium = "medium".asInstanceOf[Size]
+    val large = "large".asInstanceOf[Size]
+  }
+
+  @js.native
+  sealed trait Variant extends js.Any
+  object Variant {
+    val fab = "fab".asInstanceOf[Variant]
+    val raised = "raised".asInstanceOf[Variant]
+    val outlined = "outlined".asInstanceOf[Variant]
+    val flat = "flat".asInstanceOf[Variant]
+    val contained = "contained".asInstanceOf[Variant]
+    val text = "text".asInstanceOf[Variant]
+    val extendedFab = "extendedFab".asInstanceOf[Variant]
+  }
+
   trait Props extends js.Object {
     var action: js.UndefOr[js.Any] = js.undefined
     var buttonRef: js.UndefOr[js.Any] = js.undefined
     var centerRipple: js.UndefOr[Boolean] = js.undefined
     var className: js.UndefOr[String] = js.undefined
     var classes: js.UndefOr[js.Object] = js.undefined
-    var color: js.UndefOr[String] = js.undefined
+    var color: js.UndefOr[Color] = js.undefined
     var component: js.UndefOr[js.Any] = js.undefined
     var disableFocusRipple: js.UndefOr[Boolean] = js.undefined
     var disableRipple: js.UndefOr[Boolean] = js.undefined
@@ -54,11 +83,11 @@ object Button {
     var onTouchMove: js.UndefOr[TouchEventHandler[html.Input]] = js.undefined
     var onTouchStart: js.UndefOr[TouchEventHandler[html.Input]] = js.undefined
     var role: js.UndefOr[String] = js.undefined
-    var size: js.UndefOr[String] = js.undefined
+    var size: js.UndefOr[Size] = js.undefined
     var style: js.UndefOr[js.Object] = js.undefined
     var tabIndex: js.UndefOr[js.Any] = js.undefined
     var `type`: js.UndefOr[String] = js.undefined
-    var variant: js.UndefOr[String] = js.undefined
+    var variant: js.UndefOr[Variant] = js.undefined
   }
 
 }

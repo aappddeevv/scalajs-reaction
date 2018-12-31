@@ -3,7 +3,7 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg.react
-package materialui
+package mui
 package components
 
 import scala.scalajs.js

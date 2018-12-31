@@ -3,7 +3,7 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg.react
-package materialui
+package mui
 package components
 
 import scala.scalajs.js
@@ -77,7 +77,7 @@ object Typography {
     var className: js.UndefOr[String] = js.undefined
     var classes: js.UndefOr[js.Object] = js.undefined
     var color: js.UndefOr[Color] = js.undefined
-    var component: js.UndefOr[js.Any] = js.undefined
+    var component: js.UndefOr[String|ReactJsComponent] = js.undefined
     var gutterBottom: js.UndefOr[Boolean] = js.undefined
     var headlineMapping: js.UndefOr[js.Object] = js.undefined
     var internalDeprecatedVariant: js.UndefOr[Boolean] = js.undefined
