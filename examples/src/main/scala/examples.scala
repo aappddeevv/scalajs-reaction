@@ -29,6 +29,9 @@ import react.mui._
 import cats._
 import cats.implicits._
 
+import ttg.react.components.reactbigcalendar._
+import moment._
+
 @js.native
 @JSImport("Examples/examples.css", JSImport.Namespace)
 private object componentStyles extends js.Object
@@ -154,6 +157,23 @@ object Pages {
       examples.materialui.MaterialUIPage()
     )
 
+  import calendar._
+
+  def calendarPage() =
+    PivotItem(new PivotItem.Props {
+      headerText = "react-big-calendar"
+      itemKey = "calendar"
+      className = estyles.scrollme.asString
+    })(
+      ReactBigCalendar[js.Dynamic](new ReactBigCalendar.Props[js.Dynamic] {
+        events = sampleEvents
+        localizer = mlocalizer
+        defaultDate = new js.Date() // today
+        startAccessor = "timestart"
+        endAccessorThunk = js.defined(e => e.end.asInstanceOf[js.Date])
+      })()
+    )
+
   // def movies() = {
   //   PivotItem(new PivotItem.Props {
   //     linkText = "Movies"
@@ -191,6 +211,7 @@ object Examples {
             tagTest(),
             pressurePage,
             graphPage,
+            calendarPage(),
             //movies(),
             bootstrapPage(),
             materialUIPage()

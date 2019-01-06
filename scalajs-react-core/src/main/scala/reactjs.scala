@@ -38,6 +38,7 @@ private[react] trait ReactJS extends js.Object {
   /** Create a ref to be assigned to a "ref" property on a component. */
   def createRef(): react.ReactRef  = js.native
 
+  // not used...
   val Suspense: ReactClass = js.native
 
   /** forwardRef */

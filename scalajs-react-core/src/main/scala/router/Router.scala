@@ -4,6 +4,7 @@
 
 package ttg
 package react
+package router
 
 import scala.scalajs.js
 import org.scalajs.dom
@@ -82,6 +83,3 @@ trait Router {
   /** Get the current url. It's dangerous because it accesses the dom window location. */
   def dangerouslyGetUrl() = url()
 }
-
-
-package object router extends Router

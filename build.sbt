@@ -91,6 +91,7 @@ lazy val root = project.in(file("."))
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
     `scalajs-react-bootstrap`, `scalajs-react-mui`,
+    `react-big-calendar`,
     `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
   //.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
@@ -102,6 +103,20 @@ lazy val `scalajs-react-core` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs package.")
   .settings(buildInfoPackage := "ttg.react")
+
+lazy val `react-big-calendar` = project
+  .in(file("components/react-big-calendar"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(Seq(
+    description := "react-big-calendar",
+    name := "scalajs-react-components-react-big-calendar",
+    version := "0.10.0"
+  ))
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(
+    `scalajs-react-core`,
+    `scalajs-react-vdom`)
 
 // jvm and js based project
 lazy val dataValidation =
@@ -195,10 +210,15 @@ watchSources += baseDirectory.value / "examples/src/main/assets"
 lazy val examples = project
   .settings(libsettings)
   .settings(noPublishSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "ru.pavkin" %%% "scala-js-momentjs" % "0.9.2",
+    ))
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
     `scalajs-react-prop-types`, `scalajs-react-form`,
     `scalajs-react-bootstrap`,
     `scalajs-react-mui`,
+    `react-big-calendar`,
     dataValidationJS)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)

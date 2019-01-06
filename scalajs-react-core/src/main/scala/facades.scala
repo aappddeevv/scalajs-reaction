@@ -281,20 +281,23 @@ trait CakeBase { cake =>
   }
 
   /**
-    * Client API to copy this component and add methods. The cost of the copy/merge
-    * is the same as that for raw javascript.
+    * Client API to copy this component and add methods that customize render
+    * behavioro. The cost of the copy/merge is the same as that for raw
+    * javascript.
     * @example {{{
     * val c = statelessComponent("MyComponent")
     * import c.ops._
     * def make(...) = c.copy(with methods { ... })
-    *  }}}
+    * }}}
     */
   def copy(methods: WithMethods): ComponentType = {
     mergeComponents[ComponentType](lit(), component, methods.asInstanceOf[js.Dynamic])
   }
 
-  /** Wrap the component for use in javascript. */
-  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentSpec): ReactJsComponent =
+  /** Wrap this component for use in javascript. The jsPropsToScala should return
+   * a component based on calling "make" or "apply".
+   */
+  def wrapScalaForJs[P <: js.Object](jsPropsToScala: P => ComponentType): ReactJsComponent =
     elements.wrapScalaForJs(component, jsPropsToScala)
 
   /**

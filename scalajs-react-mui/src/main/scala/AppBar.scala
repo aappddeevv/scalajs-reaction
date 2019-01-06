@@ -18,10 +18,10 @@ object AppBar {
 
   @js.native
   @JSImport("@material-ui/core/AppBar", JSImport.Default)
-  object AppBarJS extends ReactJsComponent
+  object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(AppBarJS, props, children:_*)
+    wrapJsForScala(JS, props, children:_*)
 
   @js.native
   sealed trait Color extends js.Any

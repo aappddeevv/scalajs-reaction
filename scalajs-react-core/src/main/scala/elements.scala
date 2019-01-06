@@ -203,10 +203,15 @@ object elements {
     * component, typically via a call to "make."  jsPropsToScala can use a
     * js.native trait inheriting from js.Object to make picking out the values
     * from the js-side easier, or not, it's up to you. The returned value should
-    * be exported from scala-world so that js-world can see it.
+    * be exported from scala-world so that js-world can see it. If you call this
+    * multiple times for the same component, the last one wins.
     *
     * Note: jsPropsToScala will appear in reactsj's 'this' because its attached
     * to the prototype of reactClassInternal.
+   * 
+   * @param c The base component.
+   * @param jsPropsToScala Function that returns a component that is typically
+   * created by calling "make" or "apply."
     */
   def wrapScalaForJs[P <: js.Object](
       c: Component,

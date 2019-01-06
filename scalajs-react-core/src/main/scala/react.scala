@@ -97,12 +97,12 @@ package object react {
   type ReactType = ReactClass | String
 
   /**
-    * Something to be used in some jsinterop functions. This type is used only
-    * to imported javascript side components. Typically this is used to "tag" a
-    * component type imported from javascript or created via other js-interop
-    * mechanisms such as redux integration. By using a separate type, you must
-    * use then scalajs-react's API to create an element. You can use this to
-    * annotate a js function as well e.g. () => ReactNode.
+    * This type is used only for imported javascript side components. Typically
+    * this is used to "tag" a component type imported from javascript or created
+    * via other js-interop mechanisms such as redux integration. By using a
+    * separate type, you must use then scalajs-react's API to create an
+    * element. You can use this to annotate a js function react component as
+    * well e.g. () => ReactNode.
     */
   @js.native
   trait ReactJsComponent extends js.Object
