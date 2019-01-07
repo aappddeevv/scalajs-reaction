@@ -22,15 +22,27 @@ package object calendar {
       "timestart" -> Moment().hour(12).minute(0).toDate(),
       "end" -> Moment().hour(12).add(1, "hour").toDate(),
       "allDay" -> false,
-      "resource" -> null
+      "resourceId" -> 4
     ),
     lit (
       "title" -> "meet with sally",
       "timestart" -> Moment().hour(4).minute(0).toDate(),
       "end" -> Moment().hour(4).add(1, "hour").toDate(),
       "allDay" -> false,
-      "resource" -> null
+      "resourceId" -> 2,
     ),
+  )
+
+  trait Resource extends js.Object {
+    val resourceId: Int
+    val title: String
+  }
+
+  val resourceMap = js.Array[js.Object](
+    new Resource { val resourceId = 1; val title = "Board room" },
+    new Resource { val resourceId = 2; val title = "Training room" },
+    new Resource { val resourceId = 3; val title = "Meeting room 1" },
+    new Resource { val resourceId = 4; val title = "Meeting room 2" },
   )
 
   @js.native

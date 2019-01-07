@@ -75,10 +75,14 @@ lazy val commonSettings = Seq(
   scalacOptions ++= commonScalacOptions,
   libraryDependencies ++= Seq(
     "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
-    "org.typelevel"          %%% "cats-core"    % "latest.release"),
+  ),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
   autoAPIMappings := true,
 )
+
+lazy val fpsettings = Seq(
+  libraryDependencies ++= Seq("org.typelevel"          %%% "cats-core"    % "latest.release"
+  ))
 
 lazy val libsettings = buildSettings ++ commonSettings ++ jssettings
 lazy val jvmlibsettings = buildSettings ++ commonSettings
@@ -88,13 +92,13 @@ lazy val root = project.in(file("."))
   .settings(noPublishSettings)
   .settings(name := "scalajs-react")
   .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
+    `scalajs-react-native`,
     `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
     `scalajs-react-bootstrap`, `scalajs-react-mui`,
     `react-big-calendar`,
     `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
-  //.enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
 lazy val `scalajs-react-core` = project
@@ -103,6 +107,12 @@ lazy val `scalajs-react-core` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs package.")
   .settings(buildInfoPackage := "ttg.react")
+
+lazy val `scalajs-react-native` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .settings(description := "reactjs native package.")
 
 lazy val `react-big-calendar` = project
   .in(file("components/react-big-calendar"))
@@ -123,9 +133,11 @@ lazy val dataValidation =
   crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
     .in(file("data-validation"))
+    .settings(name := "data-validation")
     .jvmSettings(jvmlibsettings)
     .jsSettings(libsettings)
     .settings(publishSettings)
+    .settings(fpsettings)
     .settings(description :=
       "General purpose data validation library based on cats and applicatives.")
 
@@ -214,6 +226,7 @@ lazy val examples = project
     libraryDependencies ++= Seq(
       "ru.pavkin" %%% "scala-js-momentjs" % "0.9.2",
     ))
+  .settings(fpsettings)
   .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
     `scalajs-react-prop-types`, `scalajs-react-form`,
     `scalajs-react-bootstrap`,
@@ -282,6 +295,6 @@ npmRunDemo := {
 // You can use `packagedArtifacts` to build artifacts in each project's target.
 // To release: run `publish` then `bintrayRelease`.
 bintrayReleaseOnPublish in ThisBuild := false
-bintrayPackageLabels := Seq("scala.js", "react", "office")
+bintrayPackageLabels := Seq("scala.js", "react", "office", "material-ui", "bootstrap")
 bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")
 bintrayRepository := "maven"

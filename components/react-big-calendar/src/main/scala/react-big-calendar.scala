@@ -114,16 +114,19 @@ object ReactBigCalendar {
   }
 
   /** Mixin for ReactJsComponent. Create a `ReactJsComponent` using
-    * `wrapScalaForJs`. Then merge that value with an object with the methods in
-    * this trait and cast to this type. Use this result in `ViewSpecifier`.
+   * `wrapScalaForJs`. Then merge that value with an object with the methods in
+   * this trait and cast to this type. Use the final result in `ViewSpecifier`.
+   * You can use the individual types for casting a scala function. This is very
+   * message.
    */
   @js.native
   trait ReactJsComponentEnh extends ReactJsComponent {
-    def navigate(date: js.Date, action: Action): js.Date
-    /** Not mentioned in the API docs but it is in the code. */
-    def range(date: js.Date, props: js.Dynamic): js.Array[js.Date]
-    def title(date: js.Date, props: js.Dynamic): String
+    val navigate: NavigateThunk = js.native
+    val title: TitleThunk = js.native
   }
+
+  type NavigateThunk = js.Function2[js.Date, Action, js.Date]
+  type TitleThunk = js.Function2[js.Date, js.Dynamic, js.Date]
 
   trait ViewsSpecifier extends js.Object {
     var month: js.UndefOr[Boolean|ReactJsComponentEnh] = js.undefined

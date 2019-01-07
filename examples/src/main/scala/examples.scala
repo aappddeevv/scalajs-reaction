@@ -171,6 +171,9 @@ object Pages {
         defaultDate = new js.Date() // today
         startAccessor = "timestart"
         endAccessorThunk = js.defined(e => e.end.asInstanceOf[js.Date])
+        resourceIdAccessor = "resourceId"
+        resourceTitleAccessor = "title"
+        resources = resourceMap
       })()
     )
 
