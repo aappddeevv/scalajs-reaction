@@ -18,14 +18,14 @@ trait SetInnerHTML extends js.Object {
   val __html: String
 }
 
-/** Only the key. */
+/** Add a key. */
 trait Attributes extends js.Object {
   var key: js.UndefOr[KeyType] = js.undefined
 }
 
 /** Add a ref callback. */
 trait ClassAttributes[E] extends Attributes {
-  var ref: js.UndefOr[RefCbE[E]] = js.undefined
+  var ref: js.UndefOr[Ref[E]] = js.undefined
 }
 
 /** A props trait that takes all HTML props. Use wisely. */
@@ -146,7 +146,9 @@ trait tags {
   type DialogProps = ElementAttributesOnly
   final lazy val dialog = tagt[DialogProps]("dialog")
 
-  trait DivProps extends HTMLAttributes[dom.html.Div] with ClassAttributes[dom.html.Div]
+  trait DivProps
+      extends HTMLAttributes[dom.html.Div]
+      with ClassAttributes[dom.html.Div]
   final lazy val div = tagt[DivProps]("div")
 
   /** A common scenario to wrap a div just to add the classname. */

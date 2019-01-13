@@ -16,14 +16,28 @@ package object react {
 
   /**
     * Opaque type returned from a ref callback. It's typically either js
-    * component or a DOM element both of which are js.Objects. You only use this
-    * type with the `React.createRef()` machinery. You can also use a ref
-    * callback and skip this type and `Reacat.createRef()`.
+    * component or a DOM element both, of which are js.Objects. You only use
+    * this type with the `React.createRef()` machinery. You can also use a ref
+    * callback and skip this type and `Reacat.createRef()`. Note that simple
+   * using a Scala Option type and a ref callback is samentically the same.
+   * 
+   * @TODO Validate a null value is present if the ref is never set.
    */
   @js.native
-  trait ReactRef extends js.Object {
-    val current: js.Any | Null = js.native
+  trait ReactRef[T] extends js.Object {
+    /** See react.syntax for syntax support on handling E|Null. */
+    val current: T | Null = js.native
   }
+
+  ///** Callback for react ref "callback version". */
+  //type RefCb = RefCbE[dom.html.Element]
+
+  /** Callback for react ref with settable E. */
+  type RefCb[E] = js.Function1[E|Null, Unit]
+
+  /** Combine the callback and the createRef models. */
+  type Ref[E] = RefCb[E] | ReactRef[E]
+
 
   /**
     * Something that can be rendered in reactjs. We need to restrict this a bit
@@ -38,13 +52,17 @@ package object react {
   trait ReactNode extends js.Object
 
   /** Output from `react.createElement` and is something you can render with key
-    * and ref accessors. A ReactNode with a key.
+    * and ref accessors. A ReactNode with a key. Keep the trait parameterless at
+    * the expense of pushing the type parameter to `ref`.
     */
   @js.native
   trait ReactElement extends ReactNode {
-    val key: UndefOr[String]
-    val ref: UndefOr[RefCb]
+    val key: UndefOr[String] = js.native
+    def ref[E]: UndefOr[RefCb[E]] = js.native
     // ...add ref here...is it a string or a callback now?
+
+    /** Pretty sure this is always here, don't use it. */
+    val `type`: String = js.native
   }
 
   type KeyType = String | Int
@@ -52,12 +70,12 @@ package object react {
   /** Use these to mix into your traits to ensure you have a a key and ref to
    * set. For example, add this to a Props class so that you can specify a key
    * when you create it.  These are not special or used for tags, you can not
-   * use this traiat and just define the key and/or ref in your Props trait
+   * use this trait and just define the key and/or ref in your Props trait
    * directly.
    */
   trait ReactPropsJs extends js.Object {
     var key: UndefOr[KeyType] = js.undefined
-    var ref: UndefOr[RefCb] = js.undefined
+    def ref[E]: UndefOr[RefCb[E]] = js.undefined
   }
 
   /** Scala side verson of ReactPropsJs. It assumed that you use key and/or ref to
@@ -67,18 +85,17 @@ package object react {
    */
   trait ReactProps {
     val key: Option[String] = None
-    val ref: Option[RefCb] = None
+    def ref[E]: Option[RefCb[E]] = None
   }
 
   /**
     * A standard HTML element that has been created using React.createElement.
     * Props are optional of course.  We use this tag it to show that it came
-    * from the standard DOM components vs a custom one. You generally do not use
-    * this type in your code.
+    * from the standard DOM components vs a custom one.
     */
   @js.native
   trait ReactDOMElement extends ReactElement {
-    def `type`: String = js.native
+    //def `type`: String = js.native
 
     /** Raw JS props. You don't normally access this. Don't use. */
     def props: UndefOr[js.Object] = js.native
@@ -135,19 +152,16 @@ package object react {
     * Hidden field for scala components that are based directly on a js component.
     * Args should be an optional key and ref callback.
     */
-  type JsElementWrapped = (Option[String], Option[RefCb]) => ReactElement
+  type JsElementWrapped =
+    (Option[String], Option[Ref[js.Any]]) => ReactElement
 
   /** Alias for ComponentSpec. */
   type Component = ComponentSpec
 
-  /** Callback for react ref. Pure string refs are not supported. */
-  type RefCb = js.Function1[ReactElement, Unit]
-
-  /** Callback for react ref with settable E. */
-  type RefCbE[E] = js.Function1[E, Unit]
-
-  /** noop ref callback */
-  val noopRefCb = () => ()
+  /** Make a callback. You don't need this but helps with type inference. There is
+    * some dedicated syntax support for `E|Null` handling.
+*/
+  def refCallback[E](f: E|Null => Unit): RefCb[E] = f
 
   /** Children type. */
   type PropsChildren = js.Array[ReactElement]
@@ -177,7 +191,7 @@ package object react {
     * Turn a ReactRef to a js.Dynamic so you can call "component" methods
     * directly.  Most notably "select", "value" or "focus()".
     */
-  @inline def refToJs[T <: ReactRef](ref: T): js.Dynamic = ref.asInstanceOf[js.Dynamic]
+  @inline def refToJs[T](ref: ReactRef[T]): js.Dynamic = ref.asInstanceOf[js.Dynamic]
 
   /**
     * Merge js.Dynamic. See [[merge]] and use that.

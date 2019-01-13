@@ -36,9 +36,10 @@ trait IViewportProps extends js.Object {
   var skipViewportMeasures: js.UndefOr[Boolean] = js.undefined
 }
 
+/** Ref is kept js.Any since this "input" */
 trait KeyAndRef extends js.Object {
   var key: js.UndefOr[String] = js.undefined
-  var ref: js.UndefOr[RefCb]  = js.undefined
+  var ref: js.UndefOr[Ref[js.Any]]  = js.undefined
 }
 
 /** Adds a componentRef member. */

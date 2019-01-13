@@ -77,14 +77,14 @@ case class InputChanged(input: Option[String]) extends ToDoAction
 //case class SetTextFieldRef(ref: ITextField)    extends ToDoAction
 case class Complete(id: Int) extends ToDoAction
 
-object ToDoC {
+object ToDo {
 
-  val ToDo = statelessComponent("ToDoItem")
-  import ToDo.ops._
+  val c = statelessComponent("ToDoItem")
+  import c.ops._
   import ToDoStyling._
   println(s"classnames\n${PrettyJson.render(cn)}")
 
-  def make(todo: ToDo, remove: Unit => Unit) =
+  def apply(todo: ToDo, remove: Unit => Unit) =
     render { self =>
       div(new DivProps { className = cn.todo })(
         Label(new Label.Props {
@@ -121,7 +121,7 @@ object ToDoListC {
         div(
           ToDoListHeader.make(length),
           arrayToElement(
-            todos.map(t => element(ToDoC.make(t, _ => remove(t.id)), key = Some(t.id.toString()))))
+            todos.map(t => element(ToDo(t, _ => remove(t.id)), key = Some(t.id.toString()))))
         )
       }
     })
@@ -134,7 +134,8 @@ object ToDosC {
 
   case class State(
       todos: Seq[ToDo] = Seq(),
-      input: Option[String] = None,
+    input: Option[String] = None,
+    // should be boxed
       var textFieldRef: Option[TextField.ITextField] = None)
 
   case class RP(title: Option[String] = None)
@@ -149,7 +150,7 @@ object ToDosC {
     self.state.input.foreach { i =>
       self.handle { s =>
         s.send(Add(ToDo(mkId(), i)))
-        s.state.textFieldRef.foreach(ref => refToJs(ref).focus())
+        s.state.textFieldRef.foreach(_.focus())
       }
     }
 

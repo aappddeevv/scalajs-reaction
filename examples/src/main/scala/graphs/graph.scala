@@ -35,16 +35,19 @@ import cytoscape._
 // }
 
 /**
-  * Treat the graph and ref as instance vars in State since State in reason-react
-  * is really just instance vars and the component definition is really a closure
-  * around that so feel free to mutate it.
+  * Treat the graph and ref as instance vars in State since State in
+  * reason-react is really just instance vars and the component definition is
+  * really a closure around that so you should feel free to mutate it.
   */
 object Graph {
   sealed trait Action
 
+  /** Use Box? Probably does not matter much given the way that Graph is created
+    * given an element.
+   */
   case class State(
-      var ref: dom.html.Div = null,
-      var cy: Graph = null,
+      var ref: Option[dom.html.Div] = None,
+      var cy: Option[Graph] = None,
   )
 
   Cytoscape.use(Dagre)
@@ -79,12 +82,14 @@ object Graph {
     "randomize"         -> true
   )
 
-  val c = reducerComponent[State, Action]("Graph")
+  val Name = "Graph"
+  val c = reducerComponent[State, Action](Name)
   import c.ops._
 
-  def destroy(s: State) = if (s.cy != null) s.cy.destroy()
+  def destroy(s: State) = s.cy.foreach(_.destroy())
 
-  def build(s: State) = if (s.ref != null) s.cy = mkGraph(s.ref)
+  def build(s: State) =
+    s.cy = s.ref.flatMap(g => Option(mkGraph(g)))
 
   def mkGraph(el: dom.html.Element) =
     Cytoscape(new CytoscapeOptions {
@@ -151,25 +156,24 @@ object Graph {
       }
 
       didMount = js.defined { self =>
-        println("didMount")
+        println(s"$Name: didMount, building graph")
         build(self.state)
-      //js.Dynamic.global.console.log("cy", self.state.ref, self.state.cy)
       }
 
       willUnmount = js.defined { self =>
-        println("willUnmount")
+        println(s"$Name: willUnmount")
         destroy(self.state)
       }
 
       didUpdate = js.defined { onSelf =>
-        println("didUpdate")
+        println(s"$Name: didUpdate")
         destroy(onSelf.newSelf.state)
         build(onSelf.newSelf.state)
-        js.Dynamic.global.console.log(onSelf.newSelf.state.cy)
+        onSelf.newSelf.state.cy.foreach(dom.console.log(_))
       }
 
       val reducer = (action, state, gen) => {
-        println("reducer")
+        println(s"$Name: reducer")
         action match {
           // any other messages?
           case _ => gen.skip
@@ -186,7 +190,7 @@ object Graph {
             width = "100%"
             display = "block"
           }
-          ref = js.defined(el => self.state.ref = el)
+          ref = refCallback[dom.html.Div](el => self.state.ref = el.toNonNullOption)
         })()
       }
     })

@@ -16,7 +16,7 @@ object WrapProps {
       reactComponent: ReactJsComponent,
       props: P,
       children: ReactNode*): JsElementWrapped =
-    (key: Option[String], ref: Option[RefCb]) => {
+    (key: Option[String], ref: Option[Ref[js.Any]]) => {
       val newProps = js.Dictionary.empty[scala.Any]
       ref.foreach(r => newProps("ref") = r)
       key.foreach(k => newProps("key") = k)

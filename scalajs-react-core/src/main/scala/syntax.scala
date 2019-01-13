@@ -16,11 +16,12 @@ x.fold[String | Unit](())(x => x)
  */
 
 /**
-  * It is common in interop code to model a value as A or null but not undefined even
-  * though null and undefined may both mean "absent value." See `|.merge` as well.
-  * Note that chaining many `js.|` together probably not work like you think and
-  * sometimes its better to create a new target type then target implicits to convert
-  * from each individual type (in the or) to the new target type.
+  * It is common in interop code to model a value as A or null but not undefined
+  * even though null and undefined may both mean "absent value." See `|.merge`
+  * as well.  Note that chaining many `js.|` together probably not work like you
+  * think and sometimes its better to create a new target type then target
+  * implicits to convert from each individual type (in the or) to the new target
+  * type.
   */
 final case class OrNullOps[A <: js.Any](a: A | Null) {
 
@@ -280,7 +281,7 @@ final case class ComponentOps(c: Component) {
   @inline def toEl: ReactElement = elements.element(c)
 
   /** Create an element with an optional key and an optional ref. */
-  @inline def toEl(key: Option[String] = None, ref: Option[RefCb] = None) =
+  @inline def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None) =
     elements.element(c, key, ref)
 }
 
@@ -301,6 +302,14 @@ trait ValueSyntax {
   implicit def booleanValueOpsSyntax(v: Boolean) = ValueOps[Boolean](v)  
 }
 
+final case class JsRefOps[T](v: ReactRef[T]) {
+  @inline def toDyn: js.Dynamic = refToJs[T](v)
+}
+
+trait JsRefSyntax {
+  implicit def refToJsRefOps[T](v: ReactRef[T]) = JsRefOps(v)
+}
+
 // order matters here based on implicit search through hierarchy
 trait AllSyntax
     extends ComponentSyntax
@@ -313,6 +322,7 @@ trait AllSyntax
     with OptionSyntax
     with JsUndefOrSyntax
     with MiscOrSyntax
+    with JsRefSyntax
 
 object syntax {
   object all         extends AllSyntax
@@ -326,6 +336,7 @@ object syntax {
   object ornull      extends OrNullSyntax
   object option      extends OptionSyntax
   object miscor      extends MiscOrSyntax
+  object jsref extends JsRefSyntax
 }
 
 /** Convert components to elements. Components are like templates that describe

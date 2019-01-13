@@ -44,7 +44,7 @@ object elements {
   def element(
       component: Component,
       key: Option[String] = None,
-      ref: Option[RefCb] = None): ReactElement = {
+      ref: Option[Ref[js.Any]] = None): ReactElement = {
     component.jsElementWrapped.toOption match {
       // this func is only put here from interop code
       case Some(func) => func(key, ref)
@@ -58,7 +58,7 @@ object elements {
   }
 
   /** The long-named version of `element` that matches ReasonReact. */
-  def createElement(component: Component, key: Option[String] = None, ref: Option[RefCb] = None) =
+  def createElement(component: Component, key: Option[String] = None, ref: Option[RefCb[js.Any]] = None) =
     element(component, key, ref)
 
   /** Convert *anything* to what you assert is a js.Any value. Very dangerous. */

@@ -36,13 +36,10 @@ private[react] trait ReactJS extends js.Object {
   val StrictMode: ReactClass = js.native
 
   /** Create a ref to be assigned to a "ref" property on a component. */
-  def createRef(): react.ReactRef  = js.native
+  def createRef[T](): react.ReactRef[T]  = js.native
 
   // not used...
   val Suspense: ReactClass = js.native
-
-  /** forwardRef */
-  // def forwardRef(): js.Any = js.native
 
   val version: String = js.native
 }
@@ -81,13 +78,19 @@ object ReactJS extends ReactJS with Hooks
  */
 object React {
 
+  /** Create a DOM element via its string name. */
+  @inline def createDOMElement(tag: String, props: js.Object)(
+    children: ReactNode*): ReactDOMElement = 
+    ReactJS.createElement(tag, props, children:_*)
+
   /** Create an element with props and children. */
   @inline def createElement(tag: ReactType, props: js.Object)(
-      children: ReactNode*): ReactDOMElement =
+      children: ReactNode*): ReactElement =
     ReactJS.createElement(tag, props, children: _*)
 
   /** Create an element without props but with children. */
-  @inline def createElement(tag: ReactType)(children: ReactNode*): ReactDOMElement =
+  @inline def createElement(tag: ReactType)(
+    children: ReactNode*): ReactElement =
     ReactJS.createElement(tag, js.undefined, children: _*)
 
   /**
@@ -101,7 +104,7 @@ object React {
   }
 
   @inline def useState[T](default: T): (T, T => Unit) = {
-    val c = JSReact.useState(default)
+    val c = ReactJS.useState(default)
     (c._1, c._2)
   }
 }

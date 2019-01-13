@@ -25,7 +25,7 @@ object TextField {
     wrapJsForScala(JS, props, children: _*)
 
   @js.native
-  trait ITextField extends Focusable with ReactRef {
+  trait ITextField extends Focusable with ClassAttributes[html.Input] {
     var value: js.UndefOr[String]                       = js.native
     var select: js.Function0[Unit]                      = js.native
     var setSelectionStart: js.Function1[Int, Unit]      = js.native
