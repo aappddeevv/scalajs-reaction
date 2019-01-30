@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-1.0.0-M5.svg)](https://www.scala-js.org) (& 0.6.26, react v16.4+)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.4+)
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact

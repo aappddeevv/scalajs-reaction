@@ -113,6 +113,7 @@ lazy val `scalajs-react-native` = project
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs native package.")
+  .dependsOn(`scalajs-react-core`)
 
 lazy val `react-big-calendar` = project
   .in(file("components/react-big-calendar"))

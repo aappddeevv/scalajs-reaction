@@ -20,28 +20,31 @@ trait Component2Elements {
     arrayToElement(c.map(elements.element(_)))
 }
 
-/** Mostly evil converters so you can have a variety of children types ond have
- * them convert to ReactNode/ReactElements as needed.  Watch out for these
- * automatic conversions. All are prefixed with _ so you can define your own and
- * not get tripped on namespace. Watch out for values thtat need to pass through
- * 2 implicits as that is not supported by scala. So you may think that these
- * conversions should apply but an `UndefOr` wrapper on the target type means
- * either you use js.defined and these implicit conversions or you should use
- * `.toNode` to convert the ReactNode value then let the general implicit create
- * an `UndefOr[T]`.
+/** Mostly obvious converters so you can have a variety of children types and
+ * have them convert to ReactNode/ReactElements as needed. Watch out for values
+ * that need to pass through 2 implicits since double implicit resolution is not
+ * supported by scala. So you may think that these conversions should apply but
+ * an `UndefOr` wrapper on the target type means either you use js.defined and
+ * these implicit conversions or you should use `.toNode` to convert the
+ * ReactNode value then let the general implicit create an `UndefOr[T]`.
   */
 trait ValueConverters {
   @inline implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =
     react.arrayToElement(arr)
-  //@inline implicit def _stringToElement(s: String): ReactNode = react.stringToElement(s)
 
   // shouldn't these just be collapsed into a scala.AnyVal?
   @inline implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = react.arrayToElement(s)
-  // dupes
+
+  //
+  // direct value conversions as these are value react nodes directly
+  //
   // @inline implicit def _intToElement(i: Int): ReactNode         = i.asInstanceOf[ReactNode]
   // @inline implicit def _doubleToElement(d: Double): ReactNode   = d.asInstanceOf[ReactNode]
   // @inline implicit def _floatToElement(f: Float): ReactNode     = f.asInstanceOf[ReactNode]
   // @inline implicit def _booleanToElement(b: Boolean): ReactNode = b.asInstanceOf[ReactNode]
+  @inline implicit def _anyValToElement(v: AnyVal): ReactNode = v.asInstanceOf[ReactNode]
+  @inline implicit def _stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
+
   @inline implicit def _optToElement(s: Option[ReactElement]): ReactNode =
     s.getOrElse(null.asInstanceOf[ReactNode])
   @inline implicit def _iterableToElement[T](s: Iterable[T])(
@@ -56,7 +59,8 @@ trait ValueConverters {
     n.map(i => _iterableToElement(i)).getOrElse(null)
 
   /** Since null is a valid react node, convert an optional string to null. */
-  @inline implicit def _optionStringToNull(n: Option[String]): ReactNode = n.getOrElse(null)
+  @inline implicit def _optionStringToNull(n: Option[String]): ReactNode =
+    n.map(_.asInstanceOf[ReactNode]).getOrElse(nullElement)
 
   /** Convert scala.AnyVal into a react node. */
   @inline implicit def _optionAnyValToNull(n: Option[scala.AnyVal]): ReactNode =
@@ -77,15 +81,10 @@ trait AllInstances extends Component2Elements with ValueConverters
 
 /** Instances is the wrong concept here as these are not typeclass
   * instances--but close enough as they are not syntax extensions "'element'
-  * converters" would be better.
+  * converters" would be better similiar to `JSConverters` in scala.js.
   */
 object instances {
   object all       extends AllInstances
   object component extends Component2Elements
   object value     extends ValueConverters
 }
-
-/* Include these to get automatic type conversions. They are optional but
- * exceptionally helpful.  These can be included ala carte.
- */
-object implicits extends AllSyntax with AllInstances

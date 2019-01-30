@@ -7,6 +7,7 @@ package helloworld
 
 import scala.scalajs.js
 import js.annotation._
+import org.scalajs.dom
 
 import ttg.react
 import react._
@@ -17,7 +18,7 @@ import react.implicits._
 import vdom._
 import tags._
 
-/** Props for make2. */
+/** Props for make2 outside the HellowWorld object. */
 trait HelloWorldProps extends js.Object {
   var name: js.UndefOr[String] = js.undefined
 }
@@ -62,4 +63,18 @@ object HelloWorld {
     render { self =>
       div("hello world" + props.name.toOption.map(": " + _).getOrElse(""))
     }
+
+
+  // This totally the wrong place to put the ref. This should be put into State,
+  // perhaps in a Box, which in reasonreact are really instance vars.
+  val hwref = ReactJS.createRef[dom.html.Div]()
+
+  def make3(content: String) =
+    copyWith(new methods { 
+      val render = self => {
+        div(new DivProps {
+          ref = hwref
+        })(content)
+      }
+    })
 }

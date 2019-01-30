@@ -26,7 +26,7 @@ object elements {
       n: String,
       props: js.Object | js.Dynamic,
       children: ReactElement*): ReactDOMElement = {
-    JSReact.createElement(n, props.asInstanceOf[js.Object], children: _*)
+    ReactJS.createElement(n, props.asInstanceOf[js.Object], children: _*)
   }
 
   /**
@@ -53,7 +53,7 @@ object elements {
         key.foreach(k => props("key") = k)
         ref.foreach(refcb => props("ref") = refcb)
         props("scalaProps") = component.asInstanceOf[js.Any]
-        JSReact.createElement(component.reactClassInternal, props)
+        ReactJS.createElement(component.reactClassInternal, props)
     }
   }
 
@@ -164,13 +164,13 @@ object elements {
 
   /** Clone a ReactElement and add new props. You should not use this if you can avoid it. */
   def cloneElement(element: ReactElement, props: js.Object): ReactElement =
-    JSReact.cloneElement(element, props.asInstanceOf[js.Dynamic])
+    ReactJS.cloneElement(element, props.asInstanceOf[js.Dynamic])
 
   /**
     * Wrap a js side component for scala side usage. You also need to import the
     * react class using standard scala.js import mechanisms and write a "make"
     * function to create your props from "make" parameters. props can be null
-    *  if you do not have any saving an allocation of an empty object.
+    * saving an allocation of an empty object.
     */
   def wrapJsForScala[P <: js.Object](
       reactClass: ReactJsComponent,

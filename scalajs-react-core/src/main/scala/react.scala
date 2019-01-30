@@ -16,16 +16,19 @@ package object react {
 
   /**
     * Opaque type returned from a ref callback. It's typically either js
-    * component or a DOM element both, of which are js.Objects. You only use
+    * component or a DOM element, both of which are js.Objects. You only use
     * this type with the `React.createRef()` machinery. You can also use a ref
-    * callback and skip this type and `Reacat.createRef()`. Note that simple
-   * using a Scala Option type and a ref callback is samentically the same.
+    * callback (still supported) and skip this type and
+    * `Reacat.createRef()`.
    * 
-   * @TODO Validate a null value is present if the ref is never set.
+   * @todo Validate a null value is present if the ref is never set. typescript
+   * says so.
    */
   @js.native
   trait ReactRef[T] extends js.Object {
-    /** See react.syntax for syntax support on handling E|Null. */
+    /** See react.syntax for syntax support on handling E|Null
+     * e.g. myref.current.toNonNullOption.
+     */
     val current: T | Null = js.native
   }
 
@@ -108,18 +111,19 @@ package object react {
   @js.native
   trait ReactClass extends js.Object
 
-  /** Something that can be used in createElement. Need to add js.Function that
-    * returns a ReactNode.
+  /** Something that can be used in ReactJS.createElement. Need to add js.Function
+    * that returns a ReactNode.
     */
   type ReactType = ReactClass | String
 
   /**
-    * This type is used only for imported javascript side components. Typically
-    * this is used to "tag" a component type imported from javascript or created
-    * via other js-interop mechanisms such as redux integration. By using a
-    * separate type, you must use then scalajs-react's API to create an
-    * element. You can use this to annotate a js function react component as
-    * well e.g. () => ReactNode.
+    * This type is used only for imported javascript authored components to
+    * "tag" a component type or created via other js-interop mechanisms such as
+    * redux integration. By using a separate type, you must use then
+    * scalajs-react's API to create an element. You can use this to annotate a
+    * js function react component as well e.g. () => ReactNode. If you import a
+    * component from javascript, you must call `wrapJsForScala` to create an
+    * element in scala.
     */
   @js.native
   trait ReactJsComponent extends js.Object
@@ -136,7 +140,9 @@ package object react {
   /** Convenience. Use implicits for automatic conversion. */
   @inline def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
 
-  /** Convenience. Use implicits for automatic conversion. */
+  /** String to react node. Use implicits for automatic conversion and avoid
+   * calling this function.
+   */
   @inline def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
   /**
@@ -145,12 +151,13 @@ package object react {
     */
   val emptyChildrenVal = js.Array[ReactNode]()
 
-  /** Allocate an empty childe array. It's not shared like `emptyChildrenVal` */
+  /** Allocate an empty child array. It's not shared like `emptyChildrenVal` */
   def emptyChildren = js.Array[ReactNode]()
 
   /**
-    * Hidden field for scala components that are based directly on a js component.
-    * Args should be an optional key and ref callback.
+    * Hidden field for scala components that are based directly on a js
+    * component.  Args should be an optional key and ref. The scala.js interop
+    * layer creates the function that is attached to the scala side, js proxy.
     */
   type JsElementWrapped =
     (Option[String], Option[Ref[js.Any]]) => ReactElement
@@ -179,8 +186,8 @@ package object react {
   type Subscription = () => OnUnmount
 
   /**
-    * Constant val of a single, empty js.Object. Use carefully since js mutates and
-    * this will be a shared instance. Prefer `noProps()`.
+    * Constant val of a single, empty js.Object. Use carefully since js allows
+    * mutation and this will be a shared instance. Prefer `noProps()`.
     */
   val noPropsVal: js.Object = new js.Object()
 
@@ -230,14 +237,15 @@ package object react {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }
 
-  /** Add a key. Mutates input object directyl because hey, this is javascript! */
+  /** Add a key. Mutates input object directly because hey, this is javascript! */
   @inline def withKey[T <: js.Object](element: T, key: String): ReactElement = {
     element.asInstanceOf[js.Dynamic].key = key
     return element.asInstanceOf[ReactElement]
   }
 
-
-  /** Return None if undefined or null -> None, otherwise return a Some. */
+  /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
+   * support makes this easier so you don't have to use this function.
+   */
   @inline def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
     if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])

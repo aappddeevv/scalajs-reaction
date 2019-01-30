@@ -27,7 +27,7 @@ object WrapProps {
         else if (props != null && newProps.size == 0) props
         else merge[js.Object](props, newProps.asInstanceOf[js.Object])
       //js.Dynamic.global.console.log("wrapped props", all)
-      JSReact.createElement(reactComponent, all, children: _*)
+      ReactJS.createElement(reactComponent, all, children: _*)
     }
 
   /** Only need 1 interop component, then just copy and change jsElementWrapped. */

@@ -24,22 +24,19 @@ private[react] trait ReactJS extends js.Object {
 
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
 
-  /** Symbol or number depending on browser/environment support for symbols */
   val Fragment: js.Any = js.native
 
-  /** v16.3 API. */
   def createContext[T](
       defaultValue: T,
       calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
 
-  /** Experimental. */
   val StrictMode: ReactClass = js.native
 
   /** Create a ref to be assigned to a "ref" property on a component. */
   def createRef[T](): react.ReactRef[T]  = js.native
 
   // not used...
-  val Suspense: ReactClass = js.native
+  //val Suspense: ReactClass = js.native
 
   val version: String = js.native
 }
@@ -62,11 +59,6 @@ trait Hooks extends js.Object {
   def useEffect(effect: js.Function1[js.Function0[Unit], Unit]): Unit = js.native
   def useContext[T](context: ReactContext[T]): T = js.native
 }
-
-/** Deprecated for ReactJS */
-@js.native
-@JSImport("react", JSImport.Namespace)
-private[react] object JSReact extends ReactJS with Hooks
 
 /** Public access to react API. */
 @js.native
@@ -100,7 +92,7 @@ object React {
   @inline def createFragment(key: Option[String], children: ReactNode*): ReactDOMElement = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
-    ReactJS.createElement(JSReact.Fragment, props, children: _*)
+    ReactJS.createElement(ReactJS.Fragment, props, children: _*)
   }
 
   @inline def useState[T](default: T): (T, T => Unit) = {

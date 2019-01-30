@@ -27,6 +27,7 @@ trait Focusable extends js.Object {
   def focus(): Unit = js.native
 }
 
+/** Focus method but returns a Boolean. */
 @js.native
 trait Focusable2 extends js.Object {
   def focus(): Boolean = js.native

@@ -19,19 +19,19 @@ import js.Dynamic.{literal => lit}
 object context {
 
   def make[T](defaultValue: T): ReactContext[T] =
-    JSReact.createContext(defaultValue, js.undefined)
+    ReactJS.createContext(defaultValue, js.undefined)
 
   def makeProvider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactNode = {
     // not sure this is right, use previous value if current is missing?
     val v = lit("value" -> value.asInstanceOf[js.Any])
-    JSReact.createElement(ctx.Provider, v, children: _*)
+    ReactJS.createElement(ctx.Provider, v, children: _*)
   }
 
   def makeConsumer[T](ctx: ReactContext[T])(
       f: js.Function1[T, ReactNode],
       key: Option[String] = None): ReactNode = {
     val props = key.fold[js.Any](js.undefined)(k => lit("key" -> k))
-    JSReact.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
   }
 
   implicit class ReactContextOps[T](ctx: ReactContext[T]) {

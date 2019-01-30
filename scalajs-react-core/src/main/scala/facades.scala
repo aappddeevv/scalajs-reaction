@@ -39,7 +39,8 @@ trait ComponentSpec extends js.Object {
   var contextTypes: js.UndefOr[js.Object] = js.undefined
 
   /** If ComponentSpec is just wrapping a reactjs component, the wrapped component
-    * is attached here.
+    * is attached here. The value is a function that takes an optional key and ref
+   * and returns a ReactElement.
     */
   var jsElementWrapped: js.UndefOr[JsElementWrapped] = js.undefined
 

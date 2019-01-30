@@ -19,6 +19,7 @@ import elements._
 import react.implicits._
 import redux._
 import vdom._
+import vdom.{tags => E}
 import ttg.react.fabric
 import fabric._
 import fabric.components._
@@ -92,6 +93,12 @@ object Pages {
     helloworld.HelloWorld("apply".some),
     helloworld.HelloWorld.make2(new helloworld.HelloWorldProps { name = "make2" }),
     helloworld.HelloWorld.withMount("withMount".some),
+    helloworld.HelloWorld.make3("test ref content"),
+    E.div(12),
+    E.div(12.0),
+    E.div(true), // this will not display anything
+    E.div(null), // this will not display anything
+    E.div("this is a helloworld string")
   )
 
   // the view model will come from redux to illustrate how it can be split up.
@@ -125,6 +132,7 @@ object Pages {
       itemKey = "readme"
       className = cx(estyles.scrollme, estyles.readme)
     })(
+      E.div(s"Build with React ${ReactJS.version}"),
       ReactMarkdownC.make(new ReactMarkdownProps { source = text })
     )
   }
