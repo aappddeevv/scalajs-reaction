@@ -28,6 +28,18 @@ object View {
 
 }
 
+@js.native
+trait LayoutRectangle extends js.Object {
+  val x: Int
+  val y: Int
+  val width: Int
+  val height: Int
+}
+
+@js.native
+trait LayoutChangeEvent extends js.Object {
+  val layout: LayoutRectangle
+}
 
 trait ViewStyle extends FlexStyle {
   //var backfaceVisibility

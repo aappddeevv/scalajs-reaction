@@ -10,8 +10,6 @@ import react.elements._
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
-import scala.scalajs.js.|
-import js.Dynamic.{literal => jsobj}
 
 object Button {
 
@@ -19,8 +17,7 @@ object Button {
   @JSImport("react-native", "Button")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+  def apply(props: Props = null) = wrapJsForScala(JS, props)
 
   trait Props extends js.Object {
     val title: String

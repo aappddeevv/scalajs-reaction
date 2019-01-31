@@ -6,7 +6,7 @@ documentation is located [here](https://reasonml.github.io/reason-react) and
 provides a good description of how this library works since the API is very
 similar. While more advanced scala functionality could have been used, the
 scala.js implemetation was kept intentionally similar to ReasonReact so that the
-documentation would apply.
+documentation would apply. This facade also supports react-native.
 
 This facade library is small, does not use advanced scala features and provides
 a different component API based on reason-react vs reactjs. It explicitly
@@ -32,13 +32,18 @@ scalajs-react for your solution.
 * [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
-scalajs-react supports fragments and the new context provider in react v16.3. A
-future version will support react-native. The scalaj-react API roughly mimics
-ReasonReact 4.1 and the intent is to track that API and stick closely to
-it. Read those docs to understand this API.
+scalajs-react supports fragments and the new context provider in react
+v16.3. The scalaj-react API roughly mimics ReasonReact 4.1 and the intent is to
+track that API and stick closely to it. Read those docs to understand this API
+and how it is different than the standard reactjs UI model.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to create a
 new project.
+
+This library will be renamed so that it's name does not conflict with japgolly's
+scalajs-react library or the other scalajs reactjs library that also has the
+same name :-). I'll probably rename it to `scalajs-reaction`. It will be rename
+prior to 1.0 once I get some time to rework it.
 
 ## Usage
 Include the library in your build:
@@ -62,13 +67,16 @@ libraryDependencies ++= Seq(
     "ttg" %%% scalajs-react-fabric" % scalaJsReactVersion,
 
     // Material UI components (WIP, waiting for v4)
-    "ttg" %%% scalajs-react-material-ui" % scalaJsReactVersion,
+    "ttg" %%% scalajs-react-mui" % scalaJsReactVersion,
 
     // if you integrate with redux
-    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
+    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion,
     
     // if you need prop-types
-    "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion)
+    "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion,
+ 
+    // if you need react-native
+    "ttg" %%% "scalajs-react-native" % scalaJsReactversion)
 ```
 
 Do not forget to include the react libraries in your execution environment. For
@@ -358,7 +366,7 @@ implementation. See the example app for an example of how to use it.
 
 ### Widget Libraries
 
-Libraries (at the start of them) are provided for bootstrap, material ui and fabric.
+Libraries (the start of them) are provided for bootstrap, material ui and fabric.
 
 ### Forms & Data Validation
 

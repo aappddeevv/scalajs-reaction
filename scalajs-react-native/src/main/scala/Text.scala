@@ -11,7 +11,6 @@ import react.elements._
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.|
-import js.Dynamic.{literal => jsobj}
 
 object Text {
 

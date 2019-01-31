@@ -97,6 +97,8 @@ lazy val root = project.in(file("."))
     `scalajs-react-react-dom`, `scalajs-react-prop-types`,
     `scalajs-react-bootstrap`, `scalajs-react-mui`,
     `react-big-calendar`,
+    `scalajs-react-native-nativebase`,
+    `scalajs-react-native-react-native-elements`,
     `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
@@ -122,12 +124,39 @@ lazy val `react-big-calendar` = project
   .settings(Seq(
     description := "react-big-calendar",
     name := "scalajs-react-components-react-big-calendar",
-    version := "0.10.0"
+    //version := "0.10.0"
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
     `scalajs-react-core`,
     `scalajs-react-vdom`)
+
+lazy val `scalajs-react-native-nativebase` = project
+  .in(file("components/scalajs-react-native-nativebase"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(Seq(
+    description := "nativebase library",
+    name := "scalajs-react-native-nativebase",
+  ))
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(
+    `scalajs-react-core`,
+    `scalajs-react-native`)
+
+lazy val `scalajs-react-native-react-native-elements` = project
+  .in(file("components/scalajs-react-native-react-native-elements"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(Seq(
+    description := "react-native-elements library",
+    name := "scalajs-react-native-react-native-elements",
+  ))
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(
+    `scalajs-react-core`,
+    `scalajs-react-native`)
+
 
 // jvm and js based project
 lazy val dataValidation =

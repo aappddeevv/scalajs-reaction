@@ -271,11 +271,13 @@ trait CakeBase { cake =>
     type methods = cake.WithMethods
 
     /**
-      * Alias for this component cake's `copy()` method but without the need for the val.
+      * Alias for this component cake's `copy()` method but without the need for
+      * the component val.
       * @example {{
       * val c = statelessComponent("MyComponent")
       * import c.ops._
-      * copyWith(new methods { ... }) // instead of c.copy(new methods{...})
+     *  // instead of c.copy(new methods{...})
+      * def apply() = copyWith(new methods { ... })
       *  }}
       */
     def copyWith(newMethods: methods) = cake.copy(newMethods)
@@ -294,6 +296,9 @@ trait CakeBase { cake =>
   def copy(methods: WithMethods): ComponentType = {
     mergeComponents[ComponentType](lit(), component, methods.asInstanceOf[js.Dynamic])
   }
+
+  /** Call copyWith on the component directly. `c.copyWith(new methods { ... })` */
+  def copyWith(methods: WithMethods): ComponentType = cake.copy(methods)
 
   /** Wrap this component for use in javascript. The jsPropsToScala should return
    * a component based on calling "make" or "apply".
