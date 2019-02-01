@@ -99,6 +99,8 @@ lazy val root = project.in(file("."))
     `react-big-calendar`,
     `scalajs-react-native-nativebase`,
     `scalajs-react-native-react-native-elements`,
+    `scalajs-react-native-react-navigation`,
+    `scalajs-react-native-react-native-sideswipe`,    
     `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
   .enablePlugins(AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
@@ -115,7 +117,10 @@ lazy val `scalajs-react-native` = project
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs native package.")
-  .dependsOn(`scalajs-react-core`)
+  .dependsOn(
+    `scalajs-react-core`,
+    `scalajs-react-vdom`
+  )
 
 lazy val `react-big-calendar` = project
   .in(file("components/react-big-calendar"))
@@ -130,6 +135,34 @@ lazy val `react-big-calendar` = project
   .dependsOn(
     `scalajs-react-core`,
     `scalajs-react-vdom`)
+
+lazy val `scalajs-react-native-react-navigation` = project
+  .in(file("components/scalajs-react-native-react-navigation"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(Seq(
+    description := "react-navigation facade",
+    name := "scalajs-react-native-react-navigation",
+  ))
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(
+    `scalajs-react-core`,
+    `scalajs-react-native`    
+  )
+
+lazy val `scalajs-react-native-react-native-sideswipe` = project
+  .in(file("components/scalajs-react-native-react-native-sideswipe"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(Seq(
+    description := "react-native-sideswipe",
+    name := "scalajs-react-native-react-native-sideswipe",
+  ))
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(
+    `scalajs-react-core`,
+    `scalajs-react-native`    
+  )
 
 lazy val `scalajs-react-native-nativebase` = project
   .in(file("components/scalajs-react-native-nativebase"))
@@ -325,6 +358,6 @@ npmRunDemo := {
 // You can use `packagedArtifacts` to build artifacts in each project's target.
 // To release: run `publish` then `bintrayRelease`.
 bintrayReleaseOnPublish in ThisBuild := false
-bintrayPackageLabels := Seq("scala.js", "react", "office", "material-ui", "bootstrap")
+bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap")
 bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")
 bintrayRepository := "maven"

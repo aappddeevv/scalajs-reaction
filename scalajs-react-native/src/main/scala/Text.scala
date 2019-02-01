@@ -6,11 +6,12 @@ package ttg
 package react
 package native
 
-import react.elements._
-
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.|
+
+import react.elements._
+import native.styling._
 
 object Text {
 
@@ -21,9 +22,32 @@ object Text {
   def apply(props: Props = null)(children: ReactNode*) =
     wrapJsForScala(JS, props, children:_*)
 
-  trait Props extends js.Object {
-    var style: js.UndefOr[TextStyle] = js.undefined
+  trait IOS extends js.Object {
+    var adjustsFontTSizeToFit: js.UndefOr[Boolean] = js.undefined
+    var minimumFontTScale: js.UndefOr[Double] = js.undefined
+    var suppressHighlighting: js.UndefOr[Boolean] = js.undefined
   }
+
+  trait Android extends js.Object {
+    var selectable: js.UndefOr[Boolean] = js.undefined
+    var selectionColor: js.UndefOr[String] = js.undefined
+    var textBreakStrategy: js.UndefOr[TextBreakStrategy] = js.undefined
+  }
+
+  trait Props extends Android with IOS {
+    var allowFontScaling: js.UndefOr[Boolean] = js.undefined
+    var ellipsizeMode: js.UndefOr[String] = js.undefined
+    var lineBreakMode: js.UndefOr[String] = js.undefined
+    var numberOfLines: js.UndefOr[Int] = js.undefined
+    var onLayout: js.UndefOr[js.Function1[LayoutChangeEvent, Unit]] = js.undefined
+    var onPress: js.UndefOr[js.Function1[GestureResponderEvent, Unit]] = js.undefined
+    var onLongPress: js.UndefOr[js.Function1[GestureResponderEvent, Unit]] = js.undefined
+    var style: js.UndefOr[StyleProp[TextStyle]] = js.undefined
+    var testID: js.UndefOr[String] = js.undefined
+    var nativeID: js.UndefOr[String] = js.undefined
+  }
+
+  def stylelist(s: StyleProp[TextStyle]*) = styling.stylelist[TextStyle](s:_*)
 }
 
 @js.native
@@ -35,15 +59,6 @@ object TextAlignVertical {
   val center = "center".asInstanceOf[TextAlignVertical]  
 }
 
-trait TextStyleIOS extends js.Object {
-  var letterSpacing: js.UndefOr[Double] = js.undefined
-}
-
-trait TextStyleAndroid extends js.Object {
-  var textAlignVertical: js.UndefOr[TextAlignVertical] = js.undefined
-  var includeFontPadding: js.UndefOr[Boolean] = js.undefined
-}
-
 @js.native
 sealed trait FontStyle extends js.Any
 object FontStyle {
@@ -51,7 +66,7 @@ object FontStyle {
   val italic = "italic".asInstanceOf[FontStyle]  
 }
 
-trait TextOffset extends js.Object {
+trait Offset extends js.Object {
   var width: js.UndefOr[Double] = js.undefined
   var height: js.UndefOr[Double] = js.undefined
 }
@@ -82,10 +97,21 @@ object TextAlign {
   val justify = "justify".asInstanceOf[TextAlign]
 }
 
-trait TextStyle
-    extends TextStyleAndroid
-    with TextStyleIOS
-    with ViewStyle {
+trait TextStyleIOS extends ViewStyle {
+  var letterSpacing: js.UndefOr[Double] = js.undefined
+  var textDecorationColor: js.UndefOr[String] = js.undefined
+  var textDecorationStyle: js.UndefOr[String] = js.undefined
+  var textTransform: js.UndefOr[String] = js.undefined
+  var wirtingDirection: js.UndefOr[String] = js.undefined
+}
+
+trait TextStyleAndroid extends js.Object {
+  var textAlignVertical: js.UndefOr[String] = js.undefined
+  var includeFontPadding: js.UndefOr[Boolean] = js.undefined
+}
+
+/** Text related. */
+trait TextStyle extends TextStyleAndroid with TextStyleIOS {
   var color: js.UndefOr[String] = js.undefined
   var fontFamily: js.UndefOr[String] = js.undefined
   var fontSize: js.UndefOr[Double] = js.undefined
@@ -95,9 +121,18 @@ trait TextStyle
   var lineHeight: js.UndefOr[Double] = js.undefined
   var textAlign: js.UndefOr[TextAlign] = js.undefined
   var textDecorationLine: js.UndefOr[String] = js.undefined
-  var textDecorationStyle: js.UndefOr[String] = js.undefined
-  var textDecorationColor: js.UndefOr[String] = js.undefined
+  //var textDecorationStyle: js.UndefOr[String] = js.undefined
+  //var textDecorationColor: js.UndefOr[String] = js.undefined
   var textShadowColor: js.UndefOr[String] = js.undefined
-  var textShadowOffset: js.UndefOr[TextOffset] = js.undefined
-  var textShadowRadius: js.UndefOr[Double] = js.undefined  
+  var textShadowOffset: js.UndefOr[Offset] = js.undefined
+  var textShadowRadius: js.UndefOr[Double] = js.undefined
+  //var testID: js.UndefOr[String] = js.undefined
+}
+
+@js.native
+sealed trait TextBreakStrategy extends js.Any
+object TextBreakStrategy {
+  val simple = "simple".asInstanceOf[TextBreakStrategy]
+  val highQuality = "highQuality".asInstanceOf[TextBreakStrategy]
+  val balanced = "balanced".asInstanceOf[TextBreakStrategy]
 }

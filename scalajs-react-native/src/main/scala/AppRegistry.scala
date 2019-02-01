@@ -26,4 +26,5 @@ object AppRegistry extends js.Object {
   def runApplication(appKey: String, appParameters: js.Any): Unit = js.native
   def registerHeadlessTask(appKey: String, task: js.Any): Unit = js.native
   def getRunnable(appKey: String): js.UndefOr[Runnable] = js.native
+  def getAppKeys(): js.Array[String] = js.native
 }

@@ -6,12 +6,10 @@ package ttg
 package react
 package native
 
-import react.elements._
-
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
-import scala.scalajs.js.|
-import js.Dynamic.{literal => jsobj}
+import react.elements._
+import native.styling._
 
 object View {
 
@@ -22,10 +20,45 @@ object View {
   def apply(props: Props = null)(children: ReactNode*) =
     wrapJsForScala(JS, props, children:_*)
 
-  trait Props extends js.Object {
-    var style: js.UndefOr[ViewStyle] = js.undefined
+  trait IOS extends js.Object {
+    var accessibilityViewIsModel: js.UndefOr[Boolean] = js.undefined
+    var accessibilityActions: js.UndefOr[js.Array[String]] = js.undefined
+    var onAccessibilityAction: js.UndefOr[js.Function0[Unit]] = js.undefined
+    var shouldRasterizeIOS: js.UndefOr[Boolean] = js.undefined
   }
 
+  trait Android extends js.Object {
+    var collapsable: js.UndefOr[Boolean] = js.undefined
+    var needsOffscreenAlphaCompositing: js.UndefOr[Boolean] = js.undefined
+    var renderToHardwareTextureAndroid: js.UndefOr[Boolean] = js.undefined
+  }
+
+  trait Props
+      extends IOS
+      with Android
+      with AccessibilityProps {
+    var hitSlop: js.UndefOr[Insets] = js.undefined
+    var onLayout: js.UndefOr[js.Function1[LayoutChangeEvent, Unit]] = js.undefined
+    var pointerEvents: js.UndefOr[PointerEvents] = js.undefined
+    var removeClippedSubviews: js.UndefOr[Boolean] = js.undefined
+    var style: js.UndefOr[StyleProp[ViewStyle]] = js.undefined
+    var testID: js.UndefOr[String] = js.undefined
+  }
+
+  def stylelist(s: StyleProp[ViewStyle]*) = styling.stylelist[ViewStyle](s:_*)
+}
+
+trait Insets extends js.Object {
+  var top, let, bottom, right: js.UndefOr[Int] = js.undefined
+}
+
+@js.native
+sealed trait PointerEvents extends js.Any
+object PointerEvents {
+  val boxNone = "box-none".asInstanceOf[PointerEvents]
+  val none = "none".asInstanceOf[PointerEvents]
+  val boxOnly = "boxonly".asInstanceOf[PointerEvents]
+  val autuo = "auto".asInstanceOf[PointerEvents]
 }
 
 @js.native
@@ -37,11 +70,19 @@ trait LayoutRectangle extends js.Object {
 }
 
 @js.native
-trait LayoutChangeEvent extends js.Object {
-  val layout: LayoutRectangle
+trait NativeLayoutChangeEvent extends js.Object {
+  var layout: LayoutRectangle
 }
 
-trait ViewStyle extends FlexStyle {
+@js.native
+trait LayoutChangeEvent extends js.Object {
+  var nativeEvent: NativeLayoutChangeEvent
+}
+
+trait ViewStyle
+    extends FlexStyle
+    with ShadowStyleIOS
+    with TransformsStyle {
   //var backfaceVisibility
   var backgroundColor: js.UndefOr[String] = js.undefined
   var borderBottomColor: js.UndefOr[String] = js.undefined

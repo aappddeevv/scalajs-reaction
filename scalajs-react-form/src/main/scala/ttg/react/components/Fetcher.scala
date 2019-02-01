@@ -20,7 +20,10 @@ import elements._
   * the values. Fetch provides a generic `F` that must be an `Effect` so a
   * result can be "fetched." You can create the Fetcher and provide the fetch
   * "recipe" in `F` as a parameter or let the child initiate a fetch--you have a
-  * choice. Allowing the child to initiate a "fetch" makes the API messy.
+  * choice. Allowing the child to initiate a "fetch" makes the API messy.  See
+  * this
+  * [blog](https://appddeevvmeanderings.blogspot.com/2018/12/abstracting-react-scalajs-react-fetcher.html)
+  * for more details on how to define your Runner.
  * 
  * @tparam F Fetch effect. Produces a P. F may also hold an error e.g. implied
  * Throwable.

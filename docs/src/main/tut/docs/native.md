@@ -313,31 +313,31 @@ object App {
   @JSExport("JS")
   val JS = c.wrapScalaForJs[js.Object](_ => App())//_ => apply())
 
-  @js.native
-  trait Styles extends StyleSetTag {
-    val container: ViewStyle = js.native
-    val welcome: TextStyle = js.native
-    val instructions: TextStyle = js.native
+  trait Styles extends StyleSet {
+    val container: ViewStyle
+    val welcome: TextStyle
+    val instructions: TextStyle 
   }
 
-  val styles = StyleSheet.create[Styles](styleset(
-    "container" -> new ViewStyle {
+  val styles = StyleSheet.create(
+   new Styles {
+     val container = new ViewStyle {
       flex = 1
       justifyContent = JustifyContent.center
       alignItems = FlexAlignType.center
       backgroundColor = "#F5FCFF"
-    },
-    "welcome" -> new TextStyle {
+    }
+    val welcome = new TextStyle {
       fontSize = 20
       textAlign = TextAlign.center
       margin = 10
-    },
-    "instructions" -> new TextStyle {
+    }
+    val instructions = new TextStyle {
       textAlign = TextAlign.center
       color = "#333333"
       marginBottom = 5
-    },
-  ))
+    }}
+  )
 }
 ```
 

@@ -64,21 +64,30 @@ trait Events {
 }
 
 @js.native
-trait SyntheticEvent[+DOMEventTarget <: dom.EventTarget] extends js.Object {
+trait BaseSyntheticEvent[E, +C, +T] extends js.Object {
+  val nativeEvent: E          = js.native  
+  val currentTarget: C   = js.native
+  val target: T          = js.native
+
   val bubbles: Boolean                = js.native
   val cancelable: Boolean             = js.native
-  val currentTarget: DOMEventTarget   = js.native
-  def defaultPrevented: Boolean       = js.native
+  val defaultPrevented: Boolean       = js.native
   val eventPhase: Double              = js.native
   val isTrusted: Boolean              = js.native
-  val nativeEvent: dom.Event          = js.native
-  val target: DOMEventTarget          = js.native
   val timeStamp: js.Date              = js.native
   def preventDefault(): Unit          = js.native
   def stopPropagation(): Unit         = js.native
   def isPropagationStopped(): Boolean = js.native
   val `type`: String                  = js.native
-  def persist(): Unit                 = js.native
+  def persist(): Unit                 = js.native  
+}
+
+@js.native
+trait SyntheticEvent[+DOMEventTarget <: dom.EventTarget]
+    extends BaseSyntheticEvent[dom.Event, DOMEventTarget, DOMEventTarget] {
+  //val nativeEvent: dom.Event          = js.native
+  //val currentTarget: DOMEventTarget   = js.native
+  //val target: DOMEventTarget          = js.native
 }
 
 @js.native

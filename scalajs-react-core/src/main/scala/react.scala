@@ -114,7 +114,7 @@ package object react {
   /** Something that can be used in ReactJS.createElement. Need to add js.Function
     * that returns a ReactNode.
     */
-  type ReactType = ReactClass | String
+  type ReactType = ReactClass | String | ReactJsComponent
 
   /**
     * This type is used only for imported javascript authored components to
