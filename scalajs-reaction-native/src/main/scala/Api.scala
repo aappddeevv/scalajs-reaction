@@ -135,3 +135,11 @@ object Dimensions extends js.Object {
   def addEventListener(t: String, handler: js.Function1[DimChangedCbArgs, Unit]): Unit = js.native
   def removeEventListener(t: String, handler: js.Function1[DimChangedCbArgs, Unit]): Unit = js.native
 }
+
+@js.native
+@JSImport("react-native", "Clipboard")
+object Clipboard extends js.Object {
+  // call .toFuture
+  def getString(): js.Promise[String] = js.native
+  def setString(content: String): Unit = js.native
+}

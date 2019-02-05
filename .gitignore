@@ -6,7 +6,7 @@
 .cache
 .history
 .lib/
-dist/*
+
 target/
 lib_managed/
 src_managed/
@@ -21,4 +21,6 @@ node_modules/*
 .#*
 \#*\#
 .\#*
+# do not include assets that are generated during the build
 docs/src/main/resources/microsite/static
+dist/*

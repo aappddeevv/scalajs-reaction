@@ -17,16 +17,16 @@ val scalaJsReactVersion = "latest.version"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-react-core" % scalaJsReactVersion,
-    "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-core" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-vdom" % scalaJsReactVersion,
     // optional but includes a Microsoft UI component set
-    "ttg" %%% "scalajs-react-fabric" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-fabric" % scalaJsReactVersion,
     // optional unless you want to connect to redux state
-    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion
+    "ttg" %%% "scalajs-reaction-redux" % scalaJsReactVersion
     // if you need react-dom
-    "ttg" %%% "scalajs-react-react-dom" % scalaJsReactVersion
+    "ttg" %%% "scalajs-reaction-react-dom" % scalaJsReactVersion
     // if you need prop-types
-    "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion)
+    "ttg" %%% "scalajs-reaction-prop-types" % scalaJsReactVersion)
 ```
 
 Then use the following imports to import functionality you need:

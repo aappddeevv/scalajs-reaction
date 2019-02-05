@@ -26,8 +26,8 @@ Include the core libraries:
 ```scala
 scalajsReactVersion = ...
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-react-core" % scalajsReactVersion,
-    "ttg" %%% "scalajs-react-native" % scalajsReactVersion
+    "ttg" %%% "scalajs-reaction-core" % scalajsReactVersion,
+    "ttg" %%% "scalajs-reaction-native" % scalajsReactVersion
 )
 ```
 
@@ -55,69 +55,60 @@ only need to change your index.js (located in the toplevel directory) once, you
 can set up a file copy task that copies the output of fullOptJS or
 fastOptJS. You would run this task after the scala.js full/fast
 processing. index.js is the default starting point for javascript bundling when
-using the react-native cli such as `react-native run-android`. The metro bundler
-looks for index.js to create the javascript resource graph.
+using the react-native cli such as `react-native run-android`. 
+
+The metro bundler looks for index.js to create the javascript resource
+graph. Instead of modifying the output of sbt, you can also use build vars in
+javascript to switch between targets--a typical approach in javascript
+e.g. include min if you are in a dev build. Below is the copy approach. If your
+final scala.js project that creates the linked javascript artifact is always the
+same, it is probably easier to hardcode the path with conditionals in index.js.
+
+However, let's just assume that you want to keep index.js unchanged and want to
+map full or fast builds to the same output file.
 
 You will want to scope the task to the respective scala.js linkage tasks,
 fastOptJS or fullOptJS so that the correct artifactPath is picked up.
 
 ```scala
-// build.sbt
+lazy val root = ...
+  //...
+  // rename outputs
+  .settings(artifactPath.in(Compile, fastOptJS) := crossTarget.in(Compile, fastOptJS).value / "Scala.js")
+  .settings(artifactPath.in(Compile, fullOptJS) := crossTarget.in(Compile, fullOptJS).value / "Scala.js")
 
-// copy operation
-val copyOutput = "./Scala.js"
-def copy(src: File): Unit = IO.copyFile(src, file(copyOutput), true, true)
+// Copy output to the current dir, which is where build.sbt runs.
+// Could use another directory as well e.g. src or dist
+val copyOutputDir = "."
 
-// You will want to scope these as needed to a specific sub-project if that's relevant for your build.
-
-// Approach 1 - task dependency through .value
-// If you don't want "include" the *OptJS dependency in the task, use sbt commands or some other method
-
-lazy val copyJSOutput = taskKey[Attributed[File]]("copy scala.js output to well known location")
-
-// run as fastOptJS/copyJSOutput to link and copy
-Compile / fastOptJS / copyJSOutput := {
-  value infile = (fastOptJS in Compile).value
-  copy(infile.data)
-  infile
+def copyJSAndMap(src: File): Unit = {
+  println(s"Copying: [$src] to [$copyOutputDir]")
+  val outputName = src.name
+  val mapOutputName = src.name + ".map"
+  IO.copyFile(src, file(outputName), true, true)
+  IO.copyFile(file(src.getCanonicalPath() + ".map"), file(mapOutputName), true, true)
 }
 
-// Run as fullOptJS/copyJSOutput to link and copy.
-// Slightly different scoped syntax compared to above.
-copyJSOutput in (Compile, fullOptJS) := {
-  val infile = (fullOptJS in Compile).value
-  copy(infile.data)
-  infile
+lazy val copyJSOutput = taskKey[Unit]("copy scala.js output to well known location")
+
+// no scoping as we use scalaJSLinkedFile, which is independent of *OptJS,
+// instead of artifactPath which is dependent on a specific *OptJS
+copyJSOutput := {
+  val infile = scalaJSLinkedFile.in(Compile).value.path
+  copyJSAndMap(file(infile))
+
 }
 
-// Run: 
-// full: fullOptJS / copyJSOutput
-// fast: fastOptJS / copyJSOutput
+// trigger the copy after an *OptJS task is run
+// depending on project structure, scope to the project
+// run a clean before switching targets
+fastOptJS / copyJSOutput := (copyJSOutput triggeredBy fastOptJS.in(Compile)).value
+fullOptJS / copyJSOutput := (copyJSOutput triggeredBy fullOptJS.in(Compile)).value
 ```
 
-If you are interested in an explicit trigger so that you only need to run *OptJS without explicitly running `copyJSOutput`:
-
-```scala
-// Approach 2 - trigger via explicitly written dependency, need only call *OptJS
-lazy val copyJSOutput = taskKey[Unit]("copy scala.js outut to well known location)")
-Compile / fullOptJS / copyJSOutput := {
-  val infile = artifactPath.in(Compile,fullOptJS).value
-  copy(infile)
-}
-
-copyJSOutput.in(Compile,fullOptJS) := (copyJsOutput.in(Compile,fullOptJS) triggeredBy fullOptJS.in(Compile)).value
-```
-
-The last approach replaces the fullOptJS task which means it must run the original task.
-
-```scala
-// Approach 3 - redefine fullOptJS tasks
-// use copyJSOutput from Approach 1
-fullOptJS.in(Compile) := copyJSOutput.in(Compile,fullOptJS).value
-```
-
-I typically use Approach 2 because I do not like redefining tasks created by
-other plugins unless have to.
+There are many ways to do this in sbt including using artifactPath (scoped to
+the fast or full task inside Compile) to copy the file and standardize its output
+name for react-native.
 
 Managing task running in sbt is covered in the
 [manual](https://www.scala-sbt.org/release/docs/Tasks.html) as there are a few
@@ -179,7 +170,7 @@ include the scala.js output:
 ```javascript
 // index.js
 // Adjust for your output or use the copy method described above.
-// We assume you used the "copy to a well know location below."
+// We assume you used the "copy to a well know location" below.
 
 // Scala.js runs registerComponent inside Main.
 import { Main } from "./Scala.js"
@@ -193,12 +184,33 @@ Main.main()
 AppRegistry.registerComponent(appName, () => App.JS)
 ```
 
+If you want to switch on the build type in javascript and skip the sbt
+configuration above, use an ES6 feature with dynamic imports (make sure its
+enabled in your environment if you need to):
+
+```
+if(process.env.NODE_ENV === "production") then { 
+const Main = import("./target/scala-2.12/app-opt.js")
+}
+else {
+const Main = import("./target/scala-2.12/app-fastopt.js")
+}
+```
+
+If you don't have ES6 support you could use the legacy "require(...)"  which
+should be supported for some time to come with most bundlers. The default
+react-native metro should allow the dynamic import using `import`. If you use
+this approach, make sure any imported resources such as images are available
+based on a path relative to the js file as your scala or js imports inside of
+app-opt.js/app-fastopt.js will now be relative to the target/scala-2.12
+directory.
+
 ## Build
 
 Run sbt as you normally would and during dev and use `~fastOptJS` if you used
 the triggered approach to perform the scala.js output copy. That allows you to
 recompile as needed. react native uses its own JS packager, called metro, that
-restructures your JS similar to webpack. 
+restructures your JS similar to webpack.
 
 metro is not as feature-rich as webpack. When you run `react-native run-android`
 it first runs gradle to build the java part of the project and it starts up a JS
@@ -231,6 +243,18 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 ```
 
 to a shell script you can import into your current terminal.
+
+## Other Libraries
+
+There are some ports of common libraries, all WIP and some have no code yet :-):
+
+* react-navigation (working)
+* nativebase (no code yet)
+* react-native-elements (no code yet)
+
+Creating facades is easy. It only took 3 hours to create the entire facade for
+react-native from scratch when I did not even know react-native. I always just
+look at the typescript definitions.
 
 ## Resources
 

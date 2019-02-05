@@ -81,9 +81,8 @@ object Overflow {
 @js.native
 sealed trait Position extends js.Any
 object Position {
-  val visible = "visible".asInstanceOf[Position]
-  val hidden = "visible".asInstanceOf[Position]
-  val scroll = "visible".asInstanceOf[Position]
+  val absolute = "absolute".asInstanceOf[Position]
+  val relative = "relative".asInstanceOf[Position]  
 }
 
 @js.native

@@ -1,5 +1,7 @@
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.4+)
 
+# scalajs-reaction
+
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
 documentation is located [here](https://reasonml.github.io/reason-react) and
@@ -21,7 +23,7 @@ trying to copy the reactjs API, it provides something smaller and emphasizes
 changes in a few dimensions of the reactive UI API problem--almost the very
 definition of "disruptive."
 
-scalajs-react emphasizes integration into an existing project by making it easy
+scalajs-reaction emphasizes integration into an existing project by making it easy
 to import/export components and fit into existing application including those
 using global state-managed solutions such as redux. At the same time, it allows
 you to build your entire interface in scalajs-react. As long as your front-end
@@ -29,21 +31,16 @@ solution can manage the model of scala.js's output (one large module for all
 scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
 
-* [Demo](http://aappddeevv.github.io/scalajs-react/static/index.html).
+* [Demo](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
-scalajs-react supports fragments and the new context provider in react
-v16.3. The scalaj-react API roughly mimics ReasonReact 4.1 and the intent is to
-track that API and stick closely to it. Read those docs to understand this API
-and how it is different than the standard reactjs UI model.
+The library supports fragments and the new context provider in react v16.3. The
+scalaj-react API roughly mimics ReasonReact 4.1 and the intent is to track that
+API and stick closely to it. Read those docs to understand this API and how it
+is different than the standard reactjs UI model.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to create a
 new project.
-
-This library will be renamed so that it's name does not conflict with japgolly's
-scalajs-react library or the other scalajs reactjs library that also has the
-same name :-). I'll probably rename it to `scalajs-reaction`. It will be rename
-prior to 1.0 once I get some time to rework it.
 
 ## Usage
 Include the library in your build:
@@ -55,28 +52,28 @@ val scalaJsReactVersion = "latest.version"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-react-core" % scalaJsReactVersion,
-    "ttg" %%% "scalajs-react-vdom" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-core" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-vdom" % scalaJsReactVersion,
 
     // optionals
     // if you need react-dom
-    "ttg" %%% "scalajs-react-react-dom" % scalaJsReactVersion
+    "ttg" %%% "scalajs-reaction-react-dom" % scalaJsReactVersion
 
     // Microsoft fabric UI components, "MS office", css-in-"scala"
     // css-in-scala can be used independently of fabric
-    "ttg" %%% scalajs-react-fabric" % scalaJsReactVersion,
+    "ttg" %%% scalajs-reaction-fabric" % scalaJsReactVersion,
 
     // Material UI components (WIP, waiting for v4)
-    "ttg" %%% scalajs-react-mui" % scalaJsReactVersion,
+    "ttg" %%% scalajs-reaction-mui" % scalaJsReactVersion,
 
     // if you integrate with redux
-    "ttg" %%% "scalajs-react-redux" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-redux" % scalaJsReactVersion,
     
     // if you need prop-types
-    "ttg" %%% "scalajs-react-prop-types" % scalaJsReactVersion,
+    "ttg" %%% "scalajs-reaction-prop-types" % scalaJsReactVersion,
  
     // if you need react-native
-    "ttg" %%% "scalajs-react-native" % scalaJsReactversion)
+        "ttg" %%% "scalajs-reaction-native" % scalaJsReactversion)
 ```
 
 Do not forget to include the react libraries in your execution environment. For
@@ -91,7 +88,9 @@ npm i --save react create-react-class
 npm i --save react-dom
 ```
 
-The latest react is recommended, v16.4. Note that using 16.4 will result on console messages for deprecated API that is still used by ReasonReact, and hence, scalajs-react.
+The latest react is recommended, v16.4. Note that using 16.4 will result on
+console messages for deprecated API that is still used by ReasonReact, and
+hence, scalajs-reaction.
 
 ### Create a Component
 You can quickly create a component and render it:
@@ -379,10 +378,10 @@ and advanced js form libraries for inspiration of the API.
 # Documentation
 
 Client:
-* [user](http://aappddeevv.github.io/scalajs-react)
+* [user](http://aappddeevv.github.io/scalajs-reaction)
 
 Integrated API documentation:
-* [all modules](https://aappddeevv.github.io/scalajs-react/api/ttg/react)
+* [all modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
 
 # Demo
 

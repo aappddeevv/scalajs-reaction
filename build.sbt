@@ -3,6 +3,24 @@
 import scala.sys.process._
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
+// Run publish and release separately
+// Don't forget bintray & unpublish
+// You can use `packagedArtifacts` to build artifacts in each project's target.
+// To release: run `publish` then `bintrayRelease`.
+//bintrayReleaseOnPublish := false
+//bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native",
+//  "office", "material-ui", "bootstrap")
+//bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")
+//bintrayRepository in ThisBuild := "maven2"
+
+lazy val bintraySettings = Seq(
+  bintrayReleaseOnPublish := false,
+  bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native",
+    "office", "material-ui", "bootstrap"),
+  bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-reaction"),
+  publishMavenStyle := true
+)
+
 lazy val licenseSettings = Seq(
   headerMappings := headerMappings.value +
     (HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment),
@@ -23,7 +41,7 @@ lazy val licenseSettings = Seq(
 lazy val buildSettings = Seq(
   organization := "ttg",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  scalaVersion := "2.12.7",
+  scalaVersion := "2.12.8",
   resolvers += Resolver.sonatypeRepo("releases"),
   resolvers += Resolver.jcenterRepo,
   autoCompilerPlugins := true
@@ -44,7 +62,7 @@ lazy val exampleSettings = Seq(
 
 lazy val publishSettings = Seq(
   homepage := Some(url("https://github.com/aappddeevv/scalajs-react"))
-)
+) ++ bintraySettings
 
 val commonScalacOptions = Seq(
     "-deprecation",
@@ -76,7 +94,7 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
   ),
-  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.4"),
+  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9"),
   autoAPIMappings := true,
 )
 
@@ -91,81 +109,87 @@ lazy val root = project.in(file("."))
   .settings(jvmlibsettings)
   .settings(noPublishSettings)
   .settings(name := "scalajs-react")
-  .aggregate(`scalajs-react-core`, examples, `scalajs-react-fabric`,
-    `scalajs-react-native`,
-    `scalajs-react-vdom`, `scalajs-react-vdom`, docs, `scalajs-react-redux`,
-    `scalajs-react-react-dom`, `scalajs-react-prop-types`,
-    `scalajs-react-bootstrap`, `scalajs-react-mui`,
-    `react-big-calendar`,
-    `scalajs-react-native-nativebase`,
-    `scalajs-react-native-react-native-elements`,
-    `scalajs-react-native-react-navigation`,
-    `scalajs-react-native-react-native-sideswipe`,    
-    `scalajs-react-form`, dataValidationJS, dataValidationJVM)//dataValidationJS, dataValidationJVM)
-  .enablePlugins(AutomateHeaderPlugin)
-  .disablePlugins(BintrayPlugin)
+  .aggregate(
+    examples,
+    docs,    
+    `scalajs-reaction-core`,
+    `scalajs-reaction-fabric`,
+    `scalajs-reaction-native`,
+    `scalajs-reaction-vdom`,
+    `scalajs-reaction-react-redux`,
+    `scalajs-reaction-react-dom`,
+    `scalajs-reaction-prop-types`,
+    `scalajs-reaction-bootstrap`,
+    `scalajs-reaction-mui`,
+    `scalajs-reaction-react-big-calendar`,
+    `scalajs-reaction-native-nativebase`,
+    `scalajs-reaction-native-react-native-elements`,
+    `scalajs-reaction-native-react-navigation`,
+    `scalajs-reaction-native-react-native-sideswipe`,    
+    `scalajs-reaction-form`,
+    dataValidationJS,
+    dataValidationJVM
+  )
+    .enablePlugins(AutomateHeaderPlugin)
+    .disablePlugins(BintrayPlugin)
 
-lazy val `scalajs-react-core` = project
+lazy val `scalajs-reaction-core` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs package.")
   .settings(buildInfoPackage := "ttg.react")
 
-lazy val `scalajs-react-native` = project
+lazy val `scalajs-reaction-native` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs native package.")
   .dependsOn(
-    `scalajs-react-core`,
-    `scalajs-react-vdom`
+    `scalajs-reaction-core`,
+    `scalajs-reaction-vdom`
   )
 
-lazy val `react-big-calendar` = project
-  .in(file("components/react-big-calendar"))
+lazy val `scalajs-reaction-react-big-calendar` = project
+  .in(file("components/scalajs-reaction-react-big-calendar"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(Seq(
     description := "react-big-calendar",
-    name := "scalajs-react-components-react-big-calendar",
-    //version := "0.10.0"
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-react-core`,
-    `scalajs-react-vdom`)
+    `scalajs-reaction-core`,
+    `scalajs-reaction-vdom`)
 
-lazy val `scalajs-react-native-react-navigation` = project
-  .in(file("components/scalajs-react-native-react-navigation"))
+lazy val `scalajs-reaction-native-react-navigation` = project
+  .in(file("components/scalajs-reaction-native-react-navigation"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(Seq(
     description := "react-navigation facade",
-    name := "scalajs-react-native-react-navigation",
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-react-core`,
-    `scalajs-react-native`    
+    `scalajs-reaction-core`,
+    `scalajs-reaction-native`    
   )
 
-lazy val `scalajs-react-native-react-native-sideswipe` = project
-  .in(file("components/scalajs-react-native-react-native-sideswipe"))
+lazy val `scalajs-reaction-native-react-native-sideswipe` = project
+  .in(file("components/scalajs-reaction-native-react-native-sideswipe"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(Seq(
     description := "react-native-sideswipe",
-    name := "scalajs-react-native-react-native-sideswipe",
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-react-core`,
-    `scalajs-react-native`    
+    `scalajs-reaction-core`,
+    `scalajs-reaction-native`    
   )
 
-lazy val `scalajs-react-native-nativebase` = project
-  .in(file("components/scalajs-react-native-nativebase"))
+lazy val `scalajs-reaction-native-nativebase` = project
+  .in(file("components/scalajs-reaction-native-nativebase"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(Seq(
@@ -174,21 +198,20 @@ lazy val `scalajs-react-native-nativebase` = project
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-react-core`,
-    `scalajs-react-native`)
+    `scalajs-reaction-core`,
+    `scalajs-reaction-native`)
 
-lazy val `scalajs-react-native-react-native-elements` = project
-  .in(file("components/scalajs-react-native-react-native-elements"))
+lazy val `scalajs-reaction-native-react-native-elements` = project
+  .in(file("components/scalajs-reaction-native-react-native-elements"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(Seq(
     description := "react-native-elements library",
-    name := "scalajs-react-native-react-native-elements",
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-react-core`,
-    `scalajs-react-native`)
+    `scalajs-reaction-core`,
+    `scalajs-reaction-native`)
 
 
 // jvm and js based project
@@ -219,62 +242,62 @@ lazy val dataValidationJVM = dataValidation.jvm
 //       "org.scalameta" %% "scalameta" % "1.8.0" // old version required
 //     ))
 
-lazy val `scalajs-react-prop-types` = project
+lazy val `scalajs-reaction-prop-types` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`)
+  .dependsOn(`scalajs-reaction-core`)
   .settings(description := "prop-types package.")
 
-lazy val `scalajs-react-react-dom` = project
+lazy val `scalajs-reaction-react-dom` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`)
+  .dependsOn(`scalajs-reaction-core`)
   .settings(description := "react-dom package.")
 
-lazy val `scalajs-react-vdom` = project
+lazy val `scalajs-reaction-vdom` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`)
+  .dependsOn(`scalajs-reaction-core`)
   .settings(description := "vdom helpers.")
 
-lazy val `scalajs-react-redux` = project
+lazy val `scalajs-reaction-react-redux` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`)
+  .dependsOn(`scalajs-reaction-core`)
   .settings(
     description := "redux via react-redux.",
   )
 
-lazy val `scalajs-react-fabric` = project
+lazy val `scalajs-reaction-fabric` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "microsoft office-ui-fabric facade.")
 
-lazy val `scalajs-react-bootstrap` = project
+lazy val `scalajs-reaction-bootstrap` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "bootstrap facade.")
 
-lazy val `scalajs-react-mui` = project
+lazy val `scalajs-reaction-mui` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "material ui facade.")
 
-lazy val `scalajs-react-form` = project
+lazy val `scalajs-reaction-form` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "scalajs-reaect form library.")
 
 
@@ -282,7 +305,7 @@ lazy val `scalajs-react-form` = project
 // though its only relevant to examples project.
 watchSources += baseDirectory.value / "examples/src/main/assets"
 
-lazy val examples = project
+lazy val examples: Project = project
   .settings(libsettings)
   .settings(noPublishSettings)
   .settings(
@@ -290,16 +313,21 @@ lazy val examples = project
       "ru.pavkin" %%% "scala-js-momentjs" % "0.9.2",
     ))
   .settings(fpsettings)
-  .dependsOn(`scalajs-react-fabric`, `scalajs-react-redux`, `scalajs-react-react-dom`,
-    `scalajs-react-prop-types`, `scalajs-react-form`,
-    `scalajs-react-bootstrap`,
-    `scalajs-react-mui`,
-    `react-big-calendar`,
+  .dependsOn(
+    `scalajs-reaction-fabric`,
+    `scalajs-reaction-react-redux`,
+    `scalajs-reaction-react-dom`,
+    `scalajs-reaction-prop-types`,
+    `scalajs-reaction-form`,
+    `scalajs-reaction-bootstrap`,
+    `scalajs-reaction-mui`,
+    `scalajs-reaction-react-big-calendar`,
     dataValidationJS)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   .settings(exampleSettings)
-
+  .settings(artifactPath.in(Compile, fastOptJS) := crossTarget.in(Compile, fastOptJS).value / "Scala.js")
+  .settings(artifactPath.in(Compile, fullOptJS) := crossTarget.in(Compile, fullOptJS).value / "Scala.js")
 
 lazy val docs = project
   .settings(exampleSettings ++ libsettings)
@@ -308,22 +336,38 @@ lazy val docs = project
   .enablePlugins(ScalaUnidocPlugin)
   .enablePlugins(ScalaJSPlugin)
   .disablePlugins(BintrayPlugin)
-  .dependsOn(`scalajs-react-core`, `scalajs-react-vdom`,
-    `scalajs-react-fabric`, `scalajs-react-redux`,
-    `scalajs-react-form`)//, dataValidation)
+  .dependsOn(
+    `scalajs-reaction-core`,
+    `scalajs-reaction-fabric`,
+    `scalajs-reaction-native`,
+    `scalajs-reaction-vdom`,
+    `scalajs-reaction-react-redux`,
+    `scalajs-reaction-react-dom`,
+    `scalajs-reaction-prop-types`,
+    `scalajs-reaction-bootstrap`,
+    `scalajs-reaction-mui`,
+    `scalajs-reaction-react-big-calendar`,
+    `scalajs-reaction-native-nativebase`,
+    `scalajs-reaction-native-react-native-elements`,
+    `scalajs-reaction-native-react-navigation`,
+    `scalajs-reaction-native-react-native-sideswipe`,    
+    `scalajs-reaction-form`,
+    dataValidationJS,
+    dataValidationJVM
+  )
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject --
       inProjects(examples)
       -- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
   )
   .settings(
-    micrositeName := "scalajs-react",
+    micrositeName := "scalajs-reaction",
     micrositeDescription := "A react integration library for scala.js in the spirit of ReasonReact",
-    micrositeBaseUrl := "/scalajs-react",
+    micrositeBaseUrl := "/scalajs-reaction",
     micrositeGitterChannel := false,
-    micrositeDocumentationUrl := "/scalajs-react/docs",
+    micrositeDocumentationUrl := "/scalajs-reaction/docs",
     micrositeAuthor := "aappddeevv",
-    micrositeGithubRepo := "scalajs-react",
+    micrositeGithubRepo := "scalajs-reaction",
     micrositeGithubOwner := sys.env.get("GITHUB_USER").getOrElse("unknown"),
     micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
     micrositePushSiteWith := GitHub4s
@@ -352,12 +396,3 @@ npmRunDemo := {
   (fastOptJS in (examples, Compile)).value
   "npm run examples:dev-start" !
 }
-
-// Run publish and release separately
-// Don't forget bintray & unpublish
-// You can use `packagedArtifacts` to build artifacts in each project's target.
-// To release: run `publish` then `bintrayRelease`.
-bintrayReleaseOnPublish in ThisBuild := false
-bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap")
-bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")
-bintrayRepository := "maven"

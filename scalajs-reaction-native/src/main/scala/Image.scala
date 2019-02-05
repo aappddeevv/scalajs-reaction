@@ -58,7 +58,8 @@ object Image {
   @JSImport("react-native", "Image")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null)(children: ReactNode*) =
+    wrapJsForScala(JS, props, children:_*)
 
   trait IOS {
   }

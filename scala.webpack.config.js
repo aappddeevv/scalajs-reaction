@@ -152,19 +152,21 @@ const prod = {
 
 module.exports = function (env) {
     const isProd = env && env.BUILD_KIND && env.BUILD_KIND==="production"
-    const scalapath = path.join(__dirname, "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js"))
-    const staticAssets = copies(path.join(__dirname, "dist"))
-    const output = libraryOutput(path.join(__dirname, "dist"))
+    //const scalapath = path.join(__dirname, "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js"))
+    const scalapath = path.join(__dirname, "examples/target/scala-2.12/Scala.js")
+    const dist = path.join(__dirname, "dist")
+    const staticAssets = copies(dist)
+    const output = libraryOutput(dist)
     const globals = (nodeEnv) => ({
         "process.env": { "NODE_ENV": JSON.stringify(nodeEnv || "development") }
     })
     const copyplugin = new CopyWebpackPlugin(staticAssets)
-	console.log("static assets copy command: ", staticAssets)
+    const prodCopy = new CopyWebpackPlugin([
+        {from: "dist/*", to: path.join(__dirname, "docs/src/main/resources/microsite/static"), flatten: true}
+    ])
+    
     console.log("isProd: ", isProd)
     console.log("scalapath: ", scalapath)
-    const prodCopy = new CopyWebpackPlugin([
-        {from: "dist/*", to: path.join(__dirname, "docs/src/main/resources/microsite/static/demo")}
-    ])
     
     if (isProd) {
         const g = globals("production")
@@ -179,8 +181,8 @@ module.exports = function (env) {
                     sourceMap: true,
                     uglifyOptions: { ecma: 5, compress: true }
                 }),
+		copyplugin, // must be first, hence last in the list                
                 prodCopy,
-		copyplugin // must tbe first
             ]
         })
     }

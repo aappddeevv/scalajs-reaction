@@ -196,7 +196,8 @@ package object react {
 
   /**
     * Turn a ReactRef to a js.Dynamic so you can call "component" methods
-    * directly.  Most notably "select", "value" or "focus()".
+    * directly.  Most notably "select", "value" or "focus()". I don't think this
+    * is right...
     */
   @inline def refToJs[T](ref: ReactRef[T]): js.Dynamic = ref.asInstanceOf[js.Dynamic]
 
