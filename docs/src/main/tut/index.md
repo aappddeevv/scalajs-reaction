@@ -1,20 +1,33 @@
 ---
 layout: home
 ---
-# What is scalajs-react?
+# What is scalajs-reaction?
 
-A scala.js facade over reactjs that provides a functional API in the spirit of ReasonReact. It focuses on integration with existing javascript-based react applications so you can plug in scalajs-react compopnents to any part of the component hierarchy..
+scalajs-reaction is a a scala.js facade over reactjs that provides a functional
+API in the spirit of ReasonReact. It focuses on integration with existing
+javascript-based react applications so you can plug in scalajs-react components
+to any part of the component hierarchy.
 
-The library is designed to create components that can be used and consumed by other react components in javascript and scala fairly seamlessly.
+The library is designed to create components that can be used and consumed by
+other react components in javascript and scala fairly seamlessly.
 
 # ReasonReact
-The scalajs-react interface is built on the model provided by [ReasonReact](https://reasonml.github.io/reason-react). You can apply the same concepts in that library to this API.
+The interface is built on the model provided by
+[ReasonReact](https://reasonml.github.io/reason-react). You can apply the same
+concepts in that library to this API.
 
 # API Documentation
 
-* [all modules](api/ttg/react)
+* [API: all modules](api/ttg/react)
 
-The scalajs-react redux integration focuses on allowing you to connect your component to an existing redux store. It does not try to provide access to the full redux API. It is essentially the scala.js side version for scalajs-react much like the project `react-redux`.
+The API focuses on integration, for example, reactjs redux integration, allows
+you to connect your component to an existing redux store if you want to use
+redux. This faced is essentially the scala.js side version for scalajs-reaction
+much like the project `react-redux`.
+
+The API link does not include some of the individual projects that provide
+facades for additional functionality but it provides a significant amount of the
+core facades. In other words, there is more there so check the source!
 
 # Demo
 A WIP demo is here:

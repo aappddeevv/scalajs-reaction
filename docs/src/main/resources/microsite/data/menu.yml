@@ -20,6 +20,9 @@ options:
   - title: Routing
     url: docs/router.html
 
+  - title: Bundling
+    url: docs/bundling.html
+
   - title: Redux
     url: docs/redux.html
 

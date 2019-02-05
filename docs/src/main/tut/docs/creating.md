@@ -3,11 +3,20 @@ layout: docs
 title: Creating Components
 ---
 # Creating Components
-Creating react components in scalajs-react uses a "builder" type pattern. 
+Creating react components in scalajs-reaction uses a "builder" type pattern.
 
-In scala.js, Component is just a "data structure" (a javascript object = "record") that holds a few values that are callback functions. A proxy is setup on the javascript side that forwards the react calls to the scala side Component. You can create a Component almost in anyway you like but some functions are provided for convenience. It's important to realize that the type parameters you provide are very different than those provided to other scala.js react facades as the reason-react API is different. There is also no `setState` API. Instead this has been replaced by a fine state machine.
+In scala.js, Component is just a "data structure" (a javascript object =
+"record") that holds a few values that are callback functions. A proxy is setup
+on the javascript side that forwards the react calls to the scala side
+Component. You can create a Component almost in anyway you like but some
+functions are provided for convenience. It's important to realize that the type
+parameters you provide are very different than those provided to other scala.js
+react facades as the reason-react API is different. There is also no `setState`
+API. Instead this has been replaced by a fine state machine.
 
-It's best to look to the [ReasonReact](https://reasonml.github.io/reason-react) docs to understand the approach to creating Components in scala.js. It's pretty much the same approach.
+It's best to look to the [ReasonReact](https://reasonml.github.io/reason-react)
+docs to understand the approach to creating Components in scala.js. It's pretty
+much the same approach.
 
 
 ## Creating a Component
@@ -120,7 +129,8 @@ If you are creating a reducer component you need to have methods:
 * initialState
 * reducer
 
-in addition to the render method. All three are required and hence should be declared with `val`:
+in addition to the render method. All three are required and hence should be
+declared with `val`:
 
 ```scala
 object MyComponent { 
@@ -178,29 +188,51 @@ new MyOpts {
   override val prop2 = "bar"
 }
 ```
-In order to allow your props to contain other attributes, such as those from div, just have your props inherit from the appropriate attributes trait that is provided:
+
+In order to allow your props to contain other attributes, such as those from
+div, just have your props inherit from the appropriate attributes trait that is
+provided:
+
 ```scala
 trait MyOpts extends HTMLAttributes[dom.html.Div] {
    // your extra traits
 }
 ```
-You may need to filter your props so you can access only your attributes. See office-ui-fabric-react for an example of a function that can do that filtering. There are many approaches to supporting this.
+
+You may need to filter your props so you can access only your attributes. See
+office-ui-fabric-react for an example of a function that can do that
+filtering. There are many approaches to supporting this.
 
 ## Child Elements
-Children in scalajs-react are ReactNode or ReactElement (subclass of ReactNode). Whatever you do, you need to take your imported react components, your scalajs-react components and convert them to a ReactNode in order to use them as children in other scalajs-react components. You have a few ways of doing this.
+
+Children in scalajs-react are ReactNode or ReactElement (subclass of
+ReactNode). Whatever you do, you need to take your imported react components,
+your scalajs-react components and convert them to a ReactNode in order to use
+them as children in other scalajs-react components. You have a few ways of doing
+this.
 
 * Explicitly using the API: `createElement(YourComponentC.make(...))`
 * Using syntax: `YourComponentC.make(..).toEl`.
 * Implicit conversions: `YourComponentC.make(...)`
 
-Note that every child must be converted to a `ReactNode` type, including strings and numbers. There are some functions for doing that:
+Note that every child must be converted to a `ReactNode` type, including strings
+and numbers. There are some functions for doing that:
+
 ```scala
 val stringElement = stringToElement("blah")
 ```
-which can be quite verbose, hence the implicit conversions which will a wide range of  simple types to a `ReactNode` automatically.
+
+which can be quite verbose, hence the implicit conversions which will a wide
+range of simple types to a `ReactNode` automatically.
 
 ## What's Ops?
-The import `c.ops._` imports the "methods" trait so you can customize the component for your specific render, reducer, and processing needs. It also contains a few types you can use to help you break out methods into small parts. For example, it contains the "Self" type so that you can define a function separate from the methods:
+
+The import `c.ops._` imports the "methods" trait so you can customize the
+component for your specific render, reducer, and processing needs. It also
+contains a few types you can use to help you break out methods into small
+parts. For example, it contains the "Self" type so that you can define a
+function separate from the methods:
+
 ```scala
 def renderFooter(self: Self, ...): ReactNode = { ... }
 ```
