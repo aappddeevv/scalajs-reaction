@@ -1,27 +1,39 @@
 ---
 layout: docs
-title: Creating Components
+title: Defining Components
 ---
-# Creating Components
-Creating react components in scalajs-reaction uses a "builder" type pattern.
+# Defining Components
 
-In scala.js, Component is just a "data structure" (a javascript object =
-"record") that holds a few values that are callback functions. A proxy is setup
-on the javascript side that forwards the react calls to the scala side
-Component. You can create a Component almost in anyway you like but some
-functions are provided for convenience. It's important to realize that the type
-parameters you provide are very different than those provided to other scala.js
-react facades as the reason-react API is different. There is also no `setState`
-API. Instead this has been replaced by a fine state machine.
+You use a flavor of the "builder" type pattern to define a component.
 
-It's best to look to the [ReasonReact](https://reasonml.github.io/reason-react)
-docs to understand the approach to creating Components in scala.js. It's pretty
-much the same approach.
+In scala.js, a Component is a "data structure" (a javascript object = "record")
+that holds a callback functions. A proxy is setup in javascript that forwards
+the react calls to the scala side Component.
+
+To understand the API you can look at the
+[ReasonReact](https://reasonml.github.io/reason-react) docs to understand the
+approach to creating Components in scala.js.
+
+In the next section, we show the stateless component example below. Look at the
+demo code for an example of using a reducer component, a component that manages
+state. There is no `setState` in this facade to manage state, a stateful
+component has a buit-in reducer which is essentially a Finite State Machine
+(FSM).
 
 
-## Creating a Component
+## Stateless Component
 
-Here's a simple example that uses a non-native JS trait for the props:
+When we say "defining" a component, we mean that you creating a "template" for a
+component instance. When you create a component instance through make or apply,
+you are copying that template and providing customizations for rendering,
+mounting and other lifecycle actions.
+
+
+Here's a simple example of defining a component that uses a non-native JS trait
+for the props. You can make the props anything you want, individual parameter, a
+scala parameter object or a javascript friendly parameter object. You generally
+use a javascript friendly parameter object when the component needs to be
+exported and used in a javascript environment.
 
 ```scala
 // You can use individual props or a trait or a scala object.
@@ -51,15 +63,17 @@ object ToDo {
 }
 ```
 
-The parameter `ToDoProps` was set as a `js.Object` trait so it is slightly
-easier to interface into the reactjs world.
+The parameter `ToDoProps` was set as a `js.Object` trait so it is easier to
+interface into the reactjs world.
 
 Notice that you use a `val` to define `render`. Render is required for all
 components so the `methods` that you are creating forces you to define the
 render method. Using standard scala syntax, you need to define `val` when you
 instantiate the trait.
 
-Some methods are not required, such as `willMount`. The definition for `willMount` would look like:
+Some methods are not required, such as `willMount`. The definition for
+`willMount` would look like:
+
 ```scala
   willMount = js.defined({ self => 
   })
@@ -86,9 +100,10 @@ def make(props: ToDoProps, children: js.Array[ReactNode]) =
      })}
 ```
 
-Or you can use the spread `..., children: ReactNode*) = `.
+Or you can use the scala spread `param: Param, children: ReactNode*) = `.
 
-As a shortcut for stateless components, you can do:
+For stateless components with only a render method, you can make the definition
+even shorter:
 
 ```scala
 object MyComponent {
@@ -141,7 +156,7 @@ object MyComponent {
   case class ReducerAction1(arg: String)
   case class ReducerAction2(arg: String)  
   
-  val c = rdecureComponent[State, Action]("MyComponent")
+  val c = reducerComponent[State, Action]("MyComponent")
   import c.ops._
   
   def make(arg: String) = 
@@ -182,6 +197,7 @@ new MyOpts {
 }
 ```
 instead of:
+
 ```scala
 new MyOpts {
   override val prop1 = "foo"

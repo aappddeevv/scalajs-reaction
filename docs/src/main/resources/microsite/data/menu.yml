@@ -2,7 +2,7 @@ options:
   - title: Getting Started
     url: docs/index.html
     
-  - title: Creating scala.js Components 
+  - title: Defining Components 
     url: docs/creating.html
 
   - title: Importing from JS

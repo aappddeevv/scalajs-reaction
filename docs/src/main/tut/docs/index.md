@@ -11,9 +11,7 @@ maven in general.
 ```scala
 // bintray resolvers
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
-val scalaJsReactVersion = "latest.version"
-//  or
-//val scalaJsReactVersion = "0.1.0-M1"
+val scalaJsReactVersion = "0.1.0-M7"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
@@ -43,13 +41,13 @@ import org.scalajs.dom
 import ttg.react._
 
 // imports functions for creating elements via statelessComponent("MyComponent")
-import react.elements._
+import elements._
 
 // imports renderToElementWithId, include this in the package with your top level render call
-import react.reactdom._
+import reactdom._
 
 // various converters, described below and in other sections
-import react.implicits._
+import implicits._
 
 // contains virtual dom objects
 import vdom._
@@ -76,22 +74,34 @@ import js.JSConverters._
 import js.Dynamic.{literal => jsobj}
 
 import ttg.react.{implicits, fabric, vdom, _}
-import fabric.{styling, components, _}
 import components._
 import styling._
 import implicits._
+import fabric.{styling, components, _}
 import vdom.{tags, _}
 import tags._
 ```
 
-but this could lead to some conflicts depending on what else you import.
-
 ## Implicits
-Most facade libraries and scala.js use implicit conversion to automatically convert scala world objects to javascript objects. Since this is a facade library that is designed to be integrated into other javascript/reason react applications, you will most likely need to use javascript objects on your imported objects as well as your exported components.
 
-The `ttg.react.implicits._` imports a variety of syntax and automatic converters. Since implicit conversion can make your code base more complicated when automatic conversions go awry, the syntax enhancements and conversions are offered ala cart.
-* syntax enhancements: Syntax enhancements require calling functions in an easy-to-use API to perform conversions. For example, you can use `YourComponent.make(..args...).toEl` instead of calling `elements.createElement(YourComponent.make(arg1, arg2, childrenarg))`.
-* conversions: If you want to skip even calling `.toEl` import the implicits as shown above and whenever a ReactNode is needed (for example as a child), the Component will be automatically converted.
+Most facade libraries and scala.js use implicit conversion to automatically
+convert scala world objects to javascript objects. Since this is a facade
+library that is designed to be integrated into other javascript/reason react
+applications, you will most likely need to use javascript objects on your
+imported objects as well as your exported components.
+
+The `ttg.react.implicits._` imports a variety of syntax and automatic
+converters. Since implicit conversion can make your code base more complicated
+when automatic conversions go awry, the syntax enhancements and conversions are
+offered ala cart. However, you should use them when first starting out.
+
+* syntax enhancements: Syntax enhancements require calling functions in an
+  easy-to-use API to perform conversions. For example, you can use
+  `YourComponent.make(..args...).toEl` instead of calling
+  `elements.createElement(YourComponent.make(arg1, arg2, childrenarg))`.
+* conversions: If you want to skip even calling `.toEl` import the implicits as
+  shown above and whenever a ReactNode is needed (for example as a child), the
+  Component will be automatically converted to a ReactNode via `createElement`.
 
 The syntax could be:
 ```scala
@@ -104,15 +114,21 @@ import ttg.react.implicits._
 ```
 
 ## npm and js packages
-Based on the scala libraries you use, you will need to bundle the appropriate packages. All of the scala.js imports underneath in the interop layer convert to CJS `require` calls.
 
-* core: react (>=16.3+), create-react-class
-* react-dom: react-dom (>=16.3+)
+Based on the scala libraries you use, you will need to bundle the appropriate
+packages. All of the scala.js imports underneath in the interop layer convert to
+CJS `require` calls.
+
+* core: react (>=16.4+), create-react-class
+* react-dom: react-dom (>=16.4+)
 * prop-types: prop-types
 * vdom: no js dependencies
-* fabric: office-ui-fabric-react (>= 5.58.0), merge-styles (>= 5.13.0)
+* fabric: office-ui-fabric-react (>= 6.0), or merge-styles directly for only that
 * redux: react-redux, redux
 
-Generally, if you include these in your package.json as runtime dependencies you should be all set. If you use `scalajs-bundler` you would need to add these to your build.sbt file.
+Generally, if you include these in your package.json as runtime dependencies you
+should be all set. If you use `scalajs-bundler` you would need to add these to
+your build.sbt file.
 
-If you do not use fragments or the other latest features in react, you can use an earlier version.
+If you do not use fragments or the other latest features in react, you can use
+an earlier version.

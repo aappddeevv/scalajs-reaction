@@ -8,7 +8,10 @@ documentation](https://reasonml.github.io/reason-react) provides a good
 description of how this library works since this facade was designed to mimic
 that facade. While more advanced scala functionality could have been used, the
 scala.js implementation is kept intentionally similar to ReasonReact so that its
-documentation applies to this project.
+documentation applies to this project. ReasonReact allows you to use a builtin
+reducer that is available in stateful components reducing or eliminating the
+need for other state management solutions like redux(js), mobx(js) or diode
+(scala).
 
 This facade library is small, does not use advanced scala features and provides
 a different component API based on reason-react vs reactjs. It explicitly
