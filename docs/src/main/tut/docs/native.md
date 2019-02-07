@@ -249,12 +249,14 @@ to a shell script you can import into your current terminal.
 There are some ports of common libraries, all WIP and some have no code yet :-):
 
 * react-navigation (working)
+* sideswipe (working)
 * nativebase (no code yet)
 * react-native-elements (no code yet)
 
 Creating facades is easy. It only took 3 hours to create the entire facade for
-react-native from scratch when I did not even know react-native. I always just
-look at the typescript definitions.
+react-native from scratch when I did not even know react-native. I just look at
+the typescript definitions and develop a scala.js friendly API from there. I
+believe that a good combination is to use scala.js and typescript together.
 
 ## Resources
 

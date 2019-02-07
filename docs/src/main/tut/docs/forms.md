@@ -9,12 +9,12 @@ managed the user interaction lifecycle. It is based on several different forms
 package in ReasonReact and javascript.
 
 The form library bakes in asynchronous data management by default through the
-use of a `F` parameter.
+use of a `F` parameter which is constrained, using cats, to provide Async.
 
 Very few assumptions are made around how forms are actually composed as there
 are many different ways to code up a form.
 
-A few concerns that are abstracted out include:
+Concerns that are abstracted out include:
 
 * How the data object a form represents is represented.
 * Validation of data.
@@ -27,7 +27,7 @@ To use the data validation library, included it in your build:
 
 ```scala
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-react-forms" % "latest.version"
+    "ttg" %%% "scalajs-reaction-forms" % "latest.version"
 )
 ```
 

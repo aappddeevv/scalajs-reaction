@@ -1,14 +1,14 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.4+)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.4+, react-native v0.58.3)
 
 # scalajs-reaction
 
 A react library for scala written in the spirit of ReasonReact, a react library
-for an OCaml dialect known as reason (sponsored by facebook). ReasonReact
-documentation is located [here](https://reasonml.github.io/reason-react) and
-provides a good description of how this library works since the API is very
-similar. While more advanced scala functionality could have been used, the
-scala.js implemetation was kept intentionally similar to ReasonReact so that the
-documentation would apply. This facade also supports react-native.
+for an OCaml dialect known as reason (sponsored by facebook). [ReasonReact
+documentation](https://reasonml.github.io/reason-react) provides a good
+description of how this library works since this facade was designed to mimic
+that facade. While more advanced scala functionality could have been used, the
+scala.js implementation is kept intentionally similar to ReasonReact so that its
+documentation applies to this project.
 
 This facade library is small, does not use advanced scala features and provides
 a different component API based on reason-react vs reactjs. It explicitly
@@ -19,9 +19,9 @@ You can always code a scala.js based react interface without using any facade
 library since scala.js supports non-native JS class definitions. scala.js's JS
 class support is extensive and well thought out. One of the reasons I liked the
 ReasonReact model is that it rethought the abstractions and API. Instead of
-trying to copy the reactjs API, it provides something smaller and emphasizes
-changes in a few dimensions of the reactive UI API problem--almost the very
-definition of "disruptive."
+trying to copy the reactjs API, it provides something smaller, easier to learn
+and emphasizes changes in a few dimensions of the reactive UI API
+problem--almost the very definition of "disruptive."
 
 scalajs-reaction emphasizes integration into an existing project by making it easy
 to import/export components and fit into existing application including those
@@ -31,13 +31,15 @@ solution can manage the model of scala.js's output (one large module for all
 scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
 
-* [Demo](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
+* [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
 The library supports fragments and the new context provider in react v16.3. The
 scalaj-react API roughly mimics ReasonReact 4.1 and the intent is to track that
 API and stick closely to it. Read those docs to understand this API and how it
-is different than the standard reactjs UI model.
+is different than the standard reactjs UI model. This facade supports
+react-native. The react-native use-case for scala.js is actually more compelling
+than for web applications due to scala.js bundling issues.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to create a
 new project.
@@ -80,7 +82,7 @@ Do not forget to include the react libraries in your execution environment. For
 react 16+, the libraries have been split out into multiple libraries. For the
 reactjs based modules, the javascript dependencies are:
 
-* core: react, create-react-class
+* core: react, create-react-class (not react-create-class)
 * react-dom: react-dom
 
 ```sh
@@ -88,23 +90,24 @@ npm i --save react create-react-class
 npm i --save react-dom
 ```
 
-The latest react is recommended, v16.4. Note that using 16.4 will result on
-console messages for deprecated API that is still used by ReasonReact, and
-hence, scalajs-reaction.
+The latest react is recommended, v16.4.
 
 ### Create a Component
-You can quickly create a component and render it:
+You can easily create a component and render it:
 ```scala
 object HelloWorld {
-  val c = statelessComponent("HelloWorld")
+  val Name = "HelloWorld"
+  val c = statelessComponent(Name)
   import c.ops._
-  // could also use "apply" so that you do HelloWorld() instead of HelloWorld.make(), but make is ReasonReact friendly.
+  // Classic "make" pattern from ReasonReact.
+  // To create a comonent HelloWorld.make(yourNameOpt)
   def make(name: Option[String]) =
     render{ self =>
         div("hello world" + name.map(" and welcome " + _).getOrElse(""))
       }
   
   // apply version with help render method shortcut for stateless components
+  // Now you can use HelloWorld(yourNameOpt)
   def apply(name: Option[String]) = 
     render { self =>
       div("hello world" + name.map(" and welcome " + _).getOrElse(""))  a
@@ -123,11 +126,12 @@ object MyWebApp {
 
 You can add a className to the div using: `div(new DivProps { className =
 "divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
-ensure you only enter valid div props. Even simpler, use `divWithClassname(cname), children...)`.
+ensure you only enter valid div props. Even simpler, use
+`divWithClassname(cname), children...)`.
 
 The "render" method copies the internal proxy component and adds a callback from
-reactjs to scala. If you need to use other methods, use the full syntax as the
-render syntax is just a shortcut to:
+reactjs to scala. If you need to use other lifecycle methods, use the full
+syntax as the render syntax is just a shortcut to:
 
 ```scala
     def make(name: Option[String]) =
@@ -147,8 +151,8 @@ immediately above. Depending on the type of component e.g. stateless vs reducer,
 different methods are required. For example, with a reducer component, the
 reducer method is required and hence `val reducer = ...` must be declared.
 
-Reason-react uses `make` for its function name. However, you could use `apply`
-which is more idiomatic scala.
+Reason-react uses `make` for its function name. However, I would just use
+`apply` which is more idiomatic scala.
 
 ### Exporting a Component to Javascript
 
@@ -197,7 +201,7 @@ the class in javascript, you can use standard scala parameters conventions as in
 ### Importing a Component from Javascript
 
 If you need to import a javascript class, you can use the standard scala.js
-machinery to import it:
+machinery to import it. The component type should be `ReactJsComponent`.
 
 ```scala
 @js.native
@@ -242,7 +246,7 @@ you can use to alter the way that components are created and the API to create
 elements.For example, you could also use type classes to change the attributes
 to a js.Object since all you need is some type of "writer."
 
-There is no JSX support.
+There is no JSX support. The function-call scala syntax is used instead.
 
 ### Styling
 
@@ -250,14 +254,14 @@ Styling can be performed different ways. For a quick summary of different
 aspects of styling designs see this
 [blog](http://appddeevvmeanderings.blogspot.com/2017/08/web-app-styling-interlude-how-to.html).
 
-fabric's `merge-styles` is provided in the fabric package and you can use
+Even if you do not use Microsoft's fabric ui, fabric's `merge-styles` is
+independently available and provided in the fabric facade. You can use
 css-in-scala concepts to create your styles easily. See the ToDo example source
-code for a detailed example. It works nicely and is independent of fabric. Tree
-shaking should remove any fabric UI code if you only want to use `merge-styles`
-but not the UI part, and sill want a lean bundle. `merge-styles` creates
-stylesheets from scala code. Here's an example showing the use of CSS
-variables. `merge-styles` is a little like glamor (which we recommend as well)
-but is also a bit different in that it is explicit about "selectors".
+code for a detailed example. It works nicely and is independent of
+fabric. `merge-styles` creates stylesheets from scala code. Here's an example
+showing the use of CSS variables. `merge-styles` is a little like glamor (which
+we recommend as well) but is also a bit different in that it is explicit about
+"selectors".
 
 The slightly older idiom is below. See the examples for the updated fabric
 styling idioms which are much more flexible.
@@ -320,8 +324,11 @@ val memoizedClassNames = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1
 val cn = memoized(500)
 ```
 
-If you keep your CSS external and process it at build time, you can just import
-your style sheets and have them picked up by your bundler such as webpack:
+You can also use a scala based memoization function.
+
+Alternatively, if you keep your CSS external and process it at build time, you
+can just import your style sheets and have them picked up by your bundler such
+as webpack:
 
 ```scala
 @js.native
@@ -352,8 +359,8 @@ val props = new DivProps {
 }
 ```
 
-Styling can also be performed using scala specific libraries such as 
-[ScalaCSS](https://github.com/japgolly/scalacss). 
+Styling can also be performed using scala specific libraries such as
+[ScalaCSS](https://github.com/japgolly/scalacss).
 
 ### Redux
 Redux integration requires you to export your component then import it with
@@ -363,9 +370,17 @@ redux enhanced props. Please see the extended documentation for details.
 A simple 100-line router is included based on the reason-react router
 implementation. See the example app for an example of how to use it.
 
+You can apply some simple routing configuration patterns to create your own
+router or use a javascript based router such as react-router. It's up to you. I
+suggest creating your own since its so easy to create a function that maps
+routes to components.
+
 ### Widget Libraries
 
-Libraries (the start of them) are provided for bootstrap, material ui and fabric.
+Libraries (the start of them) are provided for bootstrap, material ui and
+fabric. Additional component libraries are also available. I add more as I
+encounter them. It' easy and quick to create a facade, even when you create it
+manually.
 
 ### Forms & Data Validation
 
@@ -381,7 +396,7 @@ Client:
 * [user](http://aappddeevv.github.io/scalajs-reaction)
 
 Integrated API documentation:
-* [all modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
+* [all basic modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
 
 # Demo
 

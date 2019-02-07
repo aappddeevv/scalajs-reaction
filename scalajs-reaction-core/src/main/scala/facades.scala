@@ -22,12 +22,16 @@ trait ErrorInfo extends js.Object {
 
 /**
   * Scala-side react component.  This trait only includes the parts of a
-  * component not dependent on specific types (see the cake layers for the
-  * rest). An instance of ComponentSpec is produced as a basic template that is
-  * paired with an instance of a Proxy. For each cake instance (1 to 1 with each
-  * scalajs-react component) there is a proxy and an instance of ComponentSpec.
-  * This single ComponentSpec is then "copied" with the specific desired
-  * behavior a specific rendering method.
+  * component not dependent on specific types for the Self parameter (see the
+  * cake layers for the rest). An instance of ComponentSpec is produced as a
+  * basic react component template that is paired with an instance of a
+  * Proxy. For each cake instance (1 to 1 with each scalajs-react component)
+  * there is a proxy and an instance of ComponentSpec.  This single
+  * ComponentSpec is then "copied" with the specific desired behavior a specific
+  * rendering method. Blah...blah...blah...ComponentSpec defines the basic
+  * template for a react component and its customized by adding a short-list of
+  * react related methods, e.g. statefull adds a reducer method, in the
+  * underlying javascript object.
   */
 trait ComponentSpec extends js.Object {
   /**
@@ -101,29 +105,34 @@ protected trait JsComponentThis[State] extends js.Object {
   * the cake layer. The pair acts as a "template." Proxy handles the reactjs
   * world, calls methods defined in the cake and the cake calls methods on a
   * copy of the Component. An instance of the cake holds the types and an
-  * instance of the proxy and component "emplates" together and becomes a
-  * factory for creating "components" customized e.g. a specific render
-  * method. The cake (and the single instances of the Proxy and Component
-  * "templates") is the equivalent of a react class in ES5 terminology.
+  * instance of the proxy and component "templates" together and becomes a
+  * factory for creating customized "components" e.g. a specific render
+  * method. The cake instance(and the single instances of the Proxy and
+  * Component "template") is the equivalent of a react class in ES5 terminology.
   *
-  * There are several types with the base layer. There are also multiple
-  * variations of a specific type such as "Self", which represents the
-  * javascript "self" concept but in the scala.js world. The non-native js trait
-  * representing the react component on the scala.js side is based on
-  * `ComponentSpec`. `WithMethods` provides the public API for adding specific
-  * functions for rendering, changing state, etc., and only used in
+  * There are several types with the base layer that are exposed carefully so
+  * that programmer only sees specific methods based on the type of component
+  * they want. Different component types have different types, such as "Self",
+  * that represent the javascript "this" concept in the scala.js world. The
+  * non-native js trait representing the react component on the scala.js side is
+  * based on `ComponentSpec`. `WithMethods` provides the public API for adding
+  * specific functions for rendering, changing state, etc., and are only used in
   * "building/specifying" creating the ComponentSpec. `Proxy` is the non-native
   * js trait object provided by scala.js to the reactjs system that represents
   * the javascript side of the component. Methods in the proxy are forwarded to
-  * the cake, the cake calls methods in a copy of the `Component` stored in the
-  * reactjs props. `Ops` is the object that can be imported by clients to bring
-  * the cake types and values (the plain Component) into scope for use in
-  * building the final Component. For example, importing Ops brings
-  * `WithMethods` into scope.
+  * the cake instance, the cake instance then calls methods in a copy of the
+  * `Component` stored in reactjs. `Ops` is the object that can be imported by
+  * clients to bring the cake types and values (the plain Component) into scope
+  * for use in building the final Component. For example, importing Ops brings
+  * `WithMethods` into scope. Hence, the cake layers act as a container of path
+  * dependent types (they also have some methods in them for convenience).
   *
-  * The cake method of creating objects is less common today in scala as it
-  * creates a rigid structure of types all interdependent on each other. However,
-  * this is exactly what's needed in scalajs-react.
+  * The cake method is less common today in scala however, most people used it
+  * for dependency injection which is not what we are using it for. We use the
+  * cake to compose types that became unwieldy when expressed as type
+  * parameters. The scalajs-react facade approach mirrors ReasonReact. It is
+  * essentially a set of interdependent types, *not* found in ReasonReact, in
+  * order to control what is exposed to the programmer.
   *
   */
 trait CakeBase { cake =>
@@ -676,7 +685,8 @@ trait CakeWithState extends CakeBase { cake =>
     def state: S
   }
 
-  // allocate just once per component
+  // Allocate just once per component. Use path dependent types to access types
+  // inside the ReducerResult.
   object reducerResult extends ReducerResult[S, Self]
 
   protected def mkState(s: S): State
@@ -1039,17 +1049,21 @@ case class SideEffects[S, SLF](effect: SLF => Unit) extends StateUpdate[S, SLF]
 
 /**
   * Instead of exposing the ADT to the client, we use a smart constructor at the
-  * cost of an extra object allocation. Now we can change the ADT over time. Use
-  * `ReducerResult[S, SLF]#UpdateType` for the type when you need to refer to
-  * the ADT type. Side effects are run after the state update so use the
-  * self parameter to the side effect to obtain the most current state and not the
-  * self parameter to the function that you call the methods from.
+  * cost of an extra object allocation per type of component (not per
+  * component). This allows us to change the ADT over time. Side effects are run
+  * after the state update so use the self parameter to the side effect to
+  * obtain the most current state and not the self parameter to the function
+  * that you call the methods from. *If* you need to refer to the effect type,
+  * you can use the convenience type `ReducerResult[S, SLF]#UpdateType`.
   *
   * This trait is only used for stateful components.
+ * 
+ * @todo Just pull this into the cake layers and remove the types defined inside
+ * this trait. There is no reason to keep these out of cake.
   */
 trait ReducerResult[S, SLF] {
 
-  /** Use this type in client code to create an effect. */
+  /** Use can this type in client code to create an effect, if needed (usually not). */
   type UpdateEffect = SLF => Unit
   type UpdateType   = StateUpdate[S, SLF]
 
