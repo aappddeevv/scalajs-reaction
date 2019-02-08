@@ -38,6 +38,46 @@ def make(...) = c.copy(new methods {
 
 ```
 
+## Ref and Key
+
+Ref and key are special properties used by react to assist in accessing the
+component instance or managing arrays of values. These properties are ripped out
+of props and processed special by reactjs.
+
+In this facade, the scala "props" are appended to the real props under a
+specially named key. If you were to add key and prop to your scala prop,s they
+would not be seen. So...we need a way to create a scala Component with key and
+ref.
+
+To add ref and key you can add them using `createElement` directly or using the
+implicit syntax support, `yourComponent.toEl(Some("key"), Some(yourReactRef))`.
+
+The entire ref and key issue can be confusing because in reactjs libraries
+imported into scala.js, you can typically define the key and prop in the
+imported "props" type definition and reactjs will find them. Since these
+elements are created differently than scala components, it just works that way.
+
+## Plain javascript
+
+You can write your components using raw javascript content. For example, as long as you use js semantics you could do the following:
+
+```scala
+val jscomponent: js.Function0[ReactNode] = () => {
+  div("some content")
+}
+```
+
+But you'll need to create an instance using the raw `ReactJS.createElement` function:
+
+```scala
+   ...some othercomponent render method...
+   ReactJS.createElement[Null](jscomponent, null)
+   ...more othercomonent render method...
+```
+
+This a good alternative to declaring `statelessComponent` objects and their
+related render method.
+
 ## Latest reactjs features
 
 ### Fragment
@@ -127,7 +167,7 @@ implemented.
 
 You can write your own hooks by defining the dependent hooks just like in the js
 examples. Your authored hooks can be defined in a scala function as long as they
-are *used* in a function component as descried above:
+are *used* in a function component as described above:
 
 ```scala
 def myHook(key: String): Boolean = {
@@ -147,8 +187,70 @@ rendering completes. While you can do some of this today, without using
 suspense, the user-experience is bit jerky. You throw the promise in the
 rendering function.
 
-Note that lazy is not currently supported.
+There are a couple of complications.
+* You cannot throw a raw promise in scala.js. It's always wrapped up before it
+  hits the js side.
+* You cannot call `import` as a function as its really a keyword in javascript
+  now.
+  
+To use Suspense and React.lazy, you'll need to do one of a few different
+approaches:
+* Create a .ts/.js file that exports a component that is created using
+  `React.lazy`. The component needs to be non-scalajs component since scalajs
+  bundles *everything* together. Import that component as a ReactLazyComponent
+  and then call `wrapJsForScala` to create a scala component.
+* Create a .ts/.js file and include only exports of the form `() =>
+  import("amodule")`. The import type is DynamicImportThunk and that can used as
+  an argument to scala's `React.lazy`. You need to define it as a function so
+  the ts/js Promise is not started immediately. Since you are created deferred
+  computations, you can define as many of these as you want in a single file and
+  import them all at once.
+* Externalize the entire Suspense and React.lazy machine and just import a
+  component from a js/ts module in its entirety.
 
-The Suspense element is not currently supported.
+In react 16.8, only lazy loading is supported but any component that throws a
+javascript Promise can be used which is actually how React.lazy and dynamic
+imports work. Creating a dynamic import creates as javascript Promise that
+resolves to the module content.
 
+Since scala cannot throw a raw javascript Promise, you can create a lazy
+component by throwing inside a ts/js defined component. The demo shows how this
+can be done in ts/js.
 
+As a trick, you can define an scala import module that imports a single function
+that throws an object for you.
+
+```javascript
+export default throwit(e) { throw e }
+```
+
+then import it
+
+```scala
+@js.native
+@JSImport("throwit", JSImport.Default)
+object throwit { 
+   def apply(t: js.Any): Unit = js.native
+}
+```
+
+Then throw it in your function, such as a SFC
+
+```scala
+val sfc = SFC[js.Object]{ _ =>
+  val x = throwit(..code that creates a promise...)
+  div("My nodes to display")
+}
+```
+
+But the trick is to have a js.Promise that is smart enough to resolve once the
+content has been loaded. This typically uses a backing store of some sort
+e.g. cache. If you naviavely try this and its a new promise that never completes
+(resolve or fail), you may hang the UI at some point since the promise never
+completes.
+
+It's not clear how useful this all is although the lazy loading use case is
+interesting in a mixed project.
+
+Because of the Suspense feature, `didCatch` has been removed from scala
+Components until the interaction between them is better understood.

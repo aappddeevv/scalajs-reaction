@@ -1,7 +1,8 @@
 {
     "sourceMaps": true,
     "presets": [
-        "@babel/preset-react",    
+        "@babel/preset-react",
+        "@babel/preset-typescript",
         [
             "@babel/preset-env",
             {
@@ -24,6 +25,7 @@
         "@babel/plugin-proposal-object-rest-spread",
         "@babel/plugin-transform-modules-commonjs",
         "@babel/plugin-syntax-import-meta",
+        "@babel/plugin-syntax-dynamic-import",        
         "@babel/plugin-proposal-class-properties",
         "@babel/plugin-proposal-json-strings",
         "@babel/plugin-proposal-function-sent",

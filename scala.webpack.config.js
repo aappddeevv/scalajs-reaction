@@ -86,35 +86,14 @@ const common = (scalapath) => ({
                 use: [{ loader: "css-js-loader" }]
             },
           {
-            test: /\.jsx?$/, // picks up pure .js and .jsx
+            test: /\.(ts|js)x?$/, // picks up pure .js and .jsx
             exclude: /node_modules/,
-            include: [/src/],
-            use: ["babel-loader"]
+              include: [/examples\/src\/main\/assets/],
+              loader: require.resolve("babel-loader"),
+              options: {
+                  cacheDirectory: true
+              }
           },
-            {
-                test: /\.tsx$|\.ts$/,
-                include: [
-                    path.resolve(__dirname, "examples/src/main/assets")
-                ],
-                exclude: [
-                    /node_modules/,
-                    /__tests__/,
-                ],
-                use: [
-                    { loader: "babel-loader" },
-                    {
-                        loader: "ts-loader",
-                        options: {
-                            compilerOptions: {
-                                // override paths, should use override plugin :-)
-                                paths: {
-                                    "ScalaJS": [scalapath]
-                                }
-                            }
-                        }
-                    }
-                ]
-            },
             {
                 test: /\.(png|jpg|gif)$/,
                 use: ["url-loader"]

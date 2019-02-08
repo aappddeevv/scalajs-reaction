@@ -1,6 +1,7 @@
 ---
 layout: home
 ---
+
 # What is scalajs-reaction?
 
 scalajs-reaction is a a scala.js facade over reactjs that provides a functional

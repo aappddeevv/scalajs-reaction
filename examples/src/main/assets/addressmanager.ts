@@ -1,5 +1,5 @@
 import { Action, ActionCreator } from "redux"
-import update = require("immutability-helper")
+import update from "immutability-helper"
 import { Address } from "./datamodel"
 
 type Id = string

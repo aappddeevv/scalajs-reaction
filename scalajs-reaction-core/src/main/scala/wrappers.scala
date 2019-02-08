@@ -6,6 +6,7 @@ package ttg
 package react
 
 import scala.scalajs.js
+import js.|
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
@@ -19,7 +20,7 @@ object WrapProps {
 
   /** Curry given basic react js creation args. Allow scala objects as keys on props. */
   private[this] def wrapProps[P <: js.Object](
-      reactComponent: ReactJsComponent,
+      reactComponent: ImportedJsComponent,
       props: P,
       children: ReactNode*): JsElementWrapped =
     (key: Option[String], ref: Option[Ref[js.Any]]) => {
@@ -49,7 +50,7 @@ object WrapProps {
     * leakage. `reactComponent` must be imported into scala using `@JSImport`.
     */
   def wrapJsForScala[P <: js.Object](
-      reactComponent: ReactJsComponent,
+      reactComponent: ImportedJsComponent,
       props: P,
       children: ReactNode*): Component = {
     // scala func

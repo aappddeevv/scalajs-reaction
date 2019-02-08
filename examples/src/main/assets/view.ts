@@ -1,5 +1,5 @@
 import { Action, ActionCreator } from "redux"
-import update = require("immutability-helper")
+import update from "immutability-helper"
 
 export interface State {
     label?: string | null

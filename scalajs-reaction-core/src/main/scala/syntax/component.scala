@@ -16,11 +16,16 @@ final case class ComponentOps(c: Component) {
   @inline def toEl: ReactElement = elements.element(c)
 
   /** Create an element with an optional key and an optional ref. */
-  @inline def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None) =
+  @inline def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None): ReactElement =
     elements.element(c, key, ref)
 }
 
 trait ComponentSyntax {
-  implicit def componentOpsSyntax(c: Component) =
-    ComponentOps(c)
+  implicit def componentOpsSyntax(c: Component) = ComponentOps(c)
+
+  implicit def sfc1TupleOpsSyntax[T](f: (SFC1[T],T)): ReactElement =
+    ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
+
+  /** Evil! Auto type conversion... */
+  implicit def thunkToSFC(f: () => ReactNode): SFC0 = new SFC0(f)
 }

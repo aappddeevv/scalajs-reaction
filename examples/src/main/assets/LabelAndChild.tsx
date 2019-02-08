@@ -1,5 +1,5 @@
-import * as React from "react"
-import cx = require("classnames")
+import React from "react"
+import cx from "classnames"
 
 export interface Props {
     className?: string | null

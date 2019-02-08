@@ -50,6 +50,16 @@ create a new project.
 It's easy to create a component and render it:
 
 ```scala
+val HelloWorld: SFC0 = () => div("hello world")
+reactdom.createAndRenderWithId(HelloWorld, "container")
+```
+
+Of course, if every component was so simple you would not need a library.  You
+can use hooks in your function to add state, effects and other important
+facets. The long hand way to create a Component that has mimics the ReasonReact
+API for a stateless component is:
+
+```scala
 object HelloWorld {
   val c = statelessComponent("HelloWorld")
   import c.ops._
@@ -58,12 +68,12 @@ object HelloWorld {
 reactdom.createAndRenderWithId(Helloworld(), "container")
 ```
 
-Of course, if every component was so simple, you would just write some js/ts
-functions and skip this facade. This facade shines when you introduce
-state-holding components since every component has a builtin reducer to manage
-state and you use your favorite effects library. See the
+The ReasonReact facade is more valuable when you introduce state-holding
+components since every component has a builtin reducer to manage state and you
+use your favorite effects library. See the
 [documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
 
+You have choices and they are all straightforward.
 
 ## Usage
 Include the library in your build:

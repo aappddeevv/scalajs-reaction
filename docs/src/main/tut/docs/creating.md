@@ -20,8 +20,46 @@ state. There is no `setState` in this facade to manage state, a stateful
 component has a buit-in reducer which is essentially a Finite State Machine
 (FSM).
 
+## Stateless Component Approach #1 (Easiest)
 
-## Stateless Component
+You can use a simple function definition to define your SFC. There are two type
+aliases defined, SFC0 (no args) and SFC1 (1 arg), to create components.
+
+```scala
+val component1 = SFC0{ () => div("hello world")
+// or val comonent1: SFC0 = () => div("hello world")
+
+trait Props extends js.Object {
+ var p: js.UndefOr[String] = js.undefined
+}
+
+val component2 = SFC1[Prop]{ props =>
+  div(s"""hello world ${p.getOrElse("no-arg")""")
+}
+```
+
+You can use a scala object as the parameter as well you will probably want to
+memoize the function to ensure that it is only run when the input parameter
+changes.
+
+To use these function based components, they must be converted to a
+ReactElement. For SFC1, you can use `.toEl(arg)` to explicitly convert it to a
+Component for rendering in other Component objects. You can also automatically
+convert a tuple:
+
+```scala
+(component2, new Props {...})
+```
+
+using some automatic conversions (evil!). The reason that SFC0 and SFC1 have a
+different approach to creating the final ReactElement is that a raw js function
+(which SFC0 and SFC1 are) must go through `ReactJS.createElement(func object,
+arg)` and so we need the "component" and the argument separated to plug into he
+API.
+
+## Stateless Component Approach #2
+
+This approach uses the full machinery of the component model in this facade.
 
 When we say "defining" a component, we mean that you creating a "template" for a
 component instance. When you create a component instance through make or apply,
@@ -123,6 +161,9 @@ This shortcut works because `c.ops._` imports a method that attaches itself to
 want to use any other methods though you'll have to default back to the more
 verbose copy approach.
 
+
+## Stateful Components
+
 There are a few different types of components:
 
 * stateless
@@ -174,6 +215,9 @@ object MyComponent {
     })
 }
 ```
+
+You can also use SFC components with hooks. See the React Interop section for
+information on hooks.
 
 ## Attributes
 

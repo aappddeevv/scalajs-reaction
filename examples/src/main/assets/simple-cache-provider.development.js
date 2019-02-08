@@ -7,20 +7,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
 
+import React from 'react';
+import warning from 'fbjs/lib/warning';
 
-
-if (process.env.NODE_ENV !== "production") {
-  (function() {
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-var React = require('react');
-var warning = require('fbjs/lib/warning');
-
-function noop() {}
+function noop() { }
 
 var Empty = 0;
 var Pending = 1;
@@ -74,15 +65,15 @@ function createCache(invalidator) {
     var pendingRecord = emptyRecord;
     pendingRecord.status = Pending;
     pendingRecord.suspender = suspender;
-      suspender.then(function (value) {
-          console.log("suspender resolved", value)
+    suspender.then(function (value) {
+      console.log("suspender resolved", value)
       // Resource loaded successfully.
       var resolvedRecord = pendingRecord;
       resolvedRecord.status = Resolved;
       resolvedRecord.suspender = null;
       resolvedRecord.value = value;
-      }, function (error) {
-          console.log("suspender error", error)
+    }, function (error) {
+      console.log("suspender error", error)
       // Resource failed to load. Stash the error for later so we can throw it
       var rejectedRecord = pendingRecord;
       rejectedRecord.status = Rejected;
@@ -114,22 +105,22 @@ function createCache(invalidator) {
           return;
       }
     },
-      read: function (resourceType, key, miss, missArg) {
-          console.log("read:", /*resourceType,*/ key, miss, missArg)
+    read: function (resourceType, key, miss, missArg) {
+      console.log("read:", /*resourceType,*/ key, miss, missArg)
       var record = getRecord(resourceType, key);
       switch (record.status) {
-      case Empty:
+        case Empty:
           console.log("read: empty")
           // Load the requested resource.
           var _suspender2 = miss(missArg);
           load(record, _suspender2);
           console.log("throwing!!!: _suspender2:", _suspender2)
           throw _suspender2;
-      case Pending:
+        case Pending:
           console.log("read: pending")
           // There's already a pending request.
           throw record.suspender;
-      case Resolved:
+        case Resolved:
           console.log("read: resolved")
           return record.value;
         case Rejected:
@@ -208,5 +199,4 @@ var SimpleCache = React.createContext(globalCache);
 exports.createCache = createCache;
 exports.createResource = createResource;
 exports.SimpleCache = SimpleCache;
-  })();
-}
+

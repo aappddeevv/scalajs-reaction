@@ -6,6 +6,8 @@
 .cache
 .history
 .lib/
+blah/
+.metals/
 
 target/
 lib_managed/

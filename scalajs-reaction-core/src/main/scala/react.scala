@@ -102,7 +102,8 @@ package object react {
 
   /**
     * A js-object that is returned from create-react-class. In reactjs a react
-   * class is a js object created using the "class" construct.
+   * class is a js object created using the "class" construct. This should really
+   * be ReactJsComponent.
     */
   @js.native
   trait ReactClass extends js.Object
@@ -114,7 +115,7 @@ package object react {
   /** Something that can be used in ReactJS.createElement. Need to add js.Function
     * that returns a ReactNode.
     */
-  type ReactType = ReactClass | String | ReactJsComponent
+  type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent
 
   /**
     * This type is used only for imported javascript authored components to
@@ -127,6 +128,24 @@ package object react {
     */
   @js.native
   trait ReactJsComponent extends js.Object
+
+  /** Components from js land that are functions. */
+  @js.native
+  trait ReactJsFunctionComponent extends js.Object
+
+  @js.native
+  trait ReactJsLazyComponent extends ReactJsComponent
+
+  /** All the types of components that can be imported from JS. These must be
+   * processed to be allowed to be used as Components in this facade. Keep in
+   * sync with `ReactType`.
+   */
+  type ImportedJsComponent = ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent
+
+  /** The type of `() => import("somecomponent")` which is used exclusively for 
+   * the argument to React.lazy.
+   */
+  type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
 
   /** Alias for internal use. @deprecated */
   type ReactClassInternal = ReactClass

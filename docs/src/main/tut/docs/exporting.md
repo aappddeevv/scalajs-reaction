@@ -14,6 +14,7 @@ create your own "mapping" framework if you want to make your mapping process
 easier. For example, you could create a set of "Write" typeclasses.
 
 Here's the API. This is all you need to do:
+
 ```scala
 // ToDoProp is a non-native JS trait
 @JSExportTopLevel("ToDo")
@@ -24,7 +25,8 @@ We mentioned in the previous section that if your make/apply parameter object is
 javascript friendly, such as ToDoProps, it's easier to interface. In fact, if
 you do it this waya and there is no other processing you need to perform on the properties, you can shrink the above to:
 
-```scala// ToDoProp is a non-native JS trait
+```scala
+// ToDoProp is a non-native JS trait
 @JSExportTopLevel("ToDo")
 val exportedToDo = ToDo.wrapScalaForJs(make(_))
 ```

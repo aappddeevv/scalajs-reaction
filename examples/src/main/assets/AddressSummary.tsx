@@ -1,6 +1,6 @@
-import * as React from "react"
+import React from "react"
 import { Address } from "./datamodel"
-import cx = require("classnames")
+import cx from "classnames"
 
 export interface Props {
     className?: string | null

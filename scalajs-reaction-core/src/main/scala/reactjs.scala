@@ -38,6 +38,17 @@ private[react] trait ReactJS extends js.Object {
   def createRef[T](): react.ReactRef[T]  = js.native
 
   val version: String = js.native
+
+  /** Returns a "lazy" react component i.e. $$type = react.lazy */
+  def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent = js.native
+}
+
+/** Opquae type.*/
+@js.native
+trait DynamicImport extends js.Object {
+  // If default is defined in the exports
+  // other exports will be here as well
+  val `default`: ReactJsComponent
 }
 
 @js.native
@@ -166,6 +177,8 @@ trait React {
 
   @inline def useCallback[T](context: ReactContext[T]): T = ReactJS.useContext[T](context)
 
+  @inline def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent =
+    ReactJS.`lazy`(lazyComponent)
 }
 
 object React extends React
