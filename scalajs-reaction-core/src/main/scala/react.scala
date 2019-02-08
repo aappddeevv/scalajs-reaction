@@ -32,9 +32,6 @@ package object react {
     val current: T | Null = js.native
   }
 
-  ///** Callback for react ref "callback version". */
-  //type RefCb = RefCbE[dom.html.Element]
-
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E|Null, Unit]
 
@@ -220,8 +217,8 @@ package object react {
 
   /**
     * Merge objects and Ts together. Good for merging props with data-
-    * attributes. This is like `Object.assign`. Last parameter wins.
-   * Creates a new object.
+    * attributes. This is like `Object.assign`. Last parameter wins.  Creates
+    * and returns new object. Input objects are not modified.
     */
   @inline def merge[T <: js.Object](objs: js.Dynamic | js.Object | Null *): T = {
     val result = js.Dictionary.empty[Any]

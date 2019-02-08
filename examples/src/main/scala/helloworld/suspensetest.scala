@@ -5,10 +5,13 @@
 package ttg.react.examples
 package helloworld
 
+import concurrent._
+import concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
 import js.annotation._
 import org.scalajs.dom
 import js.Dynamic.{literal => lit}
+import js.JSConverters._
 
 import ttg.react
 import react._
@@ -85,7 +88,7 @@ object SuspenseTest {
     )
   }
 
-  val useKeyPress: js.Function1[String, Boolean] = { targetKey =>
+  def useKeyPress(targetKey: String): Boolean = {
     val (keyPressed, setKeyPressed) = React.useState[Boolean](false)
 
     val downHandler: js.Function1[js.Dynamic, Unit] =
@@ -114,7 +117,7 @@ object SuspenseTest {
     val foxPress = useKeyPress("f")
 
     div(
-      div(s"* h, s, r, f *"),
+      s"* h, s, r, f *: ",
       Fragment(
         if(happyPress) "h" else null,
         if(sadPress) "s" else null,
@@ -124,13 +127,50 @@ object SuspenseTest {
     )
   }
 
+  val sfc5 = SFC[ReactElement]{ child =>
+    Suspense(div("the fallback text!"),
+      child
+    )
+  }
+
+  val componentSucceed = SFC[js.Object]{ _ =>
+    //throw new js.JavaScriptException(
+    //   //Future.successful(true).toJSPromise
+    //   js.Promise.resolve[Boolean](true)
+    // )
+    //js.eval("""throw Promise.resolve(true)""")
+    T.throwit(js.Promise.resolve[Boolean](true))
+    "succeeded"
+  }
+
+  val componentFail = SFC[js.Object]{ _ =>
+    // throw so that JS will catch it
+    //throw new js.JavaScriptException(
+      //Future.failed(new IllegalArgumentException("intentional failure")).toJSPromise
+    // js.Promise.reject(new js.Error("Server failure"))
+    //)
+    T.throwit(js.Promise.reject(new js.Error("Server failure")))
+    "failed!"
+  }
+
+  @js.native
+  @JSImport("Assets/throwit.js", JSImport.Namespace)
+  object T extends js.Object {
+    def throwit(x: js.Any): Unit = js.native
+  }
+
   def blah(): ReactNode = {
     Fragment(
       sfc1(null),
       sfc2(null),
       sfc3(lit("initialCount" -> 10)),
-      div("Keypress listener, press & hold key to display character"),
-      sfc4(null)
+      "Keypress listener, press & hold key to display character: ",
+      sfc4(null),
+      //div("Suspense test 1 - promise fails"),
+      //sfc5(div(componentFail(null))),
+      //div("Suspense test 2 - promise completes"),
+      //sfc5(div(componentSucceed(null)))
+      div("Suspense demo is not currently available")
     )
   }
 

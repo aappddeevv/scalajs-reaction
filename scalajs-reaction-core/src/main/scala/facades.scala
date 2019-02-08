@@ -210,7 +210,7 @@ trait CakeBase { cake =>
     var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
     /** This may be set to undefined if there are no unmounts registered. */
     var onUnmounts: js.UndefOr[js.Array[OnUnmount]]               = js.undefined
-    var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
+    //var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
     var didUpdate: js.UndefOr[OldNewSelf[Self] => Unit]       = js.undefined
@@ -253,7 +253,7 @@ trait CakeBase { cake =>
   trait WithMethodsLike extends js.Object {
     val render: Self => ReactNode
     var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
-    var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
+    //var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
 
     //var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
@@ -441,17 +441,17 @@ trait CakeBase { cake =>
   }
 
   // rewrap and throw into scala world ? or should we have js re-throw it? make configurable?
-  @inline protected def _componentDidCatch(
-      displayName: String)(thisJs: ThisSelf, error: js.Error, errorInfo: ErrorInfo): Unit = {
-    val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
-    component.didCatch.fold(
+  // @inline protected def _componentDidCatch(
+  //     displayName: String)(thisJs: ThisSelf, error: js.Error, errorInfo: ErrorInfo): Unit = {
+  //   val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+  //   component.didCatch.fold(
 
-      throw new js.JavaScriptException(error)
-    ) { dc =>
-      val self = mkSelf(thisJs, thisJs.state, component)
-      dc(self, error, errorInfo)
-    }
-  }
+  //     throw new js.JavaScriptException(error)
+  //   ) { dc =>
+  //     val self = mkSelf(thisJs, thisJs.state, component)
+  //     dc(self, error, errorInfo)
+  //   }
+  // }
 
   @inline protected def _render(displayName: String)(thisJs: ThisSelf): ReactNode = {
     val component =
@@ -543,7 +543,7 @@ trait CakeBase { cake =>
     // componentWillMount is not used in scalajs-react...
     override val componentWillUnmount = js.defined(_componentWillUnmount(displayName))
     // REMOVE TO ALLOW PROMISE PASS THROUGH UNHINDERED FOR THE MOMENT?!?!?!
-    override val componentDidCatch     = js.defined(_componentDidCatch(displayName))
+    //override val componentDidCatch     = js.defined(_componentDidCatch(displayName))
     override val render                = _render(displayName)
     override val componentWillUpdate   = js.defined(_componentWillUpdate(displayName))
     override val componentDidUpdate    = js.defined(_componentDidUpdate(displayName))

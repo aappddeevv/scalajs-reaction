@@ -105,9 +105,9 @@ published.
 
 ### Hooks
 
-For the moment, hooks can be found using the `React` prefix such as
-`React.hookName`. Hooks must be run inside a function comonent. You can define a
-function component using the Stateless Functional Component (SFC) object:
+Hooks can be found using the `React` prefix such as `React.useState`. Hooks must
+be run inside a "function component." You can define a function component using
+the Stateless Functional Component (SFC) object:
 
 ```scala
 val sfc = SFC[js.Object]{ _ =>
@@ -124,3 +124,31 @@ val sfc = SFC[js.Object]{ _ =>
 See the demo examples for code copied from
 [usehooks.com](http://usehooks.com). Currently, `useImperativeHandler` is not
 implemented.
+
+You can write your own hooks by defining the dependent hooks just like in the js
+examples. Your authored hooks can be defined in a scala function as long as they
+are *used* in a function component as descried above:
+
+```scala
+def myHook(key: String): Boolean = {
+    val (keyPressed, setKeyPressed) = React.useState[Boolean](false)
+    ...
+    keyPressed
+}
+```
+
+### Suspense
+
+Suspense allows you to delay rendering until a js.Promise completes. In the
+react rendering engine, suspended components continue to display their content
+until the effect completion, with a possible fallback in case the effect
+fails. This allows you to continue to show user relevant content until the
+rendering completes. While you can do some of this today, without using
+suspense, the user-experience is bit jerky. You throw the promise in the
+rendering function.
+
+Note that lazy is not currently supported.
+
+The Suspense element is not currently supported.
+
+
