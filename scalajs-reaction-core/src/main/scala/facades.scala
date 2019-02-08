@@ -440,11 +440,12 @@ trait CakeBase { cake =>
     component.onUnmounts.foreach(_.foreach(_()))
   }
 
+  // rewrap and throw into scala world ? or should we have js re-throw it? make configurable?
   @inline protected def _componentDidCatch(
       displayName: String)(thisJs: ThisSelf, error: js.Error, errorInfo: ErrorInfo): Unit = {
     val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
     component.didCatch.fold(
-      // rewrap and throw
+
       throw new js.JavaScriptException(error)
     ) { dc =>
       val self = mkSelf(thisJs, thisJs.state, component)

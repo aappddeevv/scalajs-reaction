@@ -95,4 +95,32 @@ object MyComponent {
 }
 ```
 
-You can provide a scala object, but you can also provide a non-native JS trait that is automatically merged together for a partial update from the default value provided when the context was created. This approach is about "props merging" much like you find in redux. You should take this into account when updating the value in the provider. It may be much more efficient to use a non-native JS trait (i.e. a javascript object). The API is in flux until 16.3 is published.
+You can provide a scala object, but you can also provide a non-native JS trait
+that is automatically merged together for a partial update from the default
+value provided when the context was created. This approach is about "props
+merging" much like you find in redux. You should take this into account when
+updating the value in the provider. It may be much more efficient to use a
+non-native JS trait (i.e. a javascript object). The API is in flux until 16.3 is
+published.
+
+### Hooks
+
+For the moment, hooks can be found using the `React` prefix such as
+`React.hookName`. Hooks must be run inside a function comonent. You can define a
+function component using the Stateless Functional Component (SFC) object:
+
+```scala
+val sfc = SFC[js.Object]{ _ =>
+ val (s, setState) = React.useState[String]("initial state")
+ div(
+    div(s"my function component with useState: $s"),
+    button(new ButtonProps {
+      onClick = js.defined(_ => setState("next state"))
+    })("Click me")
+ )
+}
+```
+
+See the demo examples for code copied from
+[usehooks.com](http://usehooks.com). Currently, `useImperativeHandler` is not
+implemented.

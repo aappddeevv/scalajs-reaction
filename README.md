@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.4+, react-native v0.58.3)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.8.1+, react-native v0.59)
 
 # scalajs-reaction
 
@@ -37,15 +37,33 @@ scalajs-react for your solution.
 * [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
-The library supports fragments and the new context provider in react v16.3. The
-scalaj-react API roughly mimics ReasonReact 4.1 and the intent is to track that
+The library supports fragments, the new context provider and hooks. The
+facade's API roughly mimics ReasonReact 4.1 and the intent is to track that
 API and stick closely to it. Read those docs to understand this API and how it
 is different than the standard reactjs UI model. This facade supports
 react-native. The react-native use-case for scala.js is actually more compelling
 than for web applications due to scala.js bundling issues.
 
-A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to create a
-new project.
+A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to
+create a new project.
+
+It's easy to create a component and render it:
+
+```scala
+object HelloWorld {
+  val c = statelessComponent("HelloWorld")
+  import c.ops._
+  def apply() = render { self => s"hello world" }
+}
+reactdom.createAndRenderWithId(Helloworld(), "container")
+```
+
+Of course, if every component was so simple, you would just write some js/ts
+functions and skip this facade. This facade shines when you introduce
+state-holding components since every component has a builtin reducer to manage
+state and you use your favorite effects library. See the
+[documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
+
 
 ## Usage
 Include the library in your build:

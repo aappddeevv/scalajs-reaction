@@ -86,7 +86,7 @@ object Pages {
   )
 
   val helloWorldPage = PivotItem(new PivotItem.Props {
-    headerText = "Hello World"
+    headerText = "Hello World Typescript/Suspense/Hooks"
     itemKey = "helloworld"
     className = estyles.scrollme.asString
   })(
@@ -98,7 +98,8 @@ object Pages {
     E.div(12.0),
     E.div(true), // this will not display anything
     E.div(null), // this will not display anything
-    E.div("this is a helloworld string")
+    E.div("this is a helloworld string"),
+    helloworld.SuspenseTest.blah()
   )
 
   // the view model will come from redux to illustrate how it can be split up.
@@ -211,7 +212,7 @@ object Examples {
         gen.skip
       }
       val render = self =>
-        fragmentElement()(
+        Fragment(
           Pivot()(
             readme(examples.readmetext),
             addressPage(addressDAO),
@@ -247,9 +248,9 @@ object Main {
 
   /**
     * This will be exported from the ES module that scala.js outputs.  How you
-    *  access it depends on your bundler. webpack can be configured to output a
-    *  "library", say named, "Scala" so you would call this function as
-    *  `Scala.App()`.
+    * access it depends on your bundler. webpack can be configured to output a
+    * "library", say named, "Scala" so you would call this function as
+    * `Scala.App()`.
     */
   @JSExportTopLevel("App")
   def App(): Unit = {

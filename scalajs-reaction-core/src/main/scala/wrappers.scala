@@ -9,6 +9,12 @@ import scala.scalajs.js
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
+/**
+ * Wrapping a JS component so it works in the scala.js component system in this
+ * library is really just setting up a delegate in a well known location so that
+ * when you create a scala component, it then delegates to creating the js
+ * component.
+ */
 object WrapProps {
 
   /** Curry given basic react js creation args. Allow scala objects as keys on props. */

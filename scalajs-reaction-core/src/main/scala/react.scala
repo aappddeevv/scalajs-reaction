@@ -41,7 +41,6 @@ package object react {
   /** Combine the callback and the createRef models. */
   type Ref[E] = RefCb[E] | ReactRef[E]
 
-
   /**
     * Something that can be rendered in reactjs. We need to restrict this a bit
     * more when returning values from the scala side API. reactjs allows this to
@@ -110,6 +109,10 @@ package object react {
     */
   @js.native
   trait ReactClass extends js.Object
+
+  /** For creating a portal in react-dom. */
+  @js.native
+  trait ReactPortal extends ReactElement
 
   /** Something that can be used in ReactJS.createElement. Need to add js.Function
     * that returns a ReactNode.

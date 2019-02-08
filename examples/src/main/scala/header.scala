@@ -52,7 +52,7 @@ object Header {
             })("Route to ToDos")
           ),
           target
-        )
+        ).right.get // alright, not the best way :-)
       }
     })
 }

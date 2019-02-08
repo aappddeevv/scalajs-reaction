@@ -15,39 +15,31 @@ import org.scalajs.dom
 package object reactdom {
 
   /** Render el into the html element 'id'. react 16.3 */
-  def createAndRenderWithId(el: ReactNode, id: String, opts: Option[CreateRootOptions] = None) = {
+  def createAndRenderWithId(el: ReactNode, id: String, opts: Option[CreateRootOptions] = None): Either[Throwable, Unit] = {
     val target = Option(dom.document.getElementById(id))
-    target.fold(
-      throw new Exception(s"createAndRenderWithId: No element with id $id found in the HTML."))(
-      htmlel => {
-        // this seemed to call initialState twice...so use the other standard API
-        //val root = JSReactDOM.createRoot(htmlel, opts.orUndefined)
-        //root.render(el)
-        JSReactDOM.render(el, htmlel)
-      })
+    target.fold[Either[Throwable,Unit]](
+      Left(new Exception(s"createAndRenderWithId: No element with id $id found in the HTML."))
+    )(
+      htmlel => Right(JSReactDOM.render(el, htmlel))
+    )
   }
 
   /** Render into the DOM given an element id. */
-  def renderToElementWithId(el: ReactNode, id: String) = {
+  def renderToElementWithId(el: ReactNode, id: String): Either[Throwable, Unit] = {
     val target = Option(dom.document.getElementById(id))
-    target.fold(
-      throw new Exception(s"renderToElementWithId: No element with id $id found in the HTML."))(
-      htmlel => JSReactDOM.render(el, htmlel))
+    target.fold[Either[Throwable,Unit]](
+      Left(new Exception(s"renderToElementWithId: No element with id $id found in the HTML."))
+    )(
+      htmlel => Right(JSReactDOM.render(el, htmlel)))
   }
 
   /** Render the DOM given an element id using react's portal. */
-  def createPortalInElementWithId(node: ReactNode, id: String) = {
+  def createPortalInElementWithId(node: ReactNode, id: String): Either[Throwable, ReactPortal] = {
     val target = Option(dom.document.getElementById(id))
-    target.fold(
-      throw new Exception(
-        s"createPortalInElemeentWithId: No element with id $id found in the HTML."))(htmlel =>
-      JSReactDOM.createPortal(node, htmlel))
+    target.fold[Either[Throwable,ReactPortal]](
+      Left(new Exception(s"createPortalInElemeentWithId: No element with id $id found in the HTML."))
+    )(
+      htmlel => Right(JSReactDOM.createPortal(node, htmlel))
+    )
   }
-
-  /** Experimental API. */
-  // @JSName("unstable_deferredUpdates")
-  // def deferredUpdates(cb: () => Unit): Unit = {
-  //   JSReactDOM.unstable_deferredUpdates(js.Any.fromFunction0(cb))
-  // }
-
 }

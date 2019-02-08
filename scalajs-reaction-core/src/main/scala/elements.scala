@@ -26,7 +26,7 @@ object elements {
       n: String,
       props: js.Object | js.Dynamic,
       children: ReactElement*): ReactDOMElement = {
-    ReactJS.createElement(n, props.asInstanceOf[js.Object], children: _*)
+    React.createDOMElement(n, props.asInstanceOf[js.Object])(children: _*)
   }
 
   /**
@@ -179,21 +179,33 @@ object elements {
     WrapProps.wrapJsForScala(reactClass, props, children: _*)
   }
 
-  /**
-    * Create a fragment element. Per the API, you are only allowed an optional key.
-    * @deprecated See `object Fragment`.
-    */
-  def fragmentElement(key: Option[String] = None)(children: ReactNode*) =
-    React.createFragment(key, children: _*)
-
   /** Create a React.fragment element. */
   object Fragment {
+
     def make(key: Option[String] = None)(children: ReactNode*) =
       React.createFragment(key, children: _*)
+
     def make(children: ReactNode*) =
       React.createFragment(None, children: _*)
+
+    /** Preferred creation function. */
     def apply(children: ReactNode*) =
       React.createFragment(None, children: _*)
+  }
+
+  /** Strict element. Wraps your root component typically. */
+  object StrictMode {
+    /** Wrap some children with a Strict component. */
+    def apply(children: ReactNode*): ReactNode =
+      ReactJS.createElement(ReactJS.StrictMode, null, children:_*)
+  }
+
+  /** Catch a thrown js.Promise from the child. Show fallback until the promise is
+   * resolved.
+   */
+  object Suspense {
+    def apply(fallback: js.UndefOr[ReactNode] = js.undefined)(child: ReactNode) =
+      ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback), child)
   }
 
   /**
@@ -239,4 +251,19 @@ object elements {
       item.toOption
         .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
         .getOrElse[js.Array[ReactNode]](js.Array())
+
+  /** Convert a scala function, T => ReactNode, to a Stateless Functional
+   * Component (SFC) that returns a Component. A SFC is considered a react
+   * component, defined as a function.  While you could just use a regular scala
+   * function but then it would not be a react component underneath the hood and
+   * the scala function would be eagerly evaluated. Using a component can save
+   * UI update time if the output is expensive to create. Most importantly,
+   * using an SFC also enables hooks inside.
+   */
+  object SFC {
+    def apply[T](f: T => ReactNode): T => Component = {
+      val c = js.Any.fromFunction1[T,ReactNode](f).asInstanceOf[ReactJsComponent]
+      t => wrapJsForScala[js.Object](c, t.asInstanceOf[js.Object])
+    }
+  }
 }
