@@ -22,12 +22,14 @@ component has a buit-in reducer which is essentially a Finite State Machine
 
 ## Stateless Component Approach #1 (Easiest)
 
-You can use a simple function definition to define your SFC. There are two type
-aliases defined, SFC0 (no args) and SFC1 (1 arg), to create components.
+The easiest approach to creating a component is to use a simple function
+definition to define your SFC. There are two type aliases defined, SFC0 (no
+args) and SFC1 (1 arg), to create components. These components are equivalent to
+defining your component in javascript using a javascript function.
 
 ```scala
 val component1 = SFC0{ () => div("hello world")
-// or val comonent1: SFC0 = () => div("hello world")
+// or val component1: SFC0 = () => div("hello world")
 
 trait Props extends js.Object {
  var p: js.UndefOr[String] = js.undefined
@@ -38,36 +40,36 @@ val component2 = SFC1[Prop]{ props =>
 }
 ```
 
-You can use a scala object as the parameter as well you will probably want to
-memoize the function to ensure that it is only run when the input parameter
-changes.
+You can use a scala object as the parameter and you will probably want to
+memoize the function to ensure that rendering is efficient.
 
-To use these function based components, they must be converted to a
-ReactElement. For SFC1, you can use `.toEl(arg)` to explicitly convert it to a
-Component for rendering in other Component objects. You can also automatically
-convert a tuple:
+To use these function-based components, they must be converted to a
+ReactElement. For SFC1, you can use `yourFunctionComponent.toEl(arg)` to
+explicitly convert the SFC to a Component for use in other Component
+objects. You can also automatically convert a tuple:
 
 ```scala
 (component2, new Props {...})
 ```
 
-using some automatic conversions (evil!). The reason that SFC0 and SFC1 have a
-different approach to creating the final ReactElement is that a raw js function
-(which SFC0 and SFC1 are) must go through `ReactJS.createElement(func object,
-arg)` and so we need the "component" and the argument separated to plug into he
-API.
+using an automatic conversions (evil!). Like all react components, both SFC0 and
+SFC1 must end up with ha call to `ReactJS.createElement(func object, arg)` to
+become an instance of a Component so we need the "component" and the argument
+separated to plug into the standard react API.
+
+A nice benefit of using SFCs is that you can export them easily for use in the
+js/ts side of your application assuming the parameter is js friendly.
 
 ## Stateless Component Approach #2
 
-This approach uses the full machinery of the component model in this facade.
+This approach uses the machinery of the ReasonReact component model.
 
 When we say "defining" a component, we mean that you creating a "template" for a
 component instance. When you create a component instance through make or apply,
 you are copying that template and providing customizations for rendering,
 mounting and other lifecycle actions.
 
-
-Here's a simple example of defining a component that uses a non-native JS trait
+Here is a simple example of defining a component that uses a non-native JS trait
 for the props. You can make the props anything you want, individual parameter, a
 scala parameter object or a javascript friendly parameter object. You generally
 use a javascript friendly parameter object when the component needs to be
@@ -102,12 +104,13 @@ object ToDo {
 ```
 
 The parameter `ToDoProps` was set as a `js.Object` trait so it is easier to
-interface into the reactjs world.
+interface into the reactjs world but you could have just as easily used a
+parameter list and listed each parameter individually.
 
-Notice that you use a `val` to define `render`. Render is required for all
+You need to use a `val` to define `render`. Render is required for all
 components so the `methods` that you are creating forces you to define the
-render method. Using standard scala syntax, you need to define `val` when you
-instantiate the trait.
+render method with a val. The val is standard scala syntax--you need to define
+`val` when you instantiate the trait.
 
 Some methods are not required, such as `willMount`. The definition for
 `willMount` would look like:
@@ -160,7 +163,6 @@ This shortcut works because `c.ops._` imports a method that attaches itself to
 `c` and calls `c.copy(new methods { ... })` for you under the covers. If you
 want to use any other methods though you'll have to default back to the more
 verbose copy approach.
-
 
 ## Stateful Components
 

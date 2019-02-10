@@ -9,6 +9,18 @@ package router
 import scala.scalajs.js
 import org.scalajs.dom
 
+/** Specification of a specific set of information for routing. This one is
+  * mostly based on the DOM but its contents can be generically used in most
+  * cases.
+ */
+case class PathParts(
+  segments: Seq[String],
+  hash: Option[String],
+  search: Option[String],
+  // always starts with a slash it seems and is / if at root
+  pathname: String
+)
+
 /**
   * Simple router as in ReasonReact. Use pattern matching in the callbacok to
   * match on the url structure `(path seq, hash, search)` and then call "send"
@@ -16,7 +28,7 @@ import org.scalajs.dom
   * implementation, just some abstraction over the `window.history` api.  You
   * could define your own e.g. a stream of history changes.
  * 
- * TODO: Add replace?
+ * TODO: Add PathParts type parameter.
   */
 trait Router {
 
@@ -49,21 +61,25 @@ trait Router {
   }
 
   private[react] def url() = {
+    // dom.window.location.pathname
     PathParts(path(), hash(), search(), dom.window.location.pathname)
   }
 
   def push(path: String): Unit = {
+    // shoulud dmake sure history and window exist
     dom.window.history.pushState(/*dom.window.history*/null, "", path)
     dom.window.dispatchEvent(makeEvent("popstate"))
   }
 
-  case class PathParts(
-    segments: Seq[String],
-    hash: Option[String],
-    search: Option[String],
-    // always starts with a slash it seems and is / if at root
-    pathname: String = dom.window.location.pathname 
-  )
+  // not part of reasonreact
+  def replace(path: String): Unit = {
+    // ???
+    //dom.document.body.scrollTop = 0
+    // shoulud dmake sure history and window exist 
+    dom.window.history.replaceState(null, "", path)
+    dom.window.dispatchEvent(makeEvent("popstate"))    
+  }
+
   type WatcherId   = js.Any
 
   private type CB = js.Function1[js.Any, js.Any]

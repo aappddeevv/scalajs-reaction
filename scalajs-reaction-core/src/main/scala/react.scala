@@ -270,4 +270,8 @@ package object react {
     if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])
   }
+
+  /** Render something or return a null element. */
+  @inline def when(cond: Boolean)(render: => ReactNode): ReactNode =
+    if(cond) render else null
 }

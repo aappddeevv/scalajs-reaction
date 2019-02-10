@@ -32,6 +32,9 @@ trait ErrorInfo extends js.Object {
   * template for a react component and its customized by adding a short-list of
   * react related methods, e.g. statefull adds a reducer method, in the
   * underlying javascript object.
+ * 
+ * An instance of ComponentSpec is really just a delegate that is called by the
+ * proxy.
   */
 trait ComponentSpec extends js.Object {
   /**
@@ -144,7 +147,7 @@ trait CakeBase { cake =>
     * Self for methods. At its simplest, you can execute callbacks. Subtraits
     * may create additional "Self"s for use in client API methods.
     */
-  trait SelfLike extends SelfForUnmountLike {
+  protected trait SelfLike extends SelfForUnmountLike {
 
     /**
       * You should need not need to use this in scala.js vs reason-react, given
@@ -171,14 +174,14 @@ trait CakeBase { cake =>
     * Self used for component.willUnmount, for example "handle/send" does not
     * work during willUnmount.
     */
-  type SelfForUnmount <: SelfForUnmountLike
+  protected type SelfForUnmount <: SelfForUnmountLike
 
-  trait SelfForUnmountLike {
+  protected trait SelfForUnmountLike {
     private[ttg] var ptr: js.Any
   }
 
   /** reactjs this: Only the parts that we need or the interop. */
-  type ThisSelf = JsComponentThis[State]
+  protected type ThisSelf = JsComponentThis[State]
 
   /**
     * The basic scala component that requires methods to customize its behavior.
@@ -193,7 +196,7 @@ trait CakeBase { cake =>
   type ComponentType <: ComponentLike
 
   /** The signature of DidMount varies by cake layer. */
-  type DidMount
+  protected type DidMount
 
   /**
     * The scala.js component is a javascript object (non-native trait) with all
@@ -210,7 +213,7 @@ trait CakeBase { cake =>
     var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
     /** This may be set to undefined if there are no unmounts registered. */
     var onUnmounts: js.UndefOr[js.Array[OnUnmount]]               = js.undefined
-    //var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
+    var didCatch: js.UndefOr[(Self, js.Any, ErrorInfo) => Unit] = js.undefined
 
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
     var didUpdate: js.UndefOr[OldNewSelf[Self] => Unit]       = js.undefined
@@ -253,9 +256,8 @@ trait CakeBase { cake =>
   trait WithMethodsLike extends js.Object {
     val render: Self => ReactNode
     var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
-    //var didCatch: js.UndefOr[(Self, js.Error, ErrorInfo) => Unit] = js.undefined
+    var didCatch: js.UndefOr[(Self, js.Any, ErrorInfo) => Unit] = js.undefined
 
-    //var shouldUpdate: js.UndefOr[OldNewSelf[Self] => Boolean] = js.undefined
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
     var didUpdate: js.UndefOr[OldNewSelf[Self] => Unit]       = js.undefined
     var willUnmount: js.UndefOr[SelfForUnmount => Unit]       = js.undefined
@@ -336,7 +338,7 @@ trait CakeBase { cake =>
     * "scala props" stashed in js-side props. js-side props are always a js
     * object.
     */
-  def convertPropsIfTheyAreFromJs(
+  protected def convertPropsIfTheyAreFromJs(
       props: JsComponentThisProps,
       jsPropsToScala: Option[js.Object => Component],
       debugName: String): Component = {
@@ -441,17 +443,16 @@ trait CakeBase { cake =>
   }
 
   // rewrap and throw into scala world ? or should we have js re-throw it? make configurable?
-  // @inline protected def _componentDidCatch(
-  //     displayName: String)(thisJs: ThisSelf, error: js.Error, errorInfo: ErrorInfo): Unit = {
-  //   val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
-  //   component.didCatch.fold(
-
-  //     throw new js.JavaScriptException(error)
-  //   ) { dc =>
-  //     val self = mkSelf(thisJs, thisJs.state, component)
-  //     dc(self, error, errorInfo)
-  //   }
-  // }
+  @inline protected def _componentDidCatch(
+      displayName: String)(thisJs: ThisSelf, error: js.Any, errorInfo: ErrorInfo): Unit = {
+    val component = convertProps(thisJs.props, thisJs.jsPropsToScala, displayName)
+    component.didCatch.fold(
+      throw new js.JavaScriptException(error)
+    ) { dc =>
+      val self = mkSelf(thisJs, thisJs.state, component)
+      dc(self, error, errorInfo)
+    }
+  }
 
   @inline protected def _render(displayName: String)(thisJs: ThisSelf): ReactNode = {
     val component =
@@ -540,10 +541,15 @@ trait CakeBase { cake =>
     * improve readability.
     */
   abstract protected class ProxyLike extends Proxy[Self, State, JsComponentThisProps, ThisSelf] {
-    // componentWillMount is not used in scalajs-react...
+    // componentWillMount is not used in this facade...
     override val componentWillUnmount = js.defined(_componentWillUnmount(displayName))
+    //
     // REMOVE TO ALLOW PROMISE PASS THROUGH UNHINDERED FOR THE MOMENT?!?!?!
-    //override val componentDidCatch     = js.defined(_componentDidCatch(displayName))
+    //
+    // This is problematic, this proxy method catches all errors whether you
+    // defined a catcher or not and once in scala world, the exceptions are
+    // wrapped. For the moment, you can disable this with a disableCatch = false.
+    override val componentDidCatch     = js.defined(_componentDidCatch(displayName))
     override val render                = _render(displayName)
     override val componentWillUpdate   = js.defined(_componentWillUpdate(displayName))
     override val componentDidUpdate    = js.defined(_componentDidUpdate(displayName))

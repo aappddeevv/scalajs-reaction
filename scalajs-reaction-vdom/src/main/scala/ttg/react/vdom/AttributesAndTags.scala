@@ -37,6 +37,11 @@ trait ElementAttributesOnly
     extends HTMLAttributes[dom.html.Element]
     with ClassAttributes[dom.html.Element]
 
+/**
+ * The HTML tags (elements/components) for standard DOM elements. Each tag is
+ * represented in lowercase while the props object is the uppercase tag name
+ * followed by Props. So the div tag has DivProps for the props type.
+ */
 trait tags {
 
   trait AProps extends AnchorHTMLAttributes[dom.html.Anchor] with ClassAttributes[dom.html.Anchor]

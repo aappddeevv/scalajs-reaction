@@ -23,7 +23,8 @@ val exportedToDo = ToDo.wrapScalaForJs((jsProps: ToDoProps) => make(jsProps))
 
 We mentioned in the previous section that if your make/apply parameter object is
 javascript friendly, such as ToDoProps, it's easier to interface. In fact, if
-you do it this waya and there is no other processing you need to perform on the properties, you can shrink the above to:
+you do it this waya and there is no other processing you need to perform on the
+properties, you can shrink the above to:
 
 ```scala
 // ToDoProp is a non-native JS trait

@@ -69,7 +69,7 @@ object elements {
     o.asInstanceOf[js.Dynamic]
 
   /** Stateless component. It only has a render function. */
-  def statelessComponent(debugNameArg: String) = {
+  def statelessComponent(debugNameArg: String, disableCatch: Boolean = true) = {
     new StatelessComponentCake {
       type ProxyType = ProxyLike
       type ComponentType = ComponentLike
@@ -78,6 +78,8 @@ object elements {
         val displayName: String = debugNameArg
       }
       val proxy = new ProxyType()
+      // hack
+      if(disableCatch) proxy.asInstanceOf[js.Dynamic].componentDidCatch = js.undefined
       trait ComponentLike extends super.ComponentLike
       val component = new ComponentType {
         var debugName          = debugNameArg
@@ -86,8 +88,8 @@ object elements {
     }
   }
 
-  /** Stateless, with retained props. */
-  def statelessComponentWithRetainedProps[RetainedProps](debugNameArg: String) =
+  // /** Stateless, with retained props. */
+  def statelessComponentWithRetainedProps[RetainedProps](debugNameArg: String, disableCatch: Boolean = true) =
     new StatelessComponentWithRetainedPropsCake {
       type RP = RetainedProps
       type ProxyType = ProxyLike
@@ -97,6 +99,8 @@ object elements {
         val displayName: String = debugNameArg
       }
       val proxy = new ProxyType()
+      // hack
+      if(disableCatch) proxy.asInstanceOf[js.Dynamic].componentDidCatch = js.undefined
       trait ComponentLike extends super.ComponentLike
       val component = new ComponentType {
         var debugName          = debugNameArg
@@ -105,7 +109,7 @@ object elements {
     }
 
   /** Stateful. */
-  def reducerComponent[TheState, Action](debugNameArg: String) =
+  def reducerComponent[TheState, Action](debugNameArg: String, disableCatch: Boolean = false) =
     new ReducerComponentCake {
       type S = TheState
       type A = Action
@@ -116,6 +120,8 @@ object elements {
         val displayName: String = debugNameArg
       }
       val proxy = new ProxyType()
+      // hack
+      if(disableCatch) proxy.asInstanceOf[js.Dynamic].componentDidCatch = js.undefined
       trait ComponentLike extends super.ComponentLike
       val component = new ComponentType {
         var debugName          = debugNameArg
@@ -123,41 +129,42 @@ object elements {
       }
     }
 
-  /**
-    * Scala side version of React.createClass. Since this function call creates
-    * the underlying react js class, call this once per component then define a
-    * "make" function to derive a new element/component instance with your input
-    * props and functions to define behavior. The default render method renders
-    * "Not Implemented" and the default reducer performs no state update.
-    *
-    * The function creates the shim/proxy scala "component" which is just a
-    * "record" of the client-level API and calls React.createClass with that
-    * proxy. The shim/proxy react lifecycle/mangement functions call the
-    * scala-side client visible API. Since you customize what "self" is for the
-    * scala client side API, this function also defines how to create the API
-    * "self" value from the underlying javascript "this" pointer. The only
-    * reason that each component needs its own "react class" proxy is because
-    * debugName is unique to a component. Having said that, the number of
-    * "classes" is not large in an application.
-    */
-  def reducerComponentWithRetainedProps[TheState, RetainedProps, Action](debugNameArg: String) =
-    new KitchenSinkComponentCake {
-      type S         = TheState
-      type RP        = RetainedProps
-      type A         = Action
-      type ProxyType = ProxyLike
-      type ComponentType = ComponentLike
+  // DEPRECATED
+  // /**
+  //   * Scala side version of React.createClass. Since this function call creates
+  //   * the underlying react js class, call this once per component then define a
+  //   * "make" function to derive a new element/component instance with your input
+  //   * props and functions to define behavior. The default render method renders
+  //   * "Not Implemented" and the default reducer performs no state update.
+  //   *
+  //   * The function creates the shim/proxy scala "component" which is just a
+  //   * "record" of the client-level API and calls React.createClass with that
+  //   * proxy. The shim/proxy react lifecycle/mangement functions call the
+  //   * scala-side client visible API. Since you customize what "self" is for the
+  //   * scala client side API, this function also defines how to create the API
+  //   * "self" value from the underlying javascript "this" pointer. The only
+  //   * reason that each component needs its own "react class" proxy is because
+  //   * debugName is unique to a component. Having said that, the number of
+  //   * "classes" is not large in an application.
+  //   */
+  // def reducerComponentWithRetainedProps[TheState, RetainedProps, Action](debugNameArg: String) =
+  //   new KitchenSinkComponentCake {
+  //     type S         = TheState
+  //     type RP        = RetainedProps
+  //     type A         = Action
+  //     type ProxyType = ProxyLike
+  //     type ComponentType = ComponentLike
 
-      class ProxyLike extends super.ProxyLike {
-        val displayName: String = debugNameArg
-      }
-      val proxy = new ProxyType()
-      trait ComponentLike extends super.ComponentLike
-      val component = new ComponentType {
-        var debugName          = debugNameArg
-        var reactClassInternal = reactCreateClass(proxy)
-      }
-    }
+  //     class ProxyLike extends super.ProxyLike {
+  //       val displayName: String = debugNameArg
+  //     }
+  //     val proxy = new ProxyType()
+  //     trait ComponentLike extends super.ComponentLike
+  //     val component = new ComponentType {
+  //       var debugName          = debugNameArg
+  //       var reactClassInternal = reactCreateClass(proxy)
+  //     }
+  //   }
 
   /** Like nullElement but a Component. */
   val nullComponent = statelessComponent("null").component

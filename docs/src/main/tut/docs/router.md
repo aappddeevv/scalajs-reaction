@@ -6,7 +6,13 @@ title: routing
 # Routing
 
 Routing is a complex topic and many react projects have sprung up around
-routing. scalajs react facades also provide routing libraries.
+routing. scalajs react facades also provide routing libraries. You can use any
+javascript based routing librar you wish, such as
+[react-router](https://reacttraining.com/react-router). To make it easier though
+we have provided two levels of routing support.
+
+
+## Lowest Level 
 
 ReasonReact provides a small, ~100 line router, in the base distribution and
 that small router code is also included in the scalajs-react implementation.
@@ -64,6 +70,44 @@ You can route to some hashes by doing something like the following:
   })
 ```
 
+## Routing Component
+
+We have a provided a DOM agnostic router component and a specialization of that
+routing component for the ReasonReact style router described in the previous
+section. You can have as many RoutingComponents as you like in your application
+as there is no shared state between them. Think of these components as rendering
+based on the URL and if you don't like the URL, return a "null" node which
+effectively turns off rendering for any children of the routing component.
+
+You are free to use another routing strategy and plug that into
+`RoutingComponent`.
+
+```scala
+// ReactionRoutingComponent has a dependency on ReactEvent, so its in the vdom package
+import react.vdom._
+
+// App
+object Routing {
+    import ReactionRoutingComponent.{makeConfig,Render}
+    val config = makeConfig{
+       case parts if(parts.map(_.hash == "blah").getOrElse(false)) => Render(() => Blah)
+       case _ => Render(() => null)
+    }
+}
+
+def main() {
+    reactdom.createAndRenderWithId(
+      Fabric(new Fabric.Props {})(
+        ReactionRoutingComponent(Routing.config)
+      ),
+      "container"
+     )
+    // kick things off
+    react.router.push("")
+}
+```
+
 You will want to use a real "matching" library like
 [trail](https://github.com/sparsetech/trail) to match on the URL and provide
-parameterized routing.
+parameterized routing in your config. Note that trail does not provide hash
+supporting.

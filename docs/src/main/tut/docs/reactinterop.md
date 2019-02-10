@@ -80,6 +80,34 @@ related render method.
 
 ## Latest reactjs features
 
+### componentDidCatch
+
+Each defined Component, e.g. each reducerComponent call, establishes a proxy
+object that is used when react createClass creates the actual react class. By
+default, the proxy defines `componentDidCatch` which means that every component
+catches errors thrown by descendent components. React Suspense catches promise
+thrown so if any Component in the tree has this enabled, then you cannot throw
+Promises to support Suspense because scala.js cannot throw any value, it will
+get automatically wrapped with a JavascriptException if it is caught on the
+javascript side.
+
+Suspense has a very narrow use case at the moment and hopefully they will create
+a better effects approach for asynchronous rendering. Until that time, you can
+disable "didCatch" for all instances of a specific Component definition by
+setting the 2nd parameter to the component creation functions, `disableCatch`,
+to true. This removes the method from the proxy. You will still be able to
+define `didCatch` in your component but it will never be called.
+
+So use this:
+
+```scala
+val c = reducerComponent[S, A]("MyComponent", true)
+import c.ops._
+def apply(...) = c.copyWith(new methods { ... })
+```
+
+to disable it for all instances created from `c`.
+
 ### Fragment
 scalajs-react supports fragments through `fragmentElement`.
 ```scala
@@ -209,13 +237,21 @@ approaches:
   component from a js/ts module in its entirety.
 
 In react 16.8, only lazy loading is supported but any component that throws a
-javascript Promise can be used which is actually how React.lazy and dynamic
-imports work. Creating a dynamic import creates as javascript Promise that
-resolves to the module content.
+javascript Promise can be used which is how React.lazy and dynamic imports
+work. Creating a dynamic import creates as javascript Promise that resolves to
+the module content.
 
 Since scala cannot throw a raw javascript Promise, you can create a lazy
-component by throwing inside a ts/js defined component. The demo shows how this
-can be done in ts/js.
+component by throwing inside a ts/js defined Component. The demo shows how this
+can be done in ts/js. This also means that if you use Suspense, the chain of
+parent components must not be a Component object since a `didCatch` proxy is
+installed and once that handler is used, you cannot rethrow easily into the js
+world again. Hence, you any component that implements the `throwit` trick below
+must check for a Promise object and throw it in the javascript world and so
+on. Since this is a bit awkward, it is suggested that your Promise throwing
+component be defined using `SFC`, which is a pure javscript function component,
+not a Component (in this facade), and that it be a direct child of a Suspense
+component.
 
 As a trick, you can define an scala import module that imports a single function
 that throws an object for you.
@@ -254,3 +290,9 @@ interesting in a mixed project.
 
 Because of the Suspense feature, `didCatch` has been removed from scala
 Components until the interaction between them is better understood.
+
+We suggest you look at other libraries that may be easier to use such as
+[loadable
+components](https://www.smooth-code.com/open-source/loadable-components/).
+
+
