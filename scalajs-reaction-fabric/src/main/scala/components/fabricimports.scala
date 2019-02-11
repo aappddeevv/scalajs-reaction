@@ -161,7 +161,7 @@ trait IColumnResizeDetails extends js.Object {
 }
 
 trait IContextualMenuProps extends KeyAndRef {
-  var items: js.Array[IContextualMenuItem]
+  val items: js.Array[IContextualMenuItem]
 }
 
 trait IContextualMenuItem extends WithIconProps {
@@ -226,13 +226,15 @@ trait IBasePicker[T] extends Focusable {
 }
 
 trait IInputProps extends InputHTMLAttributes[dom.html.Input] {
-  var `aria-label`: js.UndefOr[String] = js.undefined
+  //var `aria-label`: js.UndefOr[String] = js.undefined
 }
 
+@js.native
+sealed trait ValidationState extends js.Any
 object ValidationState {
-  val valid   = 0
-  val warning = 1
-  val invalid = 2
+  val valid   = 0.asInstanceOf[ValidationState]
+  val warning = 1.asInstanceOf[ValidationState]
+  val invalid = 2.asInstanceOf[ValidationState]
 }
 
 trait IBasePickerProps[T <: js.Object] extends ComponentRef[IBasePicker[T] | Null] {
@@ -247,7 +249,7 @@ trait IBasePickerProps[T <: js.Object] extends ComponentRef[IBasePicker[T] | Nul
   var inputProps: js.UndefOr[IInputProps]                          = js.undefined
 
   /** ValdationState */
-  var onValidateInput: js.UndefOr[js.Function1[String, Int]] = js.undefined
+  var onValidateInput: js.UndefOr[js.Function1[String, ValidationState]] = js.undefined
   var disabled: js.UndefOr[Boolean]                          = js.undefined
   var itemLimit: js.UndefOr[Int]                             = js.undefined
   var selectedItems: js.UndefOr[js.Array[T]]                 = js.undefined
@@ -297,17 +299,19 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element]
 trait ISelectableOption extends js.Object {
   var key: String | Int
   var text: String
-  var itemType: js.UndefOr[Int]     = js.undefined
+  var itemType: js.UndefOr[SelectableOptionMenuItemType]     = js.undefined
   var index: js.UndefOr[Int]        = js.undefined
   var ariaLabel: js.UndefOr[String] = js.undefined
   var selected: js.UndefOr[Boolean] = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
 }
 
+@js.native
+sealed trait SelectableOptionMenuItemType extends js.Any
 object SelectableOptionMenuItemType {
-  val Normal  = 0
-  val Divider = 1
-  val Header  = 2
+  val Normal  = 0.asInstanceOf[SelectableOptionMenuItemType]
+  val Divider = 1.asInstanceOf[SelectableOptionMenuItemType]
+  val Header  = 2.asInstanceOf[SelectableOptionMenuItemType]
 }
 
 trait IDropdownOption extends ISelectableOption {

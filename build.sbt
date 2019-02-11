@@ -114,6 +114,7 @@ lazy val root = project.in(file("."))
     docs,    
     `scalajs-reaction-core`,
     `scalajs-reaction-fabric`,
+    `scalajs-reaction-fabric-experiments`,
     `scalajs-reaction-native`,
     `scalajs-reaction-vdom`,
     `scalajs-reaction-react-redux`,
@@ -279,6 +280,13 @@ lazy val `scalajs-reaction-fabric` = project
   .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "microsoft office-ui-fabric facade.")
 
+lazy val `scalajs-reaction-fabric-experiments` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .settings(description := "microsoft @uifbaric experiments.")
+
 lazy val `scalajs-reaction-bootstrap` = project
   .settings(libsettings)
   .settings(publishSettings)
@@ -315,6 +323,7 @@ lazy val examples: Project = project
   .settings(fpsettings)
   .dependsOn(
     `scalajs-reaction-fabric`,
+    `scalajs-reaction-fabric-experiments`,
     `scalajs-reaction-react-redux`,
     `scalajs-reaction-react-dom`,
     `scalajs-reaction-prop-types`,
@@ -339,6 +348,7 @@ lazy val docs = project
   .dependsOn(
     `scalajs-reaction-core`,
     `scalajs-reaction-fabric`,
+    `scalajs-reaction-fabric-experiments`,
     `scalajs-reaction-native`,
     `scalajs-reaction-vdom`,
     `scalajs-reaction-react-redux`,

@@ -5,4 +5,17 @@
 package ttg
 package react
 
-package object router extends Router
+package object router extends router.Router {
+
+  sealed trait RedirectMethod
+
+  object RedirectMethod {
+    /** Can't go back. */
+    case object Replace extends RedirectMethod
+    /** Can go back. */
+    case object Push extends RedirectMethod
+    /** Document reload. */
+    case object Reload extends RedirectMethod
+  }
+
+}

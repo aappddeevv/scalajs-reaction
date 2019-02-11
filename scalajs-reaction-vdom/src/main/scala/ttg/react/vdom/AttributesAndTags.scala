@@ -405,6 +405,12 @@ trait tags {
   trait SpanProps extends HTMLAttributes[dom.html.Span] with ClassAttributes[dom.html.Span]
   final lazy val span = tagt[SpanProps]("span")
 
+  def spanWithClassname(
+    cn: js.UndefOr[String],
+    children: ReactNode*
+  ) = span(new SpanProps { className = cn })(children:_*)
+  
+
   type StrongProps = ElementAttributesOnly
   final lazy val strong = tagt[StrongProps]("strong")
 
@@ -731,18 +737,22 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
         'aria-hidden'?: boolean | 'false' | 'true';
         'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling';
-        'aria-keyshortcuts'?: string;
-        'aria-label'?: string;
-        'aria-labelledby'?: string;
-        'aria-level'?: number;
+   */
+  var `aria-keyshortcuts`: js.UndefOr[String] = js.undefined
+  var `aria-label`: js.UndefOr[String] = js.undefined
+  var `aria-labelledby`: js.UndefOr[String] = js.undefined
+  var `aria-level`: js.UndefOr[Int] = js.undefined
+  /*
         'aria-live'?: 'off' | 'assertive' | 'polite';
         'aria-modal'?: boolean | 'false' | 'true';
         'aria-multiline'?: boolean | 'false' | 'true';
         'aria-multiselectable'?: boolean | 'false' | 'true';
         'aria-orientation'?: 'horizontal' | 'vertical';
         'aria-owns'?: string;
-        'aria-placeholder'?: string;
-        'aria-posinset'?: number;
+   */
+  var `aria-placeholder`: js.UndefOr[String] = js.undefined
+  var `aria-posinset`: js.UndefOr[Int] = js.undefined
+  /*
         'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
         'aria-readonly'?: boolean | 'false' | 'true';
         'aria-relevant'?: 'additions' | 'additions text' | 'all' | 'removals' | 'text';
@@ -754,11 +764,11 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-selected'?: boolean | 'false' | 'true';
         'aria-setsize'?: number;
         'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
-        'aria-valuemax'?: number;
-        'aria-valuemin'?: number;
-        'aria-valuenow'?: number;
-        'aria-valuetext'?: string;
- */
+   */
+  var `aria-valuemax`: js.UndefOr[Int] = js.undefined
+  var `aria-valuemin`: js.UndefOr[Int] = js.undefined
+  var `aria-valuenow`: js.UndefOr[Int] = js.undefined
+  var `aria-valuetext`: js.UndefOr[String] = js.undefined
 }
 
 trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {

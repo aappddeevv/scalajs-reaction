@@ -42,6 +42,9 @@ final case class OrNullOps[A <: js.Any](a: A | Null) {
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
       js.defined(a.asInstanceOf[A])
     else js.undefined
+
+  /** Make an A. This assumes you are ok with it possibly being the value null. */
+  @inline def merge: A = a.asInstanceOf[A]
 }
 
 trait OrNullSyntax {

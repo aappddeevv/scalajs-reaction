@@ -14,10 +14,10 @@ import org.scalajs.dom
   * cases.
  */
 case class PathParts(
-  segments: Seq[String],
-  hash: Option[String],
-  search: Option[String],
-  // always starts with a slash it seems and is / if at root
+  segments: Seq[String], // in order, left to right
+  hash: Option[String], // everything after hash
+  search: Option[String], // query parameters as a unparsed string
+  /** Always starts with a slash it seems and is / if at root, No base url. */
   pathname: String
 )
 
