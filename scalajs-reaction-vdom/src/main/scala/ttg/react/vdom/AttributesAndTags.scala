@@ -499,10 +499,10 @@ object tags extends tags
   */
 trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
 
-  /** react specific */
+  /** reactjs specific */
   var children: js.UndefOr[ReactNode] = js.undefined
 
-  /** react specific */
+  /** reactjs specific */
   var dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
 
   // clipboard events
@@ -663,13 +663,13 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
 
 trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
 
-  /** react specific */
+  /** reactjs specific */
   var defaultChecked: js.UndefOr[Boolean] = js.undefined
 
-  /** react specific */
+  /** reactjs specific */
   var defaultValue: js.UndefOr[String | js.Array[String]] = js.undefined
 
-  /** react specific */
+  /** reactjs specific */
   var suppressContentEditableWarning: js.UndefOr[Boolean] = js.undefined
 
   var accessKey: js.UndefOr[String]        = js.undefined
@@ -727,17 +727,20 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-colspan'?: number;
         'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
         'aria-describedby'?: string;
-        'aria-details'?: string;
-        'aria-disabled'?: boolean | 'false' | 'true';
+   */
+  var `aria-details`: js.UndefOr[String] = js.undefined//'?: string;
+  var `aria-disabled`: js.UndefOr[Boolean|String] = js.undefined//?: boolean | 'false' | 'true';
+  /*
         'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
         'aria-errormessage'?: string;
         'aria-expanded'?: boolean | 'false' | 'true';
         'aria-flowto'?: string;
         'aria-grabbed'?: boolean | 'false' | 'true';
         'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
-        'aria-hidden'?: boolean | 'false' | 'true';
-        'aria-invalid'?: boolean | 'false' | 'true' | 'grammar' | 'spelling';
    */
+  var `aria-hidden`: js.UndefOr[Boolean|String] = js.undefined //?: boolean | 'false' | 'true';
+  var `aria-invalid`: js.UndefOr[Boolean|String] = js.undefined // : boolean | 'false' | 'true' | 'grammar' | 'spelling';
+
   var `aria-keyshortcuts`: js.UndefOr[String] = js.undefined
   var `aria-label`: js.UndefOr[String] = js.undefined
   var `aria-labelledby`: js.UndefOr[String] = js.undefined

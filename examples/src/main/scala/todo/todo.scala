@@ -139,7 +139,7 @@ object ToDosC {
       var textFieldRef: Option[TextField.ITextField] = None)
 
   case class RP(title: Option[String] = None)
-  val ToDos = reducerComponentWithRetainedProps[State, RP, ToDoAction]("ToDos")
+  val ToDos = reducerComponent[State, ToDoAction]("ToDos")
   import ToDos.ops._
 
   def remove(id: Int)(self: ToDos.Self): Unit = self.send(Remove(id))
@@ -163,7 +163,6 @@ object ToDosC {
             println("ToDo: subscriptions: unmounted")
         })
       }
-      val retainedProps = RP(title)
       val reducer = (action, state, gen) => {
         action match {
           case Add(t) =>

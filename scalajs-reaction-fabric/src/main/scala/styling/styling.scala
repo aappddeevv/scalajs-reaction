@@ -126,6 +126,10 @@ package object styling {
   //type IStyleFunction[SP <: js.Any, SS <: StyleSetType] = js.Function1[SP, SS]
   type IStyleFunction[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
+  /** Slight shortcut to define a IStyleFunction. */
+  def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] =
+    js.Any.fromFunction1(f)
+
   /**
    * Something that is a style set or a style function. This is the fabric
    * signature, normally we would use a coproduct, perhaps a nice shapeless

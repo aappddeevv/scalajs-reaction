@@ -22,11 +22,12 @@ x.fold[String | Unit](())(x => x)
   * type.
   */
 final case class OrNullOps[A <: js.Any](a: A | Null) {
-
-  /** Convert an A|Null to a well formed option. */
+  /** Convert an A|Null to a well formed Option. Should we check or undefined? */
   @inline def toNonNullOption: Option[A] =
-    if (a == null) Option.empty[A]
-    else Some(a.asInstanceOf[A])
+    // doesn't Option(a.asInstanceOf[A]) work?
+    //if (a == null) Option.empty[A]
+    //else Option(a.asInstanceOf[A])
+    Option(a.asInstanceOf[A])
 
   /** If Null, then false, else true. */
   @inline def toTruthy: Boolean =
@@ -43,7 +44,7 @@ final case class OrNullOps[A <: js.Any](a: A | Null) {
       js.defined(a.asInstanceOf[A])
     else js.undefined
 
-  /** Make an A. This assumes you are ok with it possibly being the value null. */
+  /** Collapse A|Null => A but the value may be null. */
   @inline def merge: A = a.asInstanceOf[A]
 }
 

@@ -28,7 +28,9 @@ case class PathParts(
   * implementation, just some abstraction over the `window.history` api.  You
   * could define your own e.g. a stream of history changes.
  * 
- * TODO: Add PathParts type parameter.
+ * @todo Add PathParts type parameter.
+ * @todo Flexibly determine of window and history API exists before calling
+ * methods.
   */
 trait Router {
 
@@ -66,7 +68,7 @@ trait Router {
   }
 
   def push(path: String): Unit = {
-    // shoulud dmake sure history and window exist
+    // should dmake sure history and window exist
     dom.window.history.pushState(/*dom.window.history*/null, "", path)
     dom.window.dispatchEvent(makeEvent("popstate"))
   }

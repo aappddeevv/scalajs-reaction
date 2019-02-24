@@ -68,9 +68,23 @@ trait MergeStyles extends js.Object {
   val Stylesheet: Stylesheet = js.native
 }
 
+trait IIconSubset extends js.Object {
+  // string to string|JSX.Element
+  var icons: js.UndefOr[js.Object] = js.undefined
+  var fontFace: js.UndefOr[js.Object] = js.undefined // IFontFace
+  var style: js.UndefOr[IRawStyle] = js.undefined
+}
+
+trait IIconOptions extends js.Object {
+  var disableWarnings: js.UndefOr[Boolean] = js.undefined
+  var warnOnMissingIcons: js.UndefOr[Boolean] = js.undefined
+}
+
 @js.native
 trait StylingLike extends js.Object {
   def getIconClassName(name: String): String = js.native
+  def registerIcons(r: IIconSubset,
+    options: js.UndefOr[IIconOptions]=js.undefined): Unit = js.native
 }
 
 /** Totally odd that this is not included in the overall Styling exports. */
@@ -82,28 +96,4 @@ object StyleToClassName extends js.Object {
    * mergeStyleSets/mergeStyles.
    */
   def styleToClassName(args: IStyle*): String = js.native
-}
-
-@js.native sealed trait InjectionMode extends js.Any
-object InjectionMode {
-  val none        = 0.asInstanceOf[InjectionMode]
-  val insertMode  = 1.asInstanceOf[InjectionMode]
-  val appendChild = 2.asInstanceOf[InjectionMode]
-}
-
-trait IStylesheetConfig extends js.Object {
-  var injectionMode: js.UndefOr[InjectionMode]                       = js.undefined
-  var defaultPrefix: js.UndefOr[String]                    = js.undefined
-  var onInsertRule: js.UndefOr[js.Function1[String, Unit]] = js.undefined
-}
-
-@js.native
-trait Stylesheet extends js.Object {
-  def getInstance(): Stylesheet                                       = js.native
-  def setConfig(config: js.UndefOr[IStylesheetConfig]): Unit          = js.native
-  def reset(): Unit                                                   = js.native
-  def getRules(): String                                              = js.native
-  def argsFromClassName(className: String): js.Array[IStyle]          = js.native
-  def insertedRulesFromClassName(className: String): js.Array[String] = js.native
-  def insertRule(rule: String): Unit                                  = js.native
 }

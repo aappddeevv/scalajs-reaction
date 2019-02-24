@@ -88,17 +88,26 @@ import react.vdom._
 
 // App
 object Routing {
-    import ReactionRoutingComponent.{makeConfig,Render}
-    val config = makeConfig{
-       case parts if(parts.map(_.hash == "blah").getOrElse(false)) => Render(() => Blah)
-       case _ => Render(() => null)
-    }
+    import ReactionRouting._
+    val config = ReactionConfig(rules(parts => {
+       // if using sparsetech.trail route matching library
+       parts.pathname match {
+          case coolRoute(entityName :: entityId :: HNil) => Render(() => SomeView())
+          case login(HNil) => Redirect("/login", RedirectMethod.Push)
+          case _ => Render(() => UnknownPage(parts))
+       }
+       // or do something custom
+       parts.pathname match {
+          case parts if(parts.map(_.hash == "blah").getOrElse(false)) => Render(() => Blah)
+          case _ => Render(() => null)
+       }
+    }))
 }
 
 def main() {
     reactdom.createAndRenderWithId(
       Fabric(new Fabric.Props {})(
-        ReactionRoutingComponent(Routing.config)
+        ReactionRouting(Routing.config)
       ),
       "container"
      )
@@ -110,4 +119,4 @@ def main() {
 You will want to use a real "matching" library like
 [trail](https://github.com/sparsetech/trail) to match on the URL and provide
 parameterized routing in your config. Note that trail does not provide hash
-supporting.
+routing supporting.

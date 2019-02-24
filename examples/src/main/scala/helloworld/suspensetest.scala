@@ -98,14 +98,14 @@ object SuspenseTest {
     val upHandler: js.Function1[js.Dynamic, Unit] =
       p => if(p.key.asString == targetKey) setKeyPressed(false)
 
-    React.useEffect(() => {
+    React.useEffectMounting(() => {
       dom.window.addEventListener("keydown", downHandler)
       dom.window.addEventListener("keyup", upHandler)
       () => {
         dom.window.removeEventListener("keydown", downHandler)
         dom.window.removeEventListener("keyup", upHandler)
       }
-    }, Some(js.Array()))
+    })
 
     keyPressed
   }

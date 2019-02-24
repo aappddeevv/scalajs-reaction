@@ -18,8 +18,8 @@ package object react {
     * Opaque type returned from a ref callback. It's typically either js
     * component or a DOM element, both of which are js.Objects. You only use
     * this type with the `React.createRef()` machinery. You can also use a ref
-    * callback (still supported) and skip this type and
-    * `Reacat.createRef()`.
+    * callback (still supported), skip this type and the call to
+    * `React.createRef()`.
    * 
    * @todo Validate a null value is present if the ref is never set. typescript
    * says so.
@@ -37,6 +37,9 @@ package object react {
 
   /** Combine the callback and the createRef models. */
   type Ref[E] = RefCb[E] | ReactRef[E]
+
+  /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
+  def refCB[E](f: E|Null => Unit): Ref[E] = js.Any.fromFunction1[E|Null,Unit](f)
 
   /**
     * Something that can be rendered in reactjs. We need to restrict this a bit
@@ -228,8 +231,9 @@ package object react {
     // not js.Any? maybe keep js or scala values in here....
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
-      for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-        result(key) = value
+      if(source != null)
+        for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+          result(key) = value
     }
     result.asInstanceOf[js.Dynamic]
   }
@@ -239,10 +243,10 @@ package object react {
     * attributes. This is like `Object.assign`. Last parameter wins.  Creates
     * and returns new object. Input objects are not modified.
     */
-  @inline def merge[T <: js.Object](objs: js.Dynamic | js.Object | Null *): T = {
+  @inline def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null *): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
-      if(source != null)
+      if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
         for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
           result(key) = value
     }
@@ -273,5 +277,9 @@ package object react {
 
   /** Render something or return a null element. */
   @inline def when(cond: Boolean)(render: => ReactNode): ReactNode =
-    if(cond) render else null
+    if(cond) render else nullElement
+
+  /** Render something if not cond or return a null element. */
+  @inline def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
+    if(!cond) render else nullElement
 }

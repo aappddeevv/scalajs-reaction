@@ -284,7 +284,11 @@ lazy val `scalajs-reaction-fabric-experiments` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(
+    `scalajs-reaction-core`,
+    `scalajs-reaction-vdom`,
+    `scalajs-reaction-fabric`,
+  )
   .settings(description := "microsoft @uifbaric experiments.")
 
 lazy val `scalajs-reaction-bootstrap` = project

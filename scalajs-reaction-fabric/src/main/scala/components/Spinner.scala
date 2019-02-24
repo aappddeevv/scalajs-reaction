@@ -21,8 +21,7 @@ object Spinner {
   @JSImport("office-ui-fabric-react/lib/Spinner", "Spinner")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+  def apply(props: Props = null) = wrapJsForScala(JS, props)
 
   @js.native
   trait ISpinner extends js.Object
@@ -35,17 +34,32 @@ object Spinner {
   }
 
   trait StyleProps extends js.Object{
+    var theme: js.UndefOr[Theme] = js.undefined
     var className: js.UndefOr[String]              = js.undefined
     var size: js.UndefOr[Size] = js.undefined
+    var labelPosition: js.UndefOr[LabelPosition] = js.undefined
   }
 
-  trait Props extends KeyAndRef {
-    var componentRef: js.UndefOr[ISpinner => Unit] = js.undefined
+  trait Props
+      extends KeyAndRef
+      with ComponentRef[ISpinner]
+      with Theme
+  {
     var size: js.UndefOr[Size]                      = js.undefined
     var label: js.UndefOr[String]                  = js.undefined
     var className: js.UndefOr[String]              = js.undefined
     var ariaLabel: js.UndefOr[String]              = js.undefined
+    var ariaLive: js.UndefOr[AriaLive] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
+    var labelPosition: js.UndefOr[LabelPosition] = js.undefined
+  }
+
+  @js.native
+  abstract sealed trait AriaLive extends js.Any
+  object AriaLive {
+    var assertive = "assertive".asInstanceOf[AriaLive]
+    var polite = "polite".asInstanceOf[AriaLive]
+    var off = "off".asInstanceOf[AriaLive]
   }
 
   @js.native
@@ -55,6 +69,15 @@ object Spinner {
     var small  = 1.asInstanceOf[Size]
     var medium = 2.asInstanceOf[Size]
     var large  = 3.asInstanceOf[Size]
+  }
+
+  @js.native
+  sealed trait LabelPosition extends js.Any
+  object LabelPosition {
+    val top = "top".asInstanceOf[LabelPosition]
+    val right = "right".asInstanceOf[LabelPosition]
+    val bottom = "bottom".asInstanceOf[LabelPosition]
+    val left = "left".asInstanceOf[LabelPosition]
   }
 
 }

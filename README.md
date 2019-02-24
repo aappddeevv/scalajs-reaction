@@ -18,33 +18,33 @@ a different component API based on reason-react vs reactjs. It explicitly
 supports integrating into an existing javascript UI project or an entirely new
 one.
 
-You can always code a scala.js based react interface without using any facade
-library since scala.js supports non-native JS class definitions. scala.js's JS
-class support is extensive and well thought out. One of the reasons I liked the
-ReasonReact model is that it rethought the abstractions and API. Instead of
-trying to copy the reactjs API, it provides something smaller, easier to learn
-and emphasizes changes in a few dimensions of the reactive UI API
-problem--almost the very definition of "disruptive."
+You could always code a scala.js based react interface without using any facade
+library since scala.js supports non-native JS class definitions and the hook
+APIs are quite simple. scala.js's JS class support is extensive and well thought
+out. One of the reasons I liked the ReasonReact model is that it rethought the
+abstractions and API. Instead of trying to copy the reactjs API, it provides
+something smaller, easier to learn and emphasizes changes in a few dimensions of
+the reactive UI API problem--almost the very definition of "disruptive."
 
-scalajs-reaction emphasizes integration into an existing project by making it easy
-to import/export components and fit into existing application including those
-using global state-managed solutions such as redux. At the same time, it allows
-you to build your entire interface in scalajs-react. As long as your front-end
-solution can manage the model of scala.js's output (one large module for all
-scala.js code, not file-by-file/module-by-module), you should consider
+scalajs-reaction emphasizes integration into an existing project by making it
+easy to import/export components and fit into existing application including
+those using global state-managed solutions such as redux. At the same time, it
+allows you to build your entire interface in scalajs-react. As long as your
+front-end solution can manage the model of scala.js's output (one large module
+for all scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
 
 * [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
-The library supports fragments, the new context provider and hooks. The
-facade's API roughly mimics ReasonReact 4.1 and the intent is to track that
-API and stick closely to it. Read those docs to understand this API and how it
-is different than the standard reactjs UI model. This facade supports
+The library supports fragments, the new context provider and hooks. The facade's
+API roughly mimics ReasonReact 5.0'ish and the intent is to track that API and
+stick closely to it. Read those docs to understand this API and how it is
+different than the standard reactjs UI model. This facade supports
 react-native. The react-native use-case for scala.js is actually more compelling
 than for web applications due to scala.js bundling issues.
 
-A g8 template is available. Use `sbt new aappddeevv/scalajs-react-app.g8` to
+A g8 template is available. Use `sbt new aappddeevv/scalajs-reaction-app.g8` to
 create a new project.
 
 It's easy to create a component and render it:
@@ -56,8 +56,10 @@ reactdom.createAndRenderWithId(HelloWorld, "container")
 
 Of course, if every component was so simple you would not need a library.  You
 can use hooks in your function to add state, effects and other important
-facets. The long hand way to create a Component that has mimics the ReasonReact
-API for a stateless component is:
+facets. 
+
+You can create the same component using the ReasonReact-like API for a stateless
+component is:
 
 ```scala
 object HelloWorld {
@@ -68,7 +70,7 @@ object HelloWorld {
 reactdom.createAndRenderWithId(Helloworld(), "container")
 ```
 
-The ReasonReact facade is more valuable when you introduce state-holding
+The ReasonReact-like facade is more valuable when you introduce state-holding
 components since every component has a builtin reducer to manage state and you
 use your favorite effects library. See the
 [documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
@@ -102,7 +104,7 @@ libraryDependencies ++= Seq(
     // if you integrate with redux
     "ttg" %%% "scalajs-reaction-redux" % scalaJsReactVersion,
     
-    // if you need prop-types
+    // if you need prop-types--you only need these for interop scenarios
     "ttg" %%% "scalajs-reaction-prop-types" % scalaJsReactVersion,
  
     // if you need react-native
@@ -394,17 +396,29 @@ Styling can also be performed using scala specific libraries such as
 [ScalaCSS](https://github.com/japgolly/scalacss).
 
 ### Redux
+
 Redux integration requires you to export your component then import it with
 redux enhanced props. Please see the extended documentation for details.
 
 ### Routing
-A simple 100-line router is included based on the reason-react router
+
+A few routing pieces are included in core:
+
+* A simple 100-line router is included based on the reason-react router
 implementation. See the example app for an example of how to use it.
+* An extensible router component that allows you to specify routing rules. A
+  customization for browser javascripts environments is included in the vdom
+  project.
+* A "Route" component that slightly mimics "react-router" also in the vdom
+  project. A single component handles both redirect and child rendering based on
+  a router predicate.
 
 You can apply some simple routing configuration patterns to create your own
 router or use a javascript based router such as react-router. It's up to you. I
 suggest creating your own since its so easy to create a function that maps
-routes to components.
+routes to components. You can use the
+[sparsetech-trail](https://github.com/sparsetech/trail) library to match on URL
+patterns.
 
 ### Widget Libraries
 
@@ -472,14 +486,29 @@ structures to your code.
 
 ## Related
 There are a few [scala.js](https://www.scala-js.org/) react facades/implementations available:
-* https://github.com/eldis/scalajs-react: Very clean class oriented react implementation. Class oriented but has a builder as well and includes purely functional (stateless) component support as well. No macros. Allows ES class-like syntax. Has wrappers for japgolly. This lib was created to get around "wrapping" and other artifacts that the author was not fond of in japgolly.
+
+* https://github.com/eldis/scalajs-react: Very clean class oriented react
+  implementation. Class oriented but has a builder as well and includes purely
+  functional (stateless) component support as well. No macros. Allows ES
+  class-like syntax. Has wrappers for japgolly. This lib was created to get
+  around "wrapping" and other artifacts that the author was not fond of in
+  japgolly.
 * https://github.com/eldis/scalajs-redux: Redux facade by the same as above.
-* https://github.com/shogowada/scalajs-reactjs: More functionally oriented facade. Contains redux facades and more.
-* https://github.com/japgolly/scalajs-react: The can't shoot yourself in the foot implementation. well supported and thought out but a bit more complex API wise.
-* https://slinky.shadaj.me: Newcomer. Uses macros smartly. Allows you to use scala.js components in js as well. Uses some macros to help with javascript interop.
-* https://github.com/xored/scala-js-react: Class oriented facade. Uses macros to transform xml literals so you can write xml in your code like jsx.
-* https://github.com/scalajs-react-interface/sri#sri: React-native and web. New maintainers.
-* https://github.com/Ahnfelt/react4s: React wrapper. This does not just mimic the standard react interface. Includes an interesting CSS builder, css-in-scala.
+* https://github.com/shogowada/scalajs-reactjs: More functionally oriented
+  facade. Contains redux facades and more.
+* https://github.com/japgolly/scalajs-react: The can't shoot yourself in the
+  foot implementation. well supported and thought out but a bit more complex API
+  wise.
+* https://slinky.shadaj.me: Newcomer. Uses macros smartly. Allows you to use
+  scala.js components in js as well. Uses some macros to help with javascript
+  interop.
+* https://github.com/xored/scala-js-react: Class oriented facade. Uses macros to
+  transform xml literals so you can write xml in your code like jsx.
+* https://github.com/scalajs-react-interface/sri#sri: React-native and web. New
+  maintainers.
+* https://github.com/Ahnfelt/react4s: React wrapper. This does not just mimic
+  the standard react interface. Includes an interesting CSS builder,
+  css-in-scala.
 
 The facades differ in their facade approach but many recreate all of the API
 parts found in reactjs. japgolly works hard to put a more safe, functional API
@@ -496,10 +525,10 @@ defined components fairly directly via some type of adoption or import process.
 
 Libraries you may be interested in:
 
-* [binding.scala](https://github.com/ThoughtWorksInc/Binding.scala): reactive UI framework. It uses a new binding framework for scala. Works on jvm and
-js. The binding framework is at a individual element level like mobx. You can
-use xml syntax as well. The binding approach is called "precise"
-binding.
+* [binding.scala](https://github.com/ThoughtWorksInc/Binding.scala): reactive UI
+framework. It uses a new binding framework for scala. Works on jvm and js. The
+binding framework is at a individual element level like mobx. You can use xml
+syntax as well. The binding approach is called "precise" binding.
 * [diode](https://github.com/suzaku-io/diode): redux replacement.
 * [laminar](https://github.com/raquo/laminar): a reactive web framework.
 * [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom.

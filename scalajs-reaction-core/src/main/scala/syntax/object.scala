@@ -9,20 +9,21 @@ import scala.scalajs.js
 import js._
 
 final case class JsObjectOps[A <: js.Object](o: A) {
-  @inline def asDict[B]                                = o.asInstanceOf[js.Dictionary[B]]
-  @inline def asAnyDict                                = o.asInstanceOf[js.Dictionary[js.Any]]
-  @inline def asDyn                                    = o.asInstanceOf[js.Dynamic]
-  @inline def asUndefOr[A]: js.UndefOr[A]              = o.asInstanceOf[js.UndefOr[A]]
-  @inline def combine[B <: js.Object](that: js.Object) = react.merge(o, that).asInstanceOf[B]
+  def asDict[B]                                = o.asInstanceOf[js.Dictionary[B]]
+  def asAnyDict                                = o.asInstanceOf[js.Dictionary[js.Any]]
+  def asDyn                                    = o.asInstanceOf[js.Dynamic]
+  def asUndefOr[A]: js.UndefOr[A]              = o.asInstanceOf[js.UndefOr[A]]
+  def combine(that: A) = react.merge[A](o, that)
+  def combineTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]
 }
 
 /** These should be picked by `<: js.Object` but don't seem to be. */
 final case class JsDictionaryOps(o: js.Dictionary[_]) {
-  @inline def asJsObj = o.asInstanceOf[js.Object]
-  @inline def asDyn   = o.asInstanceOf[js.Dynamic]
+  def asJsObj = o.asInstanceOf[js.Object]
+  def asDyn   = o.asInstanceOf[js.Dynamic]
 }
 
 trait JsObjectSyntax {
-  @inline implicit def jsObjectOpsSyntax[A <: js.Object](a: A)    = new JsObjectOps(a)
-  @inline implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
+  implicit def jsObjectOpsSyntax[A <: js.Object](a: A)    = new JsObjectOps(a)
+  implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
 }

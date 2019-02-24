@@ -41,6 +41,7 @@ trait ReactionRouterComponent extends RouterComponent[PathParts, String] {
     // this is the "push from app" routing
     val navigate = (url, method) => {
       val paths = router.dangerouslyGetUrl()
+      // only route if its a different pathname (url + query parameters)
       if (shouldRoute(paths, url)) performRoutingAction(url, method)
     }
   }
@@ -71,7 +72,7 @@ object ReactionRouter extends ReactionRouterComponent {
     render: (Control, Control => ReactNode) => ReactNode = (c, f) => f(c)
   ) extends super.ConfigLike {
 
-    /** Add a post renderer, runs before existing. */
+    /** Add a post renderer to this config, runs before existing postRender thunk. */
     def withPostRender(f: PathParts => Unit) = copy(
       postRender = postRender.map{previous => (info: PathParts) => { f(info); previous(info)}} orElse Some(f)
     )

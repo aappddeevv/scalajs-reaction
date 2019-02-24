@@ -14,9 +14,10 @@ final case class JsDynamicOps(val jsdyn: js.Dynamic) {
   @inline def asInt: Int              = jsdyn.asInstanceOf[Int]
   @inline def asArray[A]: js.Array[A] = jsdyn.asInstanceOf[js.Array[A]]
   @inline def asBoolean: Boolean      = jsdyn.asInstanceOf[Boolean]
+  @inline def as[T <: js.Object] = jsdyn.asInstanceOf[T]
 
-  /** @deprecated use asJsObj */
-  @inline def asJSObj: js.Object = jsdyn.asInstanceOf[js.Object]
+  ///** @deprecated use asJsObj */
+  //@inline def asJSObj: js.Object = jsdyn.asInstanceOf[js.Object]
   // was just asJsObj does the cast help? can we remove asJsObjSub
   @inline def asJsObj: js.Object          = jsdyn.asInstanceOf[js.Object]
   @inline def asDict[A]: js.Dictionary[A] = jsdyn.asInstanceOf[js.Dictionary[A]]
@@ -31,7 +32,9 @@ final case class JsDynamicOps(val jsdyn: js.Dynamic) {
     else None
 
   /** Not sure this works... */
-  @inline def toNonNullOption[T <: js.Object]: Option[T] = JsUndefOrOps(asUndefOr).toNonNullOption
+  @inline def toNonNullOption[T <: js.Object]: Option[T] =
+    Option(jsdyn.asInstanceOf[T])
+    //JsUndefOrOps(asUndefOr).toNonNullOption
   @inline def combine(that: js.Dynamic)                  = mergeJSObjects(jsdyn, that)
   @inline def toTruthy: Boolean                          = js.DynamicImplicits.truthValue(jsdyn)
 }

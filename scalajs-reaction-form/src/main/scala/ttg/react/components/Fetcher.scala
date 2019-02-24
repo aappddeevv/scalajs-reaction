@@ -25,10 +25,17 @@ import elements._
   * [blog](https://appddeevvmeanderings.blogspot.com/2018/12/abstracting-react-scalajs-react-fetcher.html)
   * for more details on how to define your Runner.
  * 
- * @tparam F Fetch effect. Produces a P. F may also hold an error e.g. implied
- * Throwable.
- * @tparam P Result inside F. Generally can be broken out into E and T.
- * @tparam E Error data to be delivered to child.
+ * Once you define your element by creating an instance of this class, you will
+ * want to import the FetchState types. Import the dependent value types using
+ * `import myFetcher._`.
+ * 
+ * @tparam F Fetch effect. Produces a P. F may also hold an error, an implied
+ * Throwable, which to detect an error.
+ * @tparam P Result inside F. Generally can be broken out into E and T i.e. P is
+ * often a coproduct of E and T.
+ * @tparam E Error data to be delivered to child. It is often a Throwable but is
+ * dependent on the effect you are using and how you map your errors from that
+ * effect e.g. convert a Throwable to another type.
  * @tparam T Resulting data to be delivered to child.
   */
 class Fetcher[F[_], P, E, T](Name: String) {
@@ -91,10 +98,7 @@ class Fetcher[F[_], P, E, T](Name: String) {
         }
       }
       val render = self =>
-      cb(
-        self.state.loadState,
-        f => self.send(Request(f))
-      )
+      cb(self.state.loadState, f => self.send(Request(f)))
     })
 }
 

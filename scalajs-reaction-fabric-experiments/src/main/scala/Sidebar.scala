@@ -1,3 +1,7 @@
+// Copyright (c) 2018 The Trapelo Group LLC
+// This software is licensed under the MIT License (MIT).
+// For more information see LICENSE or https://opensource.org/licenses/MIT
+
 package ttg
 package react
 package fabric
@@ -11,7 +15,11 @@ import elements.wrapJsForScala
 import implicits._
 
 import fabric._
-import fabic.styling._
+import fabric.components._
+import fabric.styling._
+import vdom._
+
+import org.scalajs.dom
 
 object Sidebar {
 
@@ -35,8 +43,8 @@ object Sidebar {
     var collapsible: js.UndefOr[Boolean] = js.undefined
     var onCallapseChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
     var collapseButtonAriaLabel: js.UndefOr[String] = js.undefined
-    var footerItems: js.UndefOr[js.Arry[ItemProps]] = js.undefined
-    var items: js.UndefOr[js.Arry[ItemProps]] = js.undefined    
+    var footerItems: js.UndefOr[js.Array[ItemProps]] = js.undefined
+    var items: js.UndefOr[js.Array[ItemProps]] = js.undefined    
     var colors: js.UndefOr[Colors] = js.undefined
     var styles: js.UndefOr[Styles] = js.undefined
     var collapseButtonStyles: js.UndefOr[Button.Styles] = js.undefined
@@ -75,14 +83,14 @@ object Sidebar {
   // object SidebarLightColors extends IColorsN
 
   @js.native
-  sealed trait StylingConstants extends js.Anyb
+  sealed trait StylingConstants extends js.Any
   object StylingConstants {
     val sidewbarWidth = "220px".asInstanceOf[Colors]
     val sidebarCollapsedWidth = "48px".asInstanceOf[Colors]
     val sidebarIconSize = "16px".asInstanceOf[Colors]
   }
 
-  trait ItemProps extends IContextMenuItem {
+  trait ItemProps extends IContextualMenuItem {
     var active: js.UndefOr[Boolean] = js.undefined
     var items: js.UndefOr[js.Array[ItemProps]] = js.undefined
     var buttonAs: js.UndefOr[js.Any] = js.undefined
@@ -95,7 +103,4 @@ object Sidebar {
     var contentCollapsed: js.UndefOr[IStyle] = js.undefined
     var footer: js.UndefOr[IStyle] = js.undefined
   }
-
-
-
 }

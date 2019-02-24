@@ -151,7 +151,7 @@ object Persona {
     var showUnknownPersonaCoin: js.UndefOr[Boolean] = js.undefined
     var showInitialsUntilImageLoads: js.UndefOr[Boolean] = js.undefined
     var coinSize: js.UndefOr[Int] = js.undefined
-    var coinProps: js.UndefOr[CoinProps] = js.undefined
+    var coinProps: js.UndefOr[Coin.Props] = js.undefined
   }
 
   trait Props
@@ -184,12 +184,19 @@ object Persona {
       var presenceIcon: IStyle
     }
 
-    trait CoinProps extends SharedProps {
-      var styles: js.UndefOr[IStyleFunctionOrObject[CoinStyleProps, CoinStyles]] = js.undefined
+  object Coin {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/Persona", "PersonaCoin")
+    object JS extends ReactJsComponent
+
+    def apply(props: Props = null) = wrapJsForScala(JS, props)
+
+    trait Props extends SharedProps {
+      var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
       //var className: js.UndefOr[String] = js.undefined
     }
 
-    trait CoinStyles extends IStyleSetTag {
+    trait Styles extends IStyleSetTag {
       var coin: js.UndefOr[IStyle] = js.undefined
       var imageArea: js.UndefOr[IStyle] = js.undefined
       var image: js.UndefOr[IStyle] = js.undefined
@@ -197,12 +204,13 @@ object Persona {
       var size10WithoutPresenceIcon: js.UndefOr[IStyle] = js.undefined
     }
 
-  trait CoinStyleProps extends Theme {
+    trait StyleProps extends Theme {
       var className: js.UndefOr[String] = js.undefined
       var size: js.UndefOr[Size] = js.undefined
       var coinSize: js.UndefOr[Int] = js.undefined
       var showUnknownPersonaCoin: js.UndefOr[Boolean] = js.undefined
     }
+  }
 
 }
 
