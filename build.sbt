@@ -99,8 +99,15 @@ lazy val commonSettings = Seq(
 )
 
 lazy val fpsettings = Seq(
-  libraryDependencies ++= Seq("org.typelevel"          %%% "cats-core"    % "latest.release"
+  libraryDependencies ++= Seq(
+    "org.typelevel"          %%% "cats-core"    % "latest.release",
   ))
+
+lazy val exampleFPSettings = Seq(
+  libraryDependencies ++= Seq(
+    "org.typelevel"          %%% "cats-effect"    % "latest.release",
+    "tech.sparse" %%% "trail" % "0.1.2", // 0.1.2 uses newest cats
+))
 
 lazy val libsettings = buildSettings ++ commonSettings ++ jssettings
 lazy val jvmlibsettings = buildSettings ++ commonSettings
@@ -195,7 +202,6 @@ lazy val `scalajs-reaction-native-nativebase` = project
   .settings(publishSettings)
   .settings(Seq(
     description := "nativebase library",
-    name := "scalajs-react-native-nativebase",
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
@@ -325,6 +331,7 @@ lazy val examples: Project = project
       "ru.pavkin" %%% "scala-js-momentjs" % "0.9.2",
     ))
   .settings(fpsettings)
+  .settings(exampleFPSettings)
   .dependsOn(
     `scalajs-reaction-fabric`,
     `scalajs-reaction-fabric-experiments`,

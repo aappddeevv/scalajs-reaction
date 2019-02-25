@@ -1,23 +1,27 @@
 import React from "react"
 import cx from "classnames"
 
+// yeah, same as SuspenseParent, repeated here
 export interface Props {
   className?: string | null
   label?: string | null
   doit?: boolean | null
   delay?: number | null
-  key?: string | null
+  ckey?: string | null
 }
 
+// total fake cache
 const cache: Record<string, any> = {}
 
 export const SuspenseChild: React.SFC<Props> =
-  ({ key, className, label, children, doit, delay }) => {
+  ({ ckey, className, label, children, doit, delay }) => {
 
-    if (!cache[key || "fetched"])
+    const cacheKey = ckey || "fetched"
+    // if the cache entrty does not exist, throw a Promise...simulate React.lazy().
+    if (!cache[cacheKey])
       throw new Promise((resolve, reject) => {
         setTimeout(() => {
-          cache[key || "fetched"] = true
+          cache[cacheKey] = true
           resolve(true)
         }, delay || 7000)
       })

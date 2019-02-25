@@ -35,12 +35,6 @@ object styles {
 
 import styles._
 
-sealed trait Actions
-case object FetchRequest                                    extends Actions
-case class FetchResult(result: Result)                      extends Actions
-case class ActiveChanged(active: Option[(String, Address)]) extends Actions
-case object Refresh                                         extends Actions
-
 object AddressDetail {
   import examples.Contexts._
   import context._
@@ -144,6 +138,12 @@ private[addressmanager] trait AddressManagerPropsRedux extends AddressManagerPro
 }
 
 object AddressManager {
+
+  sealed trait Actions
+  case object FetchRequest                                    extends Actions
+  case class FetchResult(result: Result)                      extends Actions
+  case class ActiveChanged(active: Option[(String, Address)]) extends Actions
+  case object Refresh                                         extends Actions
 
   private[addressmanager] case class State(
       /** ignore selection changes. */
@@ -381,10 +381,10 @@ object AddressManager {
   }
 
   /**
-    * Using this "make" will us the component connected to redux. While you
-    * could set the redux part of the "props" they will get automatically filled
-    * in by redux so we only expose the base trait. Here, we only expose the
-    * non-redux parts of the props interface which is why we split it up.
+    * Using this "make" make the component connected to redux. While you could
+    * set the redux part of the "props" they will get automatically filled in by
+    * redux so we only expose the base trait. Here, we only expose the non-redux
+    * parts of the props interface which is why we split it up.
     */
   def withRedux(props: AddressManagerProps = noProps()) =
     wrapJsForScala(reduxJsComponent, props)

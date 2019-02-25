@@ -71,21 +71,28 @@ object SuspenseTest {
   @JSExportTopLevel("ss3")  
   val ss3 = Foo(30)
 
+  def widthS(n: ReactNode) =
+    div(new DivProps{
+      style = new StyleAttr {
+        width = 100
+      }
+    })(n)
+
   // test pure SFC!
   val sfc3 = SFC1[js.Dynamic]{ obj =>
     val initialCount: Int = obj.initialCount.asInt
     val (state, dispatch) = React.useReducer[State, Action, Int](reducer, initialCount, State(_))
     Fragment(
       div(s"Use hooks with reducer: Count: ${state.count}"),
-      button(new ButtonProps {
+      widthS(button(new ButtonProps {
         onClick = js.defined(_ => dispatch(Reset(initialCount)))
-      })("Reset"),
-      button(new ButtonProps {
+      })("Reset")),
+      widthS(button(new ButtonProps {
         onClick = js.defined(_ => dispatch(Increment))
-      })("Increment"),
-      button(new ButtonProps {
+      })("Increment")),
+      widthS(button(new ButtonProps {
         onClick = js.defined(_ => dispatch(Decrement))
-      })("Decrement")
+      })("Decrement"))
     )
   }
 
@@ -127,13 +134,20 @@ object SuspenseTest {
     )
   }
 
-  val sfc5 = SFC1[ReactElement]{child =>
-    Fragment(
-      div("scala.js suspense test, parent is a SFC"),
-      Suspense(div("Loading..."),
-        child
-      ),
-    )
+  trait Sfc5Props extends js.Object {
+    val child: ReactNode
+  }
+
+  object Sfc5Props {
+    def apply(c: ReactNode) = new Sfc5Props { val child = c }
+  }
+
+  val sfc5 = SFC1[Sfc5Props]{ props =>
+    //Fragment(
+      //p("scala.js React.Suspense component test, parent is a SFC"),
+      //p("Child is typescript SuspenseChild so we can throw a promise easily and test interop."),
+      Suspense(div("Loading (scalajs)..."), props.child)
+  //)
   }
 
   val sfc6 = SFC0 { () =>
@@ -181,7 +195,7 @@ object SuspenseTest {
   object SuspenseParent extends js.Object {
     @JSName("SuspenseParent")
     val SuspenseParentJS: ReactJsComponent = js.native
-    val X: js.Function0[DynamicImportThunk] = js.native
+    val X: DynamicImportThunk = js.native
     @JSName("SuspenseChild") // this has React.lazy
     val SuspenseChildJS: ReactJsComponent = js.native
   }
@@ -195,12 +209,13 @@ object SuspenseTest {
     var label: js.UndefOr[String] = js.undefined
     var doit: js.UndefOr[Boolean] = js.undefined
     var delay: js.UndefOr[Int] = js.undefined // in ms
-    var key: js.UndefOr[String] = js.undefined // needed to handlle fake cache
+    // cache key
+    var ckey: js.UndefOr[String] = js.undefined // needed to handlle fake cache
   }
 
   def spropsKey(_key: String, _delay: Int = 7000) =
     new SProps {
-      key = _key
+      ckey = _key
       delay = _delay
     }
 
@@ -218,27 +233,31 @@ object SuspenseTest {
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
-    elements.wrapJsForScala[SProps](React.`lazy`(SuspenseParent.X()), props, children:_*)
+    elements.wrapJsForScala[SProps](React.`lazy`(SuspenseParent.X), props, children:_*)
 
   def blah(): ReactNode = {
     Fragment(
       sfc1,
       sfc2,
       sfc3(lit("initialCount" -> 10)),
-      "Keypress listener, press & hold key to display character: ",
+       "Keypress listener, press & hold key to display character: ",
       sfc4,
       sfc6,
       div("=====> js/ts suspense demo below, default load time is 7 seconds"),
       SuspenseParent()(SuspenseChild(spropsKey("ts"))(div("text for SuspenseChild from scalajs"))),
       div("=====> scala.js suspense test 1"),
-      sfc5(LazySuspenseChild(spropsKey("test1", 10000))(div("text for SuspenseChild from scalajs"))),
+      // uses scala.js import of React.Suspense
+      sfc5(Sfc5Props(LazySuspenseChild(spropsKey("test1", 10000))(div("text for SuspenseChild from scalajs")))),
       div("=====> scala.js suspense test 2"),
-      sfc5(LazyChildViaReactLazy(spropsKey("test2", 15000))()),
+      sfc5(Sfc5Props(LazyChildViaReactLazy(spropsKey("test2", 15000))())),
       div("=====> scala.js suspense test 3"),
-      sfc5(SuspenseChild(spropsKey("test3", 12000))(div("text for SuspenseChild from scalajs"))),
-      // div("=====> scala.js suspense test 4"),
-      // sfc5(componentSucceed(null)),
+      sfc5(Sfc5Props(SuspenseChild(spropsKey("test3", 12000))(div("text for SuspenseChild from scalajs")))),
+      // // div("=====> scala.js suspense test 4"),
+      // // sfc5(componentSucceed(null)),
+      // testing some implicit and explicit conversions :-)
+      // explicit
       jscomponent.toEl(new SProps { label = "Almost the end!"}),
+      // implicit, tuple of component and args => ReactNode
       (jscomponent, new SProps { label = "Really!" }),
     )
   }

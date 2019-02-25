@@ -211,8 +211,12 @@ object elements {
    * resolved.
    */
   object Suspense {
-    def apply(fallback: ReactNode | Null = null, child: ReactElement) =
-      ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback.asInstanceOf[js.Any]), child)
+    def apply(fallback: ReactNode/* | Null = null*/, children: ReactNode) =
+      ReactJS.createElement(
+        ReactJS.Suspense,
+        lit("fallback" -> fallback.asInstanceOf[js.Any]),
+        children
+      )
   }
 
   /**

@@ -42,12 +42,22 @@ const finalStyleLoaders = [
 // in dev mode, we create a "dist" directory
 const devServer = {
     //publicPath: "dist/",
+    historyApiFallback: {
+        rewrites: [
+            {
+                // match everything or our SPA
+                from: "/^\.$/",
+                // server to the root
+                to: "/"
+            }
+        ]
+    },
     contentBase: "dist",
     compress: true,
     hot: true,
     open: true,
-	host: "0.0.0.0",
-disableHostCheck: true,
+    host: "0.0.0.0",
+    disableHostCheck: true,
     https: true,
     watchContentBase: true,
     headers: {
