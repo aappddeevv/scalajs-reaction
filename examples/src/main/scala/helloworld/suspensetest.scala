@@ -185,7 +185,7 @@ object SuspenseTest {
   // }
 
   @js.native
-  @JSImport("Assets/throwit.js", JSImport.Namespace)
+  @JSImport("Assets/throwit", JSImport.Namespace)
   object T extends js.Object {
     def throwit(x: js.Any): Unit = js.native
   }
@@ -243,14 +243,14 @@ object SuspenseTest {
        "Keypress listener, press & hold key to display character: ",
       sfc4,
       sfc6,
-      div("=====> js/ts suspense demo below, default load time is 7 seconds"),
+      div("=====> js/ts suspense demo below, default load time is 7 seconds. SuspenseChild throws Promies in js"),
       SuspenseParent()(SuspenseChild(spropsKey("ts"))(div("text for SuspenseChild from scalajs"))),
-      div("=====> scala.js suspense test 1"),
+      div("=====> scala.js suspense test 1: Imported a component defined by React.lazy(()=>import(..)) in js"),
       // uses scala.js import of React.Suspense
       sfc5(Sfc5Props(LazySuspenseChild(spropsKey("test1", 10000))(div("text for SuspenseChild from scalajs")))),
-      div("=====> scala.js suspense test 2"),
+      div("=====> scala.js suspense test 2: Imported () => import(child), called scala.js React.lazy"),
       sfc5(Sfc5Props(LazyChildViaReactLazy(spropsKey("test2", 15000))())),
-      div("=====> scala.js suspense test 3"),
+      div("=====> scala.js suspense test 3: Import SuspenseChild directly."),
       sfc5(Sfc5Props(SuspenseChild(spropsKey("test3", 12000))(div("text for SuspenseChild from scalajs")))),
       // // div("=====> scala.js suspense test 4"),
       // // sfc5(componentSucceed(null)),

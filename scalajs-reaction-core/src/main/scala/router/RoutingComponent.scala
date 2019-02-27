@@ -30,12 +30,15 @@ import elements._
  */
 trait RoutingSource[Info, To] {
   /** Subscribe to receiving routing notifications. Return unsubscribe thunk. */
-  val subscribe: (Info => Unit) => () => Unit
+  val subscribe: (Info => Unit) => (() => Unit)
   /** Push a route onto the conceptual set of routes. */
   val push: To => Unit
   /** Replace the top of the routing stack. */
   val replace: To => Unit
-  /** Set window.href to force a reload. */
+  /** Example, set window.href to force a reload. Means different things to
+   * different sources. And it may interpret `To` differently e.g. expect a full
+   * To specification.>
+   */
   val reload: To => Unit
   /** Run a callaback with the current Info. */
   val run: (Info => Unit) => Unit
@@ -44,14 +47,12 @@ trait RoutingSource[Info, To] {
 /**
  * Router component for your react tree. You can nest as many RouterComponents
  * as you want just recognize that RouterComponent is really designed to show
- * content based on the current history state, including the ability to swich
- * itself off rendering to a null react node. So think of this component as a
- * switch based on document location where the document location is a global
- * variable. This component is not dependent on the DOM. Please note that you do
- * not need this component at all and can merely choose to have your component
- * subscribe to the history API and render null or a child base on a matching
- * predicate function applied to the history events. You could then use this
- * component to handlde simple rendering and mostly focus on redirects.
+ * content based on the current "info" state, including the ability to switch
+ * itself off--rendering to a null react node. So think of this component as a
+ * switch based on "info". You could then use this component to handle rendering
+ * and "redirects."  The component is agnostic to what it is routing and the
+ * format/semantics of the routing information. Subclasses are responsible for
+ * defining those semantics.
  * 
  * Defining your routing config statically works for static routes that have
  * components that stand on their own. If you need to accept props from a parent
@@ -59,7 +60,7 @@ trait RoutingSource[Info, To] {
  * compose a component with a Fragment or use a config created using the parent
  * props and and set the config into the router component when it is created.
  * In other words, your router config can be the result of a function call to
- * create it. This are all standard FP techniques.
+ * create it. These are all standard FP techniques.
  * 
  * @tparam Info The request info pushed from the routing source.
  * @tparam To A value representing where to go to.
@@ -69,10 +70,13 @@ abstract trait RouterComponent[Info, To] { self =>
 
   type Config <: ConfigLike
   type Control <: ControlLike
-  type Navigator = (To, RedirectMethod) => Unit
+  type Navigator = (To, Redirect.Method) => Unit
 
   val routing: RoutingSource[Info, To]
-  val control: Control // not per render! saves allocs
+  //val control: Control // not per render! saves allocs
+
+  /** Make a control. */
+  def makeControl(config: Config): Control
 
   /** Callback arg used by components that hides router and navigation
    * implementation details. Not async! When your action is render, you receive
@@ -90,13 +94,19 @@ abstract trait RouterComponent[Info, To] { self =>
   protected val noop = () => ()
 
   /** Take some action as the result of processing a rule. */
-  sealed trait Action
-  /** Render a node allowing that node to use Controls to create "links". */
-  case class Render(run: Control => ReactNode, effect: (() => Unit) = noop) extends Action
-  /** Go to another page with a specific method to get there. */
-  case class Redirect(to: To, method: RedirectMethod, effect: (() => Unit) = noop) extends Action
+  sealed trait Action extends Product with Serializable {
+  }
 
-  /** Create a rule that can return no action. */
+  /** Render a node allowing that node to use Controls to create "links". */
+  case class Render(run: Control => ReactNode, effect: (() => Unit) = noop) extends Action {
+    def apply(c: Control) = run(c)
+  }
+
+  /** Go to another page with a specific method to get there. */
+  case class RedirectTo(to: To, method: Redirect.Method, effect: (() => Unit) = noop) extends Action {
+  }
+
+  /** Small rules DSL. Create a rule that can return no action. */
   case class rule(run: Info => Option[Action]) {
     def orElse(next: Info => Option[Action]) = rule { info =>
       run(info) orElse next(info)
@@ -105,11 +115,11 @@ abstract trait RouterComponent[Info, To] { self =>
     def when(cond: Info => Boolean) = rule { info =>
       if(cond(info)) run(info) else None
     }
-    def mod(change: Info => Info) = rule { info => run(change(info)) }
+    def modify(change: Info => Info) = rule { info => run(change(info)) }
     def void = rule { _ => None }
     /** Modify this rule so it cannot fail. */
     def toRules(fallback: Info => Action) =
-      Rules(info => run(info).getOrElse(fallback(info)))
+      rules(info => run(info).getOrElse(fallback(info)))
   }
 
   /**
@@ -117,12 +127,13 @@ abstract trait RouterComponent[Info, To] { self =>
    * action takes a `Control => ReactNode` so essentially you have, for
    * rendering, a `Info => Control => ReactNode`.
    */
-  case class Rules(run: Info => Action)
+  //case class Rules(run: Info => Action)
+  type Rules = Info => Action
 
-  /** Create rules from an absolute function. */
-  def rules(run: Info => Action) = Rules(run)
-  /** Create a rule that ignores the input route request Info */
-  def always(always: => Action) = Rules(_ => always)
+  /** Create rules, you don't need to use this. Provides semantic gesture. */
+  def rules(run: Info => Action): Rules = run // = Rules(run)
+  /** Create a rule that ignores the Info inpt. Provides semantic gesture. */
+  def always(always: => Action): Rules = _ => always
 
   /**
    * Config holds the routing rules, an absolute function. There is no deferral to
@@ -148,11 +159,11 @@ abstract trait RouterComponent[Info, To] { self =>
   }
 
   /** Override to extend. */
-  protected def performRoutingAction(to: To, method: RedirectMethod): Unit = {
+  protected def performRoutingAction(config: Config, to: To, method: Redirect.Method): Unit = {
     method match {
-      case RedirectMethod.Replace => routing.push(to)
-      case RedirectMethod.Push => routing.replace(to)
-      case RedirectMethod.Reload => routing.reload(to)
+      case Redirect.Replace => routing.push(to)
+      case Redirect.Push => routing.replace(to)
+      case Redirect.Reload => routing.reload(to)
     }
   }
 
@@ -170,17 +181,17 @@ abstract trait RouterComponent[Info, To] { self =>
   import c.ops._
 
   def apply(config: Config) =
-    c.copy(new methods {
+    c.copyWith(new methods {
       val initialState = self => State(Render(_ => null))
 
       // run rules when URL changes and on initial mount
       didMount = js.defined{ self =>
         def runchange(info: Info) = {
-          val action = config.rules.run(info)
+          val action = config.rules(info)
           action match {
             case Render(run, effect) => self.send(NavigateAndPerform(action, _ => effect()))
-            case Redirect(to, method, effect) =>
-              self.send(NavigateAndPerform(action, _ => { performRoutingAction(to, method); effect()}))
+            case RedirectTo(to, method, effect) =>
+              self.send(NavigateAndPerform(action, _ => { performRoutingAction(config, to, method); effect()}))
           }          
         }
         val unsubscribe = routing.subscribe(runchange)
@@ -188,6 +199,7 @@ abstract trait RouterComponent[Info, To] { self =>
         self.onUnmount(unsubscribe)
       }
 
+      // @todo Pull out the reducer and allow overriding
       val reducer = (action, state, gen) => {
         action match {
           case PerformOnly(perform) => gen.effect(_ => routing.run(perform))
@@ -201,12 +213,13 @@ abstract trait RouterComponent[Info, To] { self =>
           case Render(run, _) =>
             // this will run *after* the DOM is updated
             config.postRender.foreach(f => self.send(PerformOnly(f)))
-            config.render(control, run)
+            // pull out makeControl to be memoized or retained across invocations via State ref
+            config.render(makeControl(config)/*control*/, run)
             // The default is to render null, can we type this better? Does this
             // cause a flash of death? It destroys the tree and we may be
             // rendering back into the same page.
           case _ =>
-            println("RoutingComponent rendering null!")
+            //println("RoutingComponent rendering null!")
             null
         }
       }

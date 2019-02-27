@@ -66,7 +66,7 @@ const devServer = {
 }
 
 // scalapath: relative path from topdir to scala output .js file
-const common = (scalapath) => ({
+const common = (scalapath, isProd) => ({
     entry: {
         "Scala": scalapath,
     },
@@ -81,6 +81,9 @@ const common = (scalapath) => ({
             Public: path.resolve(__dirname, "examples/src/main/public"),
             Examples: path.resolve(__dirname, "examples/src/main/scala"),
             JSExamples: path.resolve(__dirname, "examples/src/main/assets"),
+            "BuildSettings": isProd ?
+                path.resolve(__dirname,"examples/src/main/assets/config.production"):
+                path.resolve(__dirname,"examples/src/main/assets/config.development")
         },
     },
     module: {
@@ -161,7 +164,7 @@ module.exports = function (env) {
         const g = globals("production")
         console.log("Production build")
         console.log("globals: ", g)
-        return merge(output, common(scalapath), prod, {
+        return merge(output, common(scalapath, isProd), prod, {
             plugins: [
                 new webpack.DefinePlugin(g),
                 new UglifyJsPlugin({
@@ -179,7 +182,7 @@ module.exports = function (env) {
         const g = globals()
         console.log("Dev build")
         console.log("globals: ", g)
-        return merge(output, common(scalapath), dev, {
+        return merge(output, common(scalapath, isProd), dev, {
             plugins: [
                 new webpack.HotModuleReplacementPlugin(),
                 new webpack.DefinePlugin(g),

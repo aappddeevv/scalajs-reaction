@@ -5,6 +5,7 @@
 package ttg
 package react
 package router
+package browser
 
 import scala.scalajs.js
 import org.scalajs.dom
@@ -14,10 +15,37 @@ import org.scalajs.dom
   * cases.
  */
 case class PathParts(
-  segments: Seq[String], // in order, left to right
-  hash: Option[String], // everything after hash
-  search: Option[String], // query parameters as a unparsed string
-  /** Always starts with a slash it seems and is / if at root, No base url. */
+  /** Segments, left to right. */
+  segments: Seq[String],
+  /** Everything after the hash. */
+  hash: Option[String],
+  /** Query parameters, unparsed. */
+  search: Option[String],
+  /** Always starts with a slash, does not include origin. */
+  pathname: String
+) {
+
+  /** Drop path segments. */
+  def drop(n: Int) = this.copy(segments = this.segments.drop(n))
+
+  /** Parse the query parameters. */
+  def parse: ParsedPathParts = {
+    val x = search.map(new URLSearchParams(_))
+    ParsedPathParts(
+      segments,
+      hash,
+      x.map(_.entries().map(sarray => (sarray(0), sarray.drop(1).toArray)).toMap)
+        .getOrElse(collection.immutable.Map[String,Array[String]]()),
+      pathname
+    )
+  }
+}
+
+/** Query parameters broken out. */
+case class ParsedPathParts(
+  segments: Seq[String],
+  hash: Option[String],
+  params: collection.immutable.Map[String,Array[String]],
   pathname: String
 )
 
@@ -98,6 +126,6 @@ trait Router {
   def unwatchUrl(watcherId: WatcherId): Unit =
     dom.window.removeEventListener("popstate", watcherId.asInstanceOf[CB])
 
-  /** Get the current url. It's dangerous because it accesses the dom window location. */
+  /** Get the current url. It's dangerous because it could be out of date. */
   def dangerouslyGetUrl() = url()
 }

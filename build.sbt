@@ -124,11 +124,13 @@ lazy val root = project.in(file("."))
     `scalajs-reaction-fabric-experiments`,
     `scalajs-reaction-native`,
     `scalajs-reaction-vdom`,
+    `scalajs-reaction-router`,
     `scalajs-reaction-react-redux`,
     `scalajs-reaction-react-dom`,
     `scalajs-reaction-prop-types`,
     `scalajs-reaction-bootstrap`,
     `scalajs-reaction-mui`,
+    `scalajs-reaction-router`,
     `scalajs-reaction-react-big-calendar`,
     `scalajs-reaction-native-nativebase`,
     `scalajs-reaction-native-react-native-elements`,
@@ -311,6 +313,13 @@ lazy val `scalajs-reaction-mui` = project
   .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "material ui facade.")
 
+lazy val `scalajs-reaction-router` = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .settings(description := "scaljs-reaction browser js oriented router")
+
 lazy val `scalajs-reaction-form` = project
   .settings(libsettings)
   .settings(publishSettings)
@@ -338,6 +347,7 @@ lazy val examples: Project = project
     `scalajs-reaction-react-redux`,
     `scalajs-reaction-react-dom`,
     `scalajs-reaction-prop-types`,
+    `scalajs-reaction-router`,
     `scalajs-reaction-form`,
     `scalajs-reaction-bootstrap`,
     `scalajs-reaction-mui`,
@@ -365,6 +375,7 @@ lazy val docs = project
     `scalajs-reaction-react-redux`,
     `scalajs-reaction-react-dom`,
     `scalajs-reaction-prop-types`,
+    `scalajs-reaction-router`,
     `scalajs-reaction-bootstrap`,
     `scalajs-reaction-mui`,
     `scalajs-reaction-react-big-calendar`,

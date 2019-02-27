@@ -88,8 +88,10 @@ object Main {
             logContext.makeProvider(Contexts.logger)(Application())
         ))),
       Main.container
-      // start the SPA router receiving pages...start with the current page!
-      ,Option(() => react.router.push(dom.document.location.href))
+        // start the SPA router receiving pages...start with the current page!
+        // I think react.router.push("") does the same thing with using href.
+        //,Option(() => react.router.push(dom.document.location.href))
+        ,Option(() => react.router.browser.push(""))
     )
   }
 }

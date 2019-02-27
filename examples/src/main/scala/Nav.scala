@@ -47,19 +47,21 @@ object Nav {
       onEmptyClick = js.defined(() => goto(nav))
     }
 
+  val fix: String => String = p => p //p => /examples.RouterConfig.fix(p)
+
   val itemRoutes = Seq(
-    ("readme","Readme","/readme"),
-    ("addressPage", "Addresses", "/addresses"),
-    ("todo", "To Do App", "/todo"),
-    ("helloworld", "Hello World/Hooks", "/helloworld"),
-    ("changeredux", "Change Redux", "/changeredux"),
-    ("labelandchild", "Label and Child", "/labelandchild"),
-    ("tagtest", "HTML Tag Test", "/tagtest"),
-    ("pressure", "Pressure", "/pressure"),
-    ("graph", "Graph", "/graph"),
-    ("calendar", "React Big Calendar", "/calendar"),
-    ("bootstrap", "Bootstrap", "/bootstrap"),
-    ("mui", "Material UI", "/mui")
+    ("readme","Readme",fix("readme")),
+    ("addressPage", "Addresses", fix("addresses")),
+    ("todo", "To Do App", fix("todo")),
+    ("helloworld", "Hello World/Hooks", fix("helloworld")),
+    ("changeredux", "Change Redux", fix("changeredux")),
+    ("labelandchild", "Label and Child", fix("labelandchild")),
+    ("tagtest", "HTML Tag Test", fix("tagtest")),
+    ("pressure", "Pressure", fix("pressure")),
+    ("graph", "Graph", fix("graph")),
+    ("calendar", "React Big Calendar", fix("calendar")),
+    ("bootstrap", "Bootstrap", fix("bootstrap")),
+    ("mui", "Material UI", fix("mui"))
   )
 
   val Name = "Nav"

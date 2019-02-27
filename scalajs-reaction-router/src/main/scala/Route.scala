@@ -4,7 +4,8 @@
 
 package ttg
 package react
-package vdom
+package router
+package browser
 
 import scala.scalajs.js
 import org.scalajs.dom
@@ -12,9 +13,6 @@ import org.scalajs.dom
 import ttg.react
 import react._
 import elements._
-
-import react.router
-import router._
 
 /**
  * Simple Route component that matches on reactjs-reaction's basic history API
@@ -37,15 +35,15 @@ object Route {
    */
   sealed trait ChildAction
   /** Redirect. */
-  case class RedirectTo(path: String, method: RedirectMethod) extends ChildAction
+  case class RedirectTo(path: String, method: Redirect.Method) extends ChildAction
   /** Given the current route and a navigation callback, render a child. */
-  case class Render(thunk: (PathParts, (String, RedirectMethod) => Unit) => ReactNode) extends ChildAction
+  case class Render(thunk: (PathParts, (String, Redirect.Method) => Unit) => ReactNode) extends ChildAction
 
-  def redirect(to: String, method: RedirectMethod) =
+  def redirect(to: String, method: Redirect.Method) =
     method match {
-      case RedirectMethod.Push => push(to)
-      case RedirectMethod.Replace => replace(to)
-      case RedirectMethod.Reload => dom.window.location.href = to
+      case Redirect.Push => push(to)
+      case Redirect.Replace => replace(to)
+      case Redirect.Reload => dom.window.location.href = to
     }
 
   val Name = "Route"
@@ -86,7 +84,7 @@ object Route {
     val render = self => {
       when(self.state.lastMatchOn.isDefined)(child match {
         case Render(thunk) =>
-          thunk(router.dangerouslyGetUrl(), (to, method) => redirect(to, method))
+          thunk(dangerouslyGetUrl(), (to, method) => redirect(to, method))
         case _ =>
           // this should have been handled in the router
           null
