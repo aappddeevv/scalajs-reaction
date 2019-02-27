@@ -1,1 +1,1 @@
-export const routePrefix: String = "/scalajs-reaction/static/index.html"
+export const routePrefix: String = "scalajs-reaction/static"

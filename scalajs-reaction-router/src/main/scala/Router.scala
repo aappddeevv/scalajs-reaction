@@ -105,7 +105,7 @@ trait Router {
   def replace(path: String): Unit = {
     // ???
     //dom.document.body.scrollTop = 0
-    // shoulud dmake sure history and window exist 
+    // should make sure history and window exist 
     dom.window.history.replaceState(null, "", path)
     dom.window.dispatchEvent(makeEvent("popstate"))    
   }

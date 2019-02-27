@@ -89,7 +89,9 @@ object RouterConfig {
         Render(body(Pages.materialUIPage()))
 
       case _ =>
-        Render(_ => s"Invalid URL: No route for ${parts.pathname} defined! Use the browser's back button.")
+        //Render(_ => s"Invalid URL: No route for ${parts.pathname} defined! Use the browser's back button.")
+        println(s"Invalid URL: No route for ${parts.pathname} defined: ${parts}")
+        RedirectTo("readme", router.Redirect.Replace)
     }
   )
 }
