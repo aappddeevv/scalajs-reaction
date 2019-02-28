@@ -21,30 +21,31 @@ object context {
   def make[T](defaultValue: T): ReactContext[T] =
     ReactJS.createContext(defaultValue, js.undefined)
 
-  def makeProvider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactNode = {
+  def provider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactNode = {
     // not sure this is right, use previous value if current is missing?
     val v = lit("value" -> value.asInstanceOf[js.Any])
     ReactJS.createElement(ctx.Provider, v, children: _*)
   }
 
-  def makeConsumer[T](ctx: ReactContext[T])(
-      f: js.Function1[T, ReactNode],
-      key: Option[String] = None): ReactNode = {
+  def consumer[T](ctx: ReactContext[T])(
+    //f: js.Function1[T, ReactNode],
+    f: T => ReactNode,
+    key: Option[String] = None): ReactNode = {
     val props = key.fold[js.Any](js.undefined)(k => lit("key" -> k))
-    ReactJS.createElement(ctx.Consumer, props, f.asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, props, js.Any.fromFunction1(f).asInstanceOf[ReactNode])
   }
 
   implicit class ReactContextOps[T](ctx: ReactContext[T]) {
 
     /** Create provider that provides an optional value. */
-    def makeProvider(value: T)(children: ReactNode*) =
-      context.makeProvider[T](ctx)(value)(children: _*)
+    def provider(value: T)(children: ReactNode*) =
+      context.provider[T](ctx)(value)(children: _*)
 
     ///** Create provider that provides None. */
     //def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(js.undefined)(children: _*)
 
     /** Create a consumer that takes an Option[T] */
-    def makeConsumer(f: T => ReactNode, key: Option[String] = None) =
-      context.makeConsumer[T](ctx)(js.Any.toFunction1(f))
+    def consumer(f: T => ReactNode, key: Option[String] = None) =
+      context.consumer[T](ctx)(js.Any.toFunction1(f))
   }
 }

@@ -17,7 +17,7 @@ class SFC0(val run: js.Function0[ReactNode]) {
 }
 
 object SFC0 {
-  /** Create an SFC0 from a parameterles scala function. */
+  /** Create an SFC0 from a parameterless scala function. */
   def apply(f: () => ReactNode) = new SFC0(f)
 
   /** Create a reactjs component directly from this SFC. */

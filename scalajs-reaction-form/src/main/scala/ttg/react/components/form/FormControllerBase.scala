@@ -403,7 +403,7 @@ abstract class FormControllerBase {
         // create context for child components, if they want it
         //val context = ...
         val context = Context(props, self.state.initialValues.value, validate)
-        FormContext.makeProvider(context)(
+        FormContext.provider(context)(
           child(props)
         )
       }

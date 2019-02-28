@@ -170,9 +170,13 @@ abstract trait RouterComponent[Info, To] { self =>
   protected sealed trait NavAction
   protected case class NavigateAndPerform(action: Action, perform: Info => Unit) extends NavAction
   protected case class PerformOnly(perform: Info => Unit) extends NavAction
+  protected case class Subscribe(config: Config) extends NavAction
 
   protected case class State(
-    action: Action
+    action: Action,
+    config: Config,
+    // instance vars    
+    var unsubscribe: Option[() => Unit]
   )
 
   /** Override to change the name. */
@@ -180,28 +184,56 @@ abstract trait RouterComponent[Info, To] { self =>
   protected val c = reducerComponent[State, NavAction](Name)
   import c.ops._
 
+  // register for routing changes, simulate routing change to get up and running
+  def register(self: Self, config: Config): () => Unit = {
+    def runchange(info: Info) = {
+      val action = config.rules(info)
+      action match {
+        case Render(run, effect) => self.send(NavigateAndPerform(action, _ => effect()))
+        case RedirectTo(to, method, effect) =>
+          self.send(NavigateAndPerform(action, _ => { performRoutingAction(config, to, method); effect()}))
+      }
+    }
+    val unsubscribe = routing.subscribe(runchange)
+    // must happen *after* subscribe
+    routing.run(runchange)
+    unsubscribe
+  }
+
   def apply(config: Config) =
     c.copyWith(new methods {
-      val initialState = self => State(Render(_ => null))
 
-      // run rules when URL changes and on initial mount
-      didMount = js.defined{ self =>
-        def runchange(info: Info) = {
-          val action = config.rules(info)
-          action match {
-            case Render(run, effect) => self.send(NavigateAndPerform(action, _ => effect()))
-            case RedirectTo(to, method, effect) =>
-              self.send(NavigateAndPerform(action, _ => { performRoutingAction(config, to, method); effect()}))
-          }          
+      val initialState = self => State(Render(_ => null), config, None)
+
+      // subscribe to routing source on mount
+      didMount = js.defined { self =>
+        self.state.unsubscribe match {
+          case None => self.send(Subscribe(config))
+          case _ => // subscription already active
         }
-        val unsubscribe = routing.subscribe(runchange)
-        routing.run(runchange)
-        self.onUnmount(unsubscribe)
+      }
+
+      willUnmount = js.defined{ self => self.state.unsubscribe.foreach(_()) }
+
+      // if param config is different than state.config, change config
+      willReceiveProps = js.defined { self =>
+        if (config != self.state.config) {
+          self.state.unsubscribe.foreach(_())
+          self.send(Subscribe(config))
+          self.state.copy(unsubscribe = None)
+        }
+        else self.state
       }
 
       // @todo Pull out the reducer and allow overriding
       val reducer = (action, state, gen) => {
         action match {
+          case Subscribe(c) =>
+            val news = state.copy(config = c)
+            gen.updateAndEffect(news){ self =>
+              val unsubscribe = register(self, c)
+              self.state.unsubscribe = Option(unsubscribe)
+            }
           case PerformOnly(perform) => gen.effect(_ => routing.run(perform))
           case NavigateAndPerform(naction, perform) =>
             gen.updateAndEffect(state.copy(action = naction))(_ => routing.run(perform))

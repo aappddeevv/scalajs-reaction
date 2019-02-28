@@ -136,6 +136,10 @@ protected trait JsComponentThis[State] extends js.Object {
   * parameters. The scalajs-react facade approach mirrors ReasonReact. It is
   * essentially a set of interdependent types, *not* found in ReasonReact, in
   * order to control what is exposed to the programmer.
+ * 
+ * Notes: * Self.handle is created dynamically. In ReasonReact I think its a
+ * constant value. Its possible that has the same render impact as a render
+ * prop.
   *
   */
 trait CakeBase { cake =>
@@ -255,7 +259,7 @@ trait CakeBase { cake =>
     */
   trait WithMethodsLike extends js.Object {
     val render: Self => ReactNode
-    var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
+    //var subscriptions: js.UndefOr[Self => js.Array[Subscription]] = js.undefined
     var didCatch: js.UndefOr[(Self, js.Any, ErrorInfo) => Unit] = js.undefined
 
     var willUpdate: js.UndefOr[OldNewSelf[Self] => Unit]      = js.undefined
@@ -1056,9 +1060,9 @@ case class SideEffects[S, SLF](effect: SLF => Unit) extends StateUpdate[S, SLF]
 
 /**
   * Instead of exposing the ADT to the client, we use a smart constructor at the
-  * cost of an extra object allocation per type of component (not per
-  * component). This allows us to change the ADT over time. Side effects are run
-  * after the state update so use the self parameter to the side effect to
+  * cost of an extra object allocation per type of component (not per component
+  * instance). This allows us to change the ADT over time. Side effects are run
+  * after the state update so use the self parameter to run the side effect to
   * obtain the most current state and not the self parameter to the function
   * that you call the methods from. *If* you need to refer to the effect type,
   * you can use the convenience type `ReducerResult[S, SLF]#UpdateType`.

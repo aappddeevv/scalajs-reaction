@@ -129,7 +129,7 @@ object elements {
       }
     }
 
-  // DEPRECATED
+  // DEPRECATED - use state instance vars instead
   // /**
   //   * Scala side version of React.createClass. Since this function call creates
   //   * the underlying react js class, call this once per component then define a

@@ -9,7 +9,7 @@ import scala.scalajs.js
 
 /**
   * Data structure used to create js side react class. These are the lifecycle
-  * react APIs that weq use. Most of the methods below recover the scala side
+  * react APIs in use. Most of the methods below recover the scala side
   * "element" (the component spec) and then forwards the respective call to the
   * scala side "element." The same proxy is used for creating each component
   * instances for all component instances of the same component type.
