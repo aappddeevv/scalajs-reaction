@@ -115,11 +115,11 @@ Do not forget to include the react libraries in your execution environment. For
 react 16+, the libraries have been split out into multiple libraries. For the
 reactjs based modules, the javascript dependencies are:
 
-* core: react, create-react-class (not react-create-class)
+* core: react
 * react-dom: react-dom
 
 ```sh
-npm i --save react create-react-class
+npm i --save react
 npm i --save react-dom
 ```
 

@@ -9,7 +9,7 @@ import scala.scalajs.js
 import js._
 
 final case class ValueOps[T <: scala.Any](v: T) extends AnyVal {
-  @inline def toNode: ReactNode = v.asInstanceOf[ReactNode]
+  def toNode: ReactNode = v.asInstanceOf[ReactNode]
 }
 
 /** Enable `value.toNode` syntax. `ValueConverters` enable direct conversion to

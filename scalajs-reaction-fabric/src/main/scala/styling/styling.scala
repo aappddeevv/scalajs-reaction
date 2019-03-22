@@ -118,7 +118,8 @@ package object styling {
 
   /** 
    * Convert style props to a style set. Declare your props=>styleset functions
-   * with this type e.g. `val getStyles: IStyleFunction[SP, SST] = props => ???`
+   * with this type e.g. `val getStyles: IStyleFunction[SP, SST] = props => ???`.
+   * However, its easier to use the smart constructor `stylingFunction`.
    * 
    * @tparam SP style props type
    * @tparam style set type e.g. IStyleSet or IStyleSetTag
@@ -126,14 +127,13 @@ package object styling {
   //type IStyleFunction[SP <: js.Any, SS <: StyleSetType] = js.Function1[SP, SS]
   type IStyleFunction[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
-  /** Slight shortcut to define a IStyleFunction. */
+  /** Shortcut to define a IStyleFunction. */
   def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] =
     js.Any.fromFunction1(f)
 
   /**
-   * Something that is a style set or a style function. This is the fabric
-   * signature, normally we would use a coproduct, perhaps a nice shapeless
-   * coproduct.
+   * A style set or a style function. This is the fabric signature, normally we
+   * would use a coproduct, perhaps a nice shapeless coproduct.
    * 
    * @tparam SP style props type
    * @tparam SST style set type e.g. IStyleSet or IStyleSetTag
@@ -167,49 +167,53 @@ package object styling {
   // that needs to be imported.
   //
 
-  /** Convert null to style. */
+  /** Convert null to style. @group converters */
   implicit def null2IStyle(n: Null): IStyle = n.asInstanceOf[IStyle]
 
   /** Convert unit, which is "nothing" to a null. */
   //implicit def unit2IStyle(n: Null): IStyle = null.asInstanceOf[IStyle]
 
-  /** Any old dynamic maps to a style since we don't know what's in it so be hopeful. */
+  /** Any old dynamic maps to a style since we don't know what's in it so be hopeful. @group converters */
   implicit def dyn2IStyle(d: js.Dynamic): IStyle = d.asInstanceOf[IStyle]
 
-  /** Map a UndefOr <stuff> to IStyle directly. */
+  /** Map a UndefOr <stuff> to IStyle directly. @group converters */
   implicit def undefOrJsObject2IStyle(u: js.UndefOr[js.Object]): IStyle =
     u.asInstanceOf[IStyle]
 
+  /** @group converters */
   implicit def undefOrIRawyStyle2IStyle(u: js.UndefOr[IRawStyle]): IStyle =
     u.asInstanceOf[IStyle]
 
-  /** Unwrap the option or return null. */
+  /** Unwrap the option or return null. @group converters */
   implicit def styleOpt2IStyle(vopt: Option[IStyle]): IStyle =
     vopt.getOrElse[IStyle](null)
 
-  /** Directly convert to a style since undefined is valid. */
+  /** Directly convert to a style since undefined is valid. @group coneverters */
   implicit def undef2IStyle(vopt: js.UndefOr[IStyle]): IStyle =
     vopt.asInstanceOf[IStyle]
 
-  /** Unwrap the string or return null. */
+  /** Unwrap the string or return null. @group converters */
   implicit def stringOpt2IStyle(sopt: Option[String]): IStyle =
     sopt.getOrElse(null).asInstanceOf[IStyle]
 
-  /** Unwrap the string or return null. */
+  /** Unwrap the string or return null. @group converters */
   implicit def stringUndefOr2IStyle(sopt: js.UndefOr[String]): IStyle =
     sopt.asInstanceOf[IStyle]
 
-  /** Convert standard vdom StyleAttr to IStyle. */
+  /** Convert standard vdom StyleAttr to IStyle. @grop converters */
   implicit def styleAttr2IRawStyleBase(arr: StyleAttr): IStyle = arr.asInstanceOf[IStyle]
 
   //
   // Support for mergeStyleSets/concatStyleSets. Convert IStyleSetTags to the
   // canonical IStyleSet needed for the fabric functions.
   //
+  /** @group converters */
   implicit def jsObject2IStyleSet[T <: js.Object](u: T): IStyleSet = u.asInstanceOf[IStyleSet]
 
+  /** @group converters */
   implicit def jsUndefOrJsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet =
     u.asInstanceOf[IStyleSet]
 
+  /** @grop converters */
   implicit def iStyleSetTagToIStyleSet[SS <: IStyleSetTag](s: SS): IStyleSet = s.asInstanceOf[IStyleSet]
 }

@@ -47,7 +47,8 @@ object WrapProps {
     * Wrap a js authored component for use in scala world.  Props must be a js
     * object hence the type constraint and since this is used for interop into
     * an existing js component, only allow valid js values i.e. no scala object
-    * leakage. `reactComponent` must be imported into scala using `@JSImport`.
+    * leakage. `reactComponent` must be imported into scala using `@JSImport`
+    * and given a type that fits to ImportedJsComponent.
     */
   def wrapJsForScala[P <: js.Object](
       reactComponent: ImportedJsComponent,

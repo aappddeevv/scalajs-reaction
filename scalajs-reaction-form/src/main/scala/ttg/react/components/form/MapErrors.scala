@@ -2,15 +2,12 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.components
+package ttg
+package react
+package components
 package form
 
-/** Use a simple string map monad. */
-trait MapErrorModelPart {
-  self: FormControllerBase =>
-
-  object MapErrorModel extends ErrorModelLike {
-
+trait MapErrors extends HasErrors.Service {
     type Errors = collection.immutable.Map[String, String]
 
     val EmptyErrors = collection.immutable.Map[String, String]()
@@ -25,8 +22,6 @@ trait MapErrorModelPart {
 
     def pure(field: String, message: String): Errors =
       collection.immutable.Map[String, String](field -> message)
-  }
-
-  type ErrorModel = MapErrorModel.type
-  val errors = MapErrorModel
 }
+
+object MapErrors extends MapErrors

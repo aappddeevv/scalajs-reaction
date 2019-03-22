@@ -17,6 +17,9 @@ import org.scalajs.dom
 @js.native
 private[react] trait ReactJS extends js.Object {
 
+  /** We are not importing this to be used in a class oriented way. */
+  val Component: js.Dynamic = js.native
+
   /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
   def createElement[P](
       el: js.Any | ReactType, // any means when using this raw interop, anything goes!
@@ -207,14 +210,14 @@ trait React {
 
 object React extends React
 
-/**
-  * We use create-react-class under the hood to create all classes
-  */
-@js.native
-@JSImport("create-react-class", JSImport.Default)
-private[react] object reactCreateClass extends js.Object {
-  def apply(props: js.Object): ReactClass = js.native
-}
+// /**
+//   * We use create-react-class under the hood to create all classes
+//   */
+// @js.native
+// @JSImport("create-react-class", JSImport.Default)
+// private[react] object reactCreateClass extends js.Object {
+//   def apply(props: js.Object): ReactClass = js.native
+// }
 
 /**
   * React's context object contains the consumer and provider "components".

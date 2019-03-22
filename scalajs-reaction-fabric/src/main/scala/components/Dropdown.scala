@@ -21,8 +21,7 @@ object Dropdown {
   @JSImport("office-ui-fabric-react/lib/Dropdown", "Dropdown")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+  def apply(props: Props = null) = wrapJsForScala(JS, props)
 
   @js.native
   trait IDropdown extends js.Object {
@@ -30,22 +29,12 @@ object Dropdown {
     /** Should focus on open? */
     var focus: js.Function1[Boolean, Unit]
   }
-  @js.native
-  abstract sealed trait ResponsiveMode extends js.Any
-
-  object ResponsiveMode {
-    val small    = 0.asInstanceOf[ResponsiveMode]
-    val medium   = 1.asInstanceOf[ResponsiveMode]
-    val large    = 2.asInstanceOf[ResponsiveMode]
-    val xLarge   = 3.asInstanceOf[ResponsiveMode]
-    val xxLarge  = 4.asInstanceOf[ResponsiveMode]
-    val xxxLarge = 5.asInstanceOf[ResponsiveMode]
-  }
 
   trait Props extends ISelectableDroppableTextProps[dom.html.Div] {
-    var placeholder: js.UndefOr[String] = js.undefined
+    //var placeholder: js.UndefOr[String] = js.undefined
     //var onChanged: js.UndefOr[js.Function1[IDropdownOption, Unit] | js.Function2[IDropdownOption, Int, Unit]] = js.undefined
-    var onChanged: js.UndefOr[js.Function2[IDropdownOption, js.UndefOr[Int], Unit]] = js.undefined
+    var onChange: js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] = js.undefined
+    //var onChanged: js.UndefOr[js.Function2[IDropdownOption, js.UndefOr[Int], Unit]] = js.undefined
     var onDismiss: js.UndefOr[js.Function0[Unit]]                                   = js.undefined
     var onRenderPlaceholder: js.UndefOr[IRenderFunction[Props]]            = js.undefined
     var onRenderTitle
@@ -60,9 +49,20 @@ object Dropdown {
     var defaultSelectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]] = js.undefined
     var selectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]]        = js.undefined
     var multiSelectDelimiter: js.UndefOr[String]                          = js.undefined
-    var isDisabled: js.UndefOr[Boolean]                                   = js.undefined
+    //var isDisabled: js.UndefOr[Boolean]                                   = js.undefined
+
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
+    var theme: js.UndefOr[ITheme] = js.undefined
   }
 
+  trait Styles extends IStyleSetTag {
+    var root: js.UndefOr[IStyle] = js.undefined
+    // ...
+  }
+
+  trait StyleProps extends js.Object {
+    var className: js.UndefOr[String] = js.undefined
+    // ...
+  }
 
 }
-

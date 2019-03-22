@@ -15,8 +15,8 @@ import js.JSConverters._
   * much like JSX syntax.
  */
 trait Component2Elements {
-  @inline implicit def c2E(c: Component): ReactElement = elements.element(c)
-  @inline implicit def cSeq2E(c: Seq[Component]): ReactNode =
+  implicit def c2E(c: Component): ReactElement = elements.element(c)
+  implicit def cSeq2E(c: Seq[Component]): ReactNode =
     arrayToElement(c.map(elements.element(_)))
 }
 
@@ -29,11 +29,11 @@ trait Component2Elements {
  * ReactNode value then let the general implicit create an `UndefOr[T]`.
   */
 trait ValueConverters {
-  @inline implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =
+  implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =
     react.arrayToElement(arr)
 
   // shouldn't these just be collapsed into a scala.AnyVal?
-  @inline implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = react.arrayToElement(s)
+  implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = react.arrayToElement(s)
 
   //
   // direct value conversions as these are value react nodes directly
@@ -42,39 +42,39 @@ trait ValueConverters {
   // @inline implicit def _doubleToElement(d: Double): ReactNode   = d.asInstanceOf[ReactNode]
   // @inline implicit def _floatToElement(f: Float): ReactNode     = f.asInstanceOf[ReactNode]
   // @inline implicit def _booleanToElement(b: Boolean): ReactNode = b.asInstanceOf[ReactNode]
-  @inline implicit def _anyValToElement(v: AnyVal): ReactNode = v.asInstanceOf[ReactNode]
-  @inline implicit def _stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
+  implicit def _anyValToElement(v: AnyVal): ReactNode = v.asInstanceOf[ReactNode]
+  implicit def _stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
-  @inline implicit def _optToElement(s: Option[ReactElement]): ReactNode =
+  implicit def _optToElement(s: Option[ReactElement]): ReactNode =
     s.getOrElse(null.asInstanceOf[ReactNode])
-  @inline implicit def _iterableToElement[T](s: Iterable[T])(
+  implicit def _iterableToElement[T](s: Iterable[T])(
       implicit cv: T => ReactNode): ReactNode = {
     s.map(cv).toJSArray.asInstanceOf[ReactElement]
   }
 
-  @inline implicit def _undefOrReactNodeToReactNode(n: js.UndefOr[ReactNode]): ReactNode =
+  implicit def _undefOrReactNodeToReactNode(n: js.UndefOr[ReactNode]): ReactNode =
     n.getOrElse(null)
-  @inline implicit def _undefOrReactNodeArrayToReactNode(
+  implicit def _undefOrReactNodeArrayToReactNode(
       n: js.UndefOr[js.Array[ReactNode]]): ReactNode =
     n.map(i => _iterableToElement(i)).getOrElse(null)
 
   /** Since null is a valid react node, convert an optional string to null. */
-  @inline implicit def _optionStringToNull(n: Option[String]): ReactNode =
+  implicit def _optionStringToNull(n: Option[String]): ReactNode =
     n.map(_.asInstanceOf[ReactNode]).getOrElse(nullElement)
 
   /** Convert scala.AnyVal into a react node. */
-  @inline implicit def _optionAnyValToNull(n: Option[scala.AnyVal]): ReactNode =
+  implicit def _optionAnyValToNull(n: Option[scala.AnyVal]): ReactNode =
     n.getOrElse(null).asInstanceOf[ReactNode]
 
   /** js.UndefOr to null. */
-  @inline implicit def _undefOrStringToNull(n: js.UndefOr[String]) =
+  implicit def _undefOrStringToNull(n: js.UndefOr[String]) =
     n.getOrElse(null).asInstanceOf[ReactNode]
 
   // highly contraversial...this allows you to put any thing in for the react children and 
   //@inline implicit def _scalaObject(o: scala.AnyRef): ReactNode = o.asInstanceOf[ReactNode]
 
   // contraversial but highly useful for classname
-  @inline implicit def _optionStringToUndefOrString(n: Option[String]): js.UndefOr[String] = n.orUndefined
+  implicit def _optionStringToUndefOrString(n: Option[String]): js.UndefOr[String] = n.orUndefined
 }
 
 trait AllInstances extends Component2Elements with ValueConverters

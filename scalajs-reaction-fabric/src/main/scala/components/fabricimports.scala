@@ -279,10 +279,11 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element]
   // className?: string;
 
   var defaultSelectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]] = js.undefined
-  var selectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]]        = js.undefined
+  // does this make it controlled?
+  var selectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int] | Null]        = js.undefined
 
-  /** Any ??? */
-  var options: js.UndefOr[js.Any] = js.undefined
+  /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
+  var options: js.UndefOr[ISelectableOption | js.Any] = js.undefined
   // onChanged?: (option: ISelectableOption, index?: number) => void;
   // onRenderContainer?: IRenderFunction<ISelectableDroppableTextProps<T>>;
   var onRenderList: js.UndefOr[IRenderFunction[ISelectableDroppableTextProps[T]]] = js.undefined
@@ -291,9 +292,70 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element]
   var disabled: js.UndefOr[Boolean] = js.undefined
   var required: js.UndefOr[Boolean] = js.undefined
 
-  //calloutProps?: ICalloutProps;
+  var calloutProps: js.UndefOr[ICalloutProps] = js.undefined
   var panelProps: js.UndefOr[Panel.Props] = js.undefined
   var errorMessage: js.UndefOr[String]    = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+}
+
+@js.native
+trait ICallout extends js.Object {
+}
+
+trait ICalloutProps
+    extends HTMLAttributes[dom.html.Div]
+    with ComponentRef[ICallout]
+    with Theme {
+
+  var target: js.UndefOr[dom.html.Element | String | Null]  = js.undefined
+  var directionalHint: js.UndefOr[DirectionalHint] = js.undefined
+  //var directionalHintForRTL
+  var gapSpace: js.UndefOr[Double] = js.undefined
+  var beakWidth: js.UndefOr[Double] = js.undefined
+  var calloutMaxWidth: js.UndefOr[Double] = js.undefined
+  var bounds: js.UndefOr[IRectangle] = js.undefined
+  var isBeakVisible: js.UndefOr[Boolean] = js.undefined
+  var preventDismissOnScroll: js.UndefOr[Boolean] = js.undefined
+  var preventDismissOnResize: js.UndefOr[Boolean] = js.undefined
+  var preventDismissOnLostFocus: js.UndefOr[Boolean] = js.undefined
+  var coverTarget: js.UndefOr[Boolean] = js.undefined
+  var alignTargetEdge: js.UndefOr[Boolean] = js.undefined
+  var onLayerMounted: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var layerProps: js.UndefOr[LayerProps] = js.undefined
+  var onDismiss: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+  var directionalHintFixed: js.UndefOr[Boolean] = js.undefined
+  var finalHeight: js.UndefOr[Double] = js.undefined
+  var hideOverflow: js.UndefOr[Boolean] = js.undefined
+  var setInitialFocus: js.UndefOr[Boolean] = js.undefined
+  var calloutMaxHeight: js.UndefOr[Double] = js.undefined
+  //var onScroll: js.UndefOr[js.Function0[Unit]] = js.undefined
+  //var hidden: js.UndefOr[Boolean] = js.undefined
+}
+
+@js.native
+sealed trait DirectionalHint extends js.Any
+object DirectionalHint {
+  var topLeftEdge = 0.asInstanceOf[DirectionalHint]
+  var topCenter =  1.asInstanceOf[DirectionalHint]
+  var topRightEdge = 2.asInstanceOf[DirectionalHint]
+  var topAutoEdge = 3.asInstanceOf[DirectionalHint]
+  var bottomLeftEdge = 4.asInstanceOf[DirectionalHint]
+  var bottomCenter = 5.asInstanceOf[DirectionalHint]
+  var bottomRightEdge = 6.asInstanceOf[DirectionalHint]
+  var bottomAutoEdge = 7.asInstanceOf[DirectionalHint]
+  var leftTopEdge = 8.asInstanceOf[DirectionalHint]
+  var leftCenter = 9.asInstanceOf[DirectionalHint]
+  var leftBottomEdge = 10.asInstanceOf[DirectionalHint]
+  var rightTopEdge = 11.asInstanceOf[DirectionalHint]
+  var rightCenter = 12.asInstanceOf[DirectionalHint]
+  var rightBottomEdge = 13.asInstanceOf[DirectionalHint]
+}
+
+trait IRectangle extends js.Object {
+}
+
+// move to Layer component
+trait LayerProps extends js.Object {
 }
 
 trait ISelectableOption extends js.Object {
@@ -326,3 +388,13 @@ trait IKeytipProps extends js.Object {
   val keySeqences: js.Array[String]
 }
 
+@js.native
+sealed trait ResponsiveMode extends js.Any
+object ResponsiveMode {
+  val small    = 0.asInstanceOf[ResponsiveMode]
+  val medium   = 1.asInstanceOf[ResponsiveMode]
+  val large    = 2.asInstanceOf[ResponsiveMode]
+  val xLarge   = 3.asInstanceOf[ResponsiveMode]
+  val xxLarge  = 4.asInstanceOf[ResponsiveMode]
+  val xxxLarge = 5.asInstanceOf[ResponsiveMode]
+}

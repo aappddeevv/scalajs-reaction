@@ -69,7 +69,7 @@ object elements {
     o.asInstanceOf[js.Dynamic]
 
   /** Stateless component. It only has a render function. */
-  def statelessComponent(debugNameArg: String, disableCatch: Boolean = true) = {
+  def statelessComponent(debugNameArg: String, disableCatch: Boolean = false) = {
     new StatelessComponentCake {
       type ProxyType = ProxyLike
       type ComponentType = ComponentLike
@@ -83,30 +83,35 @@ object elements {
       trait ComponentLike extends super.ComponentLike
       val component = new ComponentType {
         var debugName          = debugNameArg
-        var reactClassInternal = reactCreateClass(proxy)
+        var reactClassInternal = createClass(proxy)//reactCreateClass(proxy)
       }
     }
   }
 
-  // /** Stateless, with retained props. */
-  def statelessComponentWithRetainedProps[RetainedProps](debugNameArg: String, disableCatch: Boolean = true) =
-    new StatelessComponentWithRetainedPropsCake {
-      type RP = RetainedProps
-      type ProxyType = ProxyLike
-      type ComponentType = ComponentLike
+  //def statelessComponent(debugNameArg: String, disableCatch: Boolean = false) = {
+  //  StatelessComponent.make(debugNameArg)
+  //}
 
-      class ProxyLike extends super.ProxyLike {
-        val displayName: String = debugNameArg
-      }
-      val proxy = new ProxyType()
-      // hack
-      if(disableCatch) proxy.asInstanceOf[js.Dynamic].componentDidCatch = js.undefined
-      trait ComponentLike extends super.ComponentLike
-      val component = new ComponentType {
-        var debugName          = debugNameArg
-        var reactClassInternal = reactCreateClass(proxy)
-      }
-    }
+
+  // /** Stateless, with retained props. */
+  // def statelessComponentWithRetainedProps[RetainedProps](debugNameArg: String, disableCatch: Boolean = true) =
+  //   new StatelessComponentWithRetainedPropsCake {
+  //     type RP = RetainedProps
+  //     type ProxyType = ProxyLike
+  //     type ComponentType = ComponentLike
+
+  //     class ProxyLike extends super.ProxyLike {
+  //       val displayName: String = debugNameArg
+  //     }
+  //     val proxy = new ProxyType()
+  //     // hack
+  //     if(disableCatch) proxy.asInstanceOf[js.Dynamic].componentDidCatch = js.undefined
+  //     trait ComponentLike extends super.ComponentLike
+  //     val component = new ComponentType {
+  //       var debugName          = debugNameArg
+  //       var reactClassInternal = reactCreateClass(proxy)
+  //     }
+  //   }
 
   /** Stateful. */
   def reducerComponent[TheState, Action](debugNameArg: String, disableCatch: Boolean = false) =
@@ -125,7 +130,7 @@ object elements {
       trait ComponentLike extends super.ComponentLike
       val component = new ComponentType {
         var debugName          = debugNameArg
-        var reactClassInternal = reactCreateClass(proxy)
+        var reactClassInternal = createClass(proxy)//reactCreateClass(proxy)
       }
     }
 

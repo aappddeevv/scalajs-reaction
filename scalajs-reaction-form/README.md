@@ -1,6 +1,7 @@
 # Example
-Here's a *not* very good example using this library. It will get refactored as
-I get time to update this README.
+
+Here's a *not* very good example using this library. It will get refactored as I
+get time to update this README.
 
 ```scala
 object TestFormController {

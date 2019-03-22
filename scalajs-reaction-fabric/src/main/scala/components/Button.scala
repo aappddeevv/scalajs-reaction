@@ -86,7 +86,8 @@ object Button {
     var menuTriggerKeyCode: js.UndefOr[Int|Null] = js.undefined
     var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
     var persistMenu: js.UndefOr[Boolean] = js.undefined
-    var description: js.UndefOr[IStyle]                                    = js.undefined  }
+    var description: js.UndefOr[IStyle]                                    = js.undefined
+  }
 
   object Default {
     @js.native

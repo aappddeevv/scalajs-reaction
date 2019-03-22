@@ -10,16 +10,16 @@ import js.UndefOr
 import js.JSConverters._
 
 /**
-  * A scalajs. facade for facebook's react in the spirit of ReasonReact.
-  */
+ * A scalajs. facade for facebook's react in the spirit of ReasonReact.
+ */
 package object react {
 
   /**
-    * Opaque type returned from a ref callback. It's typically either js
-    * component or a DOM element, both of which are js.Objects. You only use
-    * this type with the `React.createRef()` machinery. You can also use a ref
-    * callback (still supported), skip this type and the call to
-    * `React.createRef()`.
+   * Opaque type returned from a ref callback. It's typically either js
+   * component or a DOM element, both of which are js.Objects. You only use
+   * this type with the `React.createRef()` machinery. You can also use a ref
+   * callback (still supported), skip this type and the call to
+   * `React.createRef()`.
    * 
    * @todo Validate a null value is present if the ref is never set. typescript
    * says so.
@@ -42,21 +42,21 @@ package object react {
   def refCB[E](f: E|Null => Unit): Ref[E] = js.Any.fromFunction1[E|Null,Unit](f)
 
   /**
-    * Something that can be rendered in reactjs. We need to restrict this a bit
-    * more when returning values from the scala side API. reactjs allows this to
-    * be quite flexible including strings, numbers, booleans in additon to
-    * classes, functions, etc. This should probably be a js.Any as any API used
-    * in this library will ensure that the right types are used and this would
-    * get rid of the ugly `stringToElement` type functions below.  js.Object is
-    * technically not correct.
-    */
+   * Something that can be rendered in reactjs. We need to restrict this a bit
+   * more when returning values from the scala side API. reactjs allows this to
+   * be quite flexible including strings, numbers, booleans in additon to
+   * classes, functions, etc. This should probably be a js.Any as any API used
+   * in this library will ensure that the right types are used and this would
+   * get rid of the ugly `stringToElement` type functions below.  js.Object is
+   * technically not correct.
+   */
   @js.native
   trait ReactNode extends js.Object
 
   /** Output from `react.createElement` and is something you can render with key
-    * and ref accessors. A ReactNode with a key. Keep the trait parameterless at
-    * the expense of pushing the type parameter to `ref`.
-    */
+   * and ref accessors. A ReactNode with a key. Keep the trait parameterless at
+   * the expense of pushing the type parameter to `ref`.
+   */
   @js.native
   trait ReactElement extends ReactNode {
     val key: UndefOr[String] = js.native
@@ -91,10 +91,10 @@ package object react {
   }
 
   /**
-    * A standard HTML element that has been created using React.createElement.
-    * Props are optional of course.  We use this tag it to show that it came
-    * from the standard DOM components vs a custom one.
-    */
+   * A standard HTML element that has been created using React.createElement.
+   * Props are optional of course.  We use this tag it to show that it came
+   * from the standard DOM components vs a custom one.
+   */
   @js.native
   trait ReactDOMElement extends ReactElement {
     //def `type`: String = js.native
@@ -104,10 +104,10 @@ package object react {
   }
 
   /**
-    * A js-object that is returned from create-react-class. In reactjs a react
-   * class is a js object created using the "class" construct. This should really
-   * be ReactJsComponent.
-    */
+   * A js-object that is returned from create-react-class. In reactjs a react
+   * class is a js object created using the "class" construct. This should
+   * really be ReactJsComponent bt we keep this slightly different.
+   */
   @js.native
   trait ReactClass extends js.Object
 
@@ -116,19 +116,19 @@ package object react {
   trait ReactPortal extends ReactElement
 
   /** Something that can be used in ReactJS.createElement. Need to add js.Function
-    * that returns a ReactNode.
-    */
+   * that returns a ReactNode.
+   */
   type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent
 
   /**
-    * This type is used only for imported javascript authored components to
-    * "tag" a component type or created via other js-interop mechanisms such as
-    * redux integration. By using a separate type, you must use then
-    * scalajs-react's API to create an element. You can use this to annotate a
-    * js function react component as well e.g. () => ReactNode. If you import a
-    * component from javascript, you must call `wrapJsForScala` to create an
-    * element in scala.
-    */
+   * This type is used only for imported javascript authored components to
+   * "tag" a component type or created via other js-interop mechanisms such as
+   * redux integration. By using a separate type, you must use then
+   * scalajs-react's API to create an element. You can use this to annotate a
+   * js function react component as well e.g. () => ReactNode. If you import a
+   * component from javascript, you must call `wrapJsForScala` to create an
+   * element in scala.
+   */
   @js.native
   trait ReactJsComponent extends js.Object
 
@@ -145,7 +145,7 @@ package object react {
    */
   type ImportedJsComponent = ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent
 
-  /** The type of `() => import("somecomponent")` which is used exclusively for 
+  /** The type of `() => import("somecomponent")` which is used exclusively for
    * the argument to React.lazy.
    */
   type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
@@ -168,19 +168,19 @@ package object react {
   @inline def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
   /**
-    * Empty children value but non-empty array. Be careful as someone could
-    * mutate this global instance on you.
-    */
+   * Empty children value but non-empty array. Be careful as someone could
+   * mutate this global instance on you.
+   */
   val emptyChildrenVal = js.Array[ReactNode]()
 
   /** Allocate an empty child array. It's not shared like `emptyChildrenVal` */
   def emptyChildren = js.Array[ReactNode]()
 
   /**
-    * Hidden field for scala components that are based directly on a js
-    * component.  Args should be an optional key and ref. The scala.js interop
-    * layer creates the function that is attached to the scala side, js proxy.
-    */
+   * Hidden field for scala components that are based directly on a js
+   * component.  Args should be an optional key and ref. The scala.js interop
+   * layer creates the function that is attached to the scala side, js proxy.
+   */
   type JsElementWrapped =
     (Option[String], Option[Ref[js.Any]]) => ReactElement
 
@@ -188,8 +188,8 @@ package object react {
   type Component = ComponentSpec
 
   /** Make a callback. You don't need this but helps with type inference. There is
-    * some dedicated syntax support for `E|Null` handling.
-*/
+   * some dedicated syntax support for `E|Null` handling.
+   */
   def refCallback[E](f: E|Null => Unit): RefCb[E] = f
 
   /** Children type. */
@@ -202,32 +202,32 @@ package object react {
   type OnUnmount = () => Unit
 
   /**
-    * A subscription called after mount and then its return value called after
-    * unmount.
-    */
+   * A subscription called after mount and then its return value called after
+   * unmount.
+   */
   type Subscription = () => OnUnmount
 
   /**
-    * Constant val of a single, empty js.Object. Use carefully since js allows
-    * mutation and this will be a shared instance. Prefer `noProps()`.
-    */
+   * Constant val of a single, empty js.Object. Use carefully since js allows
+   * mutation and this will be a shared instance. Prefer `noProps()`.
+   */
   val noPropsVal: js.Object = new js.Object()
 
   /** Type inferring empty js object. A new object is created with each call. */
-  @inline def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
+  def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
 
   /**
-    * Turn a ReactRef to a js.Dynamic so you can call "component" methods
-    * directly.  Most notably "select", "value" or "focus()". I don't think this
-    * is right...
-    */
-  @inline def refToJs[T](ref: ReactRef[T]): js.Dynamic = ref.asInstanceOf[js.Dynamic]
+   * Turn a ReactRef to a js.Dynamic so you can call "component" methods
+   * directly.  Most notably "select", "value" or "focus()". I don't think this
+   * is right...
+   */
+  def refToJs[T](ref: ReactRef[T]): js.Dynamic = ref.asInstanceOf[js.Dynamic]
 
   /**
-    * Merge js.Dynamic. See [[merge]] and use that.
-    * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
-    */
-  @inline def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
+   * Merge js.Dynamic. See [[merge]] and use that.
+   * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
+   */
+  def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
     // not js.Any? maybe keep js or scala values in here....
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
@@ -239,11 +239,11 @@ package object react {
   }
 
   /**
-    * Merge objects and Ts together. Good for merging props with data-
-    * attributes. This is like `Object.assign`. Last parameter wins.  Creates
-    * and returns new object. Input objects are not modified.
-    */
-  @inline def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null *): T = {
+   * Merge objects and Ts together. Good for merging props with data-
+   * attributes. This is like `Object.assign`. Last parameter wins.  Creates
+   * and returns new object. Input objects are not modified.
+   */
+  def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null *): T = {
     val result = js.Dictionary.empty[Any]
     for (source <- objs) {
       if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
@@ -254,15 +254,15 @@ package object react {
   }
 
   /** Shallow copy. Should we call Object.assign directly? Faster? */
-  @inline def copy[T <: js.Object](obj: js.Dynamic | js.Object): T = merge[T](obj)
+  def copy[T <: js.Object](obj: js.Dynamic | js.Object): T = merge[T](obj)
 
   /** Not sure this is useful. */
-  @inline private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
+  private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
     mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
   }
 
   /** Add a key. Mutates input object directly because hey, this is javascript! */
-  @inline def withKey[T <: js.Object](element: T, key: String): ReactElement = {
+  def withKey[T <: js.Object](element: T, key: String): ReactElement = {
     element.asInstanceOf[js.Dynamic].key = key
     return element.asInstanceOf[ReactElement]
   }
@@ -270,16 +270,46 @@ package object react {
   /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
    * support makes this easier so you don't have to use this function.
    */
-  @inline def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
+  def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
     if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])
   }
 
   /** Render something or return a null element. */
-  @inline def when(cond: Boolean)(render: => ReactNode): ReactNode =
+  def when(cond: Boolean)(render: => ReactNode): ReactNode =
     if(cond) render else nullElement
 
   /** Render something if not cond or return a null element. */
-  @inline def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
+  def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
     if(!cond) render else nullElement
+
+
+  /** Test equaliy with two js objects. Standard == in scala.js on 2 js objects
+   * (e.g. non-native traits) will not test in the same way that standard scala
+   * tests equality. Do not use this with ract components (js objects) because
+   * react component objects have circular data structures.
+   *
+   *  You may want to look at some standard js equality libraries--there are
+   *  many and are opimized in various ways. See
+   *  https://github.com/FormidableLabs/react-fast-compare/blob/master/index.js
+   *  in particular. This code is from
+   *  https://stackoverflow.com/questions/38126349/how-to-deeply-compare-two-js-like-objects-in-scala-js.
+   */
+  def jsEqual(a: js.Any, b: js.Any): Boolean = {
+    (a, b) match {
+      case (a: js.Array[_], b: js.Array[_]) =>
+        // compare length and each individual item
+        a.length == b.length &&
+        a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual _).tupled)
+      case _ if a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
+          b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>
+        val aDict = a.asInstanceOf[js.Dictionary[js.Any]]
+        val bDict = b.asInstanceOf[js.Dictionary[js.Any]]
+        (aDict.keySet == bDict.keySet) &&
+        aDict.keySet.forall(key => jsEqual(aDict(key), bDict(key)))
+      case _ =>
+        // must be non-object values, this does a js style test
+        a == b
+    }
+  }
 }

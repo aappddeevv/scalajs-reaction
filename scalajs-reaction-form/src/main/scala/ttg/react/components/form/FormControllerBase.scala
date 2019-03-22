@@ -2,7 +2,9 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.components
+package ttg
+package react
+package components
 package form
 
 import scala.scalajs.js
@@ -20,58 +22,66 @@ import elements._
 
 import vdom._
 
-/**
-  * An uncontrolled component to manage form lifecycle. Supply the initial
-  * values and optionally track fine-grained changes. Very few assumptions are
-  * made in this base class leaving the details to subclasses.
-  */
-abstract class FormControllerBase {
+trait HasValues {
+  val _values: HasValues.Service
+}
 
-  type ErrorModel <: ErrorModelLike
-  type Values <: ValuesLike
-  type TouchModel <: TouchModelLike
-
-  trait ValuesLike {
-    // made up of fields
+object HasValues {
+  trait Service {
     type Value
-    // eq typeclass
     def eq(lhs: Value, rhs: Value): Boolean
   }
+}
 
-  // todo, parameterize on F[_] as a type parameter
-  trait ErrorModelLike {
+trait HasTouches {
+  val _touches: HasTouches.Service
+}
+
+object HasTouches {
+  trait Service {
+    type Touches
+    def EmptyTouches: Touches
+    def touch(id: String, touches: Touches): Touches
+    def touched(id: String, touches: Touches): Boolean    
+  }
+}
+
+trait HasErrors {
+  val _errors: HasErrors.Service
+}
+
+object HasErrors {
+  trait Service {
     type Errors
     def EmptyErrors: Errors
     def combine(errors: Errors*): Errors
     def pure(id: String, message: String): Errors
     def count(errors: Errors): Int
   }
+}
 
-  trait TouchModelLike {
-    type Touches
-    def EmptyTouches: Touches
-    def touch(id: String, touches: Touches): Touches
-    def touched(id: String, touches: Touches): Boolean
-  }
+/**
+  * A component to manage data editing lifecycle. Supply the initial values and
+  * optionally track fine-grained changes. Very few assumptions are made in this
+  * base class leaving the details to subclasses. A react context is provided
+  * for child components, if desired.
+ * 
+ * The form can be used as controlled or uncontrolled. Provide a "value"
+ * parameter to ake it controlled. Controlled is a better model if you have
+ * components (such as a reset button) outside the form's structure that can
+ * alter the value being edited.
+  */
+trait FormControllerBase extends HasValues with HasTouches with HasErrors {
 
-  /** Clients can import this where you use the form to get error management based
-    * on ErrorModel generically and to use EmptyErrors in your validation
-    * functions.
-    */
-  val errors: ErrorModel
-  import errors.{Errors, EmptyErrors}
+  def Name: String
 
-  val values: Values
-  import values.Value
-
-  val touches: TouchModel
-  import touches.{Touches, EmptyTouches}
-
-  //type Touches = collection.immutable.Map[String, Boolean]
-  //val EmptyTouches = collection.immutable.Map[String, Boolean]()
+  import _errors.{Errors, EmptyErrors}
+  import _values.Value
+  import _touches.{Touches, EmptyTouches}
 
   /** Validate a single value. Used for field level validations. */
   type Validator = Option[scala.Any] => Future[String]
+  /** Validators indexed by attribute. */
   type Validators = js.Dictionary[Validator]
   val EmptyValidators = js.Dictionary.empty[Validator]
 
@@ -93,27 +103,31 @@ abstract class FormControllerBase {
   //case class ResetField(field: String) extends Action
 
   case class State(
+    /** Current value, given changes, always stored even if controlled. */
       values: Value,
       errors: Errors = EmptyErrors, // combine with is* into a GDAT?
       touched: Touches = EmptyTouches,
       isValidating: Boolean = false,
-      isSubmitting: Boolean = false,
-      submitCount: Int = 0,
-      initialValues: Box[Value],
-      didMount: Box[Boolean] = Box(false),
-      validators: Box[Validators] = Box(EmptyValidators)
+    isSubmitting: Boolean = false,
+    /** Number of times the submit action has been run. */
+    submitCount: Int = 0,
+    /** Initial values, for convenience. */
+      initialValue: Box[Value],
+    didMount: Box[Boolean] = Box(false),
+    /** This is here in case we allow child components to add validators. */
+    validators: Box[Validators] = Box(EmptyValidators)
   )
 
-  val Name = "FormController"
   val c = reducerComponent[State, Action](Name)
   import c.ops._
 
-  /** Passed to the child to be rendered. */
+  /** Props passed to the child component. */
   case class FormProps(
       /** No errors and factors in isInitialValid. */
       isValid: Boolean,
       /* Derived. */
-      dirty: Boolean,
+    dirty: Boolean,
+    /** Current value. */
       values: Value,
       errors: Errors,
       touched: Touches,
@@ -123,7 +137,7 @@ abstract class FormControllerBase {
       didMount: Boolean,
       handlers: FormHandlers,
       actions: FormActions,
-      initialValues: Value
+      initialValue: Value
   )
 
   /**
@@ -149,13 +163,13 @@ abstract class FormControllerBase {
   )
 
   def setError(self: Self, field: String, message: String) = {
-    val anerror = errors.combine(EmptyErrors, errors.pure(field, message))
+    val anerror = _errors.combine(EmptyErrors, _errors.pure(field, message))
     self.send(FieldErrors(anerror, true))
   }
 
   def resetForm(self: Self, nextValues: Option[Value]) = {
-    val newvalues = nextValues.getOrElse(self.state.initialValues.value)
-    self.state.initialValues.value = newvalues
+    val newvalues = nextValues.getOrElse(self.state.initialValue.value)
+    self.state.initialValue.value = newvalues
     self.send(Reset(newvalues))
   }
 
@@ -243,42 +257,68 @@ abstract class FormControllerBase {
     val combined = for {
       ferrs <- fieldF
       herrs <- hF
-    } yield errors.combine(ferrs, herrs)
+    } yield _errors.combine(ferrs, herrs)
     if (self.state.didMount.value)
       combined.foreach(errs => self.send(Validating(false, Option(errs))))
     combined
   }
 
+  /** The context is slightly duplicative in that initialValues and validate are
+   * already in FormProps.
+   */
   case class Context(
       props: FormProps,
-      initialValues: Value,
+      initialValue: Value,
       validate: Option[FormValidator]
   )
 
   import react.context._
   val FormContext = react.context.make[Context](null)
 
+  // trait Props extends js.Object {
+  //   var initialValues: js.UndefOr[Value] = js.undefined
+  //   var submit: js.UndefOr[SubmitCallback] = js.undefined
+  //   var reset: js.UndefOr[ResetCallback] = js.undefined
+  //   var validate: js.UndefOr[FormValidator] = js.undefined
+  //   var validateOnBlur: js.UndefOr[Boolean] = js.undefined
+  //   var validateOnChange: js.UndefOr[Boolean] = js.undefined
+  //   var isInitialValid: js.UndefOr[() => Boolean] = js.undefined
+  //   var onChange: js.UndefOr[(Value, Boolean) => Unit] = js.undefined
+  //   var touched: js.UndefOr[Seq[String] => Unit] = js.undefined
+  // }
+
+  /**
+   * Create component.
+   * 
+   * @param initialValues Initial values to be edited the form.
+   * @param values If provided, component is controlled.
+   * @param isInitialValid Use to set button state on mount, if needed.
+   * @param onChange If a change passes validation (if requested), signal a
+   * change and whether validations passed if validation occurred.
+   * @param touched Touched callback.
+   * 
+   * @todo Should be able to get rid of initialValues. Let parent always pass-in
+   * original value and be a controlled component instead of uncontrolled.
+   */
   def apply(
-      initialValues: Value,
+    initialValue: Value,
+    value: Option[Value] = None,
       submit: Option[SubmitCallback] = None,
       reset: Option[ResetCallback] = None,
       validate: Option[FormValidator] = None,
       validateOnBlur: Boolean = true,
       validateOnChange: Boolean = true,
-      /** Use to set button state on mount, if needed. */
       isInitialValid: () => Boolean = () => true,
-      /** If a change passes validation (if requested), signal a change and whether validations passed if validation occurred. */
       onChange: Option[(Value, Boolean) => Unit] = None,
-      /** Touched means a field had focus, but potentially was not changed. */
       touched: Option[Seq[String] => Unit] = None
   )(
       child: FormProps => ReactNode
   ) =
     c.copy(new methods {
       val initialState = self => {
-        val s =
-          State(values = initialValues, initialValues = Box(initialValues))
-        s.initialValues.value = initialValues
+        val s = value.fold(
+          State(values = initialValue, initialValue = Box(initialValue))
+        )( v => State(values = v, initialValue = Box(initialValue)))
         s
       }
       didMount = js.defined { self =>
@@ -288,7 +328,9 @@ abstract class FormControllerBase {
         self.state.didMount.value = false
       }
 
-      val reducer = (action, state, gen) =>
+      val reducer = (action, state, gen) => {
+        // do we need this?, we are always in sync with changes
+        val cvalues = value.getOrElse(state.values)
         action match {
           case Reset(nextvalues) =>
             gen.updateAndEffect(
@@ -311,7 +353,7 @@ abstract class FormControllerBase {
 
           // If you validate on change then blur on the form, you may run validations twice.
           case Touched(f, s) =>
-            val newtouched = touches.touch(f, state.touched)
+            val newtouched = _touches.touch(f, state.touched)
             gen.updateAndEffect(state.copy(touched = newtouched)) { self =>
               val fut =
                 if (s && validateOnBlur)
@@ -327,7 +369,7 @@ abstract class FormControllerBase {
 
           case FieldErrors(errs, merge) =>
             if (merge) {
-              val newerrors = errors.combine(state.errors, errs)
+              val newerrors = _errors.combine(state.errors, errs)
               gen.update(state.copy(errors = newerrors))
             } else
               gen.update(state.copy(errors = errs))
@@ -341,7 +383,7 @@ abstract class FormControllerBase {
                                    self.state.values,
                                    self.state.validators.value,
                                    validate)
-                      .map(errs => errors.count(errs) == 0)
+                      .map(errs => _errors.count(errs) == 0)
                   else Future.successful(false)
                 fut.onComplete {
                   case Success(validationStatus) =>
@@ -361,7 +403,7 @@ abstract class FormControllerBase {
               self =>
                 runValidations(self, state.values, EmptyValidators, validate)
                   .flatMap { errs =>
-                    if (errors.count(errs) == 0)
+                    if (_errors.count(errs) == 0)
                       submit.fold(
                         Future.unit
                       )(
@@ -373,23 +415,26 @@ abstract class FormControllerBase {
                     case _ => gen.update(state.copy(isSubmitting = false))
                   }
             }
+        }
       }
       val render = self => {
+        val cvalues = value.getOrElse(self.state.values)
+
         val factions = makeFormActions(self, validate)
 
-        // compare initialValues to current values
+        // compare initialValue to current values
         val dirty =
-          !values.eq(self.state.initialValues.value, self.state.values)
+          !_values.eq(self.state.initialValue.value, cvalues)
 
-        val isValid =
+        val _isValid =
           // do easy check before calling thunk
-          if (dirty && errors.count(self.state.errors) > 0) true
+          if (dirty && _errors.count(self.state.errors) > 0) true
           else isInitialValid()
 
         val props = FormProps(
-          initialValues = self.state.initialValues.value,
-          values = self.state.values,
-          isValid = isValid,
+          initialValue = initialValue, //self.state.initialValue.value,
+          values = cvalues,
+          isValid = _isValid,
           dirty = dirty,
           errors = self.state.errors,
           touched = self.state.touched,
@@ -401,8 +446,7 @@ abstract class FormControllerBase {
           didMount = self.state.didMount.value
         )
         // create context for child components, if they want it
-        //val context = ...
-        val context = Context(props, self.state.initialValues.value, validate)
+        val context = Context(props, self.state.initialValue.value, validate)
         FormContext.provider(context)(
           child(props)
         )

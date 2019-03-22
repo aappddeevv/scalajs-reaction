@@ -8,11 +8,14 @@ package react
 import scala.scalajs.js
 
 /**
-  * Data structure used to create js side react class. These are the lifecycle
+  * Data structure used to create js-side react class. These are the lifecycle
   * react APIs in use. Most of the methods below recover the scala side
   * "element" (the component spec) and then forwards the respective call to the
   * scala side "element." The same proxy is used for creating each component
-  * instances for all component instances of the same component type.
+  * instances for all component instances of the same component type. Not all
+  * methods are relevant though e.g. stateless vs statefull components and
+  * getInitialState. Setting all React lifecycle methods to undefined allows
+  * Reactjs to optimize itself. The proxy is used in createReactClass.
   */
 trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   val displayName: String
@@ -51,4 +54,14 @@ trait Proxy[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
   /** react js method. v16+ */
   val componentDidCatch: js.UndefOr[js.ThisFunction2[ThisSelf, js.Error, ErrorInfo, Unit]] =
     js.undefined
+
+  /** react js method. v16+. Allows us to remove willReceiveProps and
+    * retainedProps. Props come from the apply()/make() fuction of the component
+    * not from traditional reactjs props, which should be ignored.
+   */
+  val statics: js.UndefOr[Statics[SLF, State, ThisSelfProps, ThisSelf]] = js.undefined
+}
+
+trait Statics[SLF, State, ThisSelfProps, ThisSelf] extends js.Object {
+    val getDerivedStateFromProps: js.UndefOr[js.ThisFunction1[ThisSelf, js.Object, State]] = js.undefined    
 }

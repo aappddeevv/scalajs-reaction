@@ -13,11 +13,15 @@ import js._
  */
 final case class ComponentOps(c: Component) {
   /** Create an element with no key or ref. */
-  @inline def toEl: ReactElement = elements.element(c)
+  def toEl: ReactElement = elements.element(c)
 
   /** Create an element with an optional key and an optional ref. */
-  @inline def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None): ReactElement =
+  def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None): ReactElement =
     elements.element(c, key, ref)
+
+  /** Create an element with an optional key and an optional ref. */
+  def toElKey(key: String): ReactElement =
+    elements.element(c, Option(key), None)
 }
 
 trait ComponentSyntax {

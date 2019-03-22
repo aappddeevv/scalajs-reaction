@@ -23,32 +23,32 @@ x.fold[String | Unit](())(x => x)
   */
 final case class OrNullOps[A <: js.Any](a: A | Null) {
   /** Convert an A|Null to a well formed Option. Should we check or undefined? */
-  @inline def toNonNullOption: Option[A] =
+  def toNonNullOption: Option[A] =
     // doesn't Option(a.asInstanceOf[A]) work?
     //if (a == null) Option.empty[A]
     //else Option(a.asInstanceOf[A])
     Option(a.asInstanceOf[A])
 
   /** If Null, then false, else true. */
-  @inline def toTruthy: Boolean =
+  def toTruthy: Boolean =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
     else false
 
   /** null => undefined, otherwise A. */
-  @inline def toUndefOr: js.UndefOr[A] =
+  def toUndefOr: js.UndefOr[A] =
     if (a == null) js.undefined
     else js.defined(a.asInstanceOf[A])
 
-  @inline def toTruthyUndefOr: js.UndefOr[A] =
+  def toTruthyUndefOr: js.UndefOr[A] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
       js.defined(a.asInstanceOf[A])
     else js.undefined
 
   /** Collapse A|Null => A but the value may be null. */
-  @inline def merge: A = a.asInstanceOf[A]
+  def merge: A = a.asInstanceOf[A]
 }
 
 trait OrNullSyntax {
-  @inline implicit def orNullSyntax[A <: js.Any](a: A | Null): OrNullOps[A] = OrNullOps[A](a)
+  implicit def orNullSyntax[A <: js.Any](a: A | Null): OrNullOps[A] = OrNullOps[A](a)
 }
 

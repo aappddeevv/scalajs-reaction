@@ -50,13 +50,14 @@ You can route to some hashes by doing something like the following:
 
      didMount = js.defined(self => {
        val token = router.watchUrl{ url => 
-         println(s"Routing to: $url")
          url match {
            case Some("home") => self.send(Navigate(Home))
            case Some("person") => self.send(Navigate(AnotherPage("person")))
            case _ => self.send(Navigate(Home))
          }
        }
+       // prime the pump!
+       // ...don't forget this...
        self.onUnmount(() => router.unwatchUrl(token)
      })
      
@@ -83,17 +84,20 @@ You are free to use another routing strategy and plug that into
 `RoutingComponent`.
 
 ```scala
-// ReactionRoutingComponent has a dependency on ReactEvent, so its in the vdom package
-import react.vdom._
+// ReactionRouting
+import react.router.browser._
 
 // App
 object Routing {
     import ReactionRouting._
+    // if using sparsetech.trail route matching library
+    val coolRoute = Root / Arg[String] / Arg[String]
+    val login = Root / "login"
+    
     val config = ReactionConfig(rules(parts => {
-       // if using sparsetech.trail route matching library
        parts.pathname match {
-          case coolRoute(entityName :: entityId :: HNil) => Render(() => SomeView())
-          case login(HNil) => Redirect("/login", RedirectMethod.Push)
+          case coolRoute(entityName, entityId) => Render(() => SomeView(entityName, entityId))
+          case login(_) => Redirect("/login", RedirectMethod.Push)
           case _ => Render(() => UnknownPage(parts))
        }
        // or do something custom
@@ -118,5 +122,4 @@ def main() {
 
 You will want to use a real "matching" library like
 [trail](https://github.com/sparsetech/trail) to match on the URL and provide
-parameterized routing in your config. Note that trail does not provide hash
-routing supporting.
+"route-to-page" routing processing in your config.

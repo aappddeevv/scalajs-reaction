@@ -12,35 +12,35 @@ trait AnyOps[T] {
   def a: T
 
   /** If T is js.Any, this may be redundent. */
-  @inline def asJsAny: js.Any           = a.asInstanceOf[js.Any]
-  @inline def asJsObj: js.Object        = a.asInstanceOf[js.Object]
-  @inline def asDyn: js.Dynamic         = a.asInstanceOf[js.Dynamic]
-  @inline def asString: String          = a.asInstanceOf[String]
-  @inline def asNumber: Number          = a.asInstanceOf[Number]
-  @inline def asInt: Int                = a.asInstanceOf[Int]
-  @inline def asDouble: Double          = a.asInstanceOf[Double]
-  @inline def asBoolean: Boolean        = a.asInstanceOf[Boolean]
-  @inline def asJsArray[A]: js.Array[A] = a.asInstanceOf[js.Array[A]]
-  @inline def asJson: String            = js.JSON.stringify(a.asInstanceOf[js.Object])
-  @inline def toStringJs                = a.asInstanceOf[js.Any].toString()
+  def asJsAny: js.Any           = a.asInstanceOf[js.Any]
+  def asJsObj: js.Object        = a.asInstanceOf[js.Object]
+  def asDyn: js.Dynamic         = a.asInstanceOf[js.Dynamic]
+  def asString: String          = a.asInstanceOf[String]
+  def asNumber: Number          = a.asInstanceOf[Number]
+  def asInt: Int                = a.asInstanceOf[Int]
+  def asDouble: Double          = a.asInstanceOf[Double]
+  def asBoolean: Boolean        = a.asInstanceOf[Boolean]
+  def asJsArray[A]: js.Array[A] = a.asInstanceOf[js.Array[A]]
+  def asJson: String            = js.JSON.stringify(a.asInstanceOf[js.Object])
+  def toStringJs                = a.asInstanceOf[js.Any].toString()
 
   /** Internal null values become undefined. */
-  @inline def filterNull = toNonNullUndefOr
+  def filterNull = toNonNullUndefOr
 
   /** If value is null or undefined be undefined, otherwise defined. Could be called "filterNull". */
-  @inline def toNonNullUndefOr: js.UndefOr[T] =
+  def toNonNullUndefOr: js.UndefOr[T] =
     if (a == null || js.isUndefined(a)) js.undefined
     else js.defined(a)
 
   /** If value is null or undefined be None, else Some. */
-  @inline def toNonNullOption: Option[T] = {
+  def toNonNullOption: Option[T] = {
     // also defined in react package, repeated here
     if (js.isUndefined(a) || a == null) None
     else Option(a)
   }
 
   /** Equivalent `!!x` for some javascript value x. */
-  @inline def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
+  def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
 
   /**
     * Wow, a mouthful! If its a javascript truthy=true, its defined, otherwise
@@ -53,7 +53,7 @@ trait AnyOps[T] {
     *  val n1 = 1 // n1.toTruthyUndefOr[Int] => defined 1
     * }}}
     */
-  @inline def toTruthyUndefOr: js.UndefOr[T] =
+  def toTruthyUndefOr: js.UndefOr[T] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
     else js.undefined
 }
@@ -62,7 +62,7 @@ final case class JsAnyOps[T <: js.Any](val a: T) extends AnyOps[T] {}
 
 trait JsAnySyntax {
   // this does not seem to pick p scala.js mapped types, ask gitter
-  @inline implicit def jsAnyOpsSyntax[T <: js.Any](a: T): JsAnyOps[T] = JsAnyOps(a)
+  implicit def jsAnyOpsSyntax[T <: js.Any](a: T): JsAnyOps[T] = JsAnyOps(a)
 }
 
 /**
@@ -75,7 +75,7 @@ final case class ScalaMappedOps[T <: scala.Any](val a: T) extends AnyOps[T] {
 }
 
 trait ScalaMappedSyntax {
-  @inline implicit def stringScalaOpsSyntax[String](a: String): ScalaMappedOps[String] =
+  implicit def stringScalaOpsSyntax[String](a: String): ScalaMappedOps[String] =
     ScalaMappedOps[String](a)
   // all of these seem to conflict with the first String def above and are these needed if they are <: js.Any
   // these seem to conflict as scala things String and Boolean, Byte, etc. lead to ambiguous implicits

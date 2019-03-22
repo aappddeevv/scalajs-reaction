@@ -117,6 +117,8 @@ then defining a task. A really great blog on sbt tasks is
 [here](https://binx.io/blog/2018/12/08/the-scala-build-tool/), you should read
 it just to be smarter about sbt.
 
+Here's a [stackoverflow](https://stackoverflow.com/questions/29371654/scala-js-compilation-destination/29375359#29375359) article on the same topic.
+
 ## Calling AppRegistry.registerComponent in scala.js
 
 If your index.js file imports a function that performs the registration you need
