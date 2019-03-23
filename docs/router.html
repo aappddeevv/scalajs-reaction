@@ -1,0 +1,120 @@
+<html><head><title>scalajs-reaction: routing</title><meta charset="utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="aappddeevv" /><meta name="description" content="A react integration library for scala.js in the spirit of ReasonReact" /><meta name="og:image" content="/scalajs-reaction/img/poster.png" /><meta name="og:title" content="scalajs-reaction: routing" /><meta name="og:site_name" content="scalajs-reaction" /><meta name="og:url" content="" /><meta name="og:type" content="website" /><meta name="og:description" content="A react integration library for scala.js in the spirit of ReasonReact" /><link rel="icon" type="image/png" href="/scalajs-reaction/img/favicon.png" /><meta name="twitter:title" content="scalajs-reaction: routing" /><meta name="twitter:image" content="img/poster.png" /><meta name="twitter:description" content="A react integration library for scala.js in the spirit of ReasonReact" /><meta name="twitter:card" content="summary_large_image" /><link rel="icon" type="image/png" sizes="16x16" href="/scalajs-reaction/img/favicon16x16.png" /><link rel="icon" type="image/png" sizes="24x24" href="/scalajs-reaction/img/favicon24x24.png" /><link rel="icon" type="image/png" sizes="32x32" href="/scalajs-reaction/img/favicon32x32.png" /><link rel="icon" type="image/png" sizes="48x48" href="/scalajs-reaction/img/favicon48x48.png" /><link rel="icon" type="image/png" sizes="57x57" href="/scalajs-reaction/img/favicon57x57.png" /><link rel="icon" type="image/png" sizes="60x60" href="/scalajs-reaction/img/favicon60x60.png" /><link rel="icon" type="image/png" sizes="64x64" href="/scalajs-reaction/img/favicon64x64.png" /><link rel="icon" type="image/png" sizes="70x70" href="/scalajs-reaction/img/favicon70x70.png" /><link rel="icon" type="image/png" sizes="72x72" href="/scalajs-reaction/img/favicon72x72.png" /><link rel="icon" type="image/png" sizes="76x76" href="/scalajs-reaction/img/favicon76x76.png" /><link rel="icon" type="image/png" sizes="96x96" href="/scalajs-reaction/img/favicon96x96.png" /><link rel="icon" type="image/png" sizes="114x114" href="/scalajs-reaction/img/favicon114x114.png" /><link rel="icon" type="image/png" sizes="120x120" href="/scalajs-reaction/img/favicon120x120.png" /><link rel="icon" type="image/png" sizes="128x128" href="/scalajs-reaction/img/favicon128x128.png" /><link rel="icon" type="image/png" sizes="144x144" href="/scalajs-reaction/img/favicon144x144.png" /><link rel="icon" type="image/png" sizes="150x150" href="/scalajs-reaction/img/favicon150x150.png" /><link rel="icon" type="image/png" sizes="152x152" href="/scalajs-reaction/img/favicon152x152.png" /><link rel="icon" type="image/png" sizes="196x196" href="/scalajs-reaction/img/favicon196x196.png" /><link rel="icon" type="image/png" sizes="310x310" href="/scalajs-reaction/img/favicon310x310.png" /><link rel="icon" type="image/png" sizes="310x150" href="/scalajs-reaction/img/favicon310x150.png" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" /><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" /><link rel="stylesheet" href="/scalajs-reaction/highlight/styles/default.css" /><link rel="stylesheet" href="/scalajs-reaction/css/style.css" /><link rel="stylesheet" href="/scalajs-reaction/css/palette.css" /><link rel="stylesheet" href="/scalajs-reaction/css/codemirror.css" /></head><body class="docs"><div id="wrapper"><div id="sidebar-wrapper"><ul id="sidebar" class="sidebar-nav"><li class="sidebar-brand"><a href="/scalajs-reaction/" class="brand"><div class="brand-wrapper"><span>scalajs-reaction</span></div></a></li> <li><a href="/scalajs-reaction/docs/index.html" class="">Getting Started</a></li> <li><a href="/scalajs-reaction/docs/creating.html" class="">Defining Components</a></li> <li><a href="/scalajs-reaction/docs/importing.html" class="">Importing from JS</a></li> <li><a href="/scalajs-reaction/docs/exporting.html" class="">Exporting to JS</a></li> <li><a href="/scalajs-reaction/docs/styling.html" class="">Styling Suggestions</a></li> <li><a href="/scalajs-reaction/docs/vdom.html" class="">Virtual DOM</a></li> <li><a href="/scalajs-reaction/docs/router.html" class="">Routing</a></li> <li><a href="/scalajs-reaction/docs/bundling.html" class="">Bundling</a></li> <li><a href="/scalajs-reaction/docs/redux.html" class="">Redux</a></li> <li><a href="/scalajs-reaction/docs/datainterop.html" class="">Data interop</a></li> <li><a href="/scalajs-reaction/docs/facades.html" class="">Widget Facades</a></li> <li><a href="/scalajs-reaction/docs/mixedproject.html" class="">Mixed Projects</a></li> <li><a href="/scalajs-reaction/docs/reactinterop.html" class="">React Interop</a></li> <li><a href="/scalajs-reaction/docs/data-validation.html" class="">Data Validation</a></li> <li><a href="/scalajs-reaction/docs/forms.html" class="">Forms</a></li> <li><a href="/scalajs-reaction/docs/native.html" class="">React Native</a></li></ul></div><div id="page-content-wrapper"><div class="nav"><div class="container-fluid"><div class="row"><div class="col-lg-12"><div class="action-menu pull-left clearfix"><a href="#menu-toggle" id="menu-toggle"><i class="fa fa-bars" aria-hidden="true"></i></a></div><ul class="pull-right"><li id="gh-eyes-item" class="hidden-xs"><a href="https://github.com/aappddeevv/scalajs-reaction"><i class="fa fa-eye"></i><span>WATCH<span id="eyes" class="label label-default">--</span></span></a></li><li id="gh-stars-item" class="hidden-xs"><a href="https://github.com/aappddeevv/scalajs-reaction"><i class="fa fa-star-o"></i><span>STARS<span id="stars" class="label label-default">--</span></span></a></li><li><a href="#" onclick="shareSiteTwitter('scalajs-reaction A react integration library for scala.js in the spirit of ReasonReact');"><i class="fa fa-twitter"></i></a></li><li><a href="#" onclick="shareSiteFacebook('scalajs-reaction A react integration library for scala.js in the spirit of ReasonReact');"><i class="fa fa-facebook"></i></a></li><li><a href="#" onclick="shareSiteGoogle();"><i class="fa fa-google-plus"></i></a></li></ul></div></div></div></div><div id="content" data-github-owner="aappddeevv" data-github-repo="scalajs-reaction"><div class="content-wrapper"><section><h1 id="routing">Routing</h1>
+
+<p>Routing is a complex topic and many react projects have sprung up around
+routing. scalajs react facades also provide routing libraries. You can use any
+javascript based routing librar you wish, such as
+<a href="https://reacttraining.com/react-router">react-router</a>. To make it easier though
+we have provided two levels of routing support.</p>
+
+<h2 id="lowest-level">Lowest Level</h2>
+
+<p>ReasonReact provides a small, ~100 line router, in the base distribution and
+that small router code is also included in the scalajs-react implementation.</p>
+
+<p>The router establishes a simple callback mechanism when the URL changes and
+allows you to obtain the current URL as well as push a new URL state into the
+history object running in the browser.</p>
+
+<p>You can route to some hashes by doing something like the following:</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Action</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">Navigate</span><span class="o">(</span><span class="n">page</span><span class="k">:</span> <span class="kt">Page</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Action</span>
+  <span class="k">case</span> <span class="k">object</span> <span class="nc">SomeOtherAction</span> <span class="k">extends</span> <span class="nc">Action</span>
+  
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">State</span><span class="o">(</span><span class="n">page</span><span class="k">:</span> <span class="kt">Page</span><span class="o">)</span>
+
+  <span class="k">sealed</span> <span class="k">trait</span> <span class="nc">Page</span>
+  <span class="k">case</span> <span class="k">object</span> <span class="nc">Home</span> <span class="k">extends</span> <span class="nc">Page</span>
+  <span class="k">case</span> <span class="k">class</span> <span class="nc">AnotherPage</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span> <span class="k">extends</span> <span class="nc">Page</span>
+
+  <span class="k">val</span> <span class="n">c</span> <span class="k">=</span> <span class="n">reducerComponent</span><span class="o">[</span><span class="kt">State</span>, <span class="kt">Action</span><span class="o">](</span><span class="s">"MyComponent"</span><span class="o">)</span>
+  <span class="k">import</span> <span class="nn">c.ops._</span>
+  
+  <span class="k">def</span> <span class="n">apply</span><span class="o">()</span> <span class="k">=</span>
+   <span class="n">c</span><span class="o">.</span><span class="n">copy</span><span class="o">(</span><span class="k">new</span> <span class="n">methods</span> <span class="o">{</span> 
+     <span class="k">val</span> <span class="n">initialState</span> <span class="k">=</span> <span class="o">()</span> <span class="k">=&gt;</span> <span class="nc">State</span><span class="o">(</span><span class="nc">Home</span><span class="o">)</span>
+     
+     <span class="k">val</span> <span class="n">reducer</span> <span class="k">=</span> <span class="o">(</span><span class="n">action</span><span class="o">,</span> <span class="n">state</span><span class="o">,</span> <span class="n">gen</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="o">{</span>
+       <span class="n">action</span> <span class="k">match</span> <span class="o">{</span> 
+         <span class="k">case</span> <span class="nc">Navigate</span><span class="o">(</span><span class="n">p</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">gen</span><span class="o">.</span><span class="n">update</span><span class="o">(</span><span class="n">state</span><span class="o">.</span><span class="n">copy</span><span class="o">(</span><span class="n">page</span> <span class="k">=</span> <span class="n">p</span><span class="o">))</span>
+         <span class="k">case</span> <span class="nc">SomeOtherAction</span> <span class="k">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">skip</span> <span class="c1">// for demo purposes only
+</span>       <span class="o">}</span>
+     <span class="o">}</span>
+
+     <span class="n">didMount</span> <span class="k">=</span> <span class="n">js</span><span class="o">.</span><span class="n">defined</span><span class="o">(</span><span class="n">self</span> <span class="k">=&gt;</span> <span class="o">{</span>
+       <span class="k">val</span> <span class="n">token</span> <span class="k">=</span> <span class="n">router</span><span class="o">.</span><span class="n">watchUrl</span><span class="o">{</span> <span class="n">url</span> <span class="k">=&gt;</span> 
+         <span class="n">url</span> <span class="k">match</span> <span class="o">{</span>
+           <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="s">"home"</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">self</span><span class="o">.</span><span class="n">send</span><span class="o">(</span><span class="nc">Navigate</span><span class="o">(</span><span class="nc">Home</span><span class="o">))</span>
+           <span class="k">case</span> <span class="nc">Some</span><span class="o">(</span><span class="s">"person"</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">self</span><span class="o">.</span><span class="n">send</span><span class="o">(</span><span class="nc">Navigate</span><span class="o">(</span><span class="nc">AnotherPage</span><span class="o">(</span><span class="s">"person"</span><span class="o">)))</span>
+           <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="n">self</span><span class="o">.</span><span class="n">send</span><span class="o">(</span><span class="nc">Navigate</span><span class="o">(</span><span class="nc">Home</span><span class="o">))</span>
+         <span class="o">}</span>
+       <span class="o">}</span>
+       <span class="c1">// prime the pump!
+</span>       <span class="c1">// ...don't forget this...
+</span>       <span class="n">self</span><span class="o">.</span><span class="n">onUnmount</span><span class="o">(()</span> <span class="k">=&gt;</span> <span class="n">router</span><span class="o">.</span><span class="n">unwatchUrl</span><span class="o">(</span><span class="n">token</span><span class="o">)</span>
+     <span class="o">})</span>
+     
+     <span class="k">val</span> <span class="n">render</span> <span class="k">=</span> <span class="n">self</span> <span class="k">=&gt;</span> <span class="o">{</span>
+       <span class="n">self</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">page</span> <span class="k">match</span> <span class="o">{</span> 
+          <span class="k">case</span> <span class="nc">Home</span> <span class="k">=&gt;</span> <span class="s">"home"</span>
+          <span class="k">case</span> <span class="nc">AnotherPage</span><span class="o">(</span><span class="n">id</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">id</span>
+       <span class="o">}</span>
+     <span class="o">}</span>
+       
+  <span class="o">})</span>
+</code></pre></div></div>
+
+<h2 id="routing-component">Routing Component</h2>
+
+<p>We have a provided a DOM agnostic router component and a specialization of that
+routing component for the ReasonReact style router described in the previous
+section. You can have as many RoutingComponents as you like in your application
+as there is no shared state between them. Think of these components as rendering
+based on the URL and if you don’t like the URL, return a “null” node which
+effectively turns off rendering for any children of the routing component.</p>
+
+<p>You are free to use another routing strategy and plug that into
+<code class="highlighter-rouge">RoutingComponent</code>.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// ReactionRouting
+</span><span class="k">import</span> <span class="nn">react.router.browser._</span>
+
+<span class="c1">// App
+</span><span class="k">object</span> <span class="nc">Routing</span> <span class="o">{</span>
+    <span class="k">import</span> <span class="nn">ReactionRouting._</span>
+    <span class="c1">// if using sparsetech.trail route matching library
+</span>    <span class="k">val</span> <span class="n">coolRoute</span> <span class="k">=</span> <span class="nc">Root</span> <span class="o">/</span> <span class="nc">Arg</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="o">/</span> <span class="nc">Arg</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span>
+    <span class="k">val</span> <span class="n">login</span> <span class="k">=</span> <span class="nc">Root</span> <span class="o">/</span> <span class="s">"login"</span>
+    
+    <span class="k">val</span> <span class="n">config</span> <span class="k">=</span> <span class="nc">ReactionConfig</span><span class="o">(</span><span class="n">rules</span><span class="o">(</span><span class="n">parts</span> <span class="k">=&gt;</span> <span class="o">{</span>
+       <span class="n">parts</span><span class="o">.</span><span class="n">pathname</span> <span class="k">match</span> <span class="o">{</span>
+          <span class="k">case</span> <span class="n">coolRoute</span><span class="o">(</span><span class="n">entityName</span><span class="o">,</span> <span class="n">entityId</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Render</span><span class="o">(()</span> <span class="k">=&gt;</span> <span class="nc">SomeView</span><span class="o">(</span><span class="n">entityName</span><span class="o">,</span> <span class="n">entityId</span><span class="o">))</span>
+          <span class="k">case</span> <span class="n">login</span><span class="o">(</span><span class="k">_</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="nc">Redirect</span><span class="o">(</span><span class="s">"/login"</span><span class="o">,</span> <span class="nc">RedirectMethod</span><span class="o">.</span><span class="nc">Push</span><span class="o">)</span>
+          <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Render</span><span class="o">(()</span> <span class="k">=&gt;</span> <span class="nc">UnknownPage</span><span class="o">(</span><span class="n">parts</span><span class="o">))</span>
+       <span class="o">}</span>
+       <span class="c1">// or do something custom
+</span>       <span class="n">parts</span><span class="o">.</span><span class="n">pathname</span> <span class="k">match</span> <span class="o">{</span>
+          <span class="k">case</span> <span class="n">parts</span> <span class="k">if</span><span class="o">(</span><span class="n">parts</span><span class="o">.</span><span class="n">map</span><span class="o">(</span><span class="k">_</span><span class="o">.</span><span class="n">hash</span> <span class="o">==</span> <span class="s">"blah"</span><span class="o">).</span><span class="n">getOrElse</span><span class="o">(</span><span class="kc">false</span><span class="o">))</span> <span class="k">=&gt;</span> <span class="nc">Render</span><span class="o">(()</span> <span class="k">=&gt;</span> <span class="nc">Blah</span><span class="o">)</span>
+          <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="nc">Render</span><span class="o">(()</span> <span class="k">=&gt;</span> <span class="kc">null</span><span class="o">)</span>
+       <span class="o">}</span>
+    <span class="o">}))</span>
+<span class="o">}</span>
+
+<span class="k">def</span> <span class="n">main</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">reactdom</span><span class="o">.</span><span class="n">createAndRenderWithId</span><span class="o">(</span>
+      <span class="nc">Fabric</span><span class="o">(</span><span class="k">new</span> <span class="nc">Fabric</span><span class="o">.</span><span class="nc">Props</span> <span class="o">{})(</span>
+        <span class="nc">ReactionRouting</span><span class="o">(</span><span class="nc">Routing</span><span class="o">.</span><span class="n">config</span><span class="o">)</span>
+      <span class="o">),</span>
+      <span class="s">"container"</span>
+     <span class="o">)</span>
+    <span class="c1">// kick things off
+</span>    <span class="n">react</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">push</span><span class="o">(</span><span class="s">""</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>You will want to use a real “matching” library like
+<a href="https://github.com/sparsetech/trail">trail</a> to match on the URL and provide
+“route-to-page” routing processing in your config.</p>
+</section></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/scalajs-reaction/highlight/highlight.pack.js"></script><script>hljs.configure({languages:['scala','java','bash']});
+hljs.initHighlighting();
+              </script><script src="/scalajs-reaction/js/main.js"></script></body></html>
