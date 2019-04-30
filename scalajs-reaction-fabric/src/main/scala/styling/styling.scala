@@ -146,7 +146,7 @@ package object styling {
    * (string->IStyle) by either calling the style function with the props or
    * just using the props. Calls `Styling.concatStyleSheets` to properly
    * recursively merge the data. This function is kept js oriented to match
-   * `_resolve` in the fabric `styled` HOC module.
+   * `_resolve` in the fabric `styled` HOC module (@uifabric/utilities/styled).
    */
   def resolve[SP <: js.Any, SS <: IStyleSetTag](props: SP,
     styles: js.UndefOr[IStyleFunctionOrObject[SP, SS]]*): SS = {

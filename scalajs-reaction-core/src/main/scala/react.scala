@@ -297,16 +297,18 @@ package object react {
    */
   def jsEqual(a: js.Any, b: js.Any): Boolean = {
     (a, b) match {
+      case (null, null) => true
       case (a: js.Array[_], b: js.Array[_]) =>
         // compare length and each individual item
         a.length == b.length &&
         a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual _).tupled)
-      case _ if a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
-          b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>
+      case _ if a != null && a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
+          b != null && b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>
         val aDict = a.asInstanceOf[js.Dictionary[js.Any]]
         val bDict = b.asInstanceOf[js.Dictionary[js.Any]]
         (aDict.keySet == bDict.keySet) &&
         aDict.keySet.forall(key => jsEqual(aDict(key), bDict(key)))
+      case _ if ((a == null & b != null) || (a != null && b == null)) => false
       case _ =>
         // must be non-object values, this does a js style test
         a == b

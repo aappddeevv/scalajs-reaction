@@ -2,7 +2,8 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
+package react
 package fabric
 
 import scala.scalajs.js
@@ -37,7 +38,8 @@ trait IPalette extends js.Object {
   val neutralQuaternary:js.UndefOr[String] = js.native
   val neutralQuaternaryAlt:js.UndefOr[String] = js.native
   val neutralLight:js.UndefOr[String] = js.native
-  val neutralLighter:js.UndefOr[String] = js.native
+  //val neutralLighter:js.UndefOr[String] = js.native
+  val neutralLighter: String = js.native
   val neutralLighterAlt:js.UndefOr[String] = js.native
   val accent:js.UndefOr[String] = js.native
   val white:js.UndefOr[String] = js.native
@@ -170,6 +172,7 @@ trait IScheme extends js.Object {
   val palette: IPalette = js.native
   val fonts: IFontStyles = js.native
   val semanticColors: ISemanticColors = js.native
+  val isInverted: Boolean = js.native
 }
 
 @js.native

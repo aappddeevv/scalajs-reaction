@@ -104,6 +104,11 @@ trait ReactionRouterDOMComponent
     val c = statelessComponent(Name)
     import c.ops._
 
+    /** Create a component instance. If no parent context value is provided, render
+      * null.
+     * @param config Routing config that maps the current route info to a react
+     * node.
+     */
     def apply(
       config: Config
     ) = render { self =>

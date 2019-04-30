@@ -73,7 +73,7 @@ object HasErrors {
   */
 trait FormControllerBase extends HasValues with HasTouches with HasErrors {
 
-  def Name: String
+  val Name: String
 
   import _errors.{Errors, EmptyErrors}
   import _values.Value
@@ -296,6 +296,8 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
    * @param onChange If a change passes validation (if requested), signal a
    * change and whether validations passed if validation occurred.
    * @param touched Touched callback.
+   * @param validate Validate data. Either the entire Values object or
+   * individual parts.
    * 
    * @todo Should be able to get rid of initialValues. Let parent always pass-in
    * original value and be a controlled component instead of uncontrolled.
@@ -315,15 +317,13 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
       child: FormProps => ReactNode
   ) =
     c.copy(new methods {
-      val initialState = self => {
-        val s = value.fold(
-          State(values = initialValue, initialValue = Box(initialValue))
-        )( v => State(values = v, initialValue = Box(initialValue)))
-        s
-      }
+      val initialState = self =>
+      State(values = value.getOrElse(initialValue), initialValue = Box(initialValue))
+
       didMount = js.defined { self =>
         self.state.didMount.value = true
       }
+
       willUnmount = js.defined { self =>
         self.state.didMount.value = false
       }

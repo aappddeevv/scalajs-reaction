@@ -19,15 +19,17 @@ trait JSObjectValues[T <: js.Object] extends HasValues.Service {
     def eq(lhs: Value, rhs: Value) = react.jsEqual(lhs,rhs)
 }
 
-case class FormController[T](Name: String)
+case class FormController[T](nameBase: String)
     extends FormControllerBase {
+  val Name = nameBase + "FormController"
   val _touches = MapTouches
   val _errors = MapErrors
   val _values = new ScalaObjectValues[T] { }
 }
 
-case class JSFormController[T <: js.Object](Name: String)
+case class JSFormController[T <: js.Object](nameBase: String)
     extends FormControllerBase {
+  val Name = nameBase + "JSFormController"
   val _touches = MapTouches
   val _errors = MapErrors
   val _values = new JSObjectValues[T] { }  

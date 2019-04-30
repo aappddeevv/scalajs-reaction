@@ -17,6 +17,9 @@ import js.Dynamic.{literal => lit}
 import ttg.react.vdom._
 import js.JSConverters._
 
+// this is very confusing...this is not @uifabric/utilities
+// but office-ui-fabric-react/utilities
+
 @js.native
 @JSImport("office-ui-fabric-react/utilities/dateMath", JSImport.Namespace)
 object dateMath extends js.Object {

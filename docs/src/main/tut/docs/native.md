@@ -110,6 +110,73 @@ There are many ways to do this in sbt including using artifactPath (scoped to
 the fast or full task inside Compile) to copy the file and standardize its output
 name for react-native.
 
+If you need to copy per task you could also create a plugin or do something
+small like:
+
+```scala
+def copyTask(odir: String) = {
+  //lazy val copyOutputDir = settingKey[String]("target directory for copying output to")
+  lazy val copyJSOutput = taskKey[Unit]("copy scala.js linker outputs to another location")
+  Seq(
+    copyJSOutput := {
+      println(s"Copying artifact ${scalaJSLinkedFile.in(Compile).value.path} to [${odir}]")
+      val src = file(scalaJSLinkedFile.in(Compile).value.path)
+      IO.copy(Seq(
+        (src, file(odir) / src.name),
+        (file(src.getCanonicalPath() + ".map"), file(odir) / (src.name + ".map"))
+      ), CopyOptions(true, true, true))
+    },
+    fastOptJS / copyJSOutput := (copyJSOutput triggeredBy fastOptJS.in(Compile)).value,
+    fullOptJS / copyJSOutput := (copyJSOutput triggeredBy fullOptJS.in(Compile)).value
+  )
+}
+
+// project def
+lazy val yourproject = project.in(...)
+  .settings(copyTask("../../somewhere"))
+```
+
+Or as a plugin:
+
+```scala
+package ttg
+package scalajs
+
+import sbt._
+import Keys._
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
+
+/**
+ * Copy JS linker artifacts to another location. Add to your project to enable.
+ */
+object CopyJSPlugin extends AutoPlugin {
+  override def requires = ScalaJSPlugin
+
+  final object autoImport {
+    val copyTarget = SettingKey[String]("copyTarget", "scala.js linker artifact copy target directory")
+    val copyJS = TaskKey[Unit]("copyJS", "Copy scala.js linker artifacts to another location after linking.")
+  }
+  import autoImport._
+
+  override lazy val projectSettings = Seq(
+    copyJS := copyJSTask.value,
+    fastOptJS / copyJS := (copyJS triggeredBy fastOptJS.in(Compile)).value,
+    fullOptJS / copyJS := (copyJS triggeredBy fullOptJS.in(Compile)).value
+  )
+  //define inline via `copyJSTask := {` or separately like this
+  private def copyJSTask = Def.task {
+      val odir = copyTarget.value
+      println(s"Copying artifact ${scalaJSLinkedFile.in(Compile).value.path} to [${odir}]")
+      val src = file(scalaJSLinkedFile.in(Compile).value.path)
+      IO.copy(Seq(
+        (src, file(odir) / src.name),
+        (file(src.getCanonicalPath() + ".map"), file(odir) / (src.name + ".map"))
+      ), CopyOptions(true, true, true))
+    }
+}
+```
+
 Managing task running in sbt is covered in the
 [manual](https://www.scala-sbt.org/release/docs/Tasks.html) as there are a few
 different ways to set the above copy operation up some of which are more simple

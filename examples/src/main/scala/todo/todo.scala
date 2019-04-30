@@ -69,7 +69,7 @@ object ToDoListHeader {
 }
 
 object ToDoList {
-  val c = statelessComponentWithRetainedProps[Int]("ToDoList")
+  val c = statelessComponent("ToDoList")
   import c.ops._
 
   def apply(
@@ -79,22 +79,19 @@ object ToDoList {
     listClassname: js.UndefOr[String] = js.undefined,
     todoClassname: js.UndefOr[String] = js.undefined,
     titleClassname: js.UndefOr[String] = js.undefined
-  ) = c.copy(new methods {
-      val retainedProps = length
-      val render = self => {
-        divWithClassname(
-          listClassname,
-          ToDoListHeader(length),
-          todos.map(t =>
-            ToDoItem(
-              t,
-              () => remove(t.id),
-              rootClassname = todoClassname,
-              titleClassname = titleClassname
-            ).toEl(Option(t.id.toString), None)
-        ))
-      }
-    })
+  ) = render{ self =>
+    divWithClassname(
+      listClassname,
+      ToDoListHeader(length),
+      todos.map(t =>
+        ToDoItem(
+          t,
+          () => remove(t.id),
+          rootClassname = todoClassname,
+          titleClassname = titleClassname
+        ).toEl(Option(t.id.toString), None)
+      ))
+  }
 }
 
 object ToDos {

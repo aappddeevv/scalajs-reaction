@@ -16,7 +16,9 @@ import elements._
  * Subscribe to a RoutingSource and establish a react context. Unsubscribe on
  * unmount. Note that this model is not very FP friendly in that we cannot
  * guarantee that a descendent has a related ancestor providing the context.
- * But hey, this is a classic design.
+ * But hey, this is the classic design. Children can be anything but look at
+ * `ShowIfMatch` or an inside component in any subclasses e.g. `Route` in
+ * `ReactionRoutingDOMComponent`.
  */
 abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
 
@@ -49,6 +51,9 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
   protected val c = reducerComponent[State, NavAction](Name)
   import c.ops._
 
+  /** Create a new element instance from this component..
+   * @param child Child component.
+   */
   def apply(child: ReactNode) = c.copyWith(new methods {
 
     val initialState = self => State()
@@ -82,7 +87,7 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
     }
 
     val render = self => {
-      println(s"$Name.render: BLAH, rerendering parent context")
+      //println(s"$Name.render: BLAH, rerendering parent context")
       context.provider(RouterContext)(makeContextValue(self.state.info))(
         child
       )
@@ -99,8 +104,12 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
     val c = statelessComponent(Name)
     import c.ops._
 
+    /**
+     * @param child Delay child until needed.
+     * @param cond Render if the cond results in true.
+     * @param modify Modify the RouterInfo before using. Runs after the cond check.
+     */
     def apply(
-      /** Delay child until needed. */
       child: () => ReactNode,
       cond: RouterInfo => Boolean,
       modify: RouterInfo => RouterInfo = identity

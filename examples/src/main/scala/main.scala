@@ -85,7 +85,11 @@ object Main {
           // fabric
           Fabric(new Fabric.Props {
           })(
-            logContext.makeProvider(Contexts.logger)(Application())
+            logContext.provider(Contexts.logger)(
+              react.router.browser.ReactionRouter(
+                Application()
+              )
+            )
         ))),
       Main.container
         // start the SPA router receiving pages...start with the current page!

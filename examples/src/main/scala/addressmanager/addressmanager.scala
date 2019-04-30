@@ -43,7 +43,7 @@ object AddressDetail {
   import c.ops._
 
   def apply(address: Option[Address]) = render{ self =>
-    logContext.makeConsumer {
+    logContext.consumer {
       log =>
       //js.Dynamic.global.console.log("context: log function:", log)
       log(address.getOrElse("<no detail address provided>"))
@@ -265,9 +265,9 @@ object AddressManager {
           State(selection = selection)
         }
 
-      subscriptions = js.defined({ self =>
-        js.Array(() => () => vm.setActive(null, null))
-      })
+      didMount = js.defined{self =>
+        self.onUnmount(() => vm.setActive(null, null))
+      }
 
       val reducer =
         (action, state, gen) => {
