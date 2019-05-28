@@ -85,7 +85,7 @@ lazy val jssettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "latest.version",
+    "org.scala-js" %%% "scalajs-dom" % "latest.release",
   )
 )
 

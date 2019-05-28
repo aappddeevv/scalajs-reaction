@@ -59,8 +59,6 @@ private [react] trait Hooks extends js.Object {
 
   def useImperativeHandle[T, R <: js.Object](ref: Ref[T], thunk: js.Function0[R]): Unit = js.native
 
-  def useLayoutEffect[T](): Unit = js.native
-
   def useContext[T](context: ReactContext[T]): T = js.native
 
   def useDebugValue[T](value: T, format: js.UndefOr[js.Function1[T, String]] = js.undefined): Unit = js.native
@@ -84,7 +82,8 @@ private [react] trait Hooks extends js.Object {
     init: js.Function1[I,S]
   ): js.Tuple2[S, js.Function1[A, Unit]] = js.native
 
-  def useState[T](initialValue: T | js.Function0[T]): js.Tuple2[T, js.Function1[T, Unit]] = js.native
+  // js.Tuple2 is a shortcut to a 2 element array
+  def useState[T](initialValue: T | js.Function0[T]): js.Tuple2[T, js.Any] = js.native
 
   // dependencies can be the empty array
   def useEffect(didUpdate: js.Function0[js.Function0[Unit]],
@@ -101,7 +100,9 @@ private [react] trait Hooks extends js.Object {
 object ReactJS extends ReactJS with Hooks
 
 /**
- * Scala-side access to JSReact APIs.
+ * Scala-side access to JSReact APIs. Some of these methods overlay the raw JS
+ * version to provide the convenience of using scala types as inputs and saving
+ * a few conversion nits.
  */
 trait React {
 
@@ -130,16 +131,22 @@ trait React {
     ReactJS.createElement(ReactJS.Fragment, props, children: _*)
   }
 
-  /** A more convenient hook model. */
+  /** A more convenient hook model. 2nd arg will be a simple updater T => Unit. */
   def useState[T](default: T): (T, T => Unit) = {
     val c = ReactJS.useState[T](default)
-    (c._1, c._2)
+    (c._1, t => c._2.asInstanceOf[js.Function1[T, Unit]](t))
   }
 
   /** typescript has this but am not sure it works. */
   def useState[T](default: () => T): (T, T => Unit) = {
     val c = ReactJS.useState[T](js.Any.fromFunction0[T](default))
-    (c._1, c._2)
+    (c._1, t => c._2.asInstanceOf[js.Function1[T, Unit]](t))
+  }
+
+  /** 2nd arg will be an updater function T => T. */
+  def useStateUpdater[T](default: T): (T, (T => T) => Unit) = {
+    val c = ReactJS.useState[T](default)
+    (c._1, (updater_thunk => c._2.asInstanceOf[js.Function1[js.Function1[T,T], Unit]](updater_thunk)))
   }
 
   def useReducer[S, A](reducer: (S,A)=>S, initialState: S): (S, A => Unit) = {
@@ -161,31 +168,31 @@ trait React {
       js.undefined
     )
 
-  /** Improve type inference by providing the scala function version.  Effect is
-   * run when dependencies change.
-   */
+  /** Effect is run when dependencies change. */
   def useEffect(didUpdate: () => (() => Unit), dependencies: js.Array[js.Any]): Unit =
     ReactJS.useEffect(
       { () => js.Any.fromFunction0[Unit](didUpdate()) }: js.Function0[js.Function0[Unit]],
       dependencies
     )
 
-  /** Effect is run at mount/unmounut time. */
+  /** Effect is run at mount/unmounut time with `[]` as the 2nd argument to the basic useEffect function. */
   def useEffectMounting(didUpdate: () => (() => Unit)): Unit =
     ReactJS.useEffect(
       { () => js.Any.fromFunction0[Unit](didUpdate()) }: js.Function0[js.Function0[Unit]],
-      js.defined(js.Array())
-    )
+      js.Array[js.Any]())
 
   /** Improve type inference by providing the scala function version. */
-  def useLayoutEffect(didUpdate: () => (() => Unit), dependencies: Option[js.Array[js.Any]] = None): Unit =
+  def useLayoutEffect(didUpdate: () => (() => Unit), dependencies: js.UndefOr[js.Array[js.Any]]): Unit =
     ReactJS.useLayoutEffect(
       { () => js.Any.fromFunction0[Unit](didUpdate()) }: js.Function0[js.Function0[Unit]],
-      dependencies.orUndefined
+      dependencies
     )
 
-  def useMemo[T <: js.Any](value: () => T, dependencies: Option[js.Array[js.Any]] = None): T =
-    ReactJS.useMemo[T](value, dependencies.orUndefined)
+  /** Use dependencies(yourScalaIterable)` to crate the watch array of values from
+   * a scala value.
+   */
+  def useMemo[T <: js.Any](value: () => T, dependencies: js.UndefOr[js.Array[js.Any]] = js.undefined): T =
+    ReactJS.useMemo[T](value, dependencies)
 
   def useDebugValue[T](value: T): Unit =
     ReactJS.useDebugValue[T](value, js.undefined)
@@ -193,9 +200,13 @@ trait React {
   def useDebugValue[T](value: T, format: T => String): Unit =
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
-  def useCallback[T <: js.Any](callback: () => T, dependencies: Option[js.Array[js.Any]] = None): () => T =
-    ReactJS.useCallback[T](callback, dependencies.orUndefined)
+  /** Use dependencies(yourScalaIterable)` to crate the watch array of values from
+   * a scala value.
+   */
+  def useCallback[T <: js.Any](callback: () => T, dependencies: js.Array[js.Any]): () => T =
+    ReactJS.useCallback[T](callback, dependencies)
 
+  /** ??? I'm not sure this is valid at all... */
   def useCallback[T](context: ReactContext[T]): T = ReactJS.useContext[T](context)
 
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent =
@@ -206,6 +217,13 @@ trait React {
 
   def useImperativeHandle[T, R <: js.Object](ref: Ref[T], thunk: () => R): Unit =
     ReactJS.useImperativeHandle[T,R](ref, thunk)
+
+  /** Create a watchlist from a scala iterable. Helps with type inference.  The
+   * function takes an array of any type of scala.Any which may or may not make
+   * sense for how hooks calculates changes in dependencies.
+   */
+  def dependencies(watchList: Iterable[scala.Any]): js.Array[js.Any] =
+    watchList.toJSArray.asInstanceOf[js.Array[js.Any]]
 }
 
 object React extends React
