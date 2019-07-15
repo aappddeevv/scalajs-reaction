@@ -12,8 +12,9 @@ import org.scalajs.dom
 
 /**
   * Simple vdom. There are two styles, one with list of attributes like many
-  * other scalajs react bindings.  The preferred approach is using typed
-  * js.Objects so that properties presence/absence can be checked.
+  * other scalajs react bindings.  The preferred approach is using typed traits
+  * (subclasses of js.Objects) so that properties presence/absence can be
+  * checked.
   */
 package object vdom extends vdom.Events {
 

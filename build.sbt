@@ -3,6 +3,10 @@
 import scala.sys.process._
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
+
+// reload build.sbt on changes
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 // Run publish and release separately
 // Don't forget bintray & unpublish
 // You can use `packagedArtifacts` to build artifacts in each project's target.
@@ -38,13 +42,19 @@ lazy val licenseSettings = Seq(
 //   scalacOptions += "-Xplugin-require:macroparadise",
 // )
 
+val ivyLocal = Resolver.file("local", file(Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns)
+
 lazy val buildSettings = Seq(
   organization := "ttg",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  scalaVersion := "2.12.8",
-  resolvers += Resolver.sonatypeRepo("releases"),
-  resolvers += Resolver.jcenterRepo,
-  autoCompilerPlugins := true
+  //scalaVersion := "2.12.8",
+  scalaVersion := "2.13.0",
+  resolvers ++= Seq(
+    Resolver.sonatypeRepo("releases"),
+    Resolver.jcenterRepo,
+    //ivyLocal
+  ),
+  autoCompilerPlugins := true,
 ) ++ licenseSettings
 
 lazy val noPublishSettings = Seq(
@@ -70,10 +80,10 @@ val commonScalacOptions = Seq(
     "-feature",
     "-language:_",
   "-unchecked",
-    "-Yno-adapted-args",
+  //  "-Yno-adapted-args",
     "-Ywarn-numeric-widen",
-    "-Xfuture",
-  "-Ypartial-unification",
+//    "-Xfuture",
+//  "-Ypartial-unification",
   )
 
 lazy val jssettings = Seq(
@@ -85,7 +95,7 @@ lazy val jssettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "latest.release",
+    "org.scala-js" %%% "scalajs-dom" % "0.9.7",
   )
 )
 
@@ -94,19 +104,22 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
   ),
-  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.9"),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
   autoAPIMappings := true,
 )
 
+// supports scala 2.13 and scalajs 0.6
+val catsVersion = "2.0.0-M4"
+
 lazy val fpsettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"          %%% "cats-core"    % "latest.release",
+    "org.typelevel"          %%% "cats-core"    % catsVersion,
   ))
 
 lazy val exampleFPSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"          %%% "cats-effect"    % "latest.release",
-    "tech.sparse" %%% "trail" % "0.1.2", // 0.1.2 uses newest cats
+    "org.typelevel"         %%% "cats-effect"    % catsVersion,
+    //"tech.sparse" %%% "trail" % "0.1.2", // 0.1.2 uses newest cats
 ))
 
 lazy val libsettings = buildSettings ++ commonSettings ++ jssettings
@@ -135,10 +148,11 @@ lazy val root = project.in(file("."))
     `scalajs-reaction-native-nativebase`,
     `scalajs-reaction-native-react-native-elements`,
     `scalajs-reaction-native-react-navigation`,
-    `scalajs-reaction-native-react-native-sideswipe`,    
+    `scalajs-reaction-native-react-native-sideswipe`,
+    `scalajs-reaction-jss`,
     `scalajs-reaction-form`,
-    dataValidationJS,
-    dataValidationJVM
+    dataValidationJS
+      //,dataValidationJVM
   )
     .enablePlugins(AutomateHeaderPlugin)
     .disablePlugins(BintrayPlugin)
@@ -166,6 +180,18 @@ lazy val `scalajs-reaction-react-big-calendar` = project
   .settings(publishSettings)
   .settings(Seq(
     description := "react-big-calendar",
+  ))
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(
+    `scalajs-reaction-core`,
+    `scalajs-reaction-vdom`)
+
+lazy val `scalajs-reaction-jss` = project
+  .in(file("components/scalajs-reaction-jss"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(Seq(
+    description := "cssinjs jss",
   ))
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
@@ -224,20 +250,30 @@ lazy val `scalajs-reaction-native-react-native-elements` = project
 
 
 // jvm and js based project
-lazy val dataValidation =
-  crossProject(JSPlatform, JVMPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("data-validation"))
-    .settings(name := "data-validation")
-    .jvmSettings(jvmlibsettings)
-    .jsSettings(libsettings)
+// lazy val dataValidation =
+//   crossProject(JSPlatform, JVMPlatform)
+//     .crossType(CrossType.Pure)
+//     .in(file("data-validation"))
+//     .settings(name := "data-validation")
+//     .jvmSettings(jvmlibsettings)
+//     .jsSettings(libsettings)
+//     .settings(publishSettings)
+//     .settings(fpsettings)
+//     .settings(description :=
+//       "General purpose data validation library based on cats and applicatives.")
+
+lazy val dataValidationJS = project.in(file("data-validation"))
+  .settings(name := "data-validation")
+    .settings(libsettings)
     .settings(publishSettings)
     .settings(fpsettings)
     .settings(description :=
       "General purpose data validation library based on cats and applicatives.")
+// needed if not using cross-
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
 
-lazy val dataValidationJS = dataValidation.js
-lazy val dataValidationJVM = dataValidation.jvm
+//lazy val dataValidationJS = dataValidation.js
+//lazy val dataValidationJVM = dataValidation.jvm
 
 // lazy val `scalajs-react-macros` = project
 //   .settings(libsettings)
@@ -310,7 +346,11 @@ lazy val `scalajs-reaction-mui` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(
+    `scalajs-reaction-core`,
+    `scalajs-reaction-vdom`,
+    `scalajs-reaction-jss`
+  )
   .settings(description := "material ui facade.")
 
 lazy val `scalajs-reaction-router` = project
@@ -336,8 +376,9 @@ lazy val examples: Project = project
   .settings(libsettings)
   .settings(noPublishSettings)
   .settings(
+    // https://github.com/vpavkin/scala-js-momentjs/pull/41
     libraryDependencies ++= Seq(
-      "ru.pavkin" %%% "scala-js-momentjs" % "0.9.2",
+      "ru.pavkin" %%% "scala-js-momentjs" % "0.10.0-SNAPSHOT"
     ))
   .settings(fpsettings)
   .settings(exampleFPSettings)
@@ -351,8 +392,9 @@ lazy val examples: Project = project
     `scalajs-reaction-form`,
     `scalajs-reaction-bootstrap`,
     `scalajs-reaction-mui`,
-    `scalajs-reaction-react-big-calendar`,
-    dataValidationJS)
+    `scalajs-reaction-react-big-calendar`
+//     ,dataValidationJS
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
   .settings(exampleSettings)
@@ -384,13 +426,13 @@ lazy val docs = project
     `scalajs-reaction-native-react-navigation`,
     `scalajs-reaction-native-react-native-sideswipe`,    
     `scalajs-reaction-form`,
-    dataValidationJS,
-    dataValidationJVM
+    dataValidationJS
+    //,dataValidationJVM
   )
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject --
       inProjects(examples)
-      -- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
+      //-- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
   )
   .settings(
     micrositeName := "scalajs-reaction",

@@ -27,6 +27,7 @@ final case class ComponentOps(c: Component) {
 trait ComponentSyntax {
   implicit def componentOpsSyntax(c: Component) = ComponentOps(c)
 
+  /** Convert a SFC and its argument, expressed as a tuple, to an element. */
   implicit def sfc1TupleOpsSyntax[T](f: (SFC1[T],T)): ReactElement =
     ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
 

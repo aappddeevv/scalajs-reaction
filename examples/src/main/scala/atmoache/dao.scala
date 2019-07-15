@@ -12,6 +12,7 @@ import org.scalajs.dom.experimental._
 import concurrent._
 import concurrent.ExecutionContext.Implicits.global
 import util.control.NonFatal
+import js.JSConverters._
 
 @js.native
 trait Main extends js.Object {
@@ -82,6 +83,7 @@ object dao {
         .flatMap { r =>
           js.Dynamic.global.console.log("response", r)
           if (r.status == 200)
+
             r.json()
               .toFuture
               .recover {
@@ -99,11 +101,11 @@ object dao {
                       witem.main.temp_max,
                       witem.main.humidity,
                       witem.main.pressure,
-                      witem.weather.map(ws => Facet(ws.main, ws.description))
+                      witem.weather.map(ws => Facet(ws.main, ws.description)).toSeq
                     )
                   }
-                cache.put(url, list) // add to cache
-                Right(list)
+                cache.put(url, list.toSeq) // add to cache
+                Right(list.toSeq)
               }
           else if (r.status == 404)
             Future.successful(Left(s"City not found."))

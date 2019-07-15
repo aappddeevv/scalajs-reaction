@@ -24,9 +24,10 @@ trait Component2Elements {
  * have them convert to ReactNode/ReactElements as needed. Watch out for values
  * that need to pass through 2 implicits since double implicit resolution is not
  * supported by scala. So you may think that these conversions should apply but
- * an `UndefOr` wrapper on the target type means either you use js.defined and
- * these implicit conversions or you should use `.toNode` to convert the
- * ReactNode value then let the general implicit create an `UndefOr[T]`.
+ * an `UndefOr` wrapper on the target type means either you need to use
+ * js.defined first and then these implicit conversions will apply automatically
+ * or you should use `.toNode` to convert the ReactNode value then let the
+ * general implicit create an `UndefOr[T]`.
   */
 trait ValueConverters {
   implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =

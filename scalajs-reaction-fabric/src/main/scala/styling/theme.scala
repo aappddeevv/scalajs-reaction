@@ -12,7 +12,7 @@ import js.|
 
 import ttg.react.vdom._
 import org.scalajs.dom
-import styling._
+import fabric.styling._
 
 /** Color values, typically hex. */
 @js.native

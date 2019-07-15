@@ -32,20 +32,30 @@ object TagTest {
     c.copy(new methods {
       val render =
         self => {
+          js.Dynamic.global.console.log("rootClassName", rootClassName)
           div(new DivProps {
             style = new StyleAttr {
-              className = rootClassName
+              // null here is giving a weird error in reactjs!
+              //className = rootClassName
               display = "flex"
               flexDirection = "column"
               alignItems = "flex-start"
-              overflow = "hidden"
-              overflowY = "auto"
+              // auto so scrollbars on both axes
+              overflow = "auto"
+              //overflowY = "auto"
             }
           })(
             label("Testing raw HTML tags..."),
             label(new LabelProps      { htmlFor = "username" })("Username:"),
             input.text(new InputProps { id = "username"      })(),
             textarea(new TextareaProps {
+              rows = 3
+              cols = 50
+              style = new StyleAttr {
+                resize = "none"
+                backgroundColor = "tan"
+                flex = "0 0 auto"
+              }
               defaultValue = "Text area value"
               onChange = js.defined { e =>
                 println(s"text area changed ${e.target.value}")

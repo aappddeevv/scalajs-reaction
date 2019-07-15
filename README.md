@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.17.svg)](https://www.scala-js.org) (react v16.8.1+, react-native v0.59)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8.1+, react-native v0.59+, scala 2.13)
 
 # scalajs-reaction
 
@@ -51,12 +51,12 @@ It's easy to create a component and render it:
 
 ```scala
 val HelloWorld: SFC0 = () => div("hello world")
-reactdom.createAndRenderWithId(HelloWorld, "container")
+reactdom.createAndRenderWithId(HelloWorld(), "container")
 ```
 
-Of course, if every component was so simple you would not need a library.  You
-can use hooks in your function to add state, effects and other important
-facets. 
+Of course, if every component was so simple you would not need a library you
+could create your own facade in about 20 lines of code.  You can use hooks in
+your function to add state, effects and other important facets.
 
 You can create the same component using the ReasonReact-like API for a stateless
 component is:
@@ -75,15 +75,16 @@ components since every component has a builtin reducer to manage state and you
 use your favorite effects library. See the
 [documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
 
-You have choices and they are all straightforward.
+You have choices to create your components and they are all
+straightforward. Depending on the component library you use, having choices
+helps you find the easiest way to access the components in your application.
+This library does not force many conventions on your code.
 
 ## Usage
 Include the library in your build:
 ```scala
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "latest.version"
-//  or
-//val scalaJsReactVersion = "0.1.0-M7"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
@@ -123,7 +124,7 @@ npm i --save react
 npm i --save react-dom
 ```
 
-The latest react is recommended, v16.4.
+The latest react is recommended, v16.8.
 
 ### Create a Component
 You can easily create a component and render it:
@@ -143,7 +144,7 @@ object HelloWorld {
   // Now you can use HelloWorld(yourNameOpt)
   def apply(name: Option[String]) = 
     render { self =>
-      div("hello world" + name.map(" and welcome " + _).getOrElse(""))  a
+      div("hello world" + name.map(" and welcome " + _).getOrElse(""))
     }
 }
 

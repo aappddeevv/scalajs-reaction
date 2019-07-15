@@ -33,7 +33,11 @@ object WrapProps {
         else if (props == null && newProps.size == 0) js.undefined
         else if (props != null && newProps.size == 0) props
         else merge[js.Object](props, newProps.asInstanceOf[js.Object])
-      //js.Dynamic.global.console.log("wrapped props", all)
+      /*
+      js.Dynamic.global.console.log("createComponent: ", reactComponent.asInstanceOf[js.Any],
+        "props: ", props,
+        "children: ", children)
+       */
       ReactJS.createElement(reactComponent, all, children: _*)
     }
 

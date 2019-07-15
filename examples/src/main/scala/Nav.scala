@@ -69,10 +69,11 @@ object Nav {
   import c.ops._
 
   def apply(
-    className: js.UndefOr[String] = js.undefined,
+    rootClassName: js.UndefOr[String] = js.undefined,
     goto: String => Unit
   ) = render { self =>
     Sidebar(new Sidebar.Props {
+      className = rootClassName
       theme = Styling.getTheme() // needed else exception!
       items = itemRoutes.map(p => makeItem(p._1,p._2,p._3,goto)).toJSArray
     })

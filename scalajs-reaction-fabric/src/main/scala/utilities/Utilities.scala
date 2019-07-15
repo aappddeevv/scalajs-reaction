@@ -16,7 +16,7 @@ import js.Dynamic.{literal => lit}
 import ttg.react.vdom._
 import js.JSConverters._
 
-import styling._
+import fabric.styling._
 
 /** 
  * office-ui-fabric-react/lib/Utilities == @uifabric/utilities

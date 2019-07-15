@@ -19,6 +19,9 @@ import vdom.tags._
 
 import react.mui._
 import react.mui.components._
+import jss._
+
+import components._
 
 object MaterialUIPage {
 
@@ -30,7 +33,7 @@ object MaterialUIPage {
     val pos: String = js.native
   }
 
-  trait Styles extends StyleSetTag {
+  trait Styles extends RuleTag {
     var foo: js.UndefOr[JssStyle] = js.undefined
     var foo2: js.UndefOr[JssStyle] = js.undefined
     var card: js.UndefOr[JssStyle] = js.undefined
@@ -61,119 +64,116 @@ object MaterialUIPage {
     )
   }
 
-  // Do this once outside render, since the style is static (not dependent on
-  // props). Could do this inside component methods, if needed.
+  val useStyles = createUseStyles0[ClassNames](styles)
 
+  trait Props extends js.Object {
+    var rootClassName: js.UndefOr[String] = js.undefined
+  }
 
-  val c = statelessComponent("MaterialUIPage")
-  import c.ops._
+  def apply(props: Props = new Props{}) = sfc(props)
 
-  def apply(
-    rootClassName: js.UndefOr[String] = js.undefined
-  ) = render { self =>
-    val Styled = makeStyled[Styles, ClassNames](styles)
-    Styled{ msr =>
-      dom.console.log("msr", msr)
+  private val sfc = SFC1[Props] { props =>
+    val cn = useStyles()
 
-      val bull = span(new SpanProps{
-        className = msr.classes.bullet
+    js.Dynamic.global.console.log("cn", cn)
+    val bull = span(new SpanProps{
+      className = cn.bullet
       })("•")
-      
-      div(new DivProps {
-        className = rootClassName
+
+    // the list is of mixed type so specify type explicitly
+     val parts: Seq[ReactNode] = Seq(
+       InputLabel(new InputLabel.Props{
+       })("This is a label"),
+       TextField(new TextField.Props {
+         onChange = js.defined(e => dom.console.log("TextField::onChange", e))
+       })(),
+       Button(new Button.Props {
+         variant = Button.Variant.contained
+         color = Button.Color.primary
+         onClick = js.defined(_ => println("Click!"))
+       })("Default"),
+      Radio(new Radio.Props {
+        color = Radio.Color.primary
+        checked = true
+      })("My Radio Button"),
+      Fragment(
+        Tabs(new Tabs.Props {
+          var value: js.Any = 0
+        })(
+          Tab(new Tab.Props {
+            label = "Tab 1".toNode
+          }),
+          Tab(new Tab.Props {
+            label = "Tab 2".toNode
+          }),
+        ),
+        "add some tab content here"
+      ),
+       Card(new Card.Props {
+         // 0
+         className = cn.card
       })(
-        MaterialUIExample(
-          InputLabel(new InputLabel.Props{
-          })("This is a label")
-        ),
-        MaterialUIExample(
-          TextField(new TextField.Props {
-            onChange = js.defined(e => dom.console.log("onChange", e))
-          })()
-        ),
-        MaterialUIExample(
-          Button(new Button.Props {
-            variant = Button.Variant.contained
-            color = Button.Color.primary
-            onClick = js.defined(_ => println("Click!"))
-          })("Default")
-        ),
-        MaterialUIExample(
-          Radio(new Radio.Props {
-            color = Radio.Color.primary
-            checked = true
-          })("My Radio Button")
-        ),
-        MaterialUIExample(
-          Fragment(
-            Tabs(new Tabs.Props {
-              var value: js.Any = 0
-            })(
-              Tab(new Tab.Props {
-                label = "Tab 1".toNode
-              }),
-              Tab(new Tab.Props {
-                label = "Tab 2".toNode
-              }),
-            ),
-            "add some tab content here"
-          )
-        ),
-        MaterialUIExample(
-          Card(new Card.Props {
-            className = msr.classes.card
+        Card.Content()(
+          Typography(new Typography.Props {
+            // 0
+            className = cn.title
+            color = Typography.Color.textSecondary
+            gutterBottom = true
+          })("Word of the day"),
+          Typography(new Typography.Props {
+            variant = Typography.Variant.h5
+            component = "h2"
           })(
-            Card.Content()(
-              Typography(new Typography.Props {
-                className = msr.classes.title
-                color = Typography.Color.textSecondary
-                gutterBottom = true
-              })("Word of the day"),
-              Typography(new Typography.Props {
-                variant = Typography.Variant.h5
-                component = "h2"
-              })(
-                "be",
-                bull,
-                "nev",
-                bull, "o", bull,
-                "lent"
-              ),
-              Typography(new Typography.Props {
-                className = msr.classes.pos
-                color = Typography.Color.textSecondary
-              })("adjective"),
-              Typography(new Typography.Props {
-                component = "p"
-              })(
-                "well meaning and kindly.",
-                br(),
-                "a benevolent smile"
-              ),
-            ),
-            Card.Actions()(
-              Button(new Button.Props{
-                size = Button.Size.small
-              })("Learn More")))
-        ))}
+            "be",
+            bull,
+            "nev",
+            bull, "o", bull,
+            "lent"
+          ),
+          Typography(new Typography.Props {
+            // 0
+            className = cn.pos
+            color = Typography.Color.textSecondary
+          })("adjective"),
+          Typography(new Typography.Props {
+            component = "p"
+          })(
+            "well meaning and kindly.",
+            br(),
+            "a benevolent smile"
+          ),
+        ),
+        Card.Actions()(
+          Button(new Button.Props{
+            size = Button.Size.small
+          })("Learn More")))
+    )
+
+    divWithClassname(
+      props.rootClassName,
+      parts.map(example(_))
+    )
   }
 }
 
-object MaterialUIExample {
-  val c = statelessComponent("MaterialUIExample")
-  import c.ops._
+object components {
 
-  def apply(
-    child: ReactElement
-  ) = render { self =>
+  trait Props extends js.Object {
+    val child: ReactNode
+  }
+
+  def example(c: ReactNode) = MaterialUIExample(new Props{ val child = c})
+
+  val MaterialUIExample = SFC1[Props] { props =>
     div(new DivProps {
-      className = "ttg-materialUIExample"
+      className = "ttg-muiExample"
+      // inline style to keep it easy
       style = new StyleAttr {
         marginTop = 10
         marginBottom = 10
       }
     })(
-      child
+      props.child
     )
   }
 }

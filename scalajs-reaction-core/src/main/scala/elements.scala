@@ -267,28 +267,4 @@ object elements {
       item.toOption
         .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
         .getOrElse[js.Array[ReactNode]](js.Array())
-
-  // /** Convert a scala function, T => ReactNode, to a Stateless Functional
-  //  * Component (SFC) that returns a Component. A SFC is considered a react
-  //  * component, defined as a function.  While you could just use a regular scala
-  //  * function but then it would not be a react component underneath the hood and
-  //  * the scala function would be eagerly evaluated. Using a component can save
-  //  * UI update time if the output is expensive to create. Most importantly,
-  //  * using an SFC also enables the use hooks inside the SFC. Custom hooks can be
-  //  * defined externally in a standard scala function. You don't need to use this
-  //  * approach to create a function object, you can just define one using
-  //  * standard scala.js mechanism e.g. create a js.Function value.
-  //  */
-  // object SFC {
-  //   def apply[T](f: T => ReactNode): T => Component = {
-  //     val c = js.Any.fromFunction1[T,ReactNode](f).asInstanceOf[ReactJsComponent]
-  //     t => wrapJsForScala[js.Object](c, t.asInstanceOf[js.Object])
-  //   }
-
-  //   /** Create a no-arg function. Useful for static content or testing. */
-  //   def noarg(f: () => ReactNode): () => Component = {
-  //     val c = js.Any.fromFunction0[ReactNode](f).asInstanceOf[ReactJsComponent]
-  //     () => wrapJsForScala[js.Object](c, null)
-  //   }
-  // }
 }

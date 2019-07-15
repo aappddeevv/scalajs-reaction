@@ -39,14 +39,24 @@ private[react] trait ReactJS extends js.Object {
 
   /** Create a ref to be assigned to a "ref" property on a component. */
   def createRef[T](): react.ReactRef[T]  = js.native
+  // needs better typing :-)
+  def forwardRef[T](): js.Object = js.native
 
   val version: String = js.native
 
   /** Returns a "lazy" react component i.e. $$type = react.lazy */
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent = js.native
+
+  /** Takes a function component and optional props comparison func. This returns
+   * a function component as this is a HOC. The returned component still needs to
+   * be wrapped properly to use with this facade.
+   */
+  def memo[P](f: js.Function1[P,ReactElement],
+    compare: js.UndefOr[js.Function2[P,P,Boolean]] = js.undefined):
+      js.Function1[P, ReactElement] = js.native
 }
 
-/** Opquae type.*/
+/** Opaque type.*/
 @js.native
 trait DynamicImport extends js.Object {
   // If default is defined in the exports
@@ -130,6 +140,13 @@ trait React {
     key.foreach(props("key") = _)
     ReactJS.createElement(ReactJS.Fragment, props, children: _*)
   }
+
+  /** Memoize a functional component defined in scala. */
+  def memo[P](fc: SFC1[P]): SFC1[P] = new SFC1(ReactJS.memo(fc.run))
+
+  /** Memoize a functional component defined in scala; provide a compare function for the props. */
+  def memo[P](fc: SFC1[P], compare: (P,P) => Boolean): SFC1[P] =
+    new SFC1(ReactJS.memo(fc.run, js.Any.fromFunction2[P,P,Boolean](compare)))
 
   /** A more convenient hook model. 2nd arg will be a simple updater T => Unit. */
   def useState[T](default: T): (T, T => Unit) = {

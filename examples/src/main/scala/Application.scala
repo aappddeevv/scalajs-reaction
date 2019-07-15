@@ -47,7 +47,7 @@ object RouterConfig {
   def config(n: Int = 0, baseUrl: String) = ReactionConfig(
     prefixPath = Some(baseUrl),
     rules = parts =>
-    parts.drop(n).segments match {
+    parts.drop(n).segments.filterNot(_.isEmpty) match {
       case Seq("readme") =>
         Render(body(Pages.readme(readmetext)))
 
@@ -88,7 +88,8 @@ object RouterConfig {
       case _ =>
         //Render(_ => s"Invalid URL: No route for ${parts.pathname} defined! Use the browser's back button.")
         println(s"Invalid URL: No route for ${parts.pathname} defined: ${parts}")
-        RedirectTo("readme", router.Redirect.Replace)
+        //RedirectTo("readme", router.Redirect.Replace)
+        Render(_ => "A routing configuration error occurred. Press the back button to return to the previous page.")
     }
   )
 }
@@ -100,6 +101,8 @@ object Application {
 
   val baseUrl = dom.document.location.origin + BuildSettings.routePrefix.map("/" + _).getOrElse("")
   val nsegments = BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
+
+  dom.console.log("baseURL", baseUrl, "nsegments to strip", nsegments)
 
   val Name = "Application"
   val c = reducerComponent[State, Action](Name)
@@ -113,10 +116,12 @@ object Application {
       }
       val render = self =>
       div(new DivProps {
+        className = "ttg-App"
         style = new StyleAttr {
           display = "flex"
           flexDirection = "column"
           alignItems = "stretch"
+          height = "100%"
         }
       })(
         Header(),

@@ -98,7 +98,8 @@ const common = (scalapath, isProd) => ({
                 test: /\.css\.js?$/,
                 use: [{ loader: "css-js-loader" }]
             },
-          {
+            {
+                // babel only transpiles, run typecheck separately via npm run typecheck
             test: /\.(ts|js)x?$/, // picks up pure .js and .jsx
             exclude: /node_modules/,
               include: [/examples\/src\/main\/assets/],
@@ -145,7 +146,7 @@ const prod = {
 module.exports = function (env) {
     const isProd = env && env.BUILD_KIND && env.BUILD_KIND==="production"
     //const scalapath = path.join(__dirname, "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js"))
-    const scalapath = path.join(__dirname, "examples/target/scala-2.12/Scala.js")
+    const scalapath = path.join(__dirname, "examples/target/scala-2.13/Scala.js")
     const dist = path.join(__dirname, "dist")
     const staticAssets = copies(dist)
     const output = libraryOutput(dist)

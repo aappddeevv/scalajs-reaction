@@ -16,8 +16,7 @@ import js.JSConverters._
 
 /**
  * @uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
- * also pulls in most of @uifabic/merge-styles. Note that @uifabric/styling
- * exports some of the merge-styles functions.
+ * also exports most of @uifabic/merge-styles.
  */
 @js.native
 @JSImport("@uifabric/styling", JSImport.Namespace)
@@ -35,7 +34,7 @@ trait MergeStyles extends js.Object {
     * to use a style set and `mergeStyleSets` to push a bunch of styles to the
     * stylesheet at one time.
     */
-  def mergeStyles(styles: IStyle*): String = js.native
+  def mergeStyles(styles: (IStyle|js.Array[IStyle])*): String = js.native
 
   /**
     * Merge style sets and register in a stylesheet. js.Object is included to

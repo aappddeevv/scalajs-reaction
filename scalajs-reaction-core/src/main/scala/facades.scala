@@ -1105,6 +1105,6 @@ trait ReducerResult[S, SLF] {
   lazy val skip: UpdateType                    = NoUpdate()
   def update(s: S): UpdateType                 = Update(s)
   def effect(effect: UpdateEffect): UpdateType = SideEffects(effect)
-  def updateAndEffect(s: S)(effect: UpdateEffect = _ => Unit): UpdateType =
+  def updateAndEffect(s: S)(effect: UpdateEffect = _ => ()): UpdateType =
     UpdateWithSideEffects(s, effect)
 }

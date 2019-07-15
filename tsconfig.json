@@ -14,7 +14,7 @@
 		"target": "esnext",
 		"module": "commonjs",
             "isolatedModules": true,
-        "esModuleInterop": true,
+        "esModuleInterop": true
     },
     "include": ["examples/src/main/assets"],
     "exclude": [
@@ -23,5 +23,5 @@
 		"src/**/*.test.ts",
 		"src/**/*.spec.js",
 		"src/**/*.test.js"
-	],
+	]
 }

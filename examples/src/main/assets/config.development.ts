@@ -1,1 +1,1 @@
-export const routePrefix: String = undefined 
+export const routePrefix: String = ""

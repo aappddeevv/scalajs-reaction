@@ -68,8 +68,7 @@ object Main {
       injectionMode = InjectionMode.appendChild
     })
     uifabric_icons.initializeIcons()
-    react.mui.install()
-    val myjss = JSS.create(jssPreset())
+    val myjss = jss.jss.create(jss.jssPreset())
 
     // init message for store, although it does not do anything :-)
     StoreNS.store.dispatch(ActionsNS.Actions.View.init())
@@ -92,10 +91,9 @@ object Main {
             )
         ))),
       Main.container
-        // start the SPA router receiving pages...start with the current page!
-        // I think react.router.push("") does the same thing with using href.
-        //,Option(() => react.router.push(dom.document.location.href))
-        ,Option(() => react.router.browser.push(""))
+        // Start the SPA router by doing an initial push so that
+        // the router starts receiving pages.
+        ,Option(() => react.router.browser.push("/readme"))
     )
   }
 }

@@ -52,6 +52,8 @@ object Pages {
         display = "flex"
         flexDirection = "column"
         width = "100%" // should come from parent
+        // this is definitely not right...
+        height = "calc(100% - 31px)"
       }
     })(
       n
@@ -122,7 +124,7 @@ object Pages {
 
   def bootstrapPage() = page(examples.bootstrap.BootstrapPage())
 
-    def materialUIPage() = page(examples.materialui.MaterialUIPage())
+  def materialUIPage() = page(examples.materialui.MaterialUIPage())
 
   import calendar._
 

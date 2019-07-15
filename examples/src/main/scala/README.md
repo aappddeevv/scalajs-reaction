@@ -1,19 +1,21 @@
-# Welcome to scalajs-react Examples
+# Welcome to scalajs-reaction Examples
 
 The apps are powered by a both scala.js and typescript (javascript). Redux is
-used to store some, but not all, of the application state for testing
-purposes. Switching tabs remounts the component being displayed. You would never
-structure an application like this demo program but the demo program is designed
-to test different aspects of the scalajs-react library.
+used to store some, but not all, of the application state for testing purposes
+and to highlight redux integration. Switching tabs remounts the component being
+displayed. You would never structure an application like this demo program but
+the demo program is designed to test different aspects of the scalajs-reaction
+library.
 
 If you run the demo from a web server, you can use redux devtools (a browser
 extension) to see the actions and state changes as with any redux-based
 application.
 
-All of the examples are a Work in Progress (WIP) so some of them do not display anything or crazy things. Other tabs are more polished.
+All of the examples are a Work in Progress (WIP) so some of them do not display
+anything or crazy things. Other tabs are more polished.
 
 ## To Do
-Simple to do app. It uses all locally managed state using the scalajs-react
+Simple to do app. It uses all locally managed state using the scalajs-reaction
 reducer built into every component. The state is reset whenever you change tabs
 so any todos you added or removed are lost upon tab change. fabric's Pivot
 unmounts the component when the tab changes.

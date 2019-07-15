@@ -132,8 +132,7 @@ package object styling {
     js.Any.fromFunction1(f)
 
   /**
-   * A style set or a style function. This is the fabric signature, normally we
-   * would use a coproduct, perhaps a nice shapeless coproduct.
+   * A style set or a style function. This mirrors the fabric signature.
    * 
    * @tparam SP style props type
    * @tparam SST style set type e.g. IStyleSet or IStyleSetTag
@@ -158,7 +157,7 @@ package object styling {
             s.asInstanceOf[js.Function1[SP, IStyleSet]](props)
           else style.asInstanceOf[IStyleSet]
         )}}
-    Styling.concatStyleSets[SS](x:_*)
+    Styling.concatStyleSets[SS](x.toSeq:_*)
   }
 
   //
