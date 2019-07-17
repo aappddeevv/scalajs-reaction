@@ -2,7 +2,9 @@
 layout: docs
 title: Data Interop
 ---
+
 # Data Interop
+
 Since there is an emphasis on interop with javascript reactjs components, you
 need to also interop with javascript data. Scala.js offers `js.UndefOr` to
 interop with fields in data structures that do not exist. Of course, in

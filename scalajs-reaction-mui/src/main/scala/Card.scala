@@ -14,14 +14,13 @@ import org.scalajs.dom._
 import vdom._
 
 object Card {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/Card", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait Props extends js.Object {
     var className: js.UndefOr[String] = js.undefined
@@ -40,7 +39,7 @@ object Card {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     trait Props extends js.Object {
       var className: js.UndefOr[String] = js.undefined
@@ -59,7 +58,7 @@ object Card {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     trait Props extends js.Object {
       var action: js.UndefOr[ReactNode] = js.undefined
@@ -83,7 +82,7 @@ object Card {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
     
     trait Props extends js.Object {
       var className: js.UndefOr[String] = js.undefined
@@ -101,7 +100,7 @@ object Card {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     trait Props extends js.Object {
       var className: js.UndefOr[String] = js.undefined
@@ -119,7 +118,7 @@ object Card {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     trait Props extends js.Object {
       var TouchRippleProps: js.UndefOr[js.Object] = js.undefined

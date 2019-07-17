@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object MarqueeSelection {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/MarqueeeSelection", "MarqueeSelection")
   object JS extends ReactJsComponent
 
   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   @js.native
   trait IMarqueeSelection extends js.Object

@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object Link {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Link", "Link")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined

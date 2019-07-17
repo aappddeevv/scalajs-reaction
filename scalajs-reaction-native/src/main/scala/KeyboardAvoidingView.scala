@@ -19,7 +19,7 @@ object KeyboardAvoidingView {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait Props extends View.Props {
     var keyboardVerticalOffset: js.UndefOr[Double] = js.undefined

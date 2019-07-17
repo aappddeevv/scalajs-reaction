@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object PivotItem {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Pivot", "PivotItem")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   trait Props extends HTMLAttributes[dom.html.Div] {
     var headerText: js.UndefOr[String]                                   = js.undefined

@@ -29,28 +29,27 @@ object BootstrapNS extends js.Object {
 }
 
 object components {
-  import ttg.react.elements.wrapJsForScala
 
   def Button(props: IButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.Button, props, children: _*)
+    React.createElement(BootstrapNS.Button, props)(children: _*)
   def ButtonToolbar(props: IButtonToolbarProps = null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.ButtonToolbar, props, children: _*)
+    React.createElement(BootstrapNS.ButtonToolbar, props)(children: _*)
   def ButtonGroup(props: IButtonGroupProps = null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.ButtonToolbar, props, children: _*)
+    React.createElement(BootstrapNS.ButtonToolbar, props)(children: _*)
   def ToggleButtonGroup(props: IToggleButtonGroupProps = null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.ButtonToolbar, props, children: _*)
+    React.createElement(BootstrapNS.ButtonToolbar, props)(children: _*)
   def ToggleButton(props: IToggleButtonProps = null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.ButtonToolbar, props, children: _*)
+    React.createElement(BootstrapNS.ButtonToolbar, props)(children: _*)
 
   def FormControl(props: IFormControlProps=null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.FormControl, props, children: _*)
+    React.createElement(BootstrapNS.FormControl, props)(children: _*)
   def FormLabel(props: IFormLabelProps=null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.FormLabel, props, children: _*)
+    React.createElement(BootstrapNS.FormLabel, props)(children: _*)
   def FormGroup(props: IFormGroupProps=null)(children: ReactNode*) =
-    wrapJsForScala(BootstrapNS.FormGroup, props, children: _*)
+    React.createElement(BootstrapNS.FormGroup, props)(children: _*)
 
   //def HelpBlock(props: IHelpBlockProps=null)(children: ReactNode*) =
-  //  wrapJsForScala(BootstrapNS.HelpBlock, props, children: _*)  
+  //  React.createElement(BootstrapNS.HelpBlock, props, children: _*)  
 }
 
 @js.native

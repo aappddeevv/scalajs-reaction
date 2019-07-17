@@ -96,40 +96,31 @@ object RouterConfig {
 
 object Application {
 
-  sealed trait Action
-  case class State()
-
   val baseUrl = dom.document.location.origin + BuildSettings.routePrefix.map("/" + _).getOrElse("")
   val nsegments = BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
 
   dom.console.log("baseURL", baseUrl, "nsegments to strip", nsegments)
 
   val Name = "Application"
-  val c = reducerComponent[State, Action](Name)
-  import c.ops._
 
-  def apply() =
-    c.copyWith(new methods {
-      val initialState = _ => State()
-      val reducer = (self, state, gen) => {
-        gen.skip
+  def apply() = sfc
+
+  val sfc = SFC0 {
+    div(new DivProps {
+      className = "ttg-App"
+      style = new StyleAttr {
+        display = "flex"
+        flexDirection = "column"
+        alignItems = "stretch"
+        height = "100%"
       }
-      val render = self =>
-      div(new DivProps {
-        className = "ttg-App"
-        style = new StyleAttr {
-          display = "flex"
-          flexDirection = "column"
-          alignItems = "stretch"
-          height = "100%"
-        }
-      })(
-        Header(),
-        ReactionRouter.Route(RouterConfig.config(
-          n = nsegments,
-          baseUrl = baseUrl
-        ))
-      )
-    })
+    })(
+      Header(),
+      ReactionRouter.Route(RouterConfig.config(
+        n = nsegments,
+        baseUrl = baseUrl
+      ))
+    )
+  }
 }
 

@@ -12,23 +12,31 @@ import js._
  * element.  This is equivalent to using JSX syntax.
  */
 final case class ComponentOps(c: Component) {
-  /** Create an element with no key or ref. */
-  def toEl: ReactElement = elements.element(c)
+  // /** Create an element with no key or ref. */
+  // def toEl: ReactElement = elements.element(c)
 
-  /** Create an element with an optional key and an optional ref. */
-  def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None): ReactElement =
-    elements.element(c, key, ref)
+  // /** Create an element with an optional key and an optional ref. */
+  // def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None): ReactElement =
+  //   elements.element(c, key, ref)
 
-  /** Create an element with an optional key and an optional ref. */
-  def toElKey(key: String): ReactElement =
-    elements.element(c, Option(key), None)
+  // /** Create an element with an optional key and an optional ref. */
+  // def toElKey(key: String): ReactElement =
+  //   elements.element(c, Option(key), None)
 }
 
 trait ComponentSyntax {
   implicit def componentOpsSyntax(c: Component) = ComponentOps(c)
 
+  /** Memoize SFC1[P]. */
+  implicit class MemoSFC[P <: js.Object](val sfc: SFC1[P]) {
+    def memo = React.memo(sfc)
+  }
+
+  implicit def sfc0ToEl(sfc: SFC0): ReactElement =
+    ReactJS.createElement(sfc.run, null)
+
   /** Convert a SFC and its argument, expressed as a tuple, to an element. */
-  implicit def sfc1TupleOpsSyntax[T](f: (SFC1[T],T)): ReactElement =
+  implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P],P)): ReactElement =
     ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
 
   /** Evil! Auto type conversion... */

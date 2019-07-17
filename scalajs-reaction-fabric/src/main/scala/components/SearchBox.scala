@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object SearchBox {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/SearchBox", "SearchBox")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   @js.native
   trait ISearchBox extends Focusable {

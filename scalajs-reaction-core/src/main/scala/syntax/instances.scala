@@ -16,8 +16,8 @@ import js.JSConverters._
  */
 trait Component2Elements {
   implicit def c2E(c: Component): ReactElement = elements.element(c)
-  implicit def cSeq2E(c: Seq[Component]): ReactNode =
-    arrayToElement(c.map(elements.element(_)))
+  // implicit def cSeq2E(c: Seq[Component]): ReactNode =
+  //   arrayToElement(c.map(elements.element(_)))
 }
 
 /** Mostly obvious converters so you can have a variety of children types and

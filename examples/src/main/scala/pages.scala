@@ -73,10 +73,10 @@ object Pages {
   def todoPage() =
     page(Fragment(
       Label()("Note: The To Do manager's data is reset each time you switch tabs."),
-      todo.ToDos(
-        Some("Your To Do List"),
-        todo.fakedata.initialToDos
-      )
+      todo.ToDos(new todo.ToDos.Props {
+        val title = "Your To Do List"
+        val todos = todo.fakedata.initialToDos
+      })
     ))
 
   def helloWorldPage() =
@@ -122,7 +122,8 @@ object Pages {
 
   def tagTest() = page(tagtest.TagTest())
 
-  def bootstrapPage() = page(examples.bootstrap.BootstrapPage())
+  import examples.bootstrap.BootstrapPage
+  def bootstrapPage() = page(BootstrapPage(new BootstrapPage.Props{}))
 
   def materialUIPage() = page(examples.materialui.MaterialUIPage())
 

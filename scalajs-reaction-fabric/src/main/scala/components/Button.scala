@@ -95,7 +95,7 @@ object Button {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children: _*)
+      React.createElement(JS, props)(children: _*)
   }
 
   object Primary {
@@ -104,7 +104,7 @@ object Button {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children: _*)
+      React.createElement(JS, props)(children: _*)
   }
 
   object Icon {
@@ -113,7 +113,7 @@ object Button {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children: _*)
+      React.createElement(JS, props)(children: _*)
   }
 
 

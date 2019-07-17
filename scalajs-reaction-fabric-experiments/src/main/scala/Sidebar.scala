@@ -11,7 +11,6 @@ import scala.scalajs.js
 import js.annotation._
 import js.|
 
-import elements.wrapJsForScala
 import implicits._
 
 import fabric._
@@ -27,7 +26,7 @@ object Sidebar {
   @JSImport("@uifabric/experiments/lib/Sidebar", "Sidebar")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   @js.native
   trait ISidebar extends js.Object {

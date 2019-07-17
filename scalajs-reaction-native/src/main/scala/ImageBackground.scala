@@ -19,5 +19,5 @@ object ImageBackground {
   object JS extends ReactJsComponent
 
   def apply(props: Image.Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 }

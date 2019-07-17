@@ -18,7 +18,7 @@ object ActivityIndicator {
   @JSImport("react-native", "ActivityIndicator")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   trait Props extends View.Props {
     var animating: js.UndefOr[Boolean] = js.undefined

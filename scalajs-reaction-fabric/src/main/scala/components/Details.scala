@@ -15,7 +15,6 @@ import vdom._
 import fabric.styling._
 
 object Details {
-  import ttg.react.elements.wrapJsForScala
 
   trait ICellStyleProps extends js.Object {
     var  cellLeftPadding: js.UndefOr[Double] = js.undefined
@@ -29,7 +28,7 @@ object Details {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     @js.native
     trait IDetailsRow extends js.Object
@@ -93,7 +92,7 @@ object Details {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     @js.native
     trait IDetailsHeader extends Focusable2
@@ -202,7 +201,7 @@ object Details {
     object JS extends ReactJsComponent
 
     def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children:_*)
+      React.createElement(JS, props)(children:_*)
 
     @js.native
     trait IDetailsList extends components.List.IList {
@@ -284,7 +283,7 @@ object Details {
     object JS extends ReactJsComponent
 
     def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-      wrapJsForScala(JS, props, children: _*)
+      React.createElement(JS, props)(children: _*)
 
     trait StyleProps extends ClassName {
       var enableShimmer: js.UndefOr[Boolean] = js.undefined

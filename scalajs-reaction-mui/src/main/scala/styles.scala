@@ -34,7 +34,6 @@ object styles extends js.Object {
 }
 
 object StylesProvider {
-  import ttg.react.elements.wrapJsForScala
 
   trait Props extends js.Object {
     var disableGeneration: js.UndefOr[Boolean] = js.undefined
@@ -45,5 +44,5 @@ object StylesProvider {
 
   // not being null causes an error, why?
   def apply(props: Props = null)(child: ReactNode) =
-    wrapJsForScala(styles.StylesProvider, props, child)
+    React.createElement(styles.StylesProvider, props)(child)
 }

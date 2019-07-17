@@ -21,17 +21,19 @@ import react.bootstrap.components._
 
 object BootstrapPage {
 
-  val c = statelessComponent("BootstrapPage")
-  import c.ops._
+  trait Props extends js.Object {
+   var rootClassName: js.UndefOr[String] = js.undefined
+  }
 
-  def apply(
-    rootClassName: js.UndefOr[String] = js.undefined
-  ) = render { self =>
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props]{ props =>
     div(new DivProps {
-      className = rootClassName
+      className = props.rootClassName
     })(
       "react-bootstrap 1.x-betas seem very rough right now...delaying implementation",
-      BootstrapExample(
+      BootstrapExample( new BootstrapExample.Props {
+        val children = 
         ButtonToolbar()(
           Button()("Default"),
           Button(new IButtonProps{ `type`=ButtonType.`null`; variant=Variant.primary})("Primary"),
@@ -41,21 +43,23 @@ object BootstrapPage {
           Button(new IButtonProps{ `type`=ButtonType.`null`; variant=Variant.danger})("Danger"),
           Button(new IButtonProps{ `type`=ButtonType.`null`; variant=Variant.link})("Link")
         )
-      ),
-      BootstrapExample(
-        FormExample()
-      )
+      }),
+      BootstrapExample(new BootstrapExample.Props {
+        val children = FormExample()
+      })
     )
   }
 }
 
 object BootstrapExample {
-  val c = statelessComponent("BootstrapExample")
-  import c.ops._
 
-  def apply(
-    child: ReactElement
-  ) = render { self =>
+  trait Props extends js.Object {
+    val children: ReactElement
+  }
+
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props]{props =>
     div(new DivProps {
       className = "ttg-bootstraExample"
       style = new StyleAttr {
@@ -63,7 +67,7 @@ object BootstrapExample {
         marginBottom = 10
       }
     })(
-      child
+      props.children
     )
   }
 }
@@ -71,40 +75,38 @@ object BootstrapExample {
 object FormExample {
   sealed trait Action
   case class Change(value: Option[String]) extends Action
+
   case class State(value: Option[String] = None)
 
-  val c = reducerComponent[State,Action]("FormExample")
-  import c.ops._
+  def apply() = sfc
 
-  def apply(
-  ) = c.copy(new methods {
-    val initialState = _ => State()
-    val reducer = (action, state, gen) => action match {
-      case Change(vopt) => gen.update(state.copy(value = vopt))
-    }
-
-    val render = self => {
-      form(
-        FormGroup(new IFormGroupProps {
-          controlId="formBasicText"
-          //validationState = getValidationState(self.state.value).getOrElse(null.asInstanceOf[ValidationState])
-        })(
-          FormLabel()("Working example with validation"),
-          FormControl(new IFormControlProps {
-            `type`= FormControlType.text
-            as = As.input
-            value = self.state.value.getOrElse("")
-            placeholder="Enter text"
-            onChange=js.defined{ v =>
-              dom.console.log("FormControl: change value", v, js.typeOf(v))
-              //self.send(Option(v))
-            }
-          })(),
-          //FormControl.Feedback()(),
-          //HelpBlock()("Validation is based on string length"),
-        ))
-    }
-  })
+  val sfc = SFC0 {
+    val (state, update) = React.useReducer[State,Action](
+      (s,a) => a match {
+        case Change(vopt) => s.copy(value = vopt)
+      },
+      State()
+    )
+    form(
+      FormGroup(new IFormGroupProps {
+        controlId="formBasicText"
+        //validationState = getValidationState(self.state.value).getOrElse(null.asInstanceOf[ValidationState])
+      })(
+        FormLabel()("Working example with validation"),
+        FormControl(new IFormControlProps {
+          `type`= FormControlType.text
+          as = As.input
+          value = state.value.getOrElse("")
+          placeholder="Enter text"
+          onChange=js.defined{ v =>
+            dom.console.log("FormControl: change value", v, js.typeOf(v))
+            //self.send(Option(v))
+          }
+        })(),
+        //FormControl.Feedback()(),
+        //HelpBlock()("Validation is based on string length"),
+      ))
+  }
 
   def getValidationState(value: Option[String] = None) = {
     val len = value.map(_.length).getOrElse(-1)

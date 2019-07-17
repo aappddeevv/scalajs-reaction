@@ -2,7 +2,10 @@
 layout: docs
 title: Redux
 ---
+
 # redux
+
+This content needs to be revised to reflect hooks.
 
 The scalajs-react integration is not designed to create or write middleware in
 scalajs-react. There are some other scala.js libraries that can provide full
@@ -20,7 +23,9 @@ an intermediate component that:
 they are passed down with the name "store" or it finds the storeKey).
 1. Calls mapStateToProps (with the redux state and your component's props)  calls
 mapDispatchToProps (dispatch func and your component's props) .
-1. Sets the the state of the wrapper component (called Connect) that `react-redux` creates. It uses a dummy state. The setState call in Connect forces it and its children to render.
+1. Sets the the state of the wrapper component (called Connect) that
+   `react-redux` creates. It uses a dummy state. The setState call in Connect
+   forces it and its children to render.
 
 The magic is that react-redux tries to memoize the results so that it reduces
 the number of renders in your component if the state changes but those changes
@@ -49,11 +54,20 @@ constructs.
 
 * scala side integration: You have a scala component and wish to use it in javascript or scala connected to redux
    * scala: create the scala component then create your "make" function as usual
-   * scala: Wrap the component using `Component.wrapScalaForJs`. This creates a ReactJsComponent usable by javascript because it maps a general js.Object to the "make" function. You can export this component for use in javascript however it would not receive redux props.
-   * scala: connect the result from the previous step using `redux.connect`. Like `connect` in javascript, you pass in a "component" an get a "component."
-   * scala: Using the connected ReactJsComponent from above, wrap it using `elements.wrapJsForScala`. The rationale is that the "connect" call creates another javascript component, so you just need to wrap it for use just like an "imported" javascript component.
+   * scala: Wrap the component using `Component.wrapScalaForJs`. This creates a
+     ReactJsComponent usable by javascript because it maps a general js.Object
+     to the "make" function. You can export this component for use in javascript
+     however it would not receive redux props.
+   * scala: connect the result from the previous step using
+     `redux.connect`. Like `connect` in javascript, you pass in a "component" an
+     get a "component."
+   * scala: Using the connected ReactJsComponent from above, wrap it using
+     `elements.wrapJsForScala`. The rationale is that the "connect" call creates
+     another javascript component, so you just need to wrap it for use just like
+     an "imported" javascript component.
    * javascript: use the exported connected component if you want to.
-* javascript side integration: You have a scala component and wish to use it in javascript or scala connected to redux.
+* javascript side integration: You have a scala component and wish to use it in
+  javascript or scala connected to redux.
    * scala: create the scala component
    * scala: export it using the description in the "Exporting" section
    * javascript: define a proxy wrapper
@@ -74,6 +88,7 @@ in order to allow you flexibility to define the API for make as appropriate for
 your application.
 
 ## Scala Side Approach (preferred)
+
 To preserve integration on the scala side, you have to do the same type of
 mapping from redux state to props. scalajs-react is explicit in that to create a
 component that takes props, you must go through a function (almost always called

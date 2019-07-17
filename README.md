@@ -1,4 +1,4 @@
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8.1+, react-native v0.59+, scala 2.13)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
 
 # scalajs-reaction
 
@@ -54,33 +54,58 @@ val HelloWorld: SFC0 = () => div("hello world")
 reactdom.createAndRenderWithId(HelloWorld(), "container")
 ```
 
-Of course, if every component was so simple you would not need a library you
-could create your own facade in about 20 lines of code.  You can use hooks in
-your function to add state, effects and other important facets.
+SFC0 does not do much other than ensure that the scala function on the right
+becomes a js function--which is pretty much all that is needed to use react
+hooks.
 
-You can create the same component using the ReasonReact-like API for a stateless
-component is:
+If you need to pass in an argument, just remember that react hooks require you
+to use a single js object parameter so do the following standard scala.js
+approach to interop:
 
 ```scala
-object HelloWorld {
-  val c = statelessComponent("HelloWorld")
-  import c.ops._
-  def apply() = render { self => s"hello world" }
+trait Props extends js.Object {
+    val name: String
 }
-reactdom.createAndRenderWithId(Helloworld(), "container")
+val HelloWorld = SFC1[Props] { props =>
+  div("hello " + props.name)
+}
 ```
 
-The ReasonReact-like facade is more valuable when you introduce state-holding
-components since every component has a builtin reducer to manage state and you
-use your favorite effects library. See the
+SFC1 says that the function component HelloWorld takes a single parameter, some
+type of P. You could use a plain scala object for the parameter however watch
+out for the default equals behavior for scala objects since scala and js worlds
+treat equality differently and react may cause the type information in your
+props to be lost (i.e. don't use scala objects).
+
+If you want to ensure your component only renders when the props change, use
+`React.memo()` to create your component.
+
+```scala
+trait Props extends js.Object {
+    var name: String
+}
+val HelloWorld = SFC1[Props] { props =>
+    div("hello " + props.name)
+}.memo
+```
+
+You can use hooks in your function to add state and other effects.
+
+The older "record" based API is frozen, just like in the ReasonReact
+product. Use hooks. The hooks implementation in scala.js is only about 30 lines
+of code and is more maintainable.
+
+See the
 [documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
 
 You have choices to create your components and they are all
 straightforward. Depending on the component library you use, having choices
 helps you find the easiest way to access the components in your application.
-This library does not force many conventions on your code.
+This library does not force many conventions on your code and the core is quite
+small now that it is based on hooks.
 
 ## Usage
+
 Include the library in your build:
 ```scala
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
@@ -126,8 +151,28 @@ npm i --save react-dom
 
 The latest react is recommended, v16.8.
 
-### Create a Component
+### Create a Component (Warning! Frozen API below.)
+
+Just use hooks. It's easier!
+
+You can create the same component using the ReasonReact-like API for a stateless
+component is:
+
+```scala
+object HelloWorld {
+  val c = statelessComponent("HelloWorld")
+  import c.ops._
+  def apply() = render { self => s"hello world" }
+}
+reactdom.createAndRenderWithId(Helloworld(), "container")
+```
+
+The ReasonReact-like facade is more valuable when you introduce state-holding
+components since every component has a builtin reducer to manage state and you
+use your favorite effects library. 
+
 You can easily create a component and render it:
+
 ```scala
 object HelloWorld {
   val Name = "HelloWorld"
@@ -241,11 +286,15 @@ machinery to import it. The component type should be `ReactJsComponent`.
 @js.native
 @JSImport("some-package", JSImport.Namespace)
 object SomePackageNS extends js.Object {
-  val label: ReactJsComponent = js.native
+  val Label: ReactJsComponent = js.native
 }
 object SomePackage {
-  import ttg.react.elements._
-  def Label(props: Attr*)(children: ReactNode*) = wrapJsForScala(SomePackageNS.label, new Attrs(props).toJs, children:_*)
+  trait Props extends js.Object {
+     // ...
+  }
+
+  def Label(props: Props*)(children: ReactNode*) = 
+    React.createElement(SomePackageNS.Label, props.toJs)(children:_*)
 }
 ```
 
@@ -256,7 +305,7 @@ much anything:
 object SomePackage {
   // Use a non-native JS trait
   def Label(props: js.UndefOr[LabelProps])(children: ReactNode*) = 
-     wrapJsForScala(SomePackageNS.Label, props.getOrElse(noProps), children:_*)
+     React.createElement(SomePackageNS.Label, props.getOrElse(noProps))(children:_*)
 
   trait LabelProps extends HTMLAttrbutes[dom.html.Label] { // optionally extend HTMLAttributes[]
    // ...
@@ -265,15 +314,15 @@ object SomePackage {
   // or
   def Label(someProp: String)(children: ReactNode*) = 
      // createProps a function you write to convert the single scala someProp parameter to a js.Object.
-     wrapJsForScala(SomePackageNS, createProps(someProp), children:_*)
+     React.createElement(SomePackageNS, createProps(someProp))(children:_*)
     
 ```
 
-For importing, you need to call `wrapJsForScala` at some point. You are free to
-use the model above for attributes and children or you can use a dedicated
-non-native JS trait or use whatever suits your application for scala-side
-API. You could also define the component to take `Attr*` props, a non-native JS
-trait or even `js.Dynamic`.
+For importing, you need to call `React.createElement` at some point. You are
+free to use the model above for attributes and children or you can use a
+dedicated non-native JS trait or use whatever suits your application for
+scala-side API. You could also define the component to take `Attr*` props, a
+non-native JS trait or even `js.Dynamic`.
 
 Since functions are used, there are many advanced scala and scala.js patterns
 you can use to alter the way that components are created and the API to create
@@ -486,7 +535,8 @@ features such as immutability, the collections library or, of course, add data
 structures to your code.
 
 ## Related
-There are a few [scala.js](https://www.scala-js.org/) react facades/implementations available:
+There are a few [scala.js](https://www.scala-js.org/) react
+facades/implementations available:
 
 * https://github.com/eldis/scalajs-react: Very clean class oriented react
   implementation. Class oriented but has a builder as well and includes purely

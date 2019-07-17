@@ -15,13 +15,12 @@ import vdom._
 import fabric.styling._
 
 object Checkbox {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/Checkbox", "Checkbox")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   @js.native
   trait ICheckbox extends Focusable {

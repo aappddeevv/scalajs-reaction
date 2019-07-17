@@ -14,6 +14,7 @@ final case class JsObjectOps[A <: js.Object](o: A) {
   def asDyn                                    = o.asInstanceOf[js.Dynamic]
   def asUndefOr[A]: js.UndefOr[A]              = o.asInstanceOf[js.UndefOr[A]]
   def combine(that: A) = react.merge[A](o, that)
+  def combine(that: js.Dynamic) = react.merge[A](o, that.asInstanceOf[A])
   def combineTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]
 }
 

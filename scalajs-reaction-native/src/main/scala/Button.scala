@@ -17,7 +17,7 @@ object Button {
   @JSImport("react-native", "Button")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   trait Props extends js.Object {
     val title: String

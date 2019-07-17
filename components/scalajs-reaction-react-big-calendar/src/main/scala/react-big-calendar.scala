@@ -20,7 +20,6 @@ import vdom._
 //object styles extends js.Object
 
 object ReactBigCalendar {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("react-big-calendar", JSImport.Default)
@@ -32,7 +31,7 @@ object ReactBigCalendar {
   }
 
   def apply[E <: js.Any](props: Props[E] = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   /**
    * @tparam E Event object type 

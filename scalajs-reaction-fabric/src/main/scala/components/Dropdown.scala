@@ -15,13 +15,12 @@ import vdom._
 import fabric.styling._
 
 object Dropdown {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/Dropdown", "Dropdown")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   @js.native
   trait IDropdown extends js.Object {

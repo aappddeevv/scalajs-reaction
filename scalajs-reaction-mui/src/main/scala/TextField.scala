@@ -14,14 +14,12 @@ import org.scalajs.dom._
 import vdom._
 
 object TextField {
-  import ttg.react.elements.wrapJsForScala
-
   @JSImport("@material-ui/core/TextField", JSImport.Default)
   @js.native
   object TextFieldJS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(TextFieldJS, props, children:_*)
+    React.createElement(TextFieldJS, props)(children:_*)
 
   @js.native
   sealed trait Margin extends js.Any

@@ -30,179 +30,198 @@ import vdom.tags._
 case class ToDo(id: Int, name: String, added: js.Date = null, completed: Boolean = false)
 
 object ToDoItem {
-
   val Name = "ToDoItem"
-  val c = statelessComponent(Name)
-  import c.ops._
 
-  def apply(
-    todo: ToDo,
-    remove: () => Unit,
-    rootClassname: js.UndefOr[String] = js.undefined,
-    titleClassname: js.UndefOr[String] = js.undefined
-  ) =
-    render { self =>
-      divWithClassname(
-        rootClassname,
-        Label(new Label.Props {
-          className = titleClassname
-        })(
-          todo.name
-        ),
-        Button.Default(new Button.Props {
-          text = "Remove"
-          onClick = js.defined(_ => remove())
-        })()
-      )
-    }
+  trait Props extends js.Object {
+    var todo: ToDo
+    var remove: () => Unit
+    var rootClassname: js.UndefOr[String] = js.undefined
+    var titleClassname: js.UndefOr[String] = js.undefined
+    var key: js.UndefOr[String] = js.undefined
+  }
+
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props]{ props =>
+    React.useDebugValue(Name)
+    divWithClassname(
+      props.rootClassname,
+      Label(new Label.Props {
+        className = props.titleClassname
+      })(
+        props.todo.name
+      ),
+      Button.Default(new Button.Props {
+        text = "Remove"
+        onClick = js.defined(_ => props.remove())
+      })()
+    )
+  }.memo
 }
 
 object ToDoListHeader {
+  val Name = "ToDoListHeader"
 
-  val ToDoListHeader = statelessComponent("ToDoListheader")
-  import ToDoListHeader.ops._
+  trait Props extends js.Object {
+    var length: Int
+  }
 
-  def apply(length: Int) =
-    render { self =>
-      div(Label()(s"# To Dos - ${length}"))
-    }
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props]{ props =>
+    React.useDebugValue(Name)
+    div(Label()(s"# To Dos - ${props.length}"))
+  }.memo
 }
 
 object ToDoList {
-  val c = statelessComponent("ToDoList")
-  import c.ops._
+  val Name = "ToDoList"
 
-  def apply(
-    length: Int,
-    todos: Seq[ToDo],
-    remove: Int => Unit,
-    listClassname: js.UndefOr[String] = js.undefined,
-    todoClassname: js.UndefOr[String] = js.undefined,
-    titleClassname: js.UndefOr[String] = js.undefined
-  ) = render{ self =>
-    divWithClassname(
-      listClassname,
-      ToDoListHeader(length),
-      todos.map(t =>
-        ToDoItem(
-          t,
-          () => remove(t.id),
-          rootClassname = todoClassname,
-          titleClassname = titleClassname
-        ).toEl(Option(t.id.toString), None)
-      ))
+  trait Props extends js.Object {
+    var length: Int
+    var todos: Seq[ToDo]
+    var remove: Int => Unit
+    var listClassname: js.UndefOr[String] = js.undefined
+    var todoClassname: js.UndefOr[String] = js.undefined
+    var titleClassname: js.UndefOr[String] = js.undefined
   }
+
+  // case class Props(
+  //   length: Int = 0,
+  //   todos: Seq[ToDo] = Nil,
+  //   remove: Int => Unit = _ => (),
+  //   listClassname: js.UndefOr[String] = js.undefined,
+  //   todoClassname: js.UndefOr[String] = js.undefined,
+  //   titleClassname: js.UndefOr[String] = js.undefined
+  // )
+
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props] { props =>
+    React.useDebugValue(Name)
+    divWithClassname(
+      props.listClassname,
+      ToDoListHeader(new ToDoListHeader.Props{ var length = props.length}),
+      props.todos.map(t =>
+        ToDoItem(new ToDoItem.Props {
+          var todo = t
+          var remove = () => props.remove(t.id)
+          rootClassname = props.todoClassname
+          titleClassname = props.titleClassname
+          key = t.id.toString
+        })
+      ))
+  }.memo
 }
 
 object ToDos {
-  sealed trait ToDoAction
-  case class Add(todo: ToDo)                     extends ToDoAction
-  case class Remove(id: Int)                     extends ToDoAction
-  case class InputChanged(input: Option[String]) extends ToDoAction
-  //case class SetTextFieldRef(ref: ITextField)    extends ToDoAction
-  case class Complete(id: Int) extends ToDoAction
+  sealed trait Action
+  case class Add(todo: ToDo)                     extends Action
+  case class Remove(id: Int)                     extends Action
+  case class InputChanged(input: Option[String]) extends Action
 
   var idCounter: Int = -1
   def mkId(): Int    = { idCounter = idCounter + 1; idCounter }
   import ToDoStyling._
 
+  /** We put all state into one fat object. Probably better
+   * to separate out `input` into its own useState.
+   */
   case class State(
     todos: Seq[ToDo] = Seq(),
     input: Option[String] = None,
-    // should be boxed
     var textFieldRef: Option[TextField.ITextField] = None
   )
 
   val Name = "ToDos"
-  val c = reducerComponent[State, ToDoAction](Name)
-  import c.ops._
 
-  def remove(id: Int)(self: Self): Unit = self.send(Remove(id))
-  def inputChanged(e: Option[String])(self: Self): Unit =
-    self.send(InputChanged(e))
-
-  def addit(self: Self) =
-    self.state.input.foreach { i =>
-      self.handle { s =>
-        s.send(Add(ToDo(mkId(), i)))
-        s.state.textFieldRef.foreach(_.focus())
-      }
+  def addit(input: Option[String], dispatch: Dispatch[Action]) =
+    input.foreach { i =>
+      dispatch(Add(ToDo(mkId(), i)))
+      // this is an effect so it should not go here
+      //focusable.foreach(_.focus())
     }
 
-  def apply(
-    title: Option[String] = None,
-    todos: Seq[ToDo] = Seq()
-  ) =
-    c.copyWith(new methods {
+  def reducer(state: State, action: Action): State =
+    action match {
+      case Add(t) =>
+        state.copy(todos = state.todos :+ t, input = None)
+      case Remove(id) =>
+        state.copy(todos = state.todos.filterNot(_.id == id))
+      case InputChanged(iopt) =>
+        state.copy(input = iopt)
+    }
+  
+  trait Props extends js.Object {
+    val title: String
+    val todos: Seq[ToDo]
+  }
 
-      didMount = js.defined{ self =>
-        println("ToDo: subscriptions: called during mount")
-        self.onUnmount(() => println("ToDo: subscriptions: unmounted"))
-      }
+  def apply(props: Props) = sfc(props)
 
-      val reducer = (action, state, gen) => {
-        action match {
-          case Add(t) =>
-            gen.update(state.copy(todos = state.todos :+ t, input = None))
-          case Remove(id) =>
-            gen.update(state.copy(todos = state.todos.filterNot(_.id == id)))
-          case InputChanged(iopt) =>
-            gen.update(state.copy(input = iopt))
-          //case SetTextFieldRef(ref) =>
-          //  gen.silent(state.copy(textFieldRef = Some(ref)))
-          case _ =>
-            gen.skip
-        }
-      }
+  val sfc = SFC1[Props] { props =>
+    React.useDebugValue(Name)
+    val ifield = React.useRef[Option[TextField.ITextField]](None)    
+    React.useEffectMountingCb{() =>
+      println("ToDo: subscriptions: called during mount")
+        () => println("ToDo: subscriptions: unmounted")
+    }
 
-      val initialState = _ => State(todos, None)
+    val (state, dispatch) =
+      React.useReducer[State,Action](reducer, State(props.todos, None))
+    // if the input is added as a todo or todo remove, reset focus
+    React.useEffect(
+      () => ifield.current.foreach(_.focus()),
+      js.defined(js.Array(state.todos.length))
+    )
 
-      val render =  self => {
-        val cn = getClassNames(resolve[StyleProps, Styles](
-          new StyleProps {
-          },
-          getStyles
-        ))
+    val cn = getClassNames(resolve[StyleProps, Styles](
+      new StyleProps {
+      },
+      getStyles
+    ))
 
-        div(new DivProps {
-          className = cn.root
-        })(
-          Label()(s"""App: ${title.getOrElse("The To Do List")}"""),
-          div(new DivProps { className = cn.dataEntry })(
-            TextField(new TextField.Props {
-              placeholder = "enter new todo"
-              componentRef = js.defined((r: TextField.ITextField) => self.state.textFieldRef = Option(r))
-              onChangeInput = js.defined((_, e: String) =>
-                self.handle(inputChanged(Option(e))))
-              value = self.state.input.getOrElse[String]("")
-              autoFocus = true
-              onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) addit(self))
-            })(),
-            Button.Primary(new Button.Props {
-              text = "Add"
-              disabled = self.state.input.size == 0
-              // demonstrates inline callback
-              // could be:
-              // _ => since we don't use 'e', could
-              // ReactEvent[dom.html.Input] to be more specifci
-              // ReactKeyboardEvent[_] to be more specific
-              // ReactKeyboardEvent[dom.html.Input] to be more specific
-              onClick = js.defined((e: ReactEvent[_]) => addit(self))
-            })()
-          ),
-          ToDoList(
-            self.state.todos.length,
-            self.state.todos,
-            (id: Int) => self.handle(remove(id)),
-            //listClassname = ???
-            todoClassname = cn.todo,
-            titleClassname = cn.title)
-        )
-      }
-    })
-
-  @JSExportTopLevel("ToDos")
-  val exportedApp = c.wrapScalaForJs((jsProps: js.Object) => ToDos.apply())
+    div(new DivProps {
+      className = cn.root
+    })(
+      Label()(s"""App: ${props.title}"""),
+      div(new DivProps { className = cn.dataEntry })(
+        TextField(new TextField.Props {
+          placeholder = "enter new todo"
+          componentRef = js.defined{
+            // Option(r) -> None if r is null
+            r => ifield.current = Option(r)
+          }
+          onChangeInput = js.defined{(_, e: String) =>
+            dispatch(InputChanged(Option(e)))
+          }
+          value = state.input.getOrElse[String]("")
+          autoFocus = true
+          onKeyPress = js.defined{
+            e => if (e.which == dom.ext.KeyCode.Enter) addit(state.input, dispatch)
+          }
+        })(),
+          Button.Primary(new Button.Props {
+            text = "Add"
+            disabled = state.input.size == 0
+            // demonstrates inline callback
+            // could be:
+            // _ => since we don't use 'e', could
+            // ReactEvent[dom.html.Input] to be more specifci
+            // ReactKeyboardEvent[_] to be more specific
+            // ReactKeyboardEvent[dom.html.Input] to be more specific
+            onClick = js.defined((e: ReactEvent[_]) => addit(state.input, dispatch))
+          })()
+        ),
+        ToDoList(new ToDoList.Props {
+          var length = state.todos.length
+          var todos = state.todos
+          var remove = (id: Int) => dispatch(Remove(id))
+          todoClassname = cn.todo
+          titleClassname = cn.title
+        })
+    )
+  }
 }
 
 object fakedata {

@@ -2,6 +2,7 @@
 layout: docs
 title: Data Validation
 ---
+
 # Data Validation
 
 A simple applicative-style data validation library has been provided. You can

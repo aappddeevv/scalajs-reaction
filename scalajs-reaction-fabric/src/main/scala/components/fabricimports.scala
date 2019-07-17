@@ -45,6 +45,7 @@ trait KeyAndRef extends js.Object {
 
 /** Adds a componentRef member. */
 trait ComponentRef[T] extends js.Object {
+  /** Callback style, the easiest to handle. */
   var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
 }
 

@@ -14,12 +14,48 @@ import js.JSConverters._
  */
 package object react {
 
+  /** A js dispatch function for side effects. Used in useState. */
+  type Dispatch[A] = js.Function1[A, Unit]
+
+  /** Hook dependencies data structure. */
+  type Dependencies = js.UndefOr[js.Array[js.Any]]
+
+    /** Use when no dependencies, empty array. */
+  val emptyDependencies: Dependencies = js.defined(js.Array())
+
+  /** Undefined dependencies. */
+  val undefinedDependencies = js.undefined
+
+  /** Create a watchlist from a scala iterable. Helps with type inference. The
+   * function takes an array of any type of scala.Any which may or may not make
+   * sense for how hooks calculates changes in the array during dependency
+   * check. You do not need to do this if you just create a js.Array directly.
+   */
+  def dependencies(watchList: Iterable[scala.Any]): js.Array[js.Any] =
+    watchList.toJSArray.asInstanceOf[js.Array[js.Any]]
+
+  /** Effect hooks simplest arg. */
+  type EffectArg = () => Unit
+
+  /** Effect hooks, function returns a callback. */
+  type EffectCallbackArg = () => (() => Unit)
+
+  /** Noop for effect callback. */
+  val noCleanUp = () => ()
+
+  /** Used to convert a scala EffectCallbackArg to js. */
+  def convertEffectCallbackArg(arg: EffectCallbackArg): js.Any =
+    {() => {
+      val callback: js.Function0[Unit] = arg()
+      callback
+    }}: js.Function0[js.Function0[Unit]]
+
   /**
    * Opaque type returned from a ref callback. It's typically either js
    * component or a DOM element, both of which are js.Objects. You only use
    * this type with the `React.createRef()` machinery. You can also use a ref
-   * callback (still supported), skip this type and the call to
-   * `React.createRef()`.
+   * callback (still supported) and skip this type and the call to
+   * `React.createRef()` but really, use `React.createRef()` instead..
    * 
    * @todo Validate a null value is present if the ref is never set. typescript
    * says so.
@@ -37,6 +73,11 @@ package object react {
 
   /** Combine the callback and the createRef models. */
   type Ref[E] = RefCb[E] | ReactRef[E]
+
+  /** For use with useRef() hook which is slightly different than the mutable Ref. */
+  trait MutableRef[T] extends js.Object {
+    var current: T
+  }
 
   /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
   def refCB[E](f: E|Null => Unit): Ref[E] = js.Any.fromFunction1[E|Null,Unit](f)
@@ -66,6 +107,9 @@ package object react {
     /** Pretty sure this is always here, don't use it. */
     val `type`: String = js.native
   }
+
+  @js.native
+  trait ReactChildren extends ReactElement
 
   type KeyType = String | Int
 
@@ -115,10 +159,14 @@ package object react {
   @js.native
   trait ReactPortal extends ReactElement
 
-  /** Something that can be used in ReactJS.createElement. Need to add js.Function
-   * that returns a ReactNode.
-   */
-  type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent
+  /** Pure JS functions defined in scala are also components i.e. SFC. */
+  type ScalaJSFunctionComponent = js.Function0[ReactNode]
+
+  /** Pure JS functions defined in scala are also components i.e. SFC1. */
+  type ScalaJSFunctionComponent1 = js.Function1[_ <: js.Object, ReactNode]
+
+  /** Something that can be used in ReactJS.createElement. */
+  type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1
 
   /**
    * This type is used only for imported javascript authored components to
@@ -132,10 +180,13 @@ package object react {
   @js.native
   trait ReactJsComponent extends js.Object
 
-  /** Components from js land that are functions. */
+  /** Components from js land that are functions and imported as such. May or may
+   * not make a difference.
+   */
   @js.native
   trait ReactJsFunctionComponent extends js.Object
 
+  /** Not sure why I still have this. */
   @js.native
   trait ReactJsLazyComponent extends ReactJsComponent
 
@@ -157,15 +208,15 @@ package object react {
   val nullElement = null.asInstanceOf[ReactElement]
 
   /** Convenience. Use implicits for syntax-based conversion. */
-  @inline def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
+  def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
 
   /** Convenience. Use implicits for automatic conversion. */
-  @inline def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
+  def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
 
   /** String to react node. Use implicits for automatic conversion and avoid
    * calling this function.
    */
-  @inline def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
+  def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
   /**
    * Empty children value but non-empty array. Be careful as someone could

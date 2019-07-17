@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object FocusZone {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/FocusZone", "FocusZone")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   @js.native
   trait IFocusZone extends js.Object {

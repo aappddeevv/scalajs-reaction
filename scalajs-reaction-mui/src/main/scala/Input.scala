@@ -14,14 +14,13 @@ import org.scalajs.dom._
 import vdom._
 
 object Input {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/Input", JSImport.Default)
   object InputJS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(InputJS, props, children:_*)
+    React.createElement(InputJS, props)(children:_*)
 
   @js.native
   sealed trait Margin extends js.Any

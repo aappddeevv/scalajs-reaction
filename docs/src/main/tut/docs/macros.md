@@ -4,6 +4,8 @@ title: Macros
 ---
 # macros
 
+Macros are now excluded from the build. Ignore!
+
 Macros have been included that transform your non-native JS traits into list
 oriented constructors. So instead of this:
 

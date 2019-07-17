@@ -15,13 +15,11 @@ import vdom._
 import fabric.styling._
 
 object Spinner {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Spinner", "Spinner")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   @js.native
   trait ISpinner extends js.Object

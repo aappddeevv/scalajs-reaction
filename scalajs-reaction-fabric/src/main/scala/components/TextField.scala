@@ -15,19 +15,19 @@ import vdom._
 import fabric.styling._
 
 object TextField {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/TextField", "TextField")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   @js.native
   trait ITextField extends Focusable with ClassAttributes[html.Input] {
     var value: js.UndefOr[String]                       = js.native
     var select: js.Function0[Unit]                      = js.native
+    var blur: js.Function0[Unit] = js.native
     var setSelectionStart: js.Function1[Int, Unit]      = js.native
     var setSelectionEnd: js.Function1[Int, Unit]        = js.native
     var setSelectionRange: js.Function2[Int, Int, Unit] = js.native

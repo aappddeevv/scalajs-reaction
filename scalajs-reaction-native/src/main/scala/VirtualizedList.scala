@@ -19,7 +19,7 @@ object VirtualizedList {
   object JS extends ReactJsComponent
 
   def apply[T](props: Props[T] = null) =
-    wrapJsForScala(JS, props)
+    React.createElement0(JS, props)
 
   trait Props[T] extends ScrollView.Props {
     var data: Seq[T]

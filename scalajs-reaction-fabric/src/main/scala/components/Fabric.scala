@@ -22,7 +22,7 @@ object Fabric {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   trait Props extends HTMLAttributes[dom.html.Div] with Theme {
     var componentRef: js.UndefOr[js.Function0[Unit]] = js.undefined

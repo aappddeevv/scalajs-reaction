@@ -19,41 +19,17 @@ object SomeLibNS {
   val YourComponent2: ReactJSComponent = js.native
 }
 
-// create a proxy component for it
 object SomeLib {
-  import ttg.react.elements._
-  def YourComponent1(props: Attr*)(children: ReactNode*) = 
-     wrapJsForScala(SomeLibNS.YourComponent1, new Attrs(props).toJs, children:_*)
+  def YourComponent1(props: Props*)(children: ReactNode*) = 
+     React.createElement(SomeLibNS.YourComponent1, props)(children:_*)
 }
 ```
-
-A component, declared as a react class, should be typed as a `ReactJSComponent`.
 
 How you hook up attributes and children values to your component is up to
 you. The definition in SomeLib is what you want it to be. In typescript, it is
 common to define an interface that declares the allowed properties to be passed
 in. The equivalent in scala.js are JS traits. You will want to make them
 non-native JS traits so you can instantiate them.
-
-```scala
-trait YourComponent1Props extends js.Object {
-  val className: js.UndefOr[String] = js.undefined
-}
-```
-
-Then you can define:
-
-```scala
-object SomeLib {
-  import ttg.react.elements._
-  // you can also use js.UndefOr[YourComponentProps] = js.undefined
-  def YourComponent1(props: YourComponent1Props = null)(children: ReactNode*) = 
-     wrapJsForScala(SomeLibNS, new Attrs(props).toJs, children:_*)
-}
-```
-
-You can use more fancy approaches to consolidating your imported component's
-properties into a js.Object, it's up to you.
 
 ## Managing Javascript Props
 
@@ -128,31 +104,24 @@ object AddressSummaryNS extends js.Object {
   val AddressSummary: ReactJSComponent = js.native
 }
 
+// model null explicitly or could use syntax extensions
+// such as `.toNonNullOption`.
+trait Props extends js.Object {
+   var className: js.UndefOr[String | Null]
+   var address: js.UndefOr[Address | Null]
+}
+
+trait Address extends js.Object {
+   // ...
+}
+
 object AddressSummary {
-  def make(className: Option[String] = None, address: Option[Address] = None) = {
-    val props = literal(
-      "className" -> className.orUndefined,
-      "address" -> address.orUndefined
-    )
-    elements.wrapJsForScala(AddressSummaryNS.AddressSummary, props)
-  }
+  def apply(props: Props) = React.createElement0(AddressSummaryNS.AddressSummary, props)
 }
 ```
 
-All we need is a `make` function that represents the API you choose to provide
-the scala.js code. In this case, we provide two parameters, wrapped in Option,
-that gives us the scala side. The code between the def and the call to
-`wrapJsForScala` translates between scala side objects and objects needed for
-javascript. In this case, since the def defines the strongly typed API, we use a
-literal to create the argument to the typescript component. We do not need a
-non-native JS trait since the trait would no be exposed. This is the choice made
-for this component. Another imported component may have so many parameters that
-we choose to expose a scala object or a non-native JS trait for the caller to
-use.
-
-With the JSConverters import, we can convert an `Option` to an `UndefOr` with
-`orUndefined`. A js literal is created as a js.Dynamic with js.Object hence its
-already a js.Object which is the parameter type in `wrapJsForScala`.
+The `0` indicates that `React.createElement` takes no children and is provided
+as API so you avoid appending a useless `()`.
 
 ## Typescript
 

@@ -10,14 +10,12 @@ import scala.scalajs.js
 import js.annotation._
 
 object Toolbar {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("@material-ui/core/Toolbar", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   @js.native
   sealed trait Variant extends js.Any

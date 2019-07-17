@@ -15,14 +15,13 @@ import vdom._
 import fabric.styling._
 
 object Layer {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/Layer", "Layer")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   trait Styles extends IStyleSetTag with Theme {
     var root: js.UndefOr[IStyle] = js.undefined

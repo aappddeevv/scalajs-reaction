@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object OverflowSet {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/OverflowSet", "OverflowSet")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
   @js.native
   trait IOveflowSet extends js.Object {
@@ -45,7 +43,7 @@ object OverflowSet {
     var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
   }
 
-  trait rops extends js.Object {
+  trait Props extends js.Object {
     var className: js.UndefOr[String] = js.undefined
     var items:  js.UndefOr[Seq[ItemProps]] = js.undefined
     var vertical: js.UndefOr[Boolean] = js.undefined

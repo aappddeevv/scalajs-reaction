@@ -14,14 +14,13 @@ import org.scalajs.dom._
 import vdom._
 
 object Typography {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/Typography", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   @js.native
   sealed trait Align extends js.Any

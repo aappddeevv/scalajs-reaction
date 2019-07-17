@@ -21,7 +21,7 @@ object Picker {
   }
 
   def apply[T](props: Props[T] = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait IOS extends View.Props {
     var itemStyle: js.UndefOr[ViewStyle] = js.undefined

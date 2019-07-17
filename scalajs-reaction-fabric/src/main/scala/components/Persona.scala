@@ -15,13 +15,11 @@ import vdom._
 import fabric.styling._
 
 object Persona {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Persona", "Persona")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props) 
+  def apply(props: Props = null) = React.createElement0(JS, props) 
 
   @js.native
   trait IPersona extends js.Object {
@@ -189,7 +187,7 @@ object Persona {
     @JSImport("office-ui-fabric-react/lib/Persona", "PersonaCoin")
     object JS extends ReactJsComponent
 
-    def apply(props: Props = null) = wrapJsForScala(JS, props)
+    def apply(props: Props = null) = React.createElement0(JS, props)
 
     trait Props extends SharedProps {
       var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined

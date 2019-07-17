@@ -14,14 +14,13 @@ import org.scalajs.dom._
 import vdom._
 
 object Button {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/Button", JSImport.Default)
   object ButtonJS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(ButtonJS, props, children:_*)
+    React.createElement(ButtonJS, props)(children:_*)
 
   @js.native
   sealed trait Color extends js.Any

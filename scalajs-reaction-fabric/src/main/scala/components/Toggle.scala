@@ -15,13 +15,11 @@ import vdom._
 import fabric.styling._
 
 object Toggle {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Toggle", "Toggle")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null) = wrapJsForScala(JS, props)
+  def apply(props: Props = null) = React.createElement0(JS, props)
 
   @js.native
   trait IToggle extends Focusable

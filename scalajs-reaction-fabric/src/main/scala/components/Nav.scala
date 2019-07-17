@@ -15,16 +15,14 @@ import vdom._
 import fabric.styling._
 
 object Nav {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Nav", "Nav")
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children: _*)
+    React.createElement(JS, props)(children: _*)
 
-  def apply(props: Props) = wrapJsForScala(JS, props)
+  def apply(props: Props) = React.createElement0(JS, props)
 
   @js.native
   trait INav extends js.Object {

@@ -19,7 +19,7 @@ object FlatList {
   object JS extends ReactJsComponent
 
   def apply[T](props: Props[T] = null) =
-    wrapJsForScala(JS, props)
+    React.createElement0(JS, props)
 
   trait Props[T] extends VirtualizedList.Props[T] {
     var ItemSeparatorComponent: js.UndefOr[ReactType] = js.undefined

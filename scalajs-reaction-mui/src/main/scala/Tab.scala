@@ -14,14 +14,13 @@ import org.scalajs.dom._
 import vdom._
 
 object Tab {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/Tab", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null) =
-    wrapJsForScala(JS, props)
+    React.createElement0(JS, props)
 
   @js.native
   sealed trait TextColor extends js.Any

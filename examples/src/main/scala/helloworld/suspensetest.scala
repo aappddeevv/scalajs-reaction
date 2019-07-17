@@ -2,7 +2,8 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg.react
+package examples
 package helloworld
 
 import concurrent._
@@ -24,10 +25,10 @@ import tags._
 
 object SuspenseTest {
 
-  val sfc1 = SFC0{ () => vdom.tags.div("Text from a SFC") }
+  val sfc1 = SFC0{ vdom.tags.div("Text from a SFC") }
 
-  val sfc2 = SFC0{ () => 
-    val (v,update) = React.useState[Int](0)
+  val sfc2 = SFC0{ 
+    val (v,update) = React.useStateDirect[Int](() => 0)
     div(
       p(s"Using hooks useState: You clicked $v times"),
       button(new ButtonProps {
@@ -78,10 +79,15 @@ object SuspenseTest {
       }
     })(n)
 
-  // test pure SFC!
-  val sfc3 = SFC1[js.Dynamic]{ obj =>
-    val initialCount: Int = obj.initialCount.asInt
-    val (state, dispatch) = React.useReducer[State, Action, Int](reducer, initialCount, State(_))
+  trait Props extends js.Object {
+    var initialCount: Int
+  }
+
+  // test pure SFC with js.Dynamic
+  val sfc3 = SFC1[Props]{ props =>
+    val initialCount: Int = props.initialCount
+    val (state, dispatch) =
+      React.useReducer[State, Action, Int](reducer, initialCount, State(_))
     Fragment(
       div(s"Use hooks with reducer: Count: ${state.count}"),
       widthS(button(new ButtonProps {
@@ -97,7 +103,7 @@ object SuspenseTest {
   }
 
   def useKeyPress(targetKey: String): Boolean = {
-    val (keyPressed, setKeyPressed) = React.useState[Boolean](false)
+    val (keyPressed, setKeyPressed) = React.useStateStrictDirect[Boolean](false)
 
     val downHandler: js.Function1[js.Dynamic, Unit] =
       p => if(p.key.asString == targetKey) setKeyPressed(true)
@@ -105,7 +111,7 @@ object SuspenseTest {
     val upHandler: js.Function1[js.Dynamic, Unit] =
       p => if(p.key.asString == targetKey) setKeyPressed(false)
 
-    React.useEffectMounting(() => {
+    React.useEffectMountingCb(() => {
       dom.window.addEventListener("keydown", downHandler)
       dom.window.addEventListener("keyup", upHandler)
       () => {
@@ -118,7 +124,7 @@ object SuspenseTest {
   }
 
   // from useHooks.com
-  val sfc4 = SFC0 { () =>
+  val sfc4 = SFC0 { 
     val happyPress = useKeyPress("h")
     val sadPress = useKeyPress("s")
     val robotPress = useKeyPress("r")
@@ -150,7 +156,7 @@ object SuspenseTest {
   //)
   }
 
-  val sfc6 = SFC0 { () =>
+  val sfc6 = SFC0 {
     val happyPress = useKeyPress("h")
     val sadPress = useKeyPress("s")
     val robotPress = useKeyPress("r")
@@ -167,14 +173,14 @@ object SuspenseTest {
     )    
   }
 
-  val jsc1: SFC0 = () => div("hello worl")
+  val jsc1 = SFC0 { div("hello world") }
 
   val jscomponent = SFC1[SProps]{ p =>
     div(s"End of Tests: ${p.label}")
   }
 
   // these don't really work
-  val componentSucceed = SFC0 { () =>
+  val componentSucceed = SFC0 {
     T.throwit(js.Promise.resolve[Boolean](true))
     "succeeded"
   }
@@ -239,7 +245,7 @@ object SuspenseTest {
     Fragment(
       sfc1,
       sfc2,
-      sfc3(lit("initialCount" -> 10)),
+      sfc3(new Props{ var initialCount = 10 }),
        "Keypress listener, press & hold key to display character: ",
       sfc4,
       sfc6,

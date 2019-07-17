@@ -29,7 +29,7 @@ object LabelAndChildNS extends js.Object {
 
 object JSAppImports {
   def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
-    wrapJsForScala(LabelAndChildNS.LabelAndChild, props, children: _*)
+    React.createElement(LabelAndChildNS.LabelAndChild, props)(children: _*)
 }
 @js.native
 @JSImport("JSExamples/store", JSImport.Namespace)
@@ -54,7 +54,8 @@ trait ReactMarkdownProps extends js.Object {
 }
 
 object ReactMarkdownC {
-  def make(props: ReactMarkdownProps = noProps()) = wrapJsForScala(ReactMarkdown, props)
+  def make(props: ReactMarkdownProps = noProps()) =
+    React.createElement0(ReactMarkdown, props)
 }
 
 @js.native
@@ -77,7 +78,8 @@ trait ReactWeatherDisplayProps extends js.Object {
 }
 
 object ReactWeatherDisplay {
-  def make(props: ReactWeatherDisplayProps = null) = wrapJsForScala(ReactWeatherDisplayJS, props)
+  def make(props: ReactWeatherDisplayProps = null) =
+    React.createElement0(ReactWeatherDisplayJS, props)
 }
 
 class PrettyJsonOptions(
@@ -128,7 +130,6 @@ class ReactContentLoaderOptions(
 ) extends js.Object
 
 object ReactContentLoaderComponents {
-  import ttg.react.elements.wrapJsForScala
   def BulletList(props: ReactContentLoaderOptions = null)(children: ReactNode*) =
-    wrapJsForScala(ReactContentLoader.List, props, children: _*)
+    React.createElement(ReactContentLoader.List, props)(children: _*)
 }

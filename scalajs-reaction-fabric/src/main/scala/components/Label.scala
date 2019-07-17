@@ -15,14 +15,12 @@ import vdom._
 import fabric.styling._
 
 object Label {
-  import ttg.react.elements.wrapJsForScala
-
   @js.native
   @JSImport("office-ui-fabric-react/lib/Label", "Label")
   object LabelJS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(LabelJS, props, children: _*)
+    React.createElement(LabelJS, props)(children: _*)
 
   trait Props
       extends LabelHTMLAttributes[html.Label]

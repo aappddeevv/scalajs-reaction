@@ -370,13 +370,13 @@ object StatelessComponent {
       case Some(thunk) => thunk.asInstanceOf[JSElementWrapped](key, ref)
       case _ =>
         //dom.console.log("creating element", c)
-        React.createElement(
+        React.createElement0(
           c.reactClassInternal,
           lit(
             "key" -> key.orUndefined,
             "ref" -> ref.orUndefined.asInstanceOf[js.Any],
             "scalaProps" -> c
-          ))()
+          ))//()
     }
   }
 
