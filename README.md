@@ -8,23 +8,9 @@ documentation](https://reasonml.github.io/reason-react) provides a good
 description of how this library works since this facade was designed to mimic
 that facade. While more advanced scala functionality could have been used, the
 scala.js implementation is kept intentionally similar to ReasonReact so that its
-documentation applies to this project. ReasonReact allows you to use a builtin
-reducer that is available in stateful components reducing or eliminating the
-need for other state management solutions like redux(js), mobx(js) or diode
-(scala).
+documentation applies to this project.
 
-This facade library is small, does not use advanced scala features and provides
-a different component API based on reason-react vs reactjs. It explicitly
-supports integrating into an existing javascript UI project or an entirely new
-one.
-
-You could always code a scala.js based react interface without using any facade
-library since scala.js supports non-native JS class definitions and the hook
-APIs are quite simple. scala.js's JS class support is extensive and well thought
-out. One of the reasons I liked the ReasonReact model is that it rethought the
-abstractions and API. Instead of trying to copy the reactjs API, it provides
-something smaller, easier to learn and emphasizes changes in a few dimensions of
-the reactive UI API problem--almost the very definition of "disruptive."
+This facade library is small and focuses on hooks.
 
 scalajs-reaction emphasizes integration into an existing project by making it
 easy to import/export components and fit into existing application including
@@ -38,11 +24,9 @@ scalajs-react for your solution.
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
 The library supports fragments, the new context provider and hooks. The facade's
-API roughly mimics ReasonReact 5.0'ish and the intent is to track that API and
-stick closely to it. Read those docs to understand this API and how it is
-different than the standard reactjs UI model. This facade supports
-react-native. The react-native use-case for scala.js is actually more compelling
-than for web applications due to scala.js bundling issues.
+API roughly mimics ReasonReact new approach based on hooks. This facade also
+supports react-native. The react-native use-case for scala.js is actually more
+compelling than for web applications due to scala.js bundling issues.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-reaction-app.g8` to
 create a new project.
@@ -50,8 +34,8 @@ create a new project.
 It's easy to create a component and render it:
 
 ```scala
-val HelloWorld: SFC0 = () => div("hello world")
-reactdom.createAndRenderWithId(HelloWorld(), "container")
+val HelloWorld = SFC0 { div("hello world") }
+reactdom.createAndRenderWithId(HelloWorld.run, "container")
 ```
 
 SFC0 does not do much other than ensure that the scala function on the right
@@ -66,30 +50,26 @@ approach to interop:
 trait Props extends js.Object {
     val name: String
 }
-val HelloWorld = SFC1[Props] { props =>
+val sfc = SFC1[Props] { props =>
   div("hello " + props.name)
 }
-```
 
-SFC1 says that the function component HelloWorld takes a single parameter, some
-type of P. You could use a plain scala object for the parameter however watch
-out for the default equals behavior for scala objects since scala and js worlds
-treat equality differently and react may cause the type information in your
-props to be lost (i.e. don't use scala objects).
+def apply(props: Props) = sfc(props)
+```
+SFC1 says that the function component HelloWorld takes a single parameter, of
+type Props.
 
 If you want to ensure your component only renders when the props change, use
-`React.memo()` to create your component.
+`React.memo()` to create your component. React.memo uses Object.is for equality
+checking--which means it checks for exactly the same object.
 
 ```scala
-trait Props extends js.Object {
-    var name: String
-}
-val HelloWorld = SFC1[Props] { props =>
+val sfc = SFC1[Props] { props =>
     div("hello " + props.name)
 }.memo
 ```
 
-You can use hooks in your function to add state and other effects.
+Use hooks in your function to add state and other effects.
 
 The older "record" based API is frozen, just like in the ReasonReact
 product. Use hooks. The hooks implementation in scala.js is only about 30 lines
@@ -149,187 +129,7 @@ npm i --save react
 npm i --save react-dom
 ```
 
-The latest react is recommended, v16.8.
-
-### Create a Component (Warning! Frozen API below.)
-
-Just use hooks. It's easier!
-
-You can create the same component using the ReasonReact-like API for a stateless
-component is:
-
-```scala
-object HelloWorld {
-  val c = statelessComponent("HelloWorld")
-  import c.ops._
-  def apply() = render { self => s"hello world" }
-}
-reactdom.createAndRenderWithId(Helloworld(), "container")
-```
-
-The ReasonReact-like facade is more valuable when you introduce state-holding
-components since every component has a builtin reducer to manage state and you
-use your favorite effects library. 
-
-You can easily create a component and render it:
-
-```scala
-object HelloWorld {
-  val Name = "HelloWorld"
-  val c = statelessComponent(Name)
-  import c.ops._
-  // Classic "make" pattern from ReasonReact.
-  // To create a comonent HelloWorld.make(yourNameOpt)
-  def make(name: Option[String]) =
-    render{ self =>
-        div("hello world" + name.map(" and welcome " + _).getOrElse(""))
-      }
-  
-  // apply version with help render method shortcut for stateless components
-  // Now you can use HelloWorld(yourNameOpt)
-  def apply(name: Option[String]) = 
-    render { self =>
-      div("hello world" + name.map(" and welcome " + _).getOrElse(""))
-    }
-}
-
-object MyWebApp {
-   def app() = {
-     ReactDom.renderToElementId(
-      HelloWorld.make(Some("John")),
-      "container"
-      )
-   }
-}
-```
-
-You can add a className to the div using: `div(new DivProps { className =
-"divClassName" })(...children...)`. `DivProps` is a non-native JS trait that
-ensure you only enter valid div props. Even simpler, use
-`divWithClassname(cname), children...)`.
-
-The "render" method copies the internal proxy component and adds a callback from
-reactjs to scala. If you need to use other lifecycle methods, use the full
-syntax as the render syntax is just a shortcut to:
-
-```scala
-    def make(name: Option[String]) =
-      c.copy(new methods  {
-        // required methods like render are a val in the methods trait
-        val render = self => { ... }
-        didMount = js.defined{ oldNewSelf => 
-            ... 
-        } 
-      })
-
-```
-
-The `val` is required on required methods, such as render, you must define it
-otherwise you will get a syntax error. Optional methods are defined as shown
-immediately above. Depending on the type of component e.g. stateless vs reducer,
-different methods are required. For example, with a reducer component, the
-reducer method is required and hence `val reducer = ...` must be declared.
-
-Reason-react uses `make` for its function name. However, I would just use
-`apply` which is more idiomatic scala.
-
-### Exporting a Component to Javascript
-
-If you want to use it in javascript or have a different "make" interface, define
-the export and map the properties:
-
-```scala
-// optionally define a trait to make it easier to typecheck component parameters
-trait HelloWorldProps extends js.Object {
-  var name: js.UndefOr[String] = js.undefined
-}
-
-object HelloWorld {
-...
-
-  // Exported to javascript world: <HelloWorld name={"John"} />
-  @JSExportTopLevel("HelloWorld")
-  private val jsComponent =
-    HelloWorld.wrapScalaForJs((jsProps: HelloWorldProps) => make(jsProps.name.toOption))
-```
-
-You can define your own "make" API to be whatever suits you:
-
-```scala
-  // Alternative scala `make` definition, render must convert to scala objects if needed
-  // and internal scala code would need to create a HelloWorldProps object.
-  def make2(props: HelloWorldProps = noProps()) =
-    c.render{ self =>
-        div(
-          "hello world" + props.name.toOption.map(" and welcome " + _).getOrElse("")
-        )
-      }
-```
-
-Attributes are type checked properly and restricted to what you
-specified. Here's how you would use it:
-
-```scala
-  HelloWorld.make2(new HelloWorldProps { name = "John" })
-```
-
-Most times the javascript interop has to deal with optional parameters and the conversion
-from jsProps to `make` parameters is much more messy. If you do not need to use
-the class in javascript, you can use standard scala parameters conventions as in `make`.
-
-### Importing a Component from Javascript
-
-If you need to import a javascript class, you can use the standard scala.js
-machinery to import it. The component type should be `ReactJsComponent`.
-
-```scala
-@js.native
-@JSImport("some-package", JSImport.Namespace)
-object SomePackageNS extends js.Object {
-  val Label: ReactJsComponent = js.native
-}
-object SomePackage {
-  trait Props extends js.Object {
-     // ...
-  }
-
-  def Label(props: Props*)(children: ReactNode*) = 
-    React.createElement(SomePackageNS.Label, props.toJs)(children:_*)
-}
-```
-
-As with any scala side component, you can adapt the scala side API to be pretty
-much anything:
-
-```scala
-object SomePackage {
-  // Use a non-native JS trait
-  def Label(props: js.UndefOr[LabelProps])(children: ReactNode*) = 
-     React.createElement(SomePackageNS.Label, props.getOrElse(noProps))(children:_*)
-
-  trait LabelProps extends HTMLAttrbutes[dom.html.Label] { // optionally extend HTMLAttributes[]
-   // ...
-  }
-  
-  // or
-  def Label(someProp: String)(children: ReactNode*) = 
-     // createProps a function you write to convert the single scala someProp parameter to a js.Object.
-     React.createElement(SomePackageNS, createProps(someProp))(children:_*)
-    
-```
-
-For importing, you need to call `React.createElement` at some point. You are
-free to use the model above for attributes and children or you can use a
-dedicated non-native JS trait or use whatever suits your application for
-scala-side API. You could also define the component to take `Attr*` props, a
-non-native JS trait or even `js.Dynamic`.
-
-Since functions are used, there are many advanced scala and scala.js patterns
-you can use to alter the way that components are created and the API to create
-elements.For example, you could also use type classes to change the attributes
-to a js.Object since all you need is some type of "writer."
-
-There is no JSX support. The function-call scala syntax is used instead.
+React 16.8 (with hooks) is required.
 
 ### Styling
 
