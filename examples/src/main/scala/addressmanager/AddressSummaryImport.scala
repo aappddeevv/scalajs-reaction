@@ -24,6 +24,6 @@ object AddressSummary {
       "className" -> className.orUndefined,
       "address"   -> address.orUndefined
     )
-    elements.wrapJsForScala(AddressSummaryNS.AddressSummary, props)
+    React.createElement0(AddressSummaryNS.AddressSummary, props)
   }
 }

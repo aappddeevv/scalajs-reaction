@@ -170,10 +170,9 @@ object ToDos {
     val (state, dispatch) =
       React.useReducer[State,Action](reducer, State(props.todos, None))
     // if the input is added as a todo or todo remove, reset focus
-    React.useEffect(
-      () => ifield.current.foreach(_.focus()),
-      js.defined(js.Array(state.todos.length))
-    )
+    React.useEffect(state.todos.length){() =>
+      ifield.current.foreach(_.focus())
+    }
 
     val cn = getClassNames(resolve[StyleProps, Styles](
       new StyleProps {

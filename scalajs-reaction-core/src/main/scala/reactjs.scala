@@ -133,7 +133,8 @@ object ReactJS extends ReactJS with Hooks
  * Some of the *N() hook functions like useCallback may be quite inefficient in
  * their conversion from scala functions to js functions and back. Perhaps we
  * need another parallel API function set with the js functions being assumed
- * for those code bases that already have the js versions.
+ * for those code bases that already have the js versions. Note that useCallback
+ * returns a js function so it can be used as a dependency.
  */
 trait React {
 
@@ -226,6 +227,10 @@ trait React {
   def useEffect(didUpdate: EffectArg, dependencies: Dependencies) =
     ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies)
 
+  /** Effect is run when dependencies change. */
+  def useEffect(dependencies: js.Any*)(didUpdate: EffectArg) =
+    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies.toJSArray)
+
   /** Effect is run at mount/unmount time with `[]` as the 2nd argument. */
   def useEffectMounting(didUpdate: EffectArg) =
     ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), emptyDependencies)
@@ -261,33 +266,33 @@ trait React {
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
   /** Default API is for no-arg callback. */
-  def useCallback[T](callback: () => T, dependencies: Dependencies): () => T =
-    js.Any.toFunction0[T](ReactJS.useCallback(
-      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]])
+  def useCallback[T](callback: () => T, dependencies: Dependencies): js.Function0[T] =
+  ReactJS.useCallback(
+      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
 
-  def useCallback0[T](callback: () => T, dependencies: Dependencies): () => T =
-    js.Any.toFunction0[T](ReactJS.useCallback(
-      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]])
+  def useCallback0[T](callback: () => T, dependencies: Dependencies): js.Function0[T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
 
-  def useCallback1[A1, T](callback: A1 => T, dependencies: Dependencies): A1 => T =
-    js.Any.toFunction1[A1,T](ReactJS.useCallback(
-      js.Any.fromFunction1[A1,T](callback), dependencies).asInstanceOf[js.Function1[A1,T]])
+  def useCallback1[A1, T](callback: A1 => T, dependencies: Dependencies): js.Function1[A1,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction1[A1,T](callback), dependencies).asInstanceOf[js.Function1[A1,T]]
 
-  def useCallback2[A1, A2, T](callback: (A1,A2) => T, dependencies: Dependencies): (A1,A2) => T =
-    js.Any.toFunction2[A1,A2,T](ReactJS.useCallback(
-      js.Any.fromFunction2[A1,A2,T](callback), dependencies).asInstanceOf[js.Function2[A1,A2,T]])
+  def useCallback2[A1, A2, T](callback: (A1,A2) => T, dependencies: Dependencies): js.Function2[A1,A2,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction2[A1,A2,T](callback), dependencies).asInstanceOf[js.Function2[A1,A2,T]]
 
-  def useCallback3[A1, A2, A3, T](callback: (A1,A2,A3) => T, dependencies: Dependencies): (A1,A2,A3) => T =
-    js.Any.toFunction3[A1,A2,A3,T](ReactJS.useCallback(
-      js.Any.fromFunction3[A1,A2,A3,T](callback), dependencies).asInstanceOf[js.Function3[A1,A2,A3,T]])
+  def useCallback3[A1, A2, A3, T](callback: (A1,A2,A3) => T, dependencies: Dependencies): js.Function3[A1,A2,A3,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction3[A1,A2,A3,T](callback), dependencies).asInstanceOf[js.Function3[A1,A2,A3,T]]
 
-  def useCallback4[A1, A2, A3, A4, T](callback: (A1,A2,A3,A4) => T, dependencies: Dependencies): (A1,A2,A3,A4) => T =
-    js.Any.toFunction4[A1,A2,A3,A4,T](ReactJS.useCallback(
-      js.Any.fromFunction4[A1,A2,A3,A4,T](callback), dependencies).asInstanceOf[js.Function4[A1,A2,A3,A4,T]])
+  def useCallback4[A1, A2, A3, A4, T](callback: (A1,A2,A3,A4) => T, dependencies: Dependencies): js.Function4[A1,A2,A3,A4,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction4[A1,A2,A3,A4,T](callback), dependencies).asInstanceOf[js.Function4[A1,A2,A3,A4,T]]
 
-  def useCallback5[A1, A2, A3, A4, A5, T](callback: (A1,A2,A3,A4,A5) => T, dependencies: Dependencies): (A1,A2,A3,A4,A5) => T =
-    js.Any.toFunction5[A1,A2,A3,A4,A5,T](ReactJS.useCallback(
-      js.Any.fromFunction5[A1,A2,A3,A4,A5,T](callback), dependencies).asInstanceOf[js.Function5[A1,A2,A3,A4,A5,T]])
+  def useCallback5[A1, A2, A3, A4, A5, T](callback: (A1,A2,A3,A4,A5) => T, dependencies: Dependencies): js.Function5[A1,A2,A3,A4,A5,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction5[A1,A2,A3,A4,A5,T](callback), dependencies).asInstanceOf[js.Function5[A1,A2,A3,A4,A5,T]]
 
   def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
 

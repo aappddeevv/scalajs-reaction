@@ -39,24 +39,27 @@ object AddressDetail {
   import examples.Contexts._
   import context._
 
-  val c = statelessComponent("AddressDetail")
-  import c.ops._
+  val Name = "AddressDetail"
 
-  def apply(address: Option[Address]) = render{ self =>
-    logContext.consumer {
-      log =>
-      //js.Dynamic.global.console.log("context: log function:", log)
-      log(address.getOrElse("<no detail address provided>"))
-      div(new DivProps { className = amstyles.detail.asString })(
-        Label()(s"""Name: ${address.flatMap(_.name.toOption).getOrElse("")}"""),
-        Label()(s"""City: ${address.flatMap(_.city.toOption).getOrElse("")}"""),
-        Label()(s"""State/Province: ${address
+  trait Props extends js.Object {
+    val address: Option[Address]
+  }
+
+  def apply(address_ : Option[Address]) = sfc(new Props{ val address = address_ })
+
+  val sfc = SFC1[Props]{ props =>
+    React.useDebugValue(Name)
+    val log = React.useContext[ConsoleLog](Contexts.logContext)
+    log(props.address.getOrElse("<no detail address provided>"))
+    div(new DivProps { className = amstyles.detail.asString })(
+      Label()(s"""Name: ${props.address.flatMap(_.name.toOption).getOrElse("")}"""),
+      Label()(s"""City: ${props.address.flatMap(_.city.toOption).getOrElse("")}"""),
+      Label()(s"""State/Province: ${props.address
                   .flatMap(_.stateorprovince.toOption)
                   .getOrElse("")}"""),
-        Label()(s"""Zipcode: ${address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
-        Label()(s"""Country: ${address.flatMap(_.country.toOption).getOrElse("")}"""),
-      )
-    }
+      Label()(s"""Zipcode: ${props.address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
+      Label()(s"""Country: ${props.address.flatMap(_.country.toOption).getOrElse("")}"""),
+    )
   }
 }
 
@@ -68,47 +71,50 @@ object AddressList {
     lit("key" -> "id", "name"   -> "Id", "fieldName"   -> "customeraddressid", "minWidth" -> 150),
   )
 
-  val c = statelessComponent("AddressList")
-  import c.ops._
+  val Name = "AddressList"
 
-  def apply(
-      sel: ISelection[Address],
-      addresses: AddressList = emptyAddressList,
-      activeCB: Option[Address] => Unit,
-    ifx: Option[Int] = None,
-  shimmer: Boolean = false) =
-    render { self =>
-      val listopts = new Details.Shimmered.Props[Address] {
-        items = addresses.toJSArray
-        className = amstyles.list.asString
-        selectionPreservedOnEmptyClick = true
-        columns = icolumns
-        getKey = getAddressKey
-        //initialFocusedIndex = 2 //ifx.orUndefined
-        onActiveItemChanged = js.defined({ (aundef, _, _) =>
-          activeCB(aundef.toNonNullOption)
-        })
-        /* or
-         onActiveItemChanged = { (aundef, _, _) =>
-         activeCB(aundef.toNonNullOption)
-         }: OAIC
-         */
-        selection = sel
-        layoutMode = Details.List.LayoutMode.fixedColumns
-        constrainMode = Details.List.ConstrainMode.unconstrained
-        // onRenderDetailsHeader = js.defined { (props, defaultRender) =>
-        //   Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
-        // }
-        onShouldVirtualize = js.defined(_ => false)
-        //enableShimmer = shimmer
-        //shimmerLines = 5
-      }
-      div.merge(lit("data-is-scrollable" -> true))(new DivProps {
-        className = amstyles.master.asString
-      })(
-        ScrollablePane()(Details.Shimmered[Address](listopts)())
-      )
+  trait Props extends js.Object {
+    var sel: ISelection[Address]
+    var addresses: AddressList
+    var activeCB: Option[Address] => Unit
+    var ifx: Option[Int]
+    var shimmer: Boolean
+  }
+
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props]{ props =>
+    val listopts = new Details.Shimmered.Props[Address] {
+      items = props.addresses.toJSArray
+      className = amstyles.list.asString
+      selectionPreservedOnEmptyClick = true
+      columns = icolumns
+      getKey = getAddressKey
+      //initialFocusedIndex = 2 //ifx.orUndefined
+      onActiveItemChanged = js.defined({ (aundef, _, _) =>
+        props.activeCB(aundef.toNonNullOption)
+      })
+      /* or
+       onActiveItemChanged = { (aundef, _, _) =>
+       activeCB(aundef.toNonNullOption)
+       }: OAIC
+       */
+      selection = props.sel
+      layoutMode = Details.List.LayoutMode.fixedColumns
+      constrainMode = Details.List.ConstrainMode.unconstrained
+      // onRenderDetailsHeader = js.defined { (props, defaultRender) =>
+      //   Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
+      // }
+      onShouldVirtualize = js.defined(_ => false)
+      //enableShimmer = shimmer
+      //shimmerLines = 5
     }
+    div.merge(lit("data-is-scrollable" -> true))(new DivProps {
+      className = amstyles.master.asString
+    })(
+      ScrollablePane()(Details.Shimmered[Address](listopts)())
+    )
+  }
 }
 
 /**
@@ -250,8 +256,8 @@ object AddressManager {
       val initialState =
         self => {
           val selcb = () => {
-            self.handle { cbself =>
-              println(
+            self.handle { cbself => 
+             println(
                 s"AddressManager.selectionChanged: ${PrettyJson.render(cbself.state.selection.getSelection())}")
             // just log it, but here's how we could change it if we had a SelectionChanged event
             //self.handle { cbself => cbself.send(SelectionChanged(cbself.state.selection)) }
@@ -320,17 +326,23 @@ object AddressManager {
 
       val render =
         self => {
-          val ifx = lastActiveAddressId.map { id =>
+          val ifx_ = lastActiveAddressId.map { id =>
             self.state.addresses.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
           }
-          println(s"AddressManager.render:initial focused index: ${ifx}")
+          println(s"AddressManager.render:initial focused index: ${ifx_}")
           val selAddrOpt = toSafeOption(vm.active)
-          val shimmer = self.state.fetching
+          val shimmer_ = self.state.fetching
 
           divWithClassname(cx(amstyles.component, className.getOrElse(null)),
             CommandBar(cbopts(self))(),
             divWithClassname(amstyles.masterAndDetail.asString,
-              AddressList(self.state.selection, self.state.addresses, activecb(self), ifx, shimmer=shimmer),
+              AddressList(new AddressList.Props {
+                var sel = self.state.selection
+                var addresses = self.state.addresses
+                var activeCB = activecb(self)
+                var ifx = ifx_
+                var shimmer = shimmer_
+              }),
               AddressDetail(selAddrOpt),
             ),
             divWithClassname(amstyles.footer.asString,

@@ -61,14 +61,14 @@ object Pages {
 
   val defaultTodos = Seq(ToDo(1, "Call Fred"))
 
-  def labelAndChild(name: String, c: Component) =
+  def labelAndChild(name: String, c: ReactNode) =
     page(LabelAndChild(new LabelAndChildProps { label = "Wrapped in typescript" })(c))
 
   def graphPage() =
     page(Graph())
 
   def pressurePage() =
-    page(atmoache.app.make())
+    page(atmoache.app())
 
   def todoPage() =
     page(Fragment(

@@ -18,63 +18,67 @@ import react.implicits._
 import vdom._
 import tags._
 
-/** Props for make2 outside the HellowWorld object. */
+/** Props for make2 outside the HellowWorld object.  By using js.UndefOr for the
+ * defintion, a SFC taking these props can easily interop with the js world.
+ */
 trait HelloWorldProps extends js.Object {
   var name: js.UndefOr[String] = js.undefined
 }
 
 /**
-  * Demonstrates converting js side props to scala props. `make` could also take
-  * HelloWorldProps as well directly but then you have to handle conversions
-  * inside the `make` function.
+  * Demonstrates interop and general props management.
   */
 object HelloWorld {
-  val c = statelessComponent("HelloWorld")
-  import c.ops._
+  val Name = "HelloWorld"
+
+  trait Props extends js.Object {
+    val name: Option[String]
+  }
+
+  def apply() = sfc(new Props { val name = None })
+  def apply(name_ : Option[String]) = sfc(new Props { val name = name_ })
 
   /** No props data structure, just parameters. */
-  def apply(name: Option[String] = None) =
-    render { self =>
-      div("hello world" + name.map(": " + _).getOrElse(""))
+  val sfc = SFC1[Props] { props =>
+    React.useDebugValue(Name)
+    div("hello world " + props.name.map(": " + _).getOrElse(""))
+  }
+
+  trait Props2 extends js.Object {
+    val name: Option[String]
+  }
+
+  def withMount(name_ : Option[String] = None) =
+    sfcWithMount(new Props2 { val name = name_})
+
+  val sfcWithMount = SFC1[Props2] { props =>
+    React.useEffectMounting{ () =>
+      println("HelloWorld.makeWithMount: didMount was called!")
     }
+    div("hello world " + props.name.map(": " + _).getOrElse(""))
+  }
 
-  def withMount(name: Option[String] = None) =
-    copyWith(new methods {
-      didMount = js.defined { self =>
-        println("HelloWorld.makeWithMount: didMount was called!")
-      }
-      val render = self => {
-        div("hello world" + name.map(": " + _).getOrElse(""))
-      }
-    })
-
-  // Exported to javascript world
+  // Exported to javascript world under th nam <modulename>.HelloWorld
   @JSExportTopLevel("HelloWorld")
-  private val jsComponent =
-    c.wrapScalaForJs((jsProps: HelloWorldProps) => apply(jsProps.name.toOption))
+  val exported = sfc2.run
 
-  /**
-    * Alternative scala `make` definition, render must convert to scala objects
-    * if needed and internal scala code would need to create a HelloWorldProps
-    * object. To handle children use `extractChildren(props)` and pass to a
-    * version of "make" that takes props.
-    */
-  def make2(props: HelloWorldProps) =
-    render { self =>
-      div("hello world" + props.name.toOption.map(": " + _).getOrElse(""))
-    }
+  def make2(props: HelloWorldProps) = sfc2(props)
 
+  lazy val sfc2 = SFC1[HelloWorldProps]{ props =>
+    div("hello world (2) " + props.name.toOption.map(": " + _).getOrElse(""))
+  }
 
-  // This totally the wrong place to put the ref. This should be put into State,
-  // perhaps in a Box, which in reasonreact are really instance vars.
-  val hwref = ReactJS.createRef[dom.html.Div]()
+  trait Props3 extends js.Object {
+    val content: String
+  }
 
-  def make3(content: String) =
-    copyWith(new methods { 
-      val render = self => {
-        div(new DivProps {
-          ref = hwref
-        })(content)
-      }
-    })
+  def make3(props: Props3) = sfc3(props)
+  def make3(c: String) = sfc3(new Props3 { val content = c })
+
+  val sfc3 = SFC1[Props3]{ props =>
+    val hwref = React.useRef[dom.html.Div](null)
+    div(new DivProps {
+      ref = hwref
+    })(props.content)
+  }
 }

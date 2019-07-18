@@ -78,7 +78,7 @@ trait ReactWeatherDisplayProps extends js.Object {
 }
 
 object ReactWeatherDisplay {
-  def make(props: ReactWeatherDisplayProps = null) =
+  def apply(props: ReactWeatherDisplayProps = null) =
     React.createElement0(ReactWeatherDisplayJS, props)
 }
 

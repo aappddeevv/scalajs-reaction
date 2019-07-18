@@ -16,6 +16,10 @@ In the next section, we show the stateless component. Look at the
 demo code for an example of using a reducer component, a component that manages
 state.
 
+Some good tutorials on react hooks and how to use them can be found at:
+* https://overreacted.io/a-complete-guide-to-useeffect
+* https://www.robinwieruch.de/react-hooks-fetch-data
+
 ## Stateless Component Approach #1 (Easiest)
 
 The easiest approach to creating a component is to use a simple function
@@ -148,6 +152,7 @@ object Component {
     // or you could do a new Props {} but literal is easier here.
   
   val sfc = SFC1[Props] { props =>
+    // ...
   }
   
 }

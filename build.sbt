@@ -104,6 +104,9 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
   ),
+  dependencyOverrides ++= Seq(
+    // none
+  ),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
   autoAPIMappings := true,
 )

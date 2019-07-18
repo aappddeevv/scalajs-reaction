@@ -26,13 +26,8 @@ package object react {
   /** Undefined dependencies. */
   val undefinedDependencies = js.undefined
 
-  /** Create a watchlist from a scala iterable. Helps with type inference. The
-   * function takes an array of any type of scala.Any which may or may not make
-   * sense for how hooks calculates changes in the array during dependency
-   * check. You do not need to do this if you just create a js.Array directly.
-   */
-  def dependencies(watchList: Iterable[scala.Any]): js.Array[js.Any] =
-    watchList.toJSArray.asInstanceOf[js.Array[js.Any]]
+  /** Create a dependencies array. */
+  def dependencies(values: js.Any*): Dependencies = values.toJSArray
 
   /** Effect hooks simplest arg. */
   type EffectArg = () => Unit
@@ -71,8 +66,8 @@ package object react {
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E|Null, Unit]
 
-  /** Combine the callback and the createRef models. */
-  type Ref[E] = RefCb[E] | ReactRef[E]
+  /** Combine the callback and the createRef models. Also include the newer hooks model. */
+  type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
 
   /** For use with useRef() hook which is slightly different than the mutable Ref. */
   trait MutableRef[T] extends js.Object {

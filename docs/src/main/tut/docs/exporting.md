@@ -18,12 +18,14 @@ Here's the API. This is all you need to do:
 object MyComponent {
   trait Props extends js.Object { ... }
   def apply(props: Props) = ...
-  val sfc = SFC1[Props] { props => ... }
+  lazy val sfc = SFC1[Props] { props => ... }
   
   @JSExportTopLevel("MyComponent") // or whatever name you want
   val exported = sfc.run
 }
 ```
+Notice that the value sfc is declared lazy so that you do not have an
+initialization order issue with the exported declaration.
 
 The export can be placed anywhere in the code but it was included in the
 Component object for convenience.
