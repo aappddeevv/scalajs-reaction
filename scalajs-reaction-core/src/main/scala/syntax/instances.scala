@@ -9,17 +9,6 @@ import scala.scalajs.js
 import js._
 import js.JSConverters._
 
-/** Convert components to elements. Components are like templates that describe
-  * how to create an element. Elements are instances. These implicits are key
-  * for ease-of-use because they take a component into an element automatically
-  * much like JSX syntax.
- */
-trait Component2Elements {
-  implicit def c2E(c: Component): ReactElement = elements.element(c)
-  // implicit def cSeq2E(c: Seq[Component]): ReactNode =
-  //   arrayToElement(c.map(elements.element(_)))
-}
-
 /** Mostly obvious converters so you can have a variety of children types and
  * have them convert to ReactNode/ReactElements as needed. Watch out for values
  * that need to pass through 2 implicits since double implicit resolution is not
@@ -78,7 +67,7 @@ trait ValueConverters {
   implicit def _optionStringToUndefOrString(n: Option[String]): js.UndefOr[String] = n.orUndefined
 }
 
-trait AllInstances extends Component2Elements with ValueConverters
+trait AllInstances extends ValueConverters
 
 /** Instances is the wrong concept here as these are not typeclass
   * instances--but close enough as they are not syntax extensions "'element'
@@ -86,6 +75,5 @@ trait AllInstances extends Component2Elements with ValueConverters
   */
 object instances {
   object all       extends AllInstances
-  object component extends Component2Elements
   object value     extends ValueConverters
 }

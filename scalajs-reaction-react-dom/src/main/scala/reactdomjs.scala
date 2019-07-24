@@ -13,6 +13,11 @@ import js.JSConverters._
 
 import org.scalajs.dom
 
+@js.native
+trait Renderable extends js.Object {
+  def render(node: ReactNode): Unit = js.native
+}
+
 trait CreateRootOptions extends js.Object {
   var hydrate: js.UndefOr[Boolean] = js.undefined
 }
@@ -30,6 +35,11 @@ private[react] trait ReactDOMJS extends js.Object {
   def unmountComponentAtNode(el: dom.Element): Boolean                    = js.native
   def findDOMNode(componentOrElement: js.Any): dom.Element             = js.native
   val version: String = js.native
+  def hydrate(element: dom.html.Element, container: dom.html.Element, callback: () => Unit): Unit = js.native
+  def unstable_createRoot(
+    rootElement: dom.html.Element,
+    options: js.UndefOr[CreateRootOptions] = js.undefined
+  ): Renderable = js.native
 }
 
 /** react-dom scala.js import. */

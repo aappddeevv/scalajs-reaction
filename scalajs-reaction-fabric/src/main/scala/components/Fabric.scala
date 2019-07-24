@@ -15,7 +15,6 @@ import vdom._
 import fabric.styling._
 
 object Fabric {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/Fabric", "Fabric")

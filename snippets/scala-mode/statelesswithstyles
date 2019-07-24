@@ -20,18 +20,19 @@ trait ${1}Props extends js.Object {
 }
 
 object ${1:enumerate} {
-  val c = ttg.react.elements.statelessComponent("$1")
-  import c.ops._
+  val Nam = "$1"
 
-  def make(props: js.UndefOr[${1}Props] = js.undefined) =
-    c.copy(new methods {
-        val render = self => {
-           val styles = getStyles(props.map(_.styles).getOrElse(js.undefined))
-           val cn = getClassNams(props.map(_.className), styles)
-           div( new IDivProps {
-                className = cn.root
-           })("component $1")
-        }
-    })
+  trait Props extends js.Object {
+  }
+
+  def apply(props: Props) = sfc1(props)
+
+  val sfc = SFC1[Props] { props =>
+     val styles = getStyles(props.map(_.styles).getOrElse(js.undefined))
+     val cn = getClassNams(props.map(_.className), styles)
+     div(new IDivProps {
+         className = cn.root
+     })("component $1")
+   }
 
 }

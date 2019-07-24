@@ -32,19 +32,18 @@ object $1 {
   def getClassNames(ss: Styles) = Styling.mergeStyleSets[ClassNames](ss)
 
   val Name = "$1"
-  val c = statelessComponent(Name)
-  import c.ops._
 
-  def apply(
-    rootClassName: js.UndefOr[String] = js.undefined,
-    styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined  
-  ) =
-    render { self =>
-        val cn = getClassNames(resolve[StyleProps, Styles](new StyleProps {
-            className = rootClassName
-        }, getStyles, styles))
-          
-        $0div("component $1")
-        }
-    }
+  trait Props extends js.Object {
+    var rootClassName: js.UndefOr[String] = js.undefined,
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined  
+  }
+
+  def apply(props: Props) = sfc(props)
+    
+  val sfc = SFC1[Props] { props =>
+     val cn = getClassNames(resolve[StyleProps, Styles](new StyleProps {
+         className = props.rootClassName
+    }, getStyles, styles))
+    $0div("component $1")
+  }
 }

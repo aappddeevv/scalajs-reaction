@@ -51,6 +51,17 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
   def filterEmpty = a.filter(str => str != "" && str != null)
 }
 
+// final case class JsUndefOrAOrNullOps[A](val a: UndefOr[A|Null])
+//     extends UndefOrCommon[A|Null] {
+
+//   /** Push null into UndefOr as undefined if its null, otherwise A. */
+//   def flatten: js.UndefOr[A] = a.flatMap(_.asInstanceOf[js.Any] match {
+//     // could not use the other implicit in OrNullOps :-(
+//     case null => js.undefined
+//     case x => js.defined(x.asInstanceOf[A])
+//   })
+// }
+
 final case class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
   def orTrue: Boolean  = a.getOrElse(true)
   def orFalse: Boolean = a.getOrElse(false)
@@ -63,5 +74,6 @@ final case class JsUndefOrOps[A](a: UndefOr[A]) extends UndefOrCommon[A] {}
 trait JsUndefOrSyntax {
   implicit def jsUndefOrOpsSyntax[A](a: UndefOr[A])     = JsUndefOrOps(a)
   implicit def jsUndefOrStringOps(a: UndefOr[String])   = JsUndefOrStringOps(a)
+//  implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
   implicit def jsUndefOrBooleanOps(a: UndefOr[Boolean]) = JsUndefOrBooleanOps(a)
 }

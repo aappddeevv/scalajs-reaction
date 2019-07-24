@@ -67,10 +67,16 @@ object TextField {
     //var value: js.UndefOr[String] = js.undefined
     var errorMessage: js.UndefOr[String]                       = js.undefined
     // should this be js.UndefOr[String] ?
+    //var readOnly: js.UndefOr[Boolean] = js.undefined
+    //var disabled: js.UndefOr[Boolean] = js.undefined
     @JSName("onChange")
     var onChangeInput: js.UndefOr[js.Function2[SyntheticFormEvent[html.Input], String, Unit]]      = js.undefined
     @JSName("onChange")
+    var onChangeInput1: js.UndefOr[js.Function1[SyntheticFormEvent[html.Input], Unit]]      = js.undefined    
+    @JSName("onChange")
     var onChangeTextArea: js.UndefOr[js.Function2[SyntheticFormEvent[html.TextArea], String, Unit]]      = js.undefined
+    @JSName("onChange")
+    var onChangeTextArea1: js.UndefOr[js.Function1[SyntheticFormEvent[html.TextArea], Unit]]      = js.undefined
     // onChanged is deprecated
     var onBeforeChange: js.UndefOr[js.Function1[String, Unit]] = js.undefined
     /** error message, value */
@@ -87,6 +93,11 @@ object TextField {
     var componentId: js.UndefOr[String]         = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] =
       js.undefined
+
+    //var autoComplete: js.UndefOr[String] = js.undefined
+    var mask: js.UndefOr[String] = js.undefined
+    var maskChar: js.UndefOr[String] = js.undefined
+    var maskFormat: js.UndefOr[js.Dictionary[js.RegExp]] = js.undefined
   }
 
 }

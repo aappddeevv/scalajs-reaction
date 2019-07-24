@@ -40,15 +40,6 @@ import cytoscape._
   * really a closure around that so you should feel free to mutate it.
   */
 object Graph {
-  sealed trait Action
-
-  /** Use Box? Probably does not matter much given the way that Graph is created
-    * given an element.
-   */
-  case class State(
-      var ref: Option[dom.html.Div] = None,
-      var cy: Option[Graph] = None,
-  )
 
   Cytoscape.use(Dagre)
   Cytoscape.use(Cola)
@@ -83,13 +74,6 @@ object Graph {
   )
 
   val Name = "Graph"
-  val c = reducerComponent[State, Action](Name)
-  import c.ops._
-
-  def destroy(s: State) = s.cy.foreach(_.destroy())
-
-  def build(s: State) =
-    s.cy = s.ref.flatMap(g => Option(mkGraph(g)))
 
   def mkGraph(el: dom.html.Element) =
     Cytoscape(new CytoscapeOptions {
@@ -99,11 +83,11 @@ object Graph {
       layout = colaLayout
       style = js.Array(
         jsobj("selector" -> "node",
-              "css" -> jsobj(
-                "content"     -> js.Any.fromFunction1((e: Element) => e.data("id")),
-                "text-valign" -> "center",
-                "text-halign" -> "center"
-              )),
+          "css" -> jsobj(
+            "content"     -> js.Any.fromFunction1((e: Element) => e.data("id")),
+            "text-valign" -> "center",
+            "text-halign" -> "center"
+          )),
         jsobj(
           "selector" -> "$node > node",
           "css" -> jsobj(
@@ -133,14 +117,14 @@ object Graph {
       elements = jsobj(
         "nodes" -> js.Array(
           jsobj("data"     -> jsobj("id" -> "a", "parent" -> "b"),
-                "position" -> jsobj("x"  -> 215, "y" -> 85)),
+            "position" -> jsobj("x"  -> 215, "y" -> 85)),
           jsobj("data"     -> jsobj("id" -> "b")),
           jsobj("data"     -> jsobj("id" -> "c", "parent" -> "b"),
-                "position" -> jsobj("x"  -> 300, "y" -> 85)),
+            "position" -> jsobj("x"  -> 300, "y" -> 85)),
           jsobj("data"     -> jsobj("id" -> "d")),
           jsobj("data"     -> jsobj("id" -> "e")),
           jsobj("data"     -> jsobj("id" -> "f", "parent" -> "e"),
-                "position" -> jsobj("x"  -> 300, "y" -> 175)),
+            "position" -> jsobj("x"  -> 300, "y" -> 175)),
         ),
         "edges" -> js.Array(
           jsobj("data" -> jsobj("id" -> "ad", "source" -> "a", "target" -> "d")),
@@ -149,50 +133,40 @@ object Graph {
       )
     })
 
-  def apply() =
-    c.copy(new methods {
-      val initialState = _ => {
-        State()
-      }
+  trait Props extends js.Object {
+  }
 
-      didMount = js.defined { self =>
-        println(s"$Name: didMount, building graph")
-        build(self.state)
-      }
+  def apply() = sfc
 
-      willUnmount = js.defined { self =>
+  val sfc = SFC0{
+    val refR = React.useRef[Option[dom.html.Div]](None)
+    var cyR = React.useRef[Option[Graph]](None)
+
+    React.useEffectMountingCb(() => {
+      println(s"$Name: didMount, building graph")
+      cyR.current = refR.current.flatMap(g => Option(mkGraph(g)))
+      (() => {
         println(s"$Name: willUnmount")
-        destroy(self.state)
-      }
+        cyR.current.foreach(_.destroy())
+      })})
 
-      didUpdate = js.defined { onSelf =>
-        println(s"$Name: didUpdate")
-        destroy(onSelf.newSelf.state)
-        build(onSelf.newSelf.state)
-        onSelf.newSelf.state.cy.foreach(dom.console.log(_))
-      }
+    // didUpdate = js.defined { onSelf =>
+    //   println(s"$Name: didUpdate")
+    //   destroy(onSelf.newSelf.state)
+    //   build(onSelf.newSelf.state)
+    //   onSelf.newSelf.state.cy.foreach(dom.console.log(_))
+    // }
 
-      val reducer = (action, state, gen) => {
-        println(s"$Name: reducer")
-        action match {
-          // any other messages?
-          case _ => gen.skip
-        }
+    div(new DivProps {
+      id = "cy"
+      style = new StyleAttr {
+        minWidth = "300px"
+        minHeight = "500px"
+        height = "100%"
+        width = "100%"
+        display = "block"
       }
-
-      val render = self => {
-        div(new DivProps {
-          id = "cy"
-          style = new StyleAttr {
-            minWidth = "300px"
-            minHeight = "500px"
-            height = "100%"
-            width = "100%"
-            display = "block"
-          }
-          ref = refCallback[dom.html.Div](el => self.state.ref = el.toNonNullOption)
-        })()
-      }
-    })
-
+      ref = refCallback[dom.html.Div](el => refR.current = el.toNonNullOption)
+    })()
+  }
 }

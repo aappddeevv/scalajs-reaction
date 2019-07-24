@@ -9,19 +9,20 @@ object ${1:enumerate} {
   case class State()
   
   val Name = "$1"
-  val c = reducerComponent[State, Action](Name)
-  import c.ops._
 
-  def apply() =
-    c.copy(new methods {
-       val initialState = self => State()
-       val reducer = (action, state, gen) => {
-          action match {
-            case _ => gen.skip
+  trait Props extends js.Object {
+  }
+  
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props] { props =>
+     val (state, dispatch) = React.useReducer[State, Action]((s,a) => {
+          a match {
+            case _ => s
           }
-       }
-       val render = self => {
-          div("component $1")
-       }
-    })
+       },
+       State()
+       )
+     div("component $1")
+    }
 }

@@ -31,12 +31,12 @@ import cats.implicits._
 
 object Nav {
 
-  trait Props extends js.Object {
-    var className: js.UndefOr[String] = js.undefined
-    val navigate: String => Unit
-    var collapsible: js.UndefOr[Boolean] = js.undefined
-    var isAdmin: js.UndefOr[Boolean]  = js.undefined
-  }
+  // trait Props extends js.Object {
+  //   var className: js.UndefOr[String] = js.undefined
+  //   val navigate: String => Unit
+  //   var collapsible: js.UndefOr[Boolean] = js.undefined
+  //   var isAdmin: js.UndefOr[Boolean]  = js.undefined
+  // }
 
   def makeItem(k: String, nm: String, nav: String, goto: String => Unit) =
     new Sidebar.ItemProps {
@@ -64,18 +64,18 @@ object Nav {
     ("mui", "Material UI", fix("mui"))
   )
 
-  val Name = "Nav"
-  val c = statelessComponent(Name)
-  import c.ops._
+  trait Props extends js.Object {
+    var rootClassName: js.UndefOr[String] = js.undefined
+    var goto: String => Unit
+  }
 
-  def apply(
-    rootClassName: js.UndefOr[String] = js.undefined,
-    goto: String => Unit
-  ) = render { self =>
+  val Name = "Nav"
+  def apply(props: Props) = sfc(props)
+  val sfc = SFC1[Props]{ props =>
     Sidebar(new Sidebar.Props {
-      className = rootClassName
+      className = props.rootClassName
       theme = Styling.getTheme() // needed else exception!
-      items = itemRoutes.map(p => makeItem(p._1,p._2,p._3,goto)).toJSArray
+      items = itemRoutes.map(p => makeItem(p._1,p._2,p._3, props.goto)).toJSArray
     })
   }
 }

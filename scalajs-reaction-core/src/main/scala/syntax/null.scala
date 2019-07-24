@@ -21,7 +21,7 @@ x.fold[String | Unit](())(x => x)
   * implicits to convert from each individual type (in the or) to the new target
   * type.
   */
-final case class OrNullOps[A <: js.Any](a: A | Null) {
+final case class OrNullOps[A](a: A | Null) {
   /** Convert an A|Null to a well formed Option. Should we check or undefined? */
   def toNonNullOption: Option[A] =
     // doesn't Option(a.asInstanceOf[A]) work?
@@ -44,11 +44,11 @@ final case class OrNullOps[A <: js.Any](a: A | Null) {
       js.defined(a.asInstanceOf[A])
     else js.undefined
 
-  /** Collapse A|Null => A but the value may be null. */
+  /** Collapse A|Null => A but the value may be null! You are on your own */
   def merge: A = a.asInstanceOf[A]
 }
 
 trait OrNullSyntax {
-  implicit def orNullSyntax[A <: js.Any](a: A | Null): OrNullOps[A] = OrNullOps[A](a)
+  implicit def orNullSyntax[A](a: A | Null): OrNullOps[A] = OrNullOps[A](a)
 }
 

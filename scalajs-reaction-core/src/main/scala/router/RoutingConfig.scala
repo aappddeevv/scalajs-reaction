@@ -12,7 +12,7 @@ package router
  * are free to choose your own. You can use sparse.tech
  * [trail](https://github.com/sparsetech) or something like
  * [path-to-regexp](https://github.com/pillarjs/path-to-regexp). Also, look at
- * [You migh not need React
+ * [You might not need React
  * Router](https://medium.freecodecamp.org/you-might-not-need-react-router-38673620f3d)
  * for ideas. That article uses an array of regexp to async functions vs a total
  * function descibed in `Rules` below. Since the returned action is warpped in a

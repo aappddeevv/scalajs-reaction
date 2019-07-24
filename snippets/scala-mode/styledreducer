@@ -35,26 +35,23 @@ object $1 {
   case class State()
   
   val Name = "$1"
-  val c = reducerComponent[State, Action](Name)
-  import c.ops._
 
-  def apply(
-    rootClassName: js.UndefOr[String] = js.undefined,
-    styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-  ) =
-    c.copy(new methods {
-       val initialState = self => State()
-       val reducer = (action, state, gen) => {
-          action match {
-            case _ => gen.skip
-          }
-       }
-       val render = self => {
-          val cn = getClassNames(resolve[StyleProps, Styles](new StyleProps {
-             className = rootClassName
-          }, getStyles, styles))
+  trait Props extends js.Object {
+    var rootClassName: js.UndefOr[String] = js.undefined,
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
+  }
 
-          div("component $1")
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props] { props =>
+    val (state, dispatch) = React.useReducer[State, Action]((s,a) => {
+       a match {
+         case _ => s
        }
     })
+    val cn = getClassNames(resolve[StyleProps, Styles](new StyleProps {
+      className = rootClassName
+    }, getStyles, styles))
+    div("component $1")
+  }
 }

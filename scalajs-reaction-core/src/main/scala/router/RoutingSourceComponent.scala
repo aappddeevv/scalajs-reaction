@@ -13,10 +13,8 @@ import react._
 import elements._
 
 /** 
- * Subscribe to a RoutingSource and establish a react context. Unsubscribe on
- * unmount. Note that this model is not very FP friendly in that we cannot
- * guarantee that a descendent has a related ancestor providing the context.
- * But hey, this is the classic design. Children can be anything but look at
+ * Subscribe to a RoutingSource and establish a react routing
+ * context. Unsubscribe on unmount. Children can be anything but look at
  * `ShowIfMatch` or an inside component in any subclasses e.g. `Route` in
  * `ReactionRoutingDOMComponent`.
  */
@@ -33,66 +31,42 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
   val RouterContext: ReactContext[RouterInfo] =
     context.make[RouterInfo](makeContextValue(None))
 
-  // should be in state
+  // specific to the class
   protected val routing: RoutingSource[Info, To]
 
   protected sealed trait NavAction
   protected case object Subscribe extends NavAction
   protected case class NewInfo(info: Info) extends NavAction
 
-  protected case class State(
-    info: Option[Info] = None,
-    // instance vars
-    var unsubscribe: Option[() => Unit] = None
-  )
+  type State = Option[Info]
 
   /** Override to change the name. */
   val Name = "RoutingSourceComponent"
-  protected val c = reducerComponent[State, NavAction](Name)
-  import c.ops._
 
-  /** Create a new element instance from this component..
-   * @param child Child component.
-   */
-  def apply(child: ReactNode) = c.copyWith(new methods {
+  trait Props extends js.Object {
+    var children: ReactNode
+  }
 
-    val initialState = self => State()
-
-    // subscribe to routing source on mount
-    didMount = js.defined { self =>
-      self.state.unsubscribe match {
-        case None => self.send(Subscribe)
-        case _ => // subscription already active, bug?
-      }
-    }
-
-    willUnmount = js.defined{ self => self.state.unsubscribe.foreach(_()) }
-
-    val reducer = (action, state, gen) =>
-    action match {
-      case NewInfo(info) =>
-        gen.update(state.copy(info = Option(info)))
-      case Subscribe =>
-        // unsubscribe if subscribed for some reason
-        state.unsubscribe.foreach(_())
-        state.unsubscribe = None
-        gen.effect{ self =>
-          self.state.unsubscribe = Option(
-            routing.subscribe{ info =>
-              self.send(NewInfo(info))
-            })
-          // prime the pump
-          routing.run(i => self.send(NewInfo(i)))
-        }
-    }
-
-    val render = self => {
-      //println(s"$Name.render: BLAH, rerendering parent context")
-      context.provider(RouterContext)(makeContextValue(self.state.info))(
-        child
-      )
-    }
+  def apply(children_ : ReactNode) = sfc(new Props {
+    var children = children_
   })
+
+  val sfc = SFC1[Props] { props =>
+    React.useDebugValue(Name)
+    val (state, setState) = React.useStateStrictDirect[State](None)
+    // subscribe to routing source on mount
+    React.useEffectMountingCb{() =>
+      val unsubscribe = routing.subscribe{ info => setState(Option(info))}
+      // prime the pump
+      routing.run(info => setState(Option(info)))
+      (() => {
+        unsubscribe()
+      })
+    }
+    context.provider(RouterContext)(makeContextValue(state))(
+      props.children
+    )
+  }
 
   /**
    * If the predicate is true, show the child component and optionally alter the
@@ -101,19 +75,33 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
    */
   object ShowIfMatch {
     val Name = "ShowIfMatch"
-    val c = statelessComponent(Name)
-    import c.ops._
 
     /**
      * @param child Delay child until needed.
      * @param cond Render if the cond results in true.
-     * @param modify Modify the RouterInfo before using. Runs after the cond check.
+     * @param modify Modify the RouterInfo before using. Runs after the con check.
      */
+    trait Props extends js.Object {
+      var child: () => ReactNode
+      var cond: RouterInfo => Boolean
+      var modify: RouterInfo => RouterInfo // = identity
+    }
+
+    def apply(props: Props) = sfc(props)
+
     def apply(
-      child: () => ReactNode,
-      cond: RouterInfo => Boolean,
-      modify: RouterInfo => RouterInfo = identity
-    ) = render{ self =>
+      child_ : () => ReactNode,
+      cond_ : RouterInfo => Boolean,
+      modify_ : RouterInfo => RouterInfo = identity
+    ) = sfc(new Props {
+      var child = child_
+      var cond = cond_
+      var modify = modify_
+    })
+
+    val sfc = SFC1[Props]{ props =>
+      import props._
+      React.useDebugValue(Name)
       context.consumer(RouterContext)(routerInfo => {
         if(cond(routerInfo))
           context.provider(RouterContext)(modify(routerInfo)) {
@@ -123,5 +111,4 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
       })
     }
   }
-
 }

@@ -32,7 +32,7 @@ import elements._
  * want to import the FetchState types. Import the dependent value types using
  * `import myFetcher._`.
  * 
- * @todo Bake in cancellable when unmounted.
+ * @todo Bake in cancellable when unmounting.
  * 
  * @tparam F Fetch effect. Produces a P. F may also hold an error, an implied
  * Throwable, which to detect an error. There are no constraints on F in this
@@ -61,16 +61,6 @@ class Fetcher[F[_], P, E, T](Name: String) {
   /** Initial state until a fetch request is made. */
   case object NotRequested extends FetchState
 
-  // internal component state and actions
-  protected case class State(loadState: FetchState = NotRequested)  
-  protected sealed trait Action
-  protected case class Fetched(item: T) extends Action
-  protected case class FetchError(content: E) extends Action
-  protected case class Request(fetch: F[P]) extends Action
-
-  protected val c = reducerComponent[State, Action](Name)
-  import c.ops._
-
   /** Initiate a fetch for P. */
   type FetchCallback = F[P] => Unit
   /** Given a fetch request `F[P}` and a callback, run the F and call the callback
@@ -79,37 +69,55 @@ class Fetcher[F[_], P, E, T](Name: String) {
    */
   type Runner = F[P] => (Either[E, T] => Unit) => Unit
 
+  trait Props extends js.Object {
+    var child: (FetchState, FetchCallback) => ReactElement
+    var run: Runner
+    var initialValue: Option[F[P]]
+  }
+
+  private def makeProps(
+    c: (FetchState, FetchCallback) => ReactElement,
+    r: Runner,
+    i: Option[F[P]]
+  ) = new Props {
+    var child = c
+    var run = r
+    var initialValue = i
+  }
+
   /** Provide data loading status to a child.
    * @param child Callback when fetch state changes. Convenience thunk to
-     initiate fetch. Return child.
+   *  initiate fetch. Return child.
    * @param run Run a F[T] to obtain an error or a result.
    * @param initialValue Optional initial fetch, to kick things off.
    */
   def apply(
-    child: (FetchState, FetchCallback) => ReactNode,    
-    run: Runner,
-    initialValue: Option[F[P]]
-  ) = c.copy(new methods {
-    val initialState = _ => State()
-    didMount = js.defined(self => initialValue.foreach(f => self.send(Request(f))))
-    val reducer = (action, state, gen) => {
-      action match {
-        case Request(f) =>
-          gen.updateAndEffect(state.copy(loadState = Fetching)) { self =>
-            val process: Either[E, T] => Unit =  {
-              case Right(item) => self.send(Fetched(item))
-              case Left(e) => self.send(FetchError(e))
-            }
-            run(f)(process)
-          }
-        case FetchError(content) =>
-          gen.update(state.copy(loadState = Error(content)))
-        case Fetched(item) =>
-          gen.update(state.copy(loadState = Success(item)))
-      }
+    child : (FetchState, FetchCallback) => ReactElement,
+    run : Runner,
+    initialValue : Option[F[P]]
+  ) = sfc(makeProps(child, run, initialValue))
+
+  val sfc = SFC1[Props] { props =>
+    import props._
+    React.useDebugValue(Name)
+    // Use another state to force fetch, F[P] could always be the same
+    // in scala since scala has immutable effects.
+    val (request, setRequest) = React.useStateStrictDirect[Int](0)
+    val (fstate, setFState) = React.useStateStrictDirect[FetchState](NotRequested)
+    val query = React.useRef[Option[F[P]]](initialValue)
+    //React.useEffectMountingCb{() =>
+    //  // cancel should go here
+    //  () => ()
+    //}
+    React.useEffect(request){() =>
+      query.current.foreach{ f =>
+        setFState(Fetching)
+        props.run(f){ _ match {
+          case Right(item) => setFState(Success(item))
+          case Left(e) => setFState(Error(e))
+        }}}
     }
-    val render = self =>
-    child(self.state.loadState, f => self.send(Request(f)))
-  })
+    child(fstate, f => { query.current = Option(f); setRequest(request+1)})
+  }
 }
 

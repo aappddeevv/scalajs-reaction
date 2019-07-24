@@ -10,7 +10,7 @@ that facade. While more advanced scala functionality could have been used, the
 scala.js implementation is kept intentionally similar to ReasonReact so that its
 documentation applies to this project.
 
-This facade library is small and focuses on hooks.
+This facade library is small and focuses on hooks. Hooks are described on the [react](https://reactjs.org/docs/hooks-reference.html) page.
 
 scalajs-reaction emphasizes integration into an existing project by making it
 easy to import/export components and fit into existing application including
@@ -24,7 +24,7 @@ scalajs-react for your solution.
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
 The library supports fragments, the new context provider and hooks. The facade's
-API roughly mimics ReasonReact new approach based on hooks. This facade also
+API roughly mimics ReasonReact's new approach based on hooks. This facade also
 supports react-native. The react-native use-case for scala.js is actually more
 compelling than for web applications due to scala.js bundling issues.
 
@@ -35,16 +35,15 @@ It's easy to create a component and render it:
 
 ```scala
 val HelloWorld = SFC0 { div("hello world") }
-reactdom.createAndRenderWithId(HelloWorld.run, "container")
+reactdom.createAndRenderWithId(HelloWorld, "container")
 ```
 
 SFC0 does not do much other than ensure that the scala function on the right
-becomes a js function--which is pretty much all that is needed to use react
-hooks.
+becomes a js function--which is all that is needed to use react hooks.
 
-If you need to pass in an argument, just remember that react hooks require you
+If you need to pass in an argument, just remember that react hooks requires you
 to use a single js object parameter so do the following standard scala.js
-approach to interop:
+approach:
 
 ```scala
 trait Props extends js.Object {
@@ -61,7 +60,8 @@ type Props.
 
 If you want to ensure your component only renders when the props change, use
 `React.memo()` to create your component. React.memo uses Object.is for equality
-checking--which means it checks for exactly the same object.
+checking--which means it checks for exactly the same object. A pimp is available
+for memo.
 
 ```scala
 val sfc = SFC1[Props] { props =>
@@ -71,9 +71,8 @@ val sfc = SFC1[Props] { props =>
 
 Use hooks in your function to add state and other effects.
 
-The older "record" based API is frozen, just like in the ReasonReact
-product. Use hooks. The hooks implementation in scala.js is only about 30 lines
-of code and is more maintainable.
+Use hooks. The hooks implementation in scala.js is only about 30 lines of code
+and is more maintainable.
 
 See the
 [documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
@@ -83,6 +82,10 @@ straightforward. Depending on the component library you use, having choices
 helps you find the easiest way to access the components in your application.
 This library does not force many conventions on your code and the core is quite
 small now that it is based on hooks.
+
+This facade requires more scala.js code near interactions with UI
+toolkits. Higher level components, e.g. composition of smaller components, can
+use more idiomatic scala constructs.
 
 ## Usage
 
@@ -129,7 +132,7 @@ npm i --save react
 npm i --save react-dom
 ```
 
-React 16.8 (with hooks) is required.
+React 16.8 with hooks is required.
 
 ### Styling
 
@@ -144,7 +147,7 @@ code for a detailed example. It works nicely and is independent of
 fabric. `merge-styles` creates stylesheets from scala code. Here's an example
 showing the use of CSS variables. `merge-styles` is a little like glamor (which
 we recommend as well) but is also a bit different in that it is explicit about
-"selectors".
+"selectors". Cssinjs (react-jss) is also available.
 
 The slightly older idiom is below. See the examples for the updated fabric
 styling idioms which are much more flexible.

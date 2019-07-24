@@ -41,6 +41,7 @@ trait ISelectionOptions[T <: js.Object] extends js.Object {
     js.undefined
   var selectionMode: js.UndefOr[SelectionMode]                     = js.undefined
   var onSelectionChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
+  var canSelectItem: js.UndefOr[js.Function2[IObjectWithKey, js.UndefOr[Int], Boolean]] = js.undefined
 }
 
 @js.native

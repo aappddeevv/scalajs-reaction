@@ -52,7 +52,7 @@ object Picker {
   }
 
   object Item {
-    def apply[T](props: Props[T] = null) = wrapJsForScala(JS.Item, props)
+    def apply[T](props: Props[T] = null) = React.createElement0(JS.Item, props)
 
     trait Props[T] extends js.Object {
       val label: String

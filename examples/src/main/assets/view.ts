@@ -55,7 +55,7 @@ export function reducer(state: State = initialState, action: AllActions): State 
         }
         case TypeKeys.INIT: {
             // do some init things...
-            console.log("view.reducer: init")
+            console.log("view.reducer: init", state)
         }
         default:
             return state

@@ -22,7 +22,7 @@ object context {
   def make[T](defaultValue: T): ReactContext[T] =
     ReactJS.createContext(defaultValue, js.undefined)
 
-  def provider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactNode = {
+  def provider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactElement = {
     // not sure this is right, use previous value if current is missing?
     val v = lit("value" -> value.asInstanceOf[js.Any])
     ReactJS.createElement(ctx.Provider, v, children: _*)
@@ -31,7 +31,7 @@ object context {
   def consumer[T](ctx: ReactContext[T])(
     //f: js.Function1[T, ReactNode],
     f: T => ReactNode,
-    key: Option[String] = None): ReactNode = {
+    key: Option[String] = None): ReactElement = {
     val props = key.fold[js.Any](js.undefined)(k => lit("key" -> k))
     ReactJS.createElement(ctx.Consumer, props, js.Any.fromFunction1(f).asInstanceOf[ReactNode])
   }

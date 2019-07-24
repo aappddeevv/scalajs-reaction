@@ -7,6 +7,7 @@ package react
 package router
 package browser
 
+import scala.scalajs.js
 import org.scalajs.dom
 
 import ttg.react
@@ -56,7 +57,8 @@ trait ReactionRouterDOMComponent
 
   case class DOMControl(config: Config)
       extends super.ControlLike {
-    val processEvent: ReactEvent[dom.EventTarget] => Unit  = _.preventDefault()
+    //val processEvent: ReactEvent[dom.EventTarget] => Unit  = _.preventDefault()
+    def processEvent(el: ReactEvent[dom.EventTarget]): Unit = el.preventDefault()
 
     // this is the "push from app" routing
     val navigate = (url, method) => {
@@ -101,17 +103,22 @@ trait ReactionRouterDOMComponent
    */
   object Route {
     val Name = "Route"
-    val c = statelessComponent(Name)
-    import c.ops._
 
-    /** Create a component instance. If no parent context value is provided, render
-      * null.
+    trait Props extends js.Object {
+      val config: Config
+    }
+
+    /**
      * @param config Routing config that maps the current route info to a react
-     * node.
      */
-    def apply(
-      config: Config
-    ) = render { self =>
+    def apply(config_ : Config) = sfc(new Props {
+      val config = config_
+    })
+
+    def apply(props: Props) = sfc(props)
+
+    val sfc = SFC1[Props] { props =>
+      import props._
       context.consumer(RouterContext){ctx =>
         ctx.info match {
           case Some(info) =>
@@ -128,5 +135,4 @@ trait ReactionRouterDOMComponent
       }
     }
   }
-
 }

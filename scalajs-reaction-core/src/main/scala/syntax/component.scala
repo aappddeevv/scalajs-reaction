@@ -8,24 +8,7 @@ package react
 import scala.scalajs.js
 import js._
 
-/** Given a component, provide some syntax for easily converting it into an
- * element.  This is equivalent to using JSX syntax.
- */
-final case class ComponentOps(c: Component) {
-  // /** Create an element with no key or ref. */
-  // def toEl: ReactElement = elements.element(c)
-
-  // /** Create an element with an optional key and an optional ref. */
-  // def toEl(key: Option[String] = None, ref: Option[Ref[js.Any]] = None): ReactElement =
-  //   elements.element(c, key, ref)
-
-  // /** Create an element with an optional key and an optional ref. */
-  // def toElKey(key: String): ReactElement =
-  //   elements.element(c, Option(key), None)
-}
-
 trait ComponentSyntax {
-  implicit def componentOpsSyntax(c: Component) = ComponentOps(c)
 
   /** Memoize SFC1[P]. */
   implicit class MemoSFC[P <: js.Object](val sfc: SFC1[P]) {

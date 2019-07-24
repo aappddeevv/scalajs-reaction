@@ -50,7 +50,13 @@ object List {
     var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]              = js.undefined
     var onRenderDetailsHeader: js.UndefOr[IRenderFunction[Details.Header.Props]] = js.undefined
 
+    /** You can still be "active" but not deselected. */
     var onActiveItemChanged: js.UndefOr[OAIC[T]] = js.undefined
+    @JSName("onActiveItemChanged")
+    var onActiveItemChanged2: js.UndefOr[js.Function2[T,Int,Unit]] = js.undefined
+    @JSName("onActiveItemChanged")
+    var onActiveItemChanged1: js.UndefOr[js.Function1[T,Unit]] = js.undefined
+    
     var onColumnHeaderClick: js.UndefOr[OCHC[T]] = js.undefined
 
     var maximumPixelsForDrag: js.UndefOr[Int]           = js.undefined
@@ -79,7 +85,22 @@ object List {
 
   @js.native
   trait IList extends js.Object {
-    def scrollToIndex(index: Int, measureItem: js.UndefOr[js.Function1[Int, Int]]): Unit = js.native
+    def forceUpdate(): Unit = js.native
+    def scrollToIndex(
+      index: Int,
+      measureItem: js.UndefOr[js.Function1[Int, Int]] = js.undefined,
+      scrollToMode: js.UndefOr[ScrollToMode] = js.undefined): Unit = js.native
+    def getTotalListHeight(): Int = js.native
+    def getStartItemIndexInView(): Int = js.native
+  }
+
+  @js.native
+  sealed trait ScrollToMode extends js.Any
+  object ScrollToMode {
+    var auto = 0.asInstanceOf[ScrollToMode]
+    var top = 1.asInstanceOf[ScrollToMode]
+    var bottom = 2.asInstanceOf[ScrollToMode]
+    var center = 3.asInstanceOf[ScrollToMode]
   }
 
 }

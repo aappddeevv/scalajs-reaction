@@ -100,13 +100,13 @@ object Pages {
 
   // the view model will come from redux to illustrate how it can be split up.
   def addressPage(adao: AddressDAO) = {
-    val opts = new AddressManagerProps {
+    val opts = new AddressManager.Props {
       val dao = adao
     }
     page(
       Label()(
         "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes. NOT IMPLEMENTED :-) New and delete are not hooked up!"),
-      AddressManager.withRedux(opts)
+      AddressManager(opts)
     )
   }
 

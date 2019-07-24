@@ -27,24 +27,26 @@ object Header {
     height = 48
   }
 
-  val Name = "Header"
-  val c = statelessComponent(Name)
-  import c.ops._
+  trait Props extends js.Object {
+    var rootClassName: js.UndefOr[String] = js.undefined
+  }
 
-  def apply(
-    rootClassName: js.UndefOr[String] = js.undefined
-  ) =
-    c.copy(new methods {
-      val render = self => {
-        div(new DivProps {
-          className = rootClassName
-          style = hstyle
-        })(
-          a(new AProps {
-            href = "https://github.com/aappddeevv/scalajs-reaction"
-            target = "_blank"
-          })("scalajs-reaction demo SPA"),
-        )
-      }
+  val Name = "Header"
+  def apply(rcn: js.UndefOr[String] = js.undefined) =
+    sfc(new Props {
+      rootClassName = rcn
     })
+
+  val sfc = SFC1[Props] { props =>
+    React.useDebugValue(Name)
+    div(new DivProps {
+      className = props.rootClassName
+      style = hstyle
+    })(
+      a(new AProps {
+        href = "https://github.com/aappddeevv/scalajs-reaction"
+        target = "_blank"
+      })("scalajs-reaction demo SPA"),
+    )
+  }
 }

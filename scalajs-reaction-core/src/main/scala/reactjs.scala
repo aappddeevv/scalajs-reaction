@@ -45,6 +45,8 @@ private[react] trait ReactJS extends js.Object {
   val Fragment: ReactJsComponent = js.native
   val StrictMode: ReactJsComponent = js.native
   val Suspense: ReactJsComponent = js.native
+  val unstable_ConcurrentMode: ReactJsComponent = js.native
+  val unstable_Profiler: ReactJsComponent = js.native
 
   def createContext[T](
       defaultValue: T,
@@ -61,8 +63,8 @@ private[react] trait ReactJS extends js.Object {
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent = js.native
 
   /** Takes a function component and optional props comparison func. This returns
-   * a function component as this is a HOC. The returned component still needs to
-   * be wrapped properly to use with this facade.
+   * a function component as this is an HOC. The returned component still needs
+   * to be wrapped properly to use with this facade.
    */
   def memo[P](f: js.Function1[P,ReactElement],
     compare: js.UndefOr[js.Function2[P,P,Boolean]] = js.undefined):
@@ -115,7 +117,7 @@ private [react] trait Hooks extends js.Object {
   // didUpdate is () => Unit or () => (() => Unit)
   def useEffect(didUpdate: js.Any, dependencies: Dependencies): Unit = js.native
 
-// didUpdate is () => Unit or () => (() => Unit)
+  // didUpdate is () => Unit or () => (() => Unit)
   def useLayoutEffect(didUpdate: js.Any,
     dependencies: js.UndefOr[js.Array[js.Any]] = js.undefined): Unit = js.native    
 }
@@ -137,9 +139,8 @@ object ReactJS extends ReactJS with Hooks
  * returns a js function so it can be used as a dependency.
  */
 trait React {
-
   /** Create a DOM element via its string name. */
-  def createDOMElement(tag: String, props: js.Object)(
+  def createDOMElement(tag: String, props: js.Object|js.Dynamic)(
     children: ReactNode*): ReactDOMElement = 
     ReactJS.createElement(tag, props, children:_*).asInstanceOf[ReactDOMElement]
 
@@ -172,8 +173,7 @@ trait React {
   }
 
   /** Memoize a functional component defined in scala. Standard js comparison
-   * semantics using Object.is will be used on the props. Do not use scala
-   * objects for props even though P is unconstrained.
+   * semantics using Object.is will be used on the props.
    */
   def memo[P <: js.Object](fc: SFC1[P]): SFC1[P] = new SFC1(ReactJS.memo(fc.run))
 
@@ -231,6 +231,10 @@ trait React {
   def useEffect(dependencies: js.Any*)(didUpdate: EffectArg) =
     ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies.toJSArray)
 
+  /** Effect is run when dependencies change. */
+  def useEffect(dependencies: Dependencies)(didUpdate: EffectArg) =
+    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies)
+
   /** Effect is run at mount/unmount time with `[]` as the 2nd argument. */
   def useEffectMounting(didUpdate: EffectArg) =
     ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), emptyDependencies)
@@ -243,15 +247,23 @@ trait React {
   def useEffectCb(didUpdate: EffectCallbackArg, dependencies: Dependencies) =
     ReactJS.useEffect(convertEffectCallbackArg(didUpdate), dependencies)
 
+  /** Effect is run when dependencies change. */
+  def useEffectCb(dependencies: Dependencies)(didUpdate: EffectCallbackArg) =
+    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), dependencies)
+
+  /** Effect is run when dependencies change. */
+  def useEffectCb(dependencies: js.Any*)(didUpdate: EffectCallbackArg) =
+    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), dependencies.toJSArray)
+
   /** Effect is run at mount/unmount time with `[]` as the 2nd argument. */
   def useEffectMountingCb(didUpdate: EffectCallbackArg) =
     ReactJS.useEffect(convertEffectCallbackArg(didUpdate), emptyDependencies)
 
-  /** Run effect synchronously as soon as it can does *not* wait for DOM mutations to complete. */
+  /** Run before browser updates the screen. */
   def useLayoutEffect(didUpdate: EffectArg, dependencies: Dependencies) =
     ReactJS.useLayoutEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies)
 
-  /** Run effect synchronously as soon as it can does *not* wait for DOM mutations to complete. */
+  /** Run before browser updates the screen. */
   def useLayoutEffectCb(didUpdate: EffectCallbackArg, dependencies: Dependencies) =
     ReactJS.useLayoutEffect(convertEffectCallbackArg(didUpdate), dependencies)
 
@@ -259,16 +271,35 @@ trait React {
   def useMemo[T](value: () => T, dependencies: Dependencies): T =
     ReactJS.useMemo[T](value, dependencies)
 
+  /** Memoize a lazy value. */
+  def useMemo[T](dependencies: js.Any*)(value: () => T): T =
+    ReactJS.useMemo[T](value, dependencies.toJSArray)
+
+  /** Memoize a lazy value. */
+  def useMemo[T](dependencies: Dependencies)(value: () => T): T =
+    ReactJS.useMemo[T](value, dependencies)
+
+  /** Memoize a lazy value. Set on mounting. */
+  def useMemoMounting[T](value: () => T): T = ReactJS.useMemo[T](value, emptyDependencies)
+
   def useDebugValue[T](value: T): Unit =
     ReactJS.useDebugValue[T](value, js.undefined)
 
   def useDebugValue[T](value: T, format: T => String): Unit =
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
-  /** Default API is for no-arg callback. */
+  /** Default API is for no-arg callback. Declare as val yourCB = useCallback... */
   def useCallback[T](callback: () => T, dependencies: Dependencies): js.Function0[T] =
   ReactJS.useCallback(
       js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
+
+  def useCallback[T](dependencies: Dependencies)(callback: () => T): js.Function0[T] =
+  ReactJS.useCallback(
+      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
+
+  def useCallback[T](dependencies: js.Any*)(callback: () => T): js.Function0[T] =
+  ReactJS.useCallback(
+      js.Any.fromFunction0[T](callback), dependencies.toJSArray).asInstanceOf[js.Function0[T]]
 
   def useCallback0[T](callback: () => T, dependencies: Dependencies): js.Function0[T] =
     ReactJS.useCallback(
@@ -301,7 +332,8 @@ trait React {
    * @tparam R js object whose properties are functions. This is not enforced in
    * the type.
    */
-  def useImperativeHandle[T, R <: js.Object](ref: MutableRef[T], thunk: () => R, dependencies: Dependencies): Unit =
+  def useImperativeHandle[T, R <: js.Object](ref: MutableRef[T],
+    thunk: () => R, dependencies: Dependencies): Unit =
     ReactJS.useImperativeHandle[T,R](ref, thunk, dependencies)
 
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent =
@@ -311,6 +343,8 @@ trait React {
   val StrictMode = ReactJS.StrictMode
   val Suspense = ReactJS.Suspense
   val Children= ReactJS.Children
+  val unstable_ConcurrentMode = ReactJS.unstable_ConcurrentMode
+  val unstable_Profiler = ReactJS.unstable_Profiler
 
 }
 

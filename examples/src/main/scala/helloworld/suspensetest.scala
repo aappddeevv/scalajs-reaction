@@ -198,7 +198,7 @@ object SuspenseTest {
 
   @js.native
   @JSImport("Assets/SuspenseParent", JSImport.Namespace)
-  object SuspenseParent extends js.Object {
+  object SuspenseParentNS extends js.Object {
     @JSName("SuspenseParent")
     val SuspenseParentJS: ReactJsComponent = js.native
     val X: DynamicImportThunk = js.native
@@ -226,20 +226,20 @@ object SuspenseTest {
     }
 
   // direct parent import
-  def SuspenseParent(props: SProps = null)(children: ReactNode*): Component =
-    elements.wrapJsForScala[SProps](SuspenseParent.SuspenseParentJS, props, children:_*)
+  def SuspenseParent(props: SProps = null)(children: ReactNode*) =
+    React.createElement(SuspenseParentNS.SuspenseParentJS, props)(children:_*)
 
   // lazy is called in the ts file
-  def LazySuspenseChild(props: SProps = null)(children: ReactNode*): Component =
-    elements.wrapJsForScala[SProps](SuspenseParent.SuspenseChildJS, props, children:_*)
+  def LazySuspenseChild(props: SProps = null)(children: ReactNode*) =
+    React.createElement(SuspenseParentNS.SuspenseChildJS, props)(children:_*)
 
   // child is imported directly
-  def SuspenseChild(props: SProps = null)(children: ReactNode*): Component =
-    elements.wrapJsForScala[SProps](SuspenseChildJS, props, children:_*)
+  def SuspenseChild(props: SProps = null)(children: ReactNode*) =
+    React.createElement(SuspenseChildJS, props)(children:_*)
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
-    elements.wrapJsForScala[SProps](React.`lazy`(SuspenseParent.X), props, children:_*)
+    React.createElement(React.`lazy`(SuspenseParentNS.X), props)(children:_*)
 
   def blah(): ReactNode = {
     Fragment(

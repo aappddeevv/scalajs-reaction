@@ -205,9 +205,11 @@ object Details {
 
     @js.native
     trait IDetailsList extends components.List.IList {
-      def forceUpdate(): Unit = js.native
-      def focusIndex(index: Int, forceIntoFirstElement: js.UndefOr[Boolean],
-        measureItem: js.UndefOr[js.Function1[Int, Int]], scrollToMode: js.UndefOr[Int]): Unit = js.native
+      def focusIndex(
+        index: Int,
+        forceIntoFirstElement: js.UndefOr[Boolean],
+        measureItem: js.UndefOr[js.Function1[Int, Int]],
+        scrollToMode: js.UndefOr[components.List.ScrollToMode] = js.undefined): Unit = js.native
     }
 
     @js.native
@@ -256,9 +258,18 @@ object Details {
       var onRenderItemColumn: js.UndefOr[js.Function3[js.Any, Int, IColumn, js.Any]] = js.undefined
       var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]]                 = js.undefined
       var onRenderDetailsHeader: js.UndefOr[IRenderFunction[Details.Header.Props]]    = js.undefined
+      /** You can still be "active" but not deselected. */
       var onActiveItemChanged: js.UndefOr[components.List.OAIC[T]] = js.undefined
+      @JSName("onActiveItemChanged")
+      var onActiveItemChanged2: js.UndefOr[js.Function2[T,Int,Unit]] = js.undefined
+      @JSName("onActiveItemChanged")      
+      var onActiveItemChanged1: js.UndefOr[js.Function1[T,Unit]] = js.undefined
       var onColumnHeaderClick: js.UndefOr[components.List.OCHC[T]] = js.undefined
       var onItemInvoked: js.UndefOr[components.List.OII[T]] = js.undefined
+      @JSName("onItemInvoked")
+      var onItemInvoked2: js.UndefOr[js.Function2[T,Int,Unit]] = js.undefined
+      @JSName("onItemInvoked")      
+      var onItemInvoked1: js.UndefOr[js.Function1[T,Unit]] = js.undefined
       var renderedWindowsAhead: js.UndefOr[Int]                                = js.undefined
       var renderedWindowsBehind: js.UndefOr[Int]                               = js.undefined
       var onShouldVirtualize: js.UndefOr[js.Function1[components.List.Props[T], Boolean]] = js.undefined

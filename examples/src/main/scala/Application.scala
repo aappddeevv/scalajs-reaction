@@ -39,7 +39,7 @@ object RouterConfig {
   def body(bodyContent: ReactNode): ReactionRouter.Control => ReactNode =
     c =>
   AppBody(new AppBody.Props {
-    val nav = Nav(goto = c.navigate(_, router.Redirect.Push))
+    val nav = Nav(new Nav.Props { var goto = c.navigate(_, router.Redirect.Push)})
     val content = bodyContent
   })
 
@@ -96,7 +96,7 @@ object RouterConfig {
 
 object Application {
 
-  val baseUrl = dom.document.location.origin + BuildSettings.routePrefix.map("/" + _).getOrElse("")
+  val baseUrl = dom.document.location.origin.asString + BuildSettings.routePrefix.map("/" + _).getOrElse("")
   val nsegments = BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
 
   dom.console.log("baseURL", baseUrl, "nsegments to strip", nsegments)

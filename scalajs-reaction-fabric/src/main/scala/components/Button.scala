@@ -15,7 +15,6 @@ import vdom._
 import fabric.styling._
 
 object Button {
- import ttg.react.elements.wrapJsForScala
 
   @js.native
   trait IButton extends Focusable {

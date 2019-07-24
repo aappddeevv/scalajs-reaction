@@ -27,7 +27,10 @@ package object react {
   val undefinedDependencies = js.undefined
 
   /** Create a dependencies array. */
-  def dependencies(values: js.Any*): Dependencies = values.toJSArray
+  //def dependencies(values: js.Any*): Dependencies = values.toJSArray
+
+  /** Create a dependencies array from *any* scala objects. Make sure this is what you want. */
+  def dependencies(values: scala.Any*): Dependencies = values.toJSArray.asInstanceOf[Dependencies]
 
   /** Effect hooks simplest arg. */
   type EffectArg = () => Unit
@@ -222,17 +225,6 @@ package object react {
   /** Allocate an empty child array. It's not shared like `emptyChildrenVal` */
   def emptyChildren = js.Array[ReactNode]()
 
-  /**
-   * Hidden field for scala components that are based directly on a js
-   * component.  Args should be an optional key and ref. The scala.js interop
-   * layer creates the function that is attached to the scala side, js proxy.
-   */
-  type JsElementWrapped =
-    (Option[String], Option[Ref[js.Any]]) => ReactElement
-
-  /** Alias for ComponentSpec. */
-  type Component = ComponentSpec
-
   /** Make a callback. You don't need this but helps with type inference. There is
    * some dedicated syntax support for `E|Null` handling.
    */
@@ -243,15 +235,6 @@ package object react {
 
   /** No children value. */
   val noChildren: PropsChildren = js.Array()
-
-  /** A function (effect) called (a callback) when a component unmounts. */
-  type OnUnmount = () => Unit
-
-  /**
-   * A subscription called after mount and then its return value called after
-   * unmount.
-   */
-  type Subscription = () => OnUnmount
 
   /**
    * Constant val of a single, empty js.Object. Use carefully since js allows
@@ -301,11 +284,6 @@ package object react {
 
   /** Shallow copy. Should we call Object.assign directly? Faster? */
   def copy[T <: js.Object](obj: js.Dynamic | js.Object): T = merge[T](obj)
-
-  /** Not sure this is useful. */
-  private[ttg] def mergeComponents[C](objs: (Component | js.Dynamic | js.Object)*): C = {
-    mergeJSObjects(objs.asInstanceOf[Seq[js.Dynamic]]: _*).asInstanceOf[C]
-  }
 
   /** Add a key. Mutates input object directly because hey, this is javascript! */
   def withKey[T <: js.Object](element: T, key: String): ReactElement = {

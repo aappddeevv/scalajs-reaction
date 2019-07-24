@@ -5,13 +5,13 @@
 # --
 object ${1:enumerate} {
   val Name = "$1"
-  val c = statelessComponent(Name)
-  import c.ops._
 
-  def apply() =
-    render { self =>
-        val render = self => {
-        $1div("component $1")
-        }
-    }
+  trait Props extends js.Object {
+  }
+
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props] { props =>
+     $1div("component $1")
+  }
 }

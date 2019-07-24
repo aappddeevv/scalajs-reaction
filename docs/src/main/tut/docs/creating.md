@@ -19,6 +19,10 @@ state.
 Some good tutorials on react hooks and how to use them can be found at:
 * https://overreacted.io/a-complete-guide-to-useeffect
 * https://www.robinwieruch.de/react-hooks-fetch-data
+* https://itnext.io/how-to-create-react-custom-hooks-for-data-fetching-with-useeffect-74c5dc47000a
+* https://www.codebeast.dev/react-memoize-hooks-useRef-useCallback-useMemo
+* https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70
+* https://usehooks.com/
 
 ## Stateless Component Approach #1 (Easiest)
 

@@ -2,11 +2,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg.react
+package examples
 package changereduxstate
 
 import scala.scalajs.js
 import js.annotation._
+import js.|
 
 import ttg.react._
 import elements._
@@ -27,48 +29,30 @@ object styles {
 import styles._
 
 object ChangeReduxState {
-  val c = statelessComponent("ChangeReduxState")
-  import c.ops._
+  val Name = "ChangeReduxState"
 
-  trait ChangeReduxProps extends js.Object {
-    var className: js.UndefOr[String]                         = js.undefined
-    var label: js.UndefOr[String]                             = js.undefined
-    var onLabelChange: js.UndefOr[js.Function1[String, Unit]] = js.undefined
+  def apply() = sfc
+
+  /** We are a bit wasteful with renders, should be more careful per the
+    * redux-react docs.
+   */
+  val sfc = SFC0 {
+    React.useDebugValue(Name)
+    val label_ = ReactRedux.useSelector[GlobalAppState, String](
+      _.view.label.flatMap(_.toUndefOr).getOrElse("no redux label"))
+    val dispatch = ReactRedux.useDispatch[GlobalAppAction]()
+
+    println(s"label from redux state: $label_")
+    div(new DivProps {
+      className = cstyles.component.asString
+    })(
+      TextField(new TextField.Props {
+        label = "Redux Label in Global App State"
+        description = "The label typed here is displayed elsewhere in the examples."
+        className = cstyles.label.asString
+        onChangeInput = js.defined((_, v) => dispatch(ActionsNS.ViewActions.setLabel(v)))
+        defaultValue = label_
+      })()
+    )
   }
-
-  private def _make(props: ChangeReduxProps) =
-    c.copy(new methods {
-      val render = self => {
-        div(new DivProps { className = cstyles.component.asString })(
-          Label()("Redux Label"),
-          TextField(new TextField.Props {
-            className = cstyles.label.asString
-            onChangeInput =
-              js.defined((_, v: String) => props.onLabelChange.foreach(h => self.handle(_ => h(v))))
-            value = props.label.getOrElse[String]("no redux label")
-          })()
-        )
-      }
-    })
-
-  private val jsComponent = c.wrapScalaForJs { (jsProps: ChangeReduxProps) =>
-    _make(jsProps)
-  }
-  private val reduxJsComponent = {
-    val mapStateToProps =
-      (state: js.Object, ownProps: ChangeReduxProps) =>
-        new ChangeReduxProps {
-          label = state.asDyn.view.label.asUndefOr
-      }
-    val mapDispatchToProps =
-      (dispatch: Dispatcher, ownProps: ChangeReduxProps) =>
-        new ChangeReduxProps {
-          onLabelChange =
-            js.defined((label: String) => dispatch(ActionsNS.ViewActions.setLabel(label)))
-      }
-    redux.connect(jsComponent, Some(mapStateToProps), Some(mapDispatchToProps))
-  }
-
-  def apply(props: ChangeReduxProps = noProps()) =
-    wrapJsForScala(reduxJsComponent, props)
 }

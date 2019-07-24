@@ -11,7 +11,9 @@ import scala.annotation.unchecked.{uncheckedVariance => uv}
   * Memoize the last value only. Since its only 1 arg, use `yourfunc _ tupled`
   * to tuple the arguments. Uses scala == for the test. js semantics for
   * equality are very different. scala provids semantic equality unlike js. An
-  * optional `eq` can be used.
+  * optional `eq` can be used. In general, you will probably memoize js
+  * functions using the react hooks so may not need this memoization utility
+  * much.
   *
   * @see https://medium.com/musings-on-functional-programming/scala-optimizing-expensive-functions-with-memoization-c05b781ae826
  * 

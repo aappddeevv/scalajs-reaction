@@ -31,12 +31,23 @@ object JSAppImports {
   def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
     React.createElement(LabelAndChildNS.LabelAndChild, props)(children: _*)
 }
+
+trait StoreState extends js.Object {
+}
+
+trait StoreAction extends redux.Action {
+}
+
 @js.native
 @JSImport("JSExamples/store", JSImport.Namespace)
 object StoreNS extends js.Object {
-  val store: redux.Store = js.native
+  val store: redux.Store[GlobalAppState, GlobalAppAction] = js.native
 }
 
+/** Maps of actions bundled into the namespace. Use js.Dynamic to find them to
+ * make it easier to type into scala :-). Ideally all of these would be typed
+ * all the way down.
+ */
 @js.native
 @JSImport("JSExamples/actions", JSImport.Namespace)
 object ActionsNS extends js.Object {

@@ -45,14 +45,13 @@ object Stepper {
 }
 
 object StepLabel {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/StepLabel", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
    trait Props extends js.Object {
     var StepIconComponent: js.UndefOr[js.Any] = js.undefined
@@ -75,14 +74,13 @@ object StepLabel {
 
 
 object Step {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/Step", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait Props extends js.Object {
     var active: js.UndefOr[Boolean] = js.undefined
@@ -101,14 +99,13 @@ object Step {
 }
 
 object StepContent {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/StepContent", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
  trait Props extends js.Object {
     var TransitionComponent: js.UndefOr[js.Any] = js.undefined
@@ -129,14 +126,13 @@ object StepContent {
 
 
 object StepButton {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/StepButton", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait Props extends js.Object {
     var TouchRippleProps: js.UndefOr[js.Object] = js.undefined
@@ -180,14 +176,13 @@ object StepButton {
 
 
 object StepConnecter {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/StepConnector", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait Props extends js.Object {
     var active: js.UndefOr[Boolean] = js.undefined
@@ -204,14 +199,13 @@ object StepConnecter {
 }
 
 object StepIcon {
-  import ttg.react.elements.wrapJsForScala
 
   @js.native
   @JSImport("@material-ui/core/StepIcon", JSImport.Default)
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    wrapJsForScala(JS, props, children:_*)
+    React.createElement(JS, props)(children:_*)
 
   trait Props extends js.Object {
     var active: js.UndefOr[Boolean] = js.undefined
