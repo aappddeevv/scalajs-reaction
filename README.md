@@ -1,5 +1,7 @@
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
 
+Note: scalajs-reaction does not have updated documentation due to a scala 2.13 dependency that is preventing the microsite from building correctly. Read the docs in the docs folder directly.
+
 # scalajs-reaction
 
 A react library for scala written in the spirit of ReasonReact, a react library
@@ -15,7 +17,7 @@ This facade library is small and focuses on hooks. Hooks are described on the [r
 scalajs-reaction emphasizes integration into an existing project by making it
 easy to import/export components and fit into existing application including
 those using global state-managed solutions such as redux. At the same time, it
-allows you to build your entire interface in scalajs-react. As long as your
+allows you to build your entire interface in scalajs-reaction. As long as your
 front-end solution can manage the model of scala.js's output (one large module
 for all scala.js code, not file-by-file/module-by-module), you should consider
 scalajs-react for your solution.
