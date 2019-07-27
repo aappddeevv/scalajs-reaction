@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[33],{39:function(s){s.exports=JSON.parse('{"permalink":"/scalajs-reaction/","source":"/home/glampshire/proj/workspace/scalajs-react/website/scalajs-reaction/src/pages/index.js"}')}}]);
