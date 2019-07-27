@@ -407,7 +407,7 @@ lazy val examples: Project = project
 lazy val docs = project
   .settings(exampleSettings ++ libsettings)
   .settings(noPublishSettings)
-  .enablePlugins(MicrositesPlugin)
+  //.enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
   .enablePlugins(ScalaJSPlugin)
   .disablePlugins(BintrayPlugin)
@@ -438,16 +438,16 @@ lazy val docs = project
       //-- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
   )
   .settings(
-    micrositeName := "scalajs-reaction",
-    micrositeDescription := "A react integration library for scala.js in the spirit of ReasonReact",
-    micrositeBaseUrl := "/scalajs-reaction",
-    micrositeGitterChannel := false,
-    micrositeDocumentationUrl := "/scalajs-reaction/docs",
-    micrositeAuthor := "aappddeevv",
-    micrositeGithubRepo := "scalajs-reaction",
-    micrositeGithubOwner := sys.env.get("GITHUB_USER").getOrElse("unknown"),
-    micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
-    micrositePushSiteWith := GitHub4s
+    //micrositeName := "scalajs-reaction",
+    //micrositeDescription := "A react integration library for scala.js in the spirit of ReasonReact",
+    //micrositeBaseUrl := "/scalajs-reaction",
+    //micrositeGitterChannel := false,
+    //micrositeDocumentationUrl := "/scalajs-reaction/docs",
+    //micrositeAuthor := "aappddeevv",
+    //micrositeGithubRepo := "scalajs-reaction",
+    //micrositeGithubOwner := sys.env.get("GITHUB_USER").getOrElse("unknown"),
+    //micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
+    //micrositePushSiteWith := GitHub4s
   )
   .settings(
     siteSubdirName in ScalaUnidoc := "api",

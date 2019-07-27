@@ -36,4 +36,4 @@ core facades. In other words, there is more there so check the source!
 
 # Demo
 A WIP demo is here:
-[Demo](static/index.html)
+[Demo](../demo/index.html)

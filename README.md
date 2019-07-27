@@ -26,7 +26,7 @@ solution. By providing a thin veneer over hooks, it does not provide
 abstractions that are hard to code around when you need to. Things are still
 achievable by users even if it takes a little code.
 
-* [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
+* [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
 
 The library supports fragments, the new context provider and hooks. The facade's

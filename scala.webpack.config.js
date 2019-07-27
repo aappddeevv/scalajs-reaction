@@ -155,7 +155,7 @@ module.exports = function (env) {
     })
     const copyplugin = new CopyWebpackPlugin(staticAssets)
     const prodCopy = new CopyWebpackPlugin([
-        {from: "dist/*", to: path.join(__dirname, "docs/src/main/resources/microsite/static"), flatten: true}
+        {from: "dist/*", to: path.join(__dirname, "website/scalajs-reaction/static"), flatten: true}
     ])
     
     console.log("isProd: ", isProd)
@@ -174,7 +174,7 @@ module.exports = function (env) {
                     sourceMap: true,
                     uglifyOptions: { ecma: 5, compress: true }
                 }),
-		copyplugin, // must be first, hence last in the list                
+		copyplugin, // must be befor prodCopy
                 prodCopy,
             ]
         })
