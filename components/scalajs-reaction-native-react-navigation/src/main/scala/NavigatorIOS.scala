@@ -24,7 +24,7 @@ object NavigatorIOS {
   object JS extends ReactJsComponent
 
   def apply[T](props: Props = null) =
-    wrapJsForScala(JS, props)
+    React.createElement0(JS, props)
 
   trait Props extends js.Object {
     var initialRoute: js.UndefOr[Route] = js.undefined

@@ -86,15 +86,6 @@ object ToDoList {
     var titleClassname: js.UndefOr[String] = js.undefined
   }
 
-  // case class Props(
-  //   length: Int = 0,
-  //   todos: Seq[ToDo] = Nil,
-  //   remove: Int => Unit = _ => (),
-  //   listClassname: js.UndefOr[String] = js.undefined,
-  //   todoClassname: js.UndefOr[String] = js.undefined,
-  //   titleClassname: js.UndefOr[String] = js.undefined
-  // )
-
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
@@ -175,8 +166,7 @@ object ToDos {
     }
 
     val cn = getClassNames(resolve[StyleProps, Styles](
-      new StyleProps {
-      },
+      new StyleProps { /* add style hints from props if any */ },
       getStyles
     ))
 
@@ -229,6 +219,10 @@ object fakedata {
   )
 }
 
+/** These would go directly in the component's enclosing object normally if
+ * there were dependencies on other parts of that component. The below is just
+ * pure styling so its here.
+ */
 object ToDoStyling {
 
   @js.native

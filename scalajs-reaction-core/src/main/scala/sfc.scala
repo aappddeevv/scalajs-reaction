@@ -9,8 +9,8 @@ import scala.scalajs.js
 import js.|
 
 /**
- * A stateless functional component with zero arguments.  You can export the
- * `.run` function for use in reactjs.
+ * A functional component with zero arguments.  You can export the `.run`
+ * function for use in reactjs.
  */
 class SFC0(val run: js.Function0[ReactNode]) {
   /** Convert this SFC to a reactjs element. */
@@ -26,8 +26,8 @@ object SFC0 {
     ReactJS.createElement(s.run, null)
 }
 
-/** A stateless functional component with one arg, the props. You can export the
- * `.run` function for use in reactjs.
+/** A functional component with one arg, the props. You can export the `.run`
+ * function for use in reactjs.
  * @tparam P Props type. Use `js.UndefOr[P]` for optional args.
  */
 class SFC1[P <: js.Object](val run: js.Function1[P, ReactElement]) {
@@ -56,7 +56,9 @@ class SFCWithRef[P <: js.Object, R](val run: js.Function2[P, Ref[R], ReactNode])
 }
 
 object SFCWithRef {
-  /** Create a SFC2 from 2 parameters. */
+  /** Create a SFC2 from 2 parameters, the 2nd being a react ref created via
+   * `createRef`.
+   */
   def apply[P <: js.Object, R](f: (P,Ref[R]) => ReactElement) = new SFCWithRef[P,R](f)
 }
 

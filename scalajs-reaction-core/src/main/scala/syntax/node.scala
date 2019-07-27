@@ -8,12 +8,13 @@ package react
 import scala.scalajs.js
 import js._
 
+/** Convert any scala object to a ReactNode via `blah.toNode`. */
 final case class ValueOps[T <: scala.Any](v: T) extends AnyVal {
   def toNode: ReactNode = v.asInstanceOf[ReactNode]
 }
 
 /** Enable `value.toNode` syntax. `ValueConverters` enable direct conversion to
- * ReactNode if you want tto avoid the syntax.
+ * ReactNode if you want to avoid the syntax and have magic.
  */
 trait ValueSyntax {
   implicit def stringValueOpsSyntax(v: String) = ValueOps[String](v)

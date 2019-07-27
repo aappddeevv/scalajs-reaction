@@ -49,11 +49,10 @@ package object react {
     }}: js.Function0[js.Function0[Unit]]
 
   /**
-   * Opaque type returned from a ref callback. It's typically either js
-   * component or a DOM element, both of which are js.Objects. You only use
-   * this type with the `React.createRef()` machinery. You can also use a ref
-   * callback (still supported) and skip this type and the call to
-   * `React.createRef()` but really, use `React.createRef()` instead..
+   * Object returned from `createRef()`. It's typically either js component or a
+   * DOM element, both of which are js.Objects. You only use this type with the
+   * `React.createRef()` machinery. Use this instead of a string or ref
+   * callback. Introduced in 16.3.
    * 
    * @todo Validate a null value is present if the ref is never set. typescript
    * says so.
@@ -72,7 +71,10 @@ package object react {
   /** Combine the callback and the createRef models. Also include the newer hooks model. */
   type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
 
-  /** For use with useRef() hook which is slightly different than the mutable Ref. */
+  /** For use with useRef() hook which is slightly different than the mutable
+   * Ref. `current` is designed to be set directly or can be used on th `ref`
+   * attribute for a component.
+   */
   trait MutableRef[T] extends js.Object {
     var current: T
   }
@@ -148,7 +150,8 @@ package object react {
   /**
    * A js-object that is returned from create-react-class. In reactjs a react
    * class is a js object created using the "class" construct. This should
-   * really be ReactJsComponent bt we keep this slightly different.
+   * really be ReactJsComponent but we keep this slightly different for those
+   * who care about such things.
    */
   @js.native
   trait ReactClass extends js.Object
@@ -157,13 +160,17 @@ package object react {
   @js.native
   trait ReactPortal extends ReactElement
 
-  /** Pure JS functions defined in scala are also components i.e. SFC. */
+  /** Pure JS functions defined in scala are also components. */
   type ScalaJSFunctionComponent = js.Function0[ReactNode]
 
-  /** Pure JS functions defined in scala are also components i.e. SFC1. */
+  /** Pure JS functions defined in scala are also components. */
   type ScalaJSFunctionComponent1 = js.Function1[_ <: js.Object, ReactNode]
 
-  /** Something that can be used in ReactJS.createElement. */
+  /** Something that can be used in `ReactJS.createElement()`. Given an object of
+   * this type, you must call `React.createElement` on it to create the element
+   * with optional props and children. If a parent is in a component, you use
+   * this type to represent it.
+   */
   type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1
 
   /**
@@ -179,7 +186,8 @@ package object react {
   trait ReactJsComponent extends js.Object
 
   /** Components from js land that are functions and imported as such. May or may
-   * not make a difference.
+   * not make a difference to have this typed separately. You could also import
+   * it as a jsFunctionN object.
    */
   @js.native
   trait ReactJsFunctionComponent extends js.Object

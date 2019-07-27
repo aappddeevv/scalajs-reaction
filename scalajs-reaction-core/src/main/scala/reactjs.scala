@@ -54,6 +54,7 @@ private[react] trait ReactJS extends js.Object {
 
   /** Create a ref to be assigned to a "ref" property on a component. */
   def createRef[T](): react.ReactRef[T]  = js.native
+
   // needs better typing :-)
   def forwardRef[T](): js.Object = js.native
 
@@ -162,15 +163,18 @@ trait React {
     children: ReactNode*): ReactElement =
     ReactJS.createElement(tag, js.undefined, children: _*)
 
-  /**
-    * Create a react fragment. Fragments are created as an "element" with a specific
-    * tag (symbol or number if target does not support symbol) vs say, the string "div".
+  /** Create a react fragment. Fragments are created as an "element" with a
+    * specific tag (symbol or number if target does not support symbol) vs say,
+    * the string "div".
     */
   def createFragment(key: Option[String], children: ReactNode*): ReactElement = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
     ReactJS.createElement(ReactJS.Fragment, props, children: _*)
   }
+
+  /** Create a `ReactRef`. */
+  def createRef[T](): react.ReactRef[T]  = ReactJS.createRef[T]()
 
   /** Memoize a functional component defined in scala. Standard js comparison
    * semantics using Object.is will be used on the props.

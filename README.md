@@ -12,15 +12,19 @@ that facade. While more advanced scala functionality could have been used, the
 scala.js implementation is kept intentionally similar to ReasonReact so that its
 documentation applies to this project.
 
-This facade library is small and focuses on hooks. Hooks are described on the [react](https://reactjs.org/docs/hooks-reference.html) page.
+This facade library is small and focuses on hooks. Hooks are described on the
+[react](https://reactjs.org/docs/hooks-reference.html) page.
 
-scalajs-reaction emphasizes integration into an existing project by making it
-easy to import/export components and fit into existing application including
-those using global state-managed solutions such as redux. At the same time, it
-allows you to build your entire interface in scalajs-reaction. As long as your
-front-end solution can manage the model of scala.js's output (one large module
-for all scala.js code, not file-by-file/module-by-module), you should consider
-scalajs-react for your solution.
+scalajs-reaction emphasizes "easy to learn", integration into an existing
+project by making it easy to import/export components and easy to fit into
+existing application including those using global state-managed solutions such
+as redux. At the same time, it allows you to build your entire interface in
+scalajs-reaction. As long as your front-end solution can manage the model of
+scala.js's output (one large module for all scala.js code, not
+file-by-file/module-by-module), you should consider scalajs-react for your
+solution. By providing a thin veneer over hooks, it does not provide
+abstractions that are hard to code around when you need to. Things are still
+achievable by users even if it takes a little code.
 
 * [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/static/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
@@ -71,10 +75,10 @@ val sfc = SFC1[Props] { props =>
 }.memo
 ```
 
-Use hooks in your function to add state and other effects.
+Add state and other effects using hooks.
 
-Use hooks. The hooks implementation in scala.js is only about 30 lines of code
-and is more maintainable.
+The hooks implementation in scala.js is only about 50 lines of code and is
+easily maintained. Various implicits are provided to make hooks easier to use.
 
 See the
 [documentation](http://aappddeevv.github.io/scalajs-reaction) for more details.
@@ -109,7 +113,7 @@ libraryDependencies ++= Seq(
     // css-in-scala can be used independently of fabric
     "ttg" %%% scalajs-reaction-fabric" % scalaJsReactVersion,
 
-    // Material UI components (WIP, waiting for v4)
+    // Material UI components (bootstrap is also available but limited)
     "ttg" %%% scalajs-reaction-mui" % scalaJsReactVersion,
 
     // if you integrate with redux
@@ -119,7 +123,7 @@ libraryDependencies ++= Seq(
     "ttg" %%% "scalajs-reaction-prop-types" % scalaJsReactVersion,
  
     // if you need react-native
-        "ttg" %%% "scalajs-reaction-native" % scalaJsReactversion)
+    "ttg" %%% "scalajs-reaction-native" % scalaJsReactversion)
 ```
 
 Do not forget to include the react libraries in your execution environment. For
@@ -134,7 +138,7 @@ npm i --save react
 npm i --save react-dom
 ```
 
-React 16.8 with hooks is required.
+React 16.8+, the one with hooks, is required.
 
 ### Styling
 
@@ -149,7 +153,8 @@ code for a detailed example. It works nicely and is independent of
 fabric. `merge-styles` creates stylesheets from scala code. Here's an example
 showing the use of CSS variables. `merge-styles` is a little like glamor (which
 we recommend as well) but is also a bit different in that it is explicit about
-"selectors". Cssinjs (react-jss) is also available.
+"selectors". Cssinjs (react-jss) is also available as a facade library (see
+scalajs-reaction github).
 
 The slightly older idiom is below. See the examples for the updated fabric
 styling idioms which are much more flexible.

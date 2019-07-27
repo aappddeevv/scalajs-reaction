@@ -20,7 +20,7 @@ object SideSwipe {
   @JSImport("react-native-sideswipe", JSImport.Default)
   object JS extends ReactJsComponent
 
-  def apply[T](props: Props[T] = null) = wrapJsForScala(JS, props)
+  def apply[T](props: Props[T] = null) = React.createElement0(JS, props)
 
   trait Props[T] extends js.Object {
     var contentContainerStyle: js.UndefOr[StyleProp[ViewStyle]] = js.undefined
