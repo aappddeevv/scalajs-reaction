@@ -1,4 +1,4 @@
-<p align="center"><img width="300" src="https://github.com/aappddeevv/scalajs-reaction/raw/master/logo.svg"/></p>
+<p align="center"><img width="300" src="https://github.com/aappddeevv/scalajs-reaction/master/logo.svg"/></p>
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
 
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
