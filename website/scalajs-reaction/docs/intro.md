@@ -4,7 +4,8 @@ title: What is it?
 ---
 
 Note the new website is a work in progress. API docs and the example demo are
-not hooked up yet...
+not hooked up yet although the demo is available from the github front page for
+this repo.
 
 # A scala.js facade
 

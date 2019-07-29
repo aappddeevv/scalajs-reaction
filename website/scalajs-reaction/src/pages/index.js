@@ -8,6 +8,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import Layout from '@theme/Layout';
+import CodeBlock from '@theme/CodeBlock';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import withBaseUrl from '@docusaurus/withBaseUrl';
@@ -95,7 +96,33 @@ function Home() {
       
           <section className={styles.features}>
           <div className="container">
-          Hello world!
+          <p>It is easy to create a comment. Here is the hello world component. This creates a functional component that takes zero args.</p>
+          <p>
+          <CodeBlock className="scala">{`
+          val HelloWorld = SFC0 { div("hello world") }
+`}
+      </CodeBlock>
+          </p>
+          <p>A functional component that takes props (one argument) with a mandatory [name] property is</p>
+          <CodeBlock className="scala">{`
+object MyComponent {
+  trait Props extends js.Object {
+     val name: String
+  }
+  val sfc = SFC1[Props] { props =>
+    div("hello " + props.name)
+  }
+  def apply(props: Props) = sfc(props)
+}
+
+// use MyComponent
+div(
+  MyComponent(new Props { 
+    val name = "world" 
+  })
+)
+`}
+      </CodeBlock>
           </div>
           </section>
 
