@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[51],{70:function(e){e.exports=JSON.parse('{"layout":"docs","title":"React Interop","id":"reactinterop","description":"# React Interop","source":"/home/glampshire/proj/workspace/scalajs-react/website/scalajs-reaction/docs/reactinterop.md","permalink":"/scalajs-reaction/docs/reactinterop"}')}}]);
