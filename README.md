@@ -3,8 +3,9 @@
 
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
 
-Note: The documentation site is being converted to docusaurus. The demo is
-available through the link below but it is a dead link in the docusaurus site. API documentation will be added back soon.
+Note: The documentation site is being converted to docusaurus v2. Links to the
+demo do not work yet but you can see the demo by cloning the project and running
+`npm i; npm run demo`. API documentation will be added back soon.
 
 # scalajs-reaction
 
