@@ -28,9 +28,10 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
         },
+          { href: 'demo', label: 'Demo', position: 'left' },
       ],
     },
-    footer: {
+    Footer: {
       style: 'dark',
       links: [
         {

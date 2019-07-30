@@ -3,7 +3,8 @@
 
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
 
-Note: scalajs-reaction does not have updated documentation due to a scala 2.13 dependency that is preventing the microsite from building correctly. Read the docs in the docs folder directly. Due to a partial update on the demo, the demo may not be currently working :-(.
+Note: The documentation site is being converted to docusaurus. The demo is
+available through the link below but it is a dead link in the docusaurus site. API documentation will be added back soon.
 
 # scalajs-reaction
 
@@ -30,7 +31,7 @@ abstractions that are hard to code around when you need to. Things are still
 achievable by users even if it takes a little code.
 
 * [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
-* [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco).
+* [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco): Uses the old API but still helpful.
 
 The library supports fragments, the new context provider and hooks. The facade's
 API roughly mimics ReasonReact's new approach based on hooks. This facade also
@@ -410,3 +411,6 @@ react based, but reactive.
 MIT license. See the LICENSE file.
 
 Copyright 2018 The Trapelo Group LLC.
+
+The logo was created partially from content provided by [Scott De
+Jonge](https://www.flaticon.com/authors/scott-de-jonge) under CC3.0.

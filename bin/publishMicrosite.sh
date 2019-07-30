@@ -14,7 +14,7 @@ cp -a dist/* website/scalajs-reaction/static/demo
 
 # publish to github via gh-pages, with the demo intact
 #sbt publishMicrosite
-cd website/scalajs-reaction
-GITHUB_USER=aappddeevv npm run deploy
+(cd website/scalajs-reaction;
+GITHUB_USER=aappddeevv npm run deploy)
 
-rm -rf ./websit/scalajs-reaction/static/demo/{*.html,*.js}
+rm -rf ./website/scalajs-reaction/static/demo/{*.html,*.js}
