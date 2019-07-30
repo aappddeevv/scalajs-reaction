@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const path = require("path")
+
 module.exports = {
   title: 'scalajs-reaction',
   tagline: 'scala.js facade in the spirit of ReasonReact',
@@ -84,4 +86,5 @@ module.exports = {
       },
     ],
   ],
+    plugins: [path.resolve(__dirname, "./build-demo-plugin")]
 };
