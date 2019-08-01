@@ -169,17 +169,20 @@ object AddressManager {
     )
 
     // react hooks
-    lazy val selection: ISelection[Address] = React.useMemo[ISelection[Address]](() => createSelection{ () =>
-      dom.console.log(s"$Name: Selection.onSelectionChanged(): notification via Selection object!", selection.getSelection())
-      val selected = selection.getSelection().headOption
-      selected.fold(
-        // None
-        setActive(null, null)
-      )(
-        // Some
-        addr => setActive(addr.customeraddressid.get, addr) // :-) with get
-      )
-    }, dependencies(setActive))
+    // see https://github.com/OfficeDev/office-ui-fabric-react/issues/9882
+    // we solve it via a lazy val
+    lazy val selection: ISelection[Address] =
+      React.useMemo[ISelection[Address]](() => createSelection{ () =>
+        dom.console.log(s"$Name: Selection.onSelectionChanged(): notification via Selection object!", selection.getSelection())
+        val selected = selection.getSelection().headOption
+        selected.fold(
+          // None
+          setActive(null, null)
+        )(
+          // Some
+          addr => setActive(addr.customeraddressid.get, addr) // :-) with get
+        )
+      }, dependencies(setActive))
     val (fetchState, doFetch) = useFetch(props.dao, selection.setItems(_, true))
     dom.console.log(s"$Name: loading", fetchState.loading)
     React.useEffectMountingCb{() =>

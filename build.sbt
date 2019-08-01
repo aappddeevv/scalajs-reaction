@@ -407,52 +407,23 @@ lazy val examples: Project = project
 lazy val docs = project
   .settings(exampleSettings ++ libsettings)
   .settings(noPublishSettings)
-  //.enablePlugins(MicrositesPlugin)
   .enablePlugins(ScalaUnidocPlugin)
   .enablePlugins(ScalaJSPlugin)
-  .disablePlugins(BintrayPlugin)
-  .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-fabric`,
-    `scalajs-reaction-fabric-experiments`,
-    `scalajs-reaction-native`,
-    `scalajs-reaction-vdom`,
-    `scalajs-reaction-react-redux`,
-    `scalajs-reaction-react-dom`,
-    `scalajs-reaction-prop-types`,
-    `scalajs-reaction-router`,
-    `scalajs-reaction-bootstrap`,
-    `scalajs-reaction-mui`,
-    `scalajs-reaction-react-big-calendar`,
-    `scalajs-reaction-native-nativebase`,
-    `scalajs-reaction-native-react-native-elements`,
-    `scalajs-reaction-native-react-navigation`,
-    `scalajs-reaction-native-react-native-sideswipe`,    
-    `scalajs-reaction-form`,
-    dataValidationJS
-    //,dataValidationJVM
-  )
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject --
       inProjects(examples)
       //-- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
   )
-  .settings(
-    //micrositeName := "scalajs-reaction",
-    //micrositeDescription := "A react integration library for scala.js in the spirit of ReasonReact",
-    //micrositeBaseUrl := "/scalajs-reaction",
-    //micrositeGitterChannel := false,
-    //micrositeDocumentationUrl := "/scalajs-reaction/docs",
-    //micrositeAuthor := "aappddeevv",
-    //micrositeGithubRepo := "scalajs-reaction",
-    //micrositeGithubOwner := sys.env.get("GITHUB_USER").getOrElse("unknown"),
-    //micrositeGithubToken := sys.env.get("GITHUB_TOKEN"),
-    //micrositePushSiteWith := GitHub4s
-  )
-  .settings(
-    siteSubdirName in ScalaUnidoc := "api",
-    addMappingsToSiteDir(mappings in (ScalaUnidoc, packageDoc), siteSubdirName in ScalaUnidoc)
-  )
+
+val copyAPI = taskKey[Unit]("Copy API files to website build dir")
+copyAPI := {
+  (docs/Compile/unidoc).value
+  IO.copyDirectory(
+    // a bit hard-coded
+    file("./docs/target/scala-2.13/unidoc"),
+    file("./website/scalajs-reaction/build/api"),
+    overwrite=true)
+}
 
 addCommandAlias("fmt", ";scalafmt")
 

@@ -30,7 +30,8 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
         },
-          { href: 'demo', label: 'Demo', position: 'left' },
+          { href: '/scalajs-reaction/api/index.html', label: 'API', position: 'left'},
+          { href: '/scalajs-reaction/demo', label: 'Demo', position: 'left' },
       ],
     },
     Footer: {

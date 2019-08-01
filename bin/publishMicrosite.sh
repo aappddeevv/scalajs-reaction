@@ -14,6 +14,7 @@ npm run examples
 # copy demo to the proper microsite directory
 # I should not need this but I'm not sure where the build is screwed up
 cp -a dist/* website/scalajs-reaction/static/demo
+#cp -a dist/* website/scalajs-reaction/build/demo
 
 # publish to github via gh-pages, with the demo intact
 #sbt publishMicrosite
