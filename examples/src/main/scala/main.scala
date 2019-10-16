@@ -93,7 +93,7 @@ object Main {
       Main.container
         // Start the SPA router by doing an initial push so that
         // the router starts receiving pages.
-        ,Option(() => react.router.browser.push("/readme"))
+        ,Option(() => react.router.browser.push(s"${BuildSettings.routePrefix}/readme"))
     )
   }
 }

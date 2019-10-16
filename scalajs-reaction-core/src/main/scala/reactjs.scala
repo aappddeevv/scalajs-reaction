@@ -33,7 +33,9 @@ private[react] trait ReactJS extends js.Object {
   /** We are not importing this to be used in a class oriented way. */
   val Component: js.Dynamic = js.native
 
-  /** Can take a wide variety of types for tpe: string | sfc | class (extending React.Component) */
+  /** Can take a wide variety of types for tpe: string | sfc | class (extending
+   * React.Component). P is kept very general here.
+   */
   def createElement[P](
       el: ReactType,
       props: UndefOr[P],
@@ -65,7 +67,8 @@ private[react] trait ReactJS extends js.Object {
 
   /** Takes a function component and optional props comparison func. This returns
    * a function component as this is an HOC. The returned component still needs
-   * to be wrapped properly to use with this facade.
+   * to be wrapped properly to use with this facade. `P` is kept very general
+   * here.
    */
   def memo[P](f: js.Function1[P,ReactElement],
     compare: js.UndefOr[js.Function2[P,P,Boolean]] = js.undefined):
@@ -186,6 +189,10 @@ trait React {
    */
   def memo[P <: js.Object](fc: SFC1[P], compare: (P,P) => Boolean): SFC1[P] =
     new SFC1(ReactJS.memo(fc.run, js.Any.fromFunction2[P,P,Boolean](compare)))
+
+  /** Use general P and scala equality comparisons to detect prop changes. */
+  def memoScala[P](fc: SFC1[P]): SFC1[P] =
+    new SFC1(ReactJS.memo(fc.run, js.Any.fromFunction2[P,P,Boolean]((l,r) => l == r)))
 
   def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
 

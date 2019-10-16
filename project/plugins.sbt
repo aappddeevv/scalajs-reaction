@@ -1,6 +1,6 @@
 // 1.0.0-M7 or 0.6.28 by default
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.28")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.29")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
 //addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.5.1")

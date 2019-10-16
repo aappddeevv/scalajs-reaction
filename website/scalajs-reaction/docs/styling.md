@@ -83,3 +83,75 @@ defining your styles in JS and importing them as JS data. Then use a facade over
 a CSS in JS library to add them once you have manipulated them as needed. You do
 not gain type-safety with this approach but if you use typescript bindings in
 typescript code, its probably good enough.
+
+## @uifabric merge-styles
+
+@uifabric/merge-styles is an independent package from microsoft. You can
+do css-in-js styles as follows:
+
+```scala
+// other imports ...
+
+import ttg.react.fabric.MergeStyles._
+
+object MyComponent {
+
+  trait Props extends js.Object {
+    var rootClassName: js.UndefOr[String] = js.undefined
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
+    val children: String => ReactNode
+  }
+
+  val Name = "MyComponent"
+  def apply(props: Props) = sfc(props)
+
+  val sfc = SFC1[Props] { props =>
+    React.useDebugValue(Name)
+    val cn = getClassNames(new StyleProps {
+      className = props.rootClassName
+    }, props.styles)
+
+    divWithClassname(
+      cn.root,
+      props.content(cn.content)
+    )
+  }
+
+  @js.native
+  trait ClassNames extends IClassNamesTag {
+    val root: String = js.native
+    val content: String = js.native
+  }
+
+  trait Styles extends IStyleSetTag {
+    var root: js.UndefOr[IStyle] = js.undefined
+    var content: js.UndefOr[IStyle] = js.undefined
+  }
+
+  trait StyleProps extends js.Object {
+    var className: js.UndefOr[String] = js.undefined
+  }
+
+  val getStyles = stylingFunction[StyleProps, Styles] { props =>
+    new Styles {
+      root = stylearray(
+        "app-MyComponent-root",
+        new IRawStyle {
+          display = "flex"
+          flexWrap = "nowrap"
+          alignItems = "stretch"
+          height = "calc(100% - 48px)"
+        },
+        props.className
+      )
+      content = stylearray("app-MyComponent-content", new IRawStyle {
+        flex = "1 1 auto"
+        overflowY = "auto"
+      })
+    }
+  }
+
+  val getClassNames: GetClassNamesFn[StyleProps, Styles, ClassNames] =
+    (props, styles) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](props, getStyles, styles))
+}
+```

@@ -15,26 +15,22 @@ import ttg.react.vdom._
 import js.JSConverters._
 
 /**
- * @uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
- * also exports most of @uifabic/merge-styles.
- */
+  * @uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
+  * also exports most of @uifabic/merge-styles.
+  */
 @js.native
 @JSImport("@uifabric/styling", JSImport.Namespace)
-object Styling
-    extends js.Object
-    with ThemeLike
-    with StylingLike
-    with MergeStyles
-
+object Styling extends js.Object with ThemeLike with StylingLike with MergeStyles
 @js.native
 trait MergeStyles extends js.Object {
+
   /**
     * Merge styles and register in a stylesheet. Return the "css" mangled name
     * you use as the attribute "className" in your components. You probably want
     * to use a style set and `mergeStyleSets` to push a bunch of styles to the
     * stylesheet at one time.
     */
-  def mergeStyles(styles: (IStyle|js.Array[IStyle])*): String = js.native
+  def mergeStyles(styles: (IStyle | js.Array[IStyle])*): String = js.native
 
   /**
     * Merge style sets and register in a stylesheet. js.Object is included to
@@ -54,8 +50,22 @@ trait MergeStyles extends js.Object {
     * base and something more specific, inside of a function that computes
     * styles but you want the output to be a (string -> style) mapping still.
     * Last argument has higher precedence.
+    *
+    * @tparama T Object with mappings between properties and "string" class names.
+    *   See IProcessedStyleSet in typescript.
     */
   def concatStyleSets[T <: js.Any](styleSets: IStyleSet*): T = js.native
+
+  /**
+    * Combine styles together but allow style functions or props. IStyleSet refers
+    * to a js object that has properties whose values are IStyle objects.
+    *
+    * @tparam S Style props type.p
+    */
+  def concatStyleSetsWithProps[S <: js.Any, T <: js.Object](
+      props: S,
+      styleSets: (js.Object | js.Dynamic | IStyleFunctionOrObject[S, IStyleSetTag] | js.UndefOr[js.Object])*
+  ): T = js.native
 
   /** Register a font face. */
   def fontFace(font: FontFace): Unit = js.native
@@ -82,17 +92,17 @@ trait IIconOptions extends js.Object {
 @js.native
 trait StylingLike extends js.Object {
   def getIconClassName(name: String): String = js.native
-  def registerIcons(r: IIconSubset,
-    options: js.UndefOr[IIconOptions]=js.undefined): Unit = js.native
+  def registerIcons(r: IIconSubset, options: js.UndefOr[IIconOptions] = js.undefined): Unit = js.native
 }
 
 /** Totally odd that this is not included in the overall Styling exports. */
 @js.native
 @JSImport("@uifabric/merge-styles/lib/styleToClassName", JSImport.Namespace)
 object StyleToClassName extends js.Object {
+
   /**
-   * Convert styles to classname and register. You should be using
-   * mergeStyleSets/mergeStyles.
-   */
+    * Convert styles to classname and register. You should be using
+    * mergeStyleSets/mergeStyles.
+    */
   def styleToClassName(args: IStyle*): String = js.native
 }

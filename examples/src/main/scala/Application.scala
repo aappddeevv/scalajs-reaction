@@ -46,8 +46,9 @@ object RouterConfig {
   // all static routes so define all in one place
   def config(n: Int = 0, baseUrl: String) = ReactionConfig(
     prefixPath = Some(baseUrl),
-    rules = parts =>
-    parts.drop(n).segments.filterNot(_.isEmpty) match {
+    rules = parts => {
+      println(s"Running rules with parts ${parts}, $n")
+      parts.drop(n).segments.filterNot(_.isEmpty) match {
       case Seq("readme") =>
         Render(body(Pages.readme(readmetext)))
 
@@ -86,18 +87,18 @@ object RouterConfig {
         Render(body(Pages.materialUIPage()))
 
       case _ =>
-        //Render(_ => s"Invalid URL: No route for ${parts.pathname} defined! Use the browser's back button.")
-        println(s"Invalid URL: No route for ${parts.pathname} defined: ${parts}")
-        //RedirectTo("readme", router.Redirect.Replace)
-        Render(_ => "A routing configuration error occurred. Press the back button to return to the previous page.")
-    }
+          println(s"Invalid URL: No route for ${parts.pathname} defined: ${parts}")
+          Render(_ => "A routing configuration error occurred. Press the back button to return to the previous page.")
+      }}
   )
 }
 
 object Application {
 
-  val baseUrl = dom.document.location.origin.asString + BuildSettings.routePrefix.map("/" + _).getOrElse("")
-  val nsegments = BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
+  val baseUrl =
+    dom.document.location.origin.asString + BuildSettings.routePrefix.getOrElse("")
+  val nsegments =
+    BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
 
   dom.console.log("baseURL", baseUrl, "nsegments to strip", nsegments)
 

@@ -155,7 +155,7 @@ module.exports = function (env) {
     })
     const copyplugin = new CopyWebpackPlugin(staticAssets)
     const prodCopy = new CopyWebpackPlugin([
-        {from: "dist/*", to: path.join(__dirname, "website/scalajs-reaction/static"), flatten: true}
+        {from: "dist/*", to: path.join(__dirname, "website/scalajs-reaction/static/demo"), flatten: true}
     ])
     
     console.log("isProd: ", isProd)
@@ -181,13 +181,14 @@ module.exports = function (env) {
     }
     else {
         const g = globals()
-        console.log("Dev build")
+        console.log("Development build")
         console.log("globals: ", g)
         return merge(output, common(scalapath, isProd), dev, {
             plugins: [
                 new webpack.HotModuleReplacementPlugin(),
                 new webpack.DefinePlugin(g),
                 copyplugin,
+                prodCopy,
             ]
         })
     }

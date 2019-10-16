@@ -24,7 +24,7 @@ concepts in that library to this API.
 
 # API Documentation
 
-* [API: all modules](api/ttg/react)
+* [API: all modules](../api/ttg/react)
 
 The API focuses on integration, for example, reactjs redux integration, allows
 you to connect your component to an existing redux store if you want to use
@@ -37,4 +37,4 @@ core facades. In other words, there is more there so check the source!
 
 # Demo
 A WIP demo is here:
-[Demo](../demo/index.html)
+[Demo](../demo)

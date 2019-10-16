@@ -417,11 +417,10 @@ lazy val docs = project
 
 val copyAPI = taskKey[Unit]("Copy API files to website build dir")
 copyAPI := {
-  (docs/Compile/unidoc).value
   IO.copyDirectory(
     // a bit hard-coded
     file("./docs/target/scala-2.13/unidoc"),
-    file("./website/scalajs-reaction/build/api"),
+    file("./website/scalajs-reaction/static/api"),
     overwrite=true)
 }
 
@@ -442,5 +441,5 @@ npmBuildFast := {
 val npmRunDemo = taskKey[Unit]("fastOptJS then run webpack server")
 npmRunDemo := {
   (fastOptJS in (examples, Compile)).value
-  "npm run examples:dev-start" !
+  "npm run examples:dev:start" !
 }

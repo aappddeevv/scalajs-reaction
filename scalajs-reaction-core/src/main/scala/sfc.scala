@@ -30,7 +30,7 @@ object SFC0 {
  * function for use in reactjs.
  * @tparam P Props type. Use `js.UndefOr[P]` for optional args.
  */
-class SFC1[P <: js.Object](val run: js.Function1[P, ReactElement]) {
+class SFC1[P](val run: js.Function1[P, ReactElement]) {
   /** Create a reactjs component given some props. */
   def apply(props: P) = toEl(props)
 
@@ -39,8 +39,13 @@ class SFC1[P <: js.Object](val run: js.Function1[P, ReactElement]) {
 }
 
 object SFC1 {
-  /** Create a SFC1 from a single parameter scala function. */
+  /** Create a SFC1 from a single parameter scala function taking a js.Object
+   * props type.
+   */
   def apply[P <: js.Object](f: P => ReactElement) = new SFC1[P](f)
+
+  /** Make it explicit to create a SFC1 that takes a scala object for props. */
+  def scala[P](f: P => ReactElement) = new SFC1[P](f)
 }
 
 /** A stateless functional component with two args, the props and something
@@ -50,7 +55,7 @@ object SFC1 {
  * 
  * @see https://reactjs.org/docs/hooks-reference.html#useref
  */
-class SFCWithRef[P <: js.Object, R](val run: js.Function2[P, Ref[R], ReactNode]) {
+class SFCWithRef[P, R](val run: js.Function2[P, Ref[R], ReactNode]) {
   /** Create an reactjs component directly from this SFC. */
   def toEl(props: P) = ReactJS.createElement(run.asInstanceOf[ReactJsFunctionComponent], props)  
 }
@@ -60,5 +65,7 @@ object SFCWithRef {
    * `createRef`.
    */
   def apply[P <: js.Object, R](f: (P,Ref[R]) => ReactElement) = new SFCWithRef[P,R](f)
+
+  def scala[P, R](f: (P,Ref[R]) => ReactElement) = new SFCWithRef[P,R](f)
 }
 

@@ -28,3 +28,6 @@ docs/src/main/resources/microsite/static
 dist/*
 
 .emacs.desktop
+.metals
+.bloop
+package-lock.json

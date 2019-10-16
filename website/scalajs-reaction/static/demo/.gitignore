@@ -1,4 +1,2 @@
-# files are generated elsewhere and placed into build/demo, not here
-*.html
-*.js
-*.js.map
+*
+!.gitkeep

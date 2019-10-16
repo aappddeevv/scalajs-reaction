@@ -1,6 +1,5 @@
 <p align="center"><img width="300" src="./logo.svg"/></p>
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
-
 [![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
 
 Note: The documentation site is being converted to docusaurus v2. Links to the
@@ -11,8 +10,7 @@ demo do not work yet but you can see the demo by cloning the project and running
 
 A react library for scala written in the spirit of ReasonReact, a react library
 for an OCaml dialect known as reason (sponsored by facebook). [ReasonReact
-documentation](https://reasonml.github.io/reason-react) provides a good
-description of how this library works since this facade was designed to mimic
+documentation](https://reasonml.github.io/reason-react) provides a good description of how this library works since this facade was designed to mimic
 that facade. While more advanced scala functionality could have been used, the
 scala.js implementation is kept intentionally similar to ReasonReact so that its
 documentation applies to this project.
@@ -60,6 +58,7 @@ approach:
 trait Props extends js.Object {
     val name: String
 }
+
 val sfc = SFC1[Props] { props =>
   div("hello " + props.name)
 }
@@ -103,7 +102,7 @@ use more idiomatic scala constructs.
 Include the library in your build:
 ```scala
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
-val scalaJsReactVersion = "latest.version"
+val scalaJsReactVersion = "latest.version" // or 0.1.0-M7
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
@@ -144,6 +143,30 @@ npm i --save react-dom
 ```
 
 React 16.8+, the one with hooks, is required.
+
+There are many modules available as most of the focus has been on bindings. All of these libraries use the group name `ttg`:
+
+* scalajs-reaction-core
+* scalajs-reaction-vdom
+* scalajs-reaction-react-dom
+* scalajs-reaction-fabric
+* scalajs-reaction-fabric-experiments
+* scalajs-reaction-react-redux
+* scalajs-reaction-prop-types
+* scalajs-reaction-native
+* scalajs-reaction-mui
+* scalajs-reaction-bootstrap
+* scalajs-reaction-router
+* scalajs-reaction-react-big-calendar
+* scalajs-reaction-native-nativebase
+* scalajs-reaction-native-native-elements
+* scalajs-reaction-native-react-navigation
+* scalajs-reaction-native-react-native-sideswipe
+* scalajs-reaction-jss
+* scalajs-reaction-form
+* data-validation
+
+
 
 ### Styling
 

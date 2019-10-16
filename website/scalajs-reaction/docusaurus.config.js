@@ -30,8 +30,8 @@ module.exports = {
           label: 'GitHub',
           position: 'right',
         },
-          { href: '/scalajs-reaction/api/index.html', label: 'API', position: 'left'},
-          { href: '/scalajs-reaction/demo', label: 'Demo', position: 'left' },
+          { href: 'api/ttg/react', label: 'API', position: 'left'},
+          { href: 'demo', label: 'Demo', position: 'left' },
       ],
     },
     Footer: {
@@ -87,5 +87,8 @@ module.exports = {
       },
     ],
   ],
-    plugins: [path.resolve(__dirname, "./build-demo-plugin")]
+    plugins: [
+        path.resolve(__dirname, "build-demo-plugin"),
+        path.resolve(__dirname, "copy-api-plugin")
+    ]
 };
