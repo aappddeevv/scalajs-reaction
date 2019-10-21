@@ -17,17 +17,12 @@ import fabric.styling._
 object Label {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Label", "Label")
-  object LabelJS extends ReactJsComponent
+  object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    React.createElement(LabelJS, props)(children: _*)
+    React.createElement(JS, props)(children: _*)
 
-  trait Props
-      extends LabelHTMLAttributes[html.Label]
-      with ComponentRef[js.Any]
-      with Disabled
-      with Theme {
+  trait Props extends LabelHTMLAttributes[html.Label] with ComponentRef[js.Any] with Disabled with Theme {
     var required: js.UndefOr[Boolean] = js.undefined
   }
 }
-

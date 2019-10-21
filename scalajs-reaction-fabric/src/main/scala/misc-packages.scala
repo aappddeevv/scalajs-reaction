@@ -14,4 +14,9 @@ import js.annotation._
 
 @js.native
 @JSImport("@uifabric/merge-styles", JSImport.Namespace)
+@deprecated("Use merge_styles")
 object MergeStyles extends styling.MergeStyles
+
+@js.native
+@JSImport("@uifabric/merge-styles", JSImport.Namespace)
+object merge_styles extends styling.MergeStyles

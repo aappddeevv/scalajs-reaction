@@ -3,7 +3,6 @@
 import scala.sys.process._
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-
 // reload build.sbt on changes
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -19,8 +18,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 lazy val bintraySettings = Seq(
   bintrayReleaseOnPublish := false,
-  bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native",
-    "office", "material-ui", "bootstrap"),
+  bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap"),
   bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-reaction"),
   publishMavenStyle := true
 )
@@ -28,12 +26,15 @@ lazy val bintraySettings = Seq(
 lazy val licenseSettings = Seq(
   headerMappings := headerMappings.value +
     (HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment),
-    headerLicense  := Some(HeaderLicense.Custom(
+  headerLicense := Some(
+    HeaderLicense.Custom(
       """|Copyright (c) 2018 The Trapelo Group LLC
          |This software is licensed under the MIT License (MIT).
          |For more information see LICENSE or https://opensource.org/licenses/MIT
          |""".stripMargin
-    )))
+    )
+  )
+)
 
 // lazy val macroSettings = Seq (
 //   resolvers += Resolver.sonatypeRepo("releases"),
@@ -51,23 +52,23 @@ lazy val buildSettings = Seq(
   scalaVersion := "2.13.0",
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    Resolver.jcenterRepo,
+    Resolver.jcenterRepo
     //ivyLocal
   ),
-  autoCompilerPlugins := true,
+  autoCompilerPlugins := true
 ) ++ licenseSettings
 
 lazy val noPublishSettings = Seq(
   skip in publish := true, // this did not seem to work
   publish := {},
-  publishLocal :={},
-  publishArtifact := false 
+  publishLocal := {},
+  publishArtifact := false
 )
 
 lazy val exampleSettings = Seq(
   libraryDependencies ++= Seq(
     // any special ones??
-  ),
+  )
 )
 
 lazy val publishSettings = Seq(
@@ -75,16 +76,17 @@ lazy val publishSettings = Seq(
 ) ++ bintraySettings
 
 val commonScalacOptions = Seq(
-    "-deprecation",
-    "-encoding", "UTF-8",
-    "-feature",
-    "-language:_",
+  "-deprecation",
+  "-encoding",
+  "UTF-8",
+  "-feature",
+  "-language:_",
   "-unchecked",
   //  "-Yno-adapted-args",
-    "-Ywarn-numeric-widen",
+  "-Ywarn-numeric-widen"
 //    "-Xfuture",
 //  "-Ypartial-unification",
-  )
+)
 
 lazy val jssettings = Seq(
   scalacOptions ++= (
@@ -95,20 +97,20 @@ lazy val jssettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.7",
+    "org.scala-js" %%% "scalajs-dom" % "0.9.7"
   )
 )
 
 lazy val commonSettings = Seq(
   scalacOptions ++= commonScalacOptions,
   libraryDependencies ++= Seq(
-    "org.scalatest"          %%% "scalatest"    % "latest.release" % "test",
+    "org.scalatest" %%% "scalatest" % "3.1.0-RC3" % "test"
   ),
   dependencyOverrides ++= Seq(
     // none
   ),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
-  autoAPIMappings := true,
+  autoAPIMappings := true
 )
 
 // supports scala 2.13 and scalajs 0.6
@@ -116,25 +118,28 @@ val catsVersion = "2.0.0-M4"
 
 lazy val fpsettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"          %%% "cats-core"    % catsVersion,
-  ))
+    "org.typelevel" %%% "cats-core" % catsVersion
+  )
+)
 
 lazy val exampleFPSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel"         %%% "cats-effect"    % catsVersion,
+    "org.typelevel" %%% "cats-effect" % catsVersion
     //"tech.sparse" %%% "trail" % "0.1.2", // 0.1.2 uses newest cats
-))
+  )
+)
 
 lazy val libsettings = buildSettings ++ commonSettings ++ jssettings
 lazy val jvmlibsettings = buildSettings ++ commonSettings
 
-lazy val root = project.in(file("."))
+lazy val root = project
+  .in(file("."))
   .settings(jvmlibsettings)
   .settings(noPublishSettings)
   .settings(name := "scalajs-react")
   .aggregate(
     examples,
-    docs,    
+    docs,
     `scalajs-reaction-core`,
     `scalajs-reaction-fabric`,
     `scalajs-reaction-fabric-experiments`,
@@ -147,18 +152,19 @@ lazy val root = project.in(file("."))
     `scalajs-reaction-bootstrap`,
     `scalajs-reaction-mui`,
     `scalajs-reaction-router`,
-    `scalajs-reaction-react-big-calendar`,
+    `react-big-calendar`,
     `scalajs-reaction-native-nativebase`,
     `scalajs-reaction-native-react-native-elements`,
     `scalajs-reaction-native-react-navigation`,
     `scalajs-reaction-native-react-native-sideswipe`,
     `scalajs-reaction-jss`,
     `scalajs-reaction-form`,
+    `react-router-dom`,
     dataValidationJS
-      //,dataValidationJVM
+    //,dataValidationJVM
   )
-    .enablePlugins(AutomateHeaderPlugin)
-    .disablePlugins(BintrayPlugin)
+  .enablePlugins(AutomateHeaderPlugin)
+  .disablePlugins(BintrayPlugin)
 
 lazy val `scalajs-reaction-core` = project
   .settings(libsettings)
@@ -177,80 +183,95 @@ lazy val `scalajs-reaction-native` = project
     `scalajs-reaction-vdom`
   )
 
-lazy val `scalajs-reaction-react-big-calendar` = project
-  .in(file("components/scalajs-reaction-react-big-calendar"))
+lazy val `react-big-calendar` = project
+  .in(file("components/react-big-calendar"))
   .settings(libsettings)
   .settings(publishSettings)
-  .settings(Seq(
-    description := "react-big-calendar",
-  ))
+  .settings(
+    Seq(
+      description := "scalajs reaction react-big-calendar"
+    )
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-vdom`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
 
 lazy val `scalajs-reaction-jss` = project
   .in(file("components/scalajs-reaction-jss"))
   .settings(libsettings)
   .settings(publishSettings)
-  .settings(Seq(
-    description := "cssinjs jss",
-  ))
+  .settings(
+    Seq(
+      description := "cssinjs jss"
+    )
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-vdom`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+
+lazy val `react-router-dom` = project
+  .in(file("components/react-router-dom"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(
+    Seq(
+      description := "scalajs reaction react-router-dom bindings (hook)"
+    )
+  )
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
 
 lazy val `scalajs-reaction-native-react-navigation` = project
   .in(file("components/scalajs-reaction-native-react-navigation"))
   .settings(libsettings)
   .settings(publishSettings)
-  .settings(Seq(
-    description := "react-navigation facade",
-  ))
+  .settings(
+    Seq(
+      description := "react-navigation facade"
+    )
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
     `scalajs-reaction-core`,
-    `scalajs-reaction-native`    
+    `scalajs-reaction-native`
   )
 
 lazy val `scalajs-reaction-native-react-native-sideswipe` = project
   .in(file("components/scalajs-reaction-native-react-native-sideswipe"))
   .settings(libsettings)
   .settings(publishSettings)
-  .settings(Seq(
-    description := "react-native-sideswipe",
-  ))
+  .settings(
+    Seq(
+      description := "react-native-sideswipe"
+    )
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
     `scalajs-reaction-core`,
-    `scalajs-reaction-native`    
+    `scalajs-reaction-native`
   )
 
 lazy val `scalajs-reaction-native-nativebase` = project
   .in(file("components/scalajs-reaction-native-nativebase"))
   .settings(libsettings)
   .settings(publishSettings)
-  .settings(Seq(
-    description := "nativebase library",
-  ))
+  .settings(
+    Seq(
+      description := "nativebase library"
+    )
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-native`)
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-native`)
 
 lazy val `scalajs-reaction-native-react-native-elements` = project
   .in(file("components/scalajs-reaction-native-react-native-elements"))
   .settings(libsettings)
   .settings(publishSettings)
-  .settings(Seq(
-    description := "react-native-elements library",
-  ))
+  .settings(
+    Seq(
+      description := "react-native-elements library"
+    )
+  )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-native`)
-
+  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-native`)
 
 // jvm and js based project
 // lazy val dataValidation =
@@ -265,13 +286,16 @@ lazy val `scalajs-reaction-native-react-native-elements` = project
 //     .settings(description :=
 //       "General purpose data validation library based on cats and applicatives.")
 
-lazy val dataValidationJS = project.in(file("data-validation"))
+lazy val dataValidationJS = project
+  .in(file("data-validation"))
   .settings(name := "data-validation")
-    .settings(libsettings)
-    .settings(publishSettings)
-    .settings(fpsettings)
-    .settings(description :=
-      "General purpose data validation library based on cats and applicatives.")
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(fpsettings)
+  .settings(
+    description :=
+      "General purpose data validation library based on cats and applicatives."
+  )
 // needed if not using cross-
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
 
@@ -317,7 +341,7 @@ lazy val `scalajs-reaction-react-redux` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-reaction-core`)
   .settings(
-    description := "redux via react-redux.",
+    description := "redux via react-redux."
   )
 
 lazy val `scalajs-reaction-fabric` = project
@@ -334,7 +358,7 @@ lazy val `scalajs-reaction-fabric-experiments` = project
   .dependsOn(
     `scalajs-reaction-core`,
     `scalajs-reaction-vdom`,
-    `scalajs-reaction-fabric`,
+    `scalajs-reaction-fabric`
   )
   .settings(description := "microsoft @uifbaric experiments.")
 
@@ -370,7 +394,6 @@ lazy val `scalajs-reaction-form` = project
   .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
   .settings(description := "scalajs-reaect form library.")
 
-
 // Watch non-scala assets as well, we add this to root project even
 // though its only relevant to examples project.
 watchSources += baseDirectory.value / "examples/src/main/assets"
@@ -381,8 +404,9 @@ lazy val examples: Project = project
   .settings(
     // https://github.com/vpavkin/scala-js-momentjs/pull/41
     libraryDependencies ++= Seq(
-      "ru.pavkin" %%% "scala-js-momentjs" % "0.10.0-SNAPSHOT"
-    ))
+      "ru.pavkin" %%% "scala-js-momentjs" % "0.10.0" //"0.10.0-SNAPSHOT"
+    )
+  )
   .settings(fpsettings)
   .settings(exampleFPSettings)
   .dependsOn(
@@ -395,7 +419,8 @@ lazy val examples: Project = project
     `scalajs-reaction-form`,
     `scalajs-reaction-bootstrap`,
     `scalajs-reaction-mui`,
-    `scalajs-reaction-react-big-calendar`
+    `react-big-calendar`,
+    `react-router-dom`
 //     ,dataValidationJS
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
@@ -412,7 +437,7 @@ lazy val docs = project
   .settings(
     unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject --
       inProjects(examples)
-      //-- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
+    //-- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
   )
 
 val copyAPI = taskKey[Unit]("Copy API files to website build dir")
@@ -421,7 +446,8 @@ copyAPI := {
     // a bit hard-coded
     file("./docs/target/scala-2.13/unidoc"),
     file("./website/scalajs-reaction/static/api"),
-    overwrite=true)
+    overwrite = true
+  )
 }
 
 addCommandAlias("fmt", ";scalafmt")

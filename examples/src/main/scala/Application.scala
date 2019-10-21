@@ -21,7 +21,12 @@ import vdom.styling._
 import cats._
 import cats.implicits._
 
-import react.router.browser._
+import router.browser._
+import ttg.react.react_router.dom._
+import ttg.react.react_router.dom.hooks._
+
+// you will want to read:
+// https://itnext.io/so-you-want-to-host-your-single-age-react-app-on-github-pages-a826ab01e48
 
 object int {
   import scala.util._
@@ -38,10 +43,10 @@ object RouterConfig {
 
   def body(bodyContent: ReactNode): ReactionRouter.Control => ReactNode =
     c =>
-  AppBody(new AppBody.Props {
-    val nav = Nav(new Nav.Props { var goto = c.navigate(_, router.Redirect.Push)})
-    val content = bodyContent
-  })
+      AppBody(new AppBody.Props {
+        val nav = Nav(new Nav.Props { var goto = c.navigate(_, router.Redirect.Push) })
+        val content = bodyContent
+      })
 
   // all static routes so define all in one place
   def config(n: Int = 0, baseUrl: String) = ReactionConfig(
@@ -49,48 +54,84 @@ object RouterConfig {
     rules = parts => {
       println(s"Running rules with parts ${parts}, $n")
       parts.drop(n).segments.filterNot(_.isEmpty) match {
-      case Seq("readme") =>
-        Render(body(Pages.readme(readmetext)))
+        case Seq("readme") =>
+          Render(body(Pages.readme(readmetext)))
 
-      case Seq("addresses") =>
-        Render(body(Pages.addressPage(addressmanager.fakedata.addressDAO)))
+        case Seq("addresses") =>
+          Render(body(Pages.addressPage(addressmanager.fakedata.addressDAO)))
 
-      case Seq("todo") =>
-        Render(body(Pages.todoPage()))
+        case Seq("todo") =>
+          Render(body(Pages.todoPage()))
 
-      case Seq("helloworld") =>
-        Render(body(Pages.helloWorldPage()))
+        case Seq("helloworld") =>
+          Render(body(Pages.helloWorldPage()))
 
-      case Seq("changeredux") =>
-        Render(body(Pages.changeReduxStatePage()))
+        case Seq("changeredux") =>
+          Render(body(Pages.changeReduxStatePage()))
 
-      case Seq("labelandchild") =>
-        Render(body(Pages.labelAndChild("Typescript Wrapping Scala.js",
-          helloworld.HelloWorld())))
+        case Seq("labelandchild") =>
+          Render(body(Pages.labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld())))
 
-      case Seq("tagtest")=>
-        Render(body(Pages.tagTest()))
+        case Seq("tagtest") =>
+          Render(body(Pages.tagTest()))
 
-      case Seq("pressure") =>
-        Render(body(Pages.pressurePage()))
+        case Seq("pressure") =>
+          Render(body(Pages.pressurePage()))
 
-      case Seq("graph") =>
-        Render(body(Pages.graphPage()))
+        case Seq("graph") =>
+          Render(body(Pages.graphPage()))
 
-      case Seq("calendar") =>
-        Render(body(Pages.calendarPage()))
+        case Seq("calendar") =>
+          Render(body(Pages.calendarPage()))
 
-      case Seq("bootstrap") =>
-        Render(body(Pages.bootstrapPage()))
+        case Seq("bootstrap") =>
+          Render(body(Pages.bootstrapPage()))
 
-      case Seq("mui") =>
-        Render(body(Pages.materialUIPage()))
+        case Seq("mui") =>
+          Render(body(Pages.materialUIPage()))
 
-      case _ =>
+        case _ =>
           println(s"Invalid URL: No route for ${parts.pathname} defined: ${parts}")
           Render(_ => "A routing configuration error occurred. Press the back button to return to the previous page.")
-      }}
+      }
+    }
   )
+}
+
+object routes {
+
+  val sfc = SFC0 {
+    val history = useHistory[js.Any]()
+    def body(bodyContent: ReactNode): ReactNode =
+      AppBody(new AppBody.Props {
+        val nav = Nav(new Nav.Props {
+          var goto = { arg =>
+            history.push(s"/$arg")
+            println(arg)
+          }
+        }) //c.navigate(_, router.Redirect.Push) })
+        val content = bodyContent
+      })
+
+    body(
+      Switch(
+        Route.withExactPath("/", Redirect.to("/readme")),
+        Route.withPath("/readme", Pages.readme(readmetext)),
+        Route.withPath("/address", Pages.addressPage(addressmanager.fakedata.addressDAO)),
+        Route.withPath("/todo", Pages.todoPage()),
+        Route.withPath("/helloworld", Pages.helloWorldPage()),
+        Route.withPath("/changeredux", Pages.changeReduxStatePage()),
+        Route.withPath("/labelandchild",
+          Pages.labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld())),
+        Route.withPath("/tagtest", Pages.tagTest()),
+        Route.withPath("/pressure", Pages.pressurePage()),
+        Route.withPath("/graph", Pages.graphPage()),
+        Route.withPath("/calendar", Pages.calendarPage()),
+        Route.withPath("/bootstrap", Pages.bootstrapPage()),
+        Route.withPath("/mui", Pages.materialUIPage()),
+        Route.always(Redirect.to("/readme"))
+      ))
+  }
 }
 
 object Application {
@@ -117,11 +158,12 @@ object Application {
       }
     })(
       Header(),
-      ReactionRouter.Route(RouterConfig.config(
-        n = nsegments,
-        baseUrl = baseUrl
+      HashRouter(
+        routes.sfc
+          // ReactionRouter.Route(RouterConfig.config(
+          //   n = nsegments,
+          //   baseUrl = baseUrl
+          // ))
       ))
-    )
   }
 }
-

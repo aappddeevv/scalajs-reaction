@@ -3,7 +3,6 @@ val scalaJSVersion =
   Option(System.getenv("SCALAJS_VERSION")).getOrElse("0.6.29")
 
 addSbtPlugin("org.scala-js" % "sbt-scalajs" % scalaJSVersion)
-//addSbtPlugin("com.geirsson" % "sbt-scalafmt" % "1.5.1")
 addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.0.1")
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.9.0")
 addSbtPlugin("org.foundweekends" % "sbt-bintray" % "0.5.4")
@@ -16,4 +15,5 @@ addSbtPlugin("org.tpolecat" % "tut-plugin" % "0.6.12")
 addSbtPlugin("com.thoughtworks.sbt-scala-js-map" % "sbt-scala-js-map" % "latest.release")
 
 
-addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject"      % "0.6.0")
+addSbtPlugin("org.portable-scala" % "sbt-scalajs-crossproject"      % "0.6.1")
+addSbtPlugin("org.scala-js"       % "sbt-scalajs"                   % "0.6.23")

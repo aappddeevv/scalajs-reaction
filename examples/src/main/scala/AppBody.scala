@@ -23,7 +23,7 @@ import vdom._
 import vdom.tags._
 
 import fabric.styling._
-import fabric.MergeStyles._
+import fabric.merge_styles._
 
 object AppBody {
 
@@ -42,7 +42,6 @@ object AppBody {
     val cn = getClassNames(new StyleProps {
       className = props.rootClassName
     }, props.styles)
-
     divWithClassname(
       cn.root,
       divWithClassname(cn.nav, props.nav),
@@ -89,10 +88,14 @@ object AppBody {
     }
   }
 
-  // val getClassNames =
-  //   fabric.Utilities.memoizeFunction[Styles, ClassNames](Styling.mergeStyleSets[ClassNames](_))
+  // this causes an error
+  val getClassNames1 =
+    getClassNamesFunction[StyleProps, Styles, ClassNames](
+      (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s)
+      ))
 
-  val getClassNames: GetClassNamesFn[StyleProps, Styles, ClassNames] =
-    (props, styles) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](props, getStyles, styles))
+  val getClassNames:
+      GetClassNamesFn[StyleProps, Styles, ClassNames] =
+    (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s))
 
 }

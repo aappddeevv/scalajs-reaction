@@ -60,11 +60,11 @@ package object styling {
     * footer. Fabric also desginates `subComponentStyles` as a property that is
     * an object with string->istyle mappings or a function that takes properties
     * (an object) and returns string->istyle mappings. So fabric defines a style
-    * set as a potentially hierarchical specification of stylesets. When you want
-    * to be specific, use a trait instead of IStyleSet. Most of your code should
-    * use IStyleSetTag js objects with explicitly defined data members and rely
-    * on implicit conversions from IStyleSetTag to IStyleSet defined for
-    * convenience when calling the fabric style functions.
+    * set as a potentially hierarchical specification of stylesets. When you
+    * want to be specific, use a trait instead of IStyleSet. Most of your code
+    * should use IStyleSetTag js objects with explicitly defined data members
+    * and rely on implicit conversions from IStyleSetTag to IStyleSet defined
+    * for convenience when calling the fabric style functions.
     */
   type IStyleSet = js.Dictionary[IStyle]
 
@@ -93,9 +93,9 @@ package object styling {
       js.Dictionary[IStyle](stylePairs: _*)
 
     /** Same as `apply` but cast to your final T type. Tyically T is the component's
-      * specific `Styles` trait.  You should not really need this function because
-      * if you have a IStyleSetTag derived JS trait, just instantitate that trait but
-      * if you prefer the "list of pairs" model, use this.
+      * specific `Styles` trait.  You should not really need this function
+      * because if you have a IStyleSetTag derived JS trait, just instantitate
+      * that trait but if you prefer the "list of pairs" model, use this.
       */
     @inline def make(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
       js.Dictionary[IStyle](stylePairs: _*)
@@ -106,9 +106,9 @@ package object styling {
     * types will all be `var stylename: js.UndefOr[IStyle]` so that you can
     * specific a subset of the members based on your need. This is for use to
     * create a statically typed version of `IStyleSet` (a dictionary) where the
-    * members are statically declared as trait data members. Implicit conversions
-    * are available to convert a js.Object to a IStyleSet to call the interop
-    * functions.
+    * members are statically declared as trait data members. Implicit
+    * conversions are available to convert a js.Object to a IStyleSet to call
+    * the interop functions.
     */
   trait IStyleSetTag extends js.Object
 
@@ -119,8 +119,8 @@ package object styling {
 
   /**
     * Convert style props to a style set. Declare your props=>styleset functions
-    * with this type e.g. `val getStyles: IStyleFunction[SP, SST] = props => ???`.
-    * However, its easier to use the smart constructor `stylingFunction`.
+    * with this type e.g. `val getStyles: IStyleFunction[SP, SST] = props =>
+    * ???`.  However, its easier to use the smart constructor `stylingFunction`.
     *
     * @tparam SP style props type
     * @tparam style set type e.g. IStyleSet or IStyleSetTag
@@ -129,12 +129,21 @@ package object styling {
   type IStyleFunction[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
   /** Shortcut to define a IStyleFunction as a val. */
-  def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] =
-    js.Any.fromFunction1(f)
+  def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] = f
 
   /** Type for a logical `getClassNames` function declared as a val. */
   type GetClassNamesFn[SP <: js.Any, S <: IStyleSetTag, C <: IClassNamesTag] =
     js.Function2[SP, js.UndefOr[IStyleFunctionOrObject[SP, S]], C]
+
+  /** Like stylingFunction, shortcut to define a getClassNames function as a val
+   * that takes a style props object and an optional style function/object. Your
+   * program may not use this pattern so you will want to define your own
+   * version. Unlike stylingFunction, getClassNames has a signatue of your own
+   * choosing.
+   */
+  def getClassNamesFunction[SP <: js.Any, S <: IStyleSetTag, C <: IClassNamesTag](
+      f: (SP, js.UndefOr[IStyleFunctionOrObject[SP, S]]) => C
+  ): GetClassNamesFn[SP, S, C] = f
 
   /**
     * A style set or a style function. This mirrors the fabric signature.
