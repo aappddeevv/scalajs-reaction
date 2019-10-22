@@ -120,30 +120,37 @@ package object styling {
   /**
     * Convert style props to a style set. Declare your props=>styleset functions
     * with this type e.g. `val getStyles: IStyleFunction[SP, SST] = props =>
-    * ???`.  However, its easier to use the smart constructor `stylingFunction`.
+    * new Styles { ... }`.  However, its easier to use the smart constructor `stylingFunction`.
     *
     * @tparam SP style props type
-    * @tparam style set type e.g. IStyleSet or IStyleSetTag
+    * @tparam SS Style set type e.g. IStyleSet or js object derived from IStyleSetTag
     */
   //type IStyleFunction[SP <: js.Any, SS <: StyleSetType] = js.Function1[SP, SS]
   type IStyleFunction[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
+  type IStyleFn[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
+
   /** Shortcut to define a IStyleFunction as a val. */
   def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] = f
 
-  /** Type for a logical `getClassNames` function declared as a val. */
+  /** Type for a logical `getClassNames` function declared as a val.
+   * 
+   * @tparam SP Style props
+   * @tparam S Styles js object, derived from IStyleSetTag
+   * @typaram C Class names object derived from IClassNamesTag.
+   */
   type GetClassNamesFn[SP <: js.Any, S <: IStyleSetTag, C <: IClassNamesTag] =
     js.Function2[SP, js.UndefOr[IStyleFunctionOrObject[SP, S]], C]
 
-  /** Like stylingFunction, shortcut to define a getClassNames function as a val
-   * that takes a style props object and an optional style function/object. Your
-   * program may not use this pattern so you will want to define your own
-   * version. Unlike stylingFunction, getClassNames has a signatue of your own
-   * choosing.
-   */
-  def getClassNamesFunction[SP <: js.Any, S <: IStyleSetTag, C <: IClassNamesTag](
-      f: (SP, js.UndefOr[IStyleFunctionOrObject[SP, S]]) => C
-  ): GetClassNamesFn[SP, S, C] = f
+  // /** Like stylingFunction, shortcut to define a getClassNames function as a val
+  //  * that takes a style props object and an optional style function/object. Your
+  //  * program may not use this pattern so you will want to define your own
+  //  * version. Unlike stylingFunction, getClassNames has a signatue of your own
+  //  * choosing.
+  //  */
+  // def getClassNamesFunction[SP <: js.Any, S <: IStyleSetTag, C <: IClassNamesTag](
+  //     f: (SP, js.UndefOr[IStyleFunctionOrObject[SP, S]]) => C
+  // ): GetClassNamesFn[SP, S, C] = f
 
   /**
     * A style set or a style function. This mirrors the fabric signature.

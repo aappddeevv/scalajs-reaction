@@ -153,9 +153,9 @@ object ToDos {
   val sfc = SFC1[Props] { props =>
     React.useDebugValue(Name)
     val ifield = React.useRef[Option[TextField.ITextField]](None)    
-    React.useEffectMountingCb{() =>
+    React.useEffectMounting{() =>
       println("ToDo: subscriptions: called during mount")
-        () => println("ToDo: subscriptions: unmounted")
+      () => println("ToDo: subscriptions: unmounted")
     }
 
     val (state, dispatch) =

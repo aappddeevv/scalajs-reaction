@@ -185,7 +185,7 @@ object AddressManager {
       }, dependencies(setActive))
     val (fetchState, doFetch) = useFetch(props.dao, selection.setItems(_, true))
     dom.console.log(s"$Name: loading", fetchState.loading)
-    React.useEffectMountingCb{() =>
+    React.useEffectMounting{() =>
       doFetch()
       (() => setActive(null, null))
     }

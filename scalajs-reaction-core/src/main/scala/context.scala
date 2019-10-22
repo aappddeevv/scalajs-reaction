@@ -11,7 +11,7 @@ import js.Dynamic.{literal => lit}
 /**
   * Provide context using react 16.3+ context mechanism. Import this object to
   * obtain a syntax enhancement to create provider's and consumers. The syntax
-  * is not included in the standard syntax module. Not using an "optional"
+  * is not included in the standard syntax module. Avoiding an "optional"
   * concept in the below forces a zero to be created for every element you want
   * to pass in the context, which may be burdonsome. Considering using
   * js.UndefOr or Option as a wrapper around your value or values within your

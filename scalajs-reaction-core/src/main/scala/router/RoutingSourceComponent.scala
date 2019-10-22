@@ -55,7 +55,7 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
     React.useDebugValue(Name)
     val (state, setState) = React.useStateStrictDirect[State](None)
     // subscribe to routing source on mount
-    React.useEffectMountingCb{() =>
+    React.useEffectMounting{() =>
       val unsubscribe = routing.subscribe{ info => setState(Option(info))}
       // prime the pump
       routing.run(info => setState(Option(info)))

@@ -326,7 +326,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     val mounted = React.useRef[Boolean](false)
     val submitCount = React.useRef[Int](0)
 
-    React.useEffectMountingCb(() => {
+    React.useEffectMounting(() => {
       mounted.current = true
       (() => mounted.current = false)
     })

@@ -34,7 +34,8 @@ private[react] trait ReactJS extends js.Object {
   val Component: js.Dynamic = js.native
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending
-   * React.Component). P is kept very general here.
+   * React.Component). P is kept very general here an is not even forced to be a
+   * js object.
    */
   def createElement[P](
       el: ReactType,
@@ -83,6 +84,31 @@ trait DynamicImport extends js.Object {
   // If default is defined in the exports
   // other exports will be here as well
   val `default`: ReactJsComponent
+}
+
+/** Magnet pattern to create a friendly arg converter for effect hooks. */
+@js.native
+trait EffectArg extends js.Object
+
+object EffectArg {
+
+  @inline implicit def fromThunkJS(f: js.Function0[Unit]): EffectArg =
+    f.asInstanceOf[EffectArg]
+  
+  @inline implicit def fromThunk(f: () => Unit): EffectArg =
+    js.Any.fromFunction0[Unit](f).asInstanceOf[EffectArg]
+
+  @inline implicit def fromAny[A](f: () => A): EffectArg =
+    js.Any.fromFunction0[A](f).asInstanceOf[EffectArg]
+
+  @inline implicit def fromThunkCb(f: () => (() => Unit)): EffectArg =
+    convertEffectCallbackArg(f).asInstanceOf[EffectArg]
+
+  @inline implicit def fromThunkCbA[A](f: () => (() => A)): EffectArg =
+    convertEffectCallbackArg(f).asInstanceOf[EffectArg]
+
+  @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
+    ({() => f()}:js.Function0[js.Function0[A]]).asInstanceOf[EffectArg]
 }
 
 @js.native
@@ -232,51 +258,27 @@ trait React {
 
   /** Effect is run on every render which is probably too much. */
   def useEffectAlways(didUpdate: EffectArg) =
-    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), undefinedDependencies)
+    ReactJS.useEffect(didUpdate, undefinedDependencies)
 
   /** Effect is run when dependencies change. */
   def useEffect(didUpdate: EffectArg, dependencies: Dependencies) =
-    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies)
+    ReactJS.useEffect(didUpdate, dependencies)
 
   /** Effect is run when dependencies change. */
   def useEffect(dependencies: js.Any*)(didUpdate: EffectArg) =
-    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies.toJSArray)
+    ReactJS.useEffect(didUpdate, dependencies.toJSArray)
 
   /** Effect is run when dependencies change. */
   def useEffect(dependencies: Dependencies)(didUpdate: EffectArg) =
-    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies)
+    ReactJS.useEffect(didUpdate, dependencies)
 
   /** Effect is run at mount/unmount time with `[]` as the 2nd argument. */
   def useEffectMounting(didUpdate: EffectArg) =
-    ReactJS.useEffect(js.Any.fromFunction0[Unit](didUpdate), emptyDependencies)
-
-  /** Effect is run on every render which is probably too much. */
-  def useEffectAlwaysCb(didUpdate: EffectCallbackArg) =
-    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), undefinedDependencies)
-
-  /** Effect is run when dependencies change. */
-  def useEffectCb(didUpdate: EffectCallbackArg, dependencies: Dependencies) =
-    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), dependencies)
-
-  /** Effect is run when dependencies change. */
-  def useEffectCb(dependencies: Dependencies)(didUpdate: EffectCallbackArg) =
-    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), dependencies)
-
-  /** Effect is run when dependencies change. */
-  def useEffectCb(dependencies: js.Any*)(didUpdate: EffectCallbackArg) =
-    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), dependencies.toJSArray)
-
-  /** Effect is run at mount/unmount time with `[]` as the 2nd argument. */
-  def useEffectMountingCb(didUpdate: EffectCallbackArg) =
-    ReactJS.useEffect(convertEffectCallbackArg(didUpdate), emptyDependencies)
+    ReactJS.useEffect(didUpdate, emptyDependencies)
 
   /** Run before browser updates the screen. */
   def useLayoutEffect(didUpdate: EffectArg, dependencies: Dependencies) =
-    ReactJS.useLayoutEffect(js.Any.fromFunction0[Unit](didUpdate), dependencies)
-
-  /** Run before browser updates the screen. */
-  def useLayoutEffectCb(didUpdate: EffectCallbackArg, dependencies: Dependencies) =
-    ReactJS.useLayoutEffect(convertEffectCallbackArg(didUpdate), dependencies)
+    ReactJS.useLayoutEffect(didUpdate, dependencies)
 
   /** Memoize a lazy value. */
   def useMemo[T](value: () => T, dependencies: Dependencies): T =

@@ -106,8 +106,8 @@ object routes {
       AppBody(new AppBody.Props {
         val nav = Nav(new Nav.Props {
           var goto = { arg =>
+            println(s"Request to navigate to $arg")
             history.push(s"/$arg")
-            println(arg)
           }
         }) //c.navigate(_, router.Redirect.Push) })
         val content = bodyContent

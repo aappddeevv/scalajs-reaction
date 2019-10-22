@@ -88,11 +88,11 @@ object AppBody {
     }
   }
 
-  // this causes an error
-  val getClassNames1 =
-    getClassNamesFunction[StyleProps, Styles, ClassNames](
-      (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s)
-      ))
+  // this causes an error, not sure why
+  // val getClassNames1 =
+  //   getClassNamesFunction[StyleProps, Styles, ClassNames](
+  //     (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s)
+  //     ))
 
   val getClassNames:
       GetClassNamesFn[StyleProps, Styles, ClassNames] =

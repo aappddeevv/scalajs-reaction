@@ -20,33 +20,26 @@ package object react {
   /** Hook dependencies data structure. */
   type Dependencies = js.UndefOr[js.Array[js.Any]]
 
-    /** Use when no dependencies, empty array. */
+  /** Use when no dependencies and you want an empty array. */
   val emptyDependencies: Dependencies = js.defined(js.Array())
 
   /** Undefined dependencies. */
   val undefinedDependencies = js.undefined
 
-  /** Create a dependencies array. */
-  //def dependencies(values: js.Any*): Dependencies = values.toJSArray
-
   /** Create a dependencies array from *any* scala objects. Make sure this is what you want. */
   def dependencies(values: scala.Any*): Dependencies = values.toJSArray.asInstanceOf[Dependencies]
-
-  /** Effect hooks simplest arg. */
-  type EffectArg = () => Unit
-
-  /** Effect hooks, function returns a callback. */
-  type EffectCallbackArg = () => (() => Unit)
 
   /** Noop for effect callback. */
   val noCleanUp = () => ()
 
-  /** Used to convert a scala EffectCallbackArg to js. */
-  def convertEffectCallbackArg(arg: EffectCallbackArg): js.Any =
+  /** Convert a scala EffectCallbackArg to js using a proxy approach. 
+   * Use a general return of A vs unit to be more friendly.
+   */
+  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any =
     {() => {
-      val callback: js.Function0[Unit] = arg()
+      val callback: js.Function0[A] = arg()
       callback
-    }}: js.Function0[js.Function0[Unit]]
+    }}: js.Function0[js.Function0[A]]
 
   /**
    * Object returned from `createRef()`. It's typically either js component or a
@@ -72,7 +65,7 @@ package object react {
   type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
 
   /** For use with useRef() hook which is slightly different than the mutable
-   * Ref. `current` is designed to be set directly or can be used on th `ref`
+   * Ref. `current` is designed to be set directly or can be used on the `ref`
    * attribute for a component.
    */
   trait MutableRef[T] extends js.Object {
@@ -178,9 +171,7 @@ package object react {
    * "tag" a component type or created via other js-interop mechanisms such as
    * redux integration. By using a separate type, you must use then
    * scalajs-react's API to create an element. You can use this to annotate a
-   * js function react component as well e.g. () => ReactNode. If you import a
-   * component from javascript, you must call `wrapJsForScala` to create an
-   * element in scala.
+   * js function react component as well e.g. () => ReactNode.
    */
   @js.native
   trait ReactJsComponent extends js.Object
