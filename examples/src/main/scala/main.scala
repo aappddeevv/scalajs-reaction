@@ -85,9 +85,7 @@ object Main {
           Fabric(new Fabric.Props {
           })(
             logContext.provider(Contexts.logger)(
-              react.router.browser.ReactionRouter(
-                Application()
-              )
+              Application()
             )
         ))),
       Main.container

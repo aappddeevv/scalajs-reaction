@@ -9,7 +9,7 @@ import scala.scalajs.js
 import js.annotation._
 import js.Dynamic.{literal => lit}
 
-import ttg.react.components.reactbigcalendar._
+import react_big_calendar._
 import moment._
 
 package object calendar {

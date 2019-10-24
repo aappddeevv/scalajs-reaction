@@ -14,6 +14,21 @@ import js.Dynamic.{literal => lit}
 import ttg.react.vdom._
 import js.JSConverters._
 
+/** Magnet pattern for concatStyleSetsWithProps. */
+@js.native
+trait StyleSetArg extends js.Object
+
+object StyleSetArg {
+  @inline implicit def from1[SS <: IStyleSetTag](s: SS): StyleSetArg = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from2[SP <: js.Any, SS <: IStyleSetTag](s: IStyleFunctionOrObject[SP,SS]): StyleSetArg = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from3[SP <: js.Any, SS <: IStyleSetTag](s: IStyleFunction[SP,SS]): StyleSetArg = s.asInstanceOf[StyleSetArg]  
+  @inline implicit def from4[SP <: js.Any, SS <: IStyleSetTag](s: js.UndefOr[IStyleFunctionOrObject[SP,SS]]): StyleSetArg = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from5[SP <: js.Any, SS <: IStyleSetTag](s: js.UndefOr[IStyleFunction[SP,SS]]): StyleSetArg = s.asInstanceOf[StyleSetArg]    
+  @inline implicit def from6[SS <: IStyleSetTag](s: SS): StyleSetArg = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from7[SS <: IStyleSetTag](s: js.UndefOr[SS]): StyleSetArg = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from8(s: js.Dynamic): StyleSetArg = s.asInstanceOf[StyleSetArg]
+}
+
 /**
   * @uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
   * also exports most of @uifabic/merge-styles.
@@ -51,21 +66,18 @@ trait MergeStyles extends js.Object {
     * styles but you want the output to be a (string -> style) mapping still.
     * Last argument has higher precedence.
     *
-    * @tparama T Object with mappings between properties and "string" class names.
+    * @tparam T js object with mappings between properties and "string" class names.
     *   See IProcessedStyleSet in typescript.
     */
-  def concatStyleSets[T <: js.Any](styleSets: IStyleSet*): T = js.native
+  def concatStyleSets[T <: js.Object](styleSets: IStyleSet*): T = js.native
 
   /**
     * Combine styles together but allow style functions or props. IStyleSet refers
     * to a js object that has properties whose values are IStyle objects.
     *
-    * @tparam S Style props type.p
+    * @tparam S Style props.
     */
-  def concatStyleSetsWithProps[S <: js.Any, T <: js.Object](
-      props: S,
-      styleSets: (js.Object | js.Dynamic | IStyleFunctionOrObject[S, IStyleSetTag] | js.UndefOr[js.Object])*
-  ): T = js.native
+  def concatStyleSetsWithProps[SP <: js.Any](props: SP, styleSets: StyleSetArg*): IStyleSet = js.native
 
   /** Register a font face. */
   def fontFace(font: FontFace): Unit = js.native
@@ -75,6 +87,16 @@ trait MergeStyles extends js.Object {
 
   /** Access the stylesheet created by fabric. */
   val Stylesheet: Stylesheet = js.native
+
+  def getVendorSettings(): IVendorSettings = js.native
+}
+
+@js.native
+trait IVendorSettings extends js.Object {
+  val isWebkit: js.UndefOr[Boolean] = js.native
+  val isMoz: js.UndefOr[Boolean] = js.native
+  val isMs: js.UndefOr[Boolean] = js.native
+  val isOpera: js.UndefOr[Boolean] = js.native
 }
 
 trait IIconSubset extends js.Object {

@@ -2,10 +2,10 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
-package components
-package reactbigcalendar
+package react_big_calendar
 
+import ttg.react
+import react._
 import scala.scalajs.js
 import js.annotation._
 import js.|

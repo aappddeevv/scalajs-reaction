@@ -14,20 +14,6 @@ import org.scalajs.dom
 /** scala.js entry point of react-dom but using reason-react API. */
 package object reactdom {
 
-  // /** Render el into the html element 'id'. NOTE: This does not create anything yet... */
-  // def createAndRenderWithId(
-  //   el: ReactNode,
-  //   id: String,
-  //   opts: Option[CreateRootOptions] = None
-  // ): Either[Throwable, Unit] = {
-  //   val target = Option(dom.document.getElementById(id))
-  //   target.fold[Either[Throwable,Unit]](
-  //     Left(new Exception(s"createAndRenderWithId: No element with id $id found in the HTML."))
-  //   )(
-  //     htmlel => Right(JSReactDOM.render(el, htmlel))
-  //   )
-  // }
-
   /** Render into the DOM given an element id. */
   def renderToElementWithId(
     el: ReactNode,

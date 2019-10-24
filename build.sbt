@@ -160,6 +160,7 @@ lazy val root = project
     `scalajs-reaction-jss`,
     `scalajs-reaction-form`,
     `react-router-dom`,
+    pathtoregexp,
     dataValidationJS
     //,dataValidationJVM
   )
@@ -194,6 +195,17 @@ lazy val `react-big-calendar` = project
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+
+lazy val pathtoregexp = project
+  .in(file("components/pathtoregexp"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .settings(
+    Seq(
+      description := "pathtoregexp"
+    )
+  )
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
 
 lazy val `scalajs-reaction-jss` = project
   .in(file("components/scalajs-reaction-jss"))

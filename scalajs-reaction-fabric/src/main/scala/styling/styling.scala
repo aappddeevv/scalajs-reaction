@@ -64,7 +64,8 @@ package object styling {
     * want to be specific, use a trait instead of IStyleSet. Most of your code
     * should use IStyleSetTag js objects with explicitly defined data members
     * and rely on implicit conversions from IStyleSetTag to IStyleSet defined
-    * for convenience when calling the fabric style functions.
+    * for convenience when calling the fabric style functions. Should this
+    * really be `js.Dictonary[js.UndefOr[IStyle]`?
     */
   type IStyleSet = js.Dictionary[IStyle]
 
@@ -99,6 +100,9 @@ package object styling {
       */
     @inline def make(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
       js.Dictionary[IStyle](stylePairs: _*)
+
+    /** Assume that a IStyleSetTag is a IStyleSet. */
+    @inline def assume(o: IStyleSetTag): IStyleSet = o.asInstanceOf[IStyleSet]
   }
 
   /** Tag your style trait to help drive style inference. You *must* promise to
@@ -108,11 +112,12 @@ package object styling {
     * create a statically typed version of `IStyleSet` (a dictionary) where the
     * members are statically declared as trait data members. Implicit
     * conversions are available to convert a js.Object to a IStyleSet to call
-    * the interop functions.
+    * the interop functions. You must promise to only have IStyle or
+    * js.UndefOr[IStyle] objects as values.
     */
   trait IStyleSetTag extends js.Object
 
-  /** Tag for an object whose data memebers all returns strings, as in classnames.
+  /** Tag for an object whose data memebers all returns strings (= classnames).
     * You *must* promise to only have these type of members in the object.
     */
   trait IClassNamesTag extends js.Object
@@ -132,6 +137,9 @@ package object styling {
 
   /** Shortcut to define a IStyleFunction as a val. */
   def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] = f
+
+  /** Same as stylingFunction but better type inference. */
+  def stylingFunctionOr[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunctionOrObject[SP, SS] = stylingFunction[SP,SS](f)
 
   /** Type for a logical `getClassNames` function declared as a val.
    * 
@@ -230,13 +238,8 @@ package object styling {
   // Support for mergeStyleSets/concatStyleSets. Convert IStyleSetTags to the
   // canonical IStyleSet needed for the fabric functions.
   //
-  /** @group converters */
   implicit def jsObject2IStyleSet[T <: js.Object](u: T): IStyleSet = u.asInstanceOf[IStyleSet]
-
-  /** @group converters */
   implicit def jsUndefOrJsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet =
     u.asInstanceOf[IStyleSet]
-
-  /** @grop converters */
   implicit def iStyleSetTagToIStyleSet[SS <: IStyleSetTag](s: SS): IStyleSet = s.asInstanceOf[IStyleSet]
 }

@@ -28,11 +28,15 @@ object SFC0 {
 
 /** A functional component with one arg, the props. You can export the `.run`
  * function for use in reactjs.
+ * 
  * @tparam P Props type. Use `js.UndefOr[P]` for optional args.
  */
-class SFC1[P](val run: js.Function1[P, ReactElement]) {
+class SFC1[P](val run: js.Function1[P, ReactNode]) {
   /** Create a reactjs component given some props. */
   def apply(props: P) = toEl(props)
+
+  /** Create a reactjs component given some dynamic props. Experts only! */
+  def apply(props: js.Dynamic) = toEl(props.asInstanceOf[P])
 
   /** Create an reactjs component directly from this SFC. */
   def toEl(props: P) = ReactJS.createElement(run, props)
@@ -42,10 +46,10 @@ object SFC1 {
   /** Create a SFC1 from a single parameter scala function taking a js.Object
    * props type.
    */
-  def apply[P <: js.Object](f: P => ReactElement) = new SFC1[P](f)
+  def apply[P <: js.Object](f: P => ReactNode) = new SFC1[P](f)
 
   /** Make it explicit to create a SFC1 that takes a scala object for props. */
-  def scala[P](f: P => ReactElement) = new SFC1[P](f)
+  def scala[P](f: P => ReactNode) = new SFC1[P](f)
 }
 
 /** A stateless functional component with two args, the props and something

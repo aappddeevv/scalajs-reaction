@@ -71,7 +71,7 @@ private[react] trait ReactJS extends js.Object {
    * to be wrapped properly to use with this facade. `P` is kept very general
    * here.
    */
-  def memo[P](f: js.Function1[P,ReactElement],
+  def memo[P](f: js.Function1[P,ReactNode],
     compare: js.UndefOr[js.Function2[P,P,Boolean]] = js.undefined):
       js.Function1[P, ReactElement] = js.native
 
@@ -86,7 +86,9 @@ trait DynamicImport extends js.Object {
   val `default`: ReactJsComponent
 }
 
-/** Magnet pattern to create a friendly arg converter for effect hooks. */
+/** Magnet pattern to create a friendly arg converter for effect hooks. As much 
+ * as possible these need to be casts vs creating new functions.
+ */
 @js.native
 trait EffectArg extends js.Object
 
@@ -222,28 +224,32 @@ trait React {
 
   def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
 
-  /** Initial value is strict. Setter is an updater. */
+  /** Initial value is strict. Setter is an updater. Don't use this one. */
   def useStateStrict[T](initial: T) = {
     val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
     (c._1, c._2.asInstanceOf[js.Function1[js.Function1[T,T], Unit]])
   }
 
-  /** Initial value is a "lazy". Setter is an updater. */
+  /** Initial value is a "lazy". Setter is an updater. Use this one or
+   * useReducer.
+   */
   def useState[T](initial: () => T) = {
     val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
     (c._1, c._2.asInstanceOf[js.Function1[js.Function1[T,T], Unit]])
   }
 
-  /** Initial value is strict. Set new value directly. */
+  /** Initial value is strict. Set new value directly. Don't use this. */
   def useStateStrictDirect[T](initial: T) = {
     val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
-    (c._1, (t:T) => c._2.asInstanceOf[js.Function1[T, Unit]](t))
+    //(c._1, (t:T) => c._2.asInstanceOf[js.Function1[T, Unit]](t))
+    (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
   }
 
-  /** Initial value is a "lazy". Set new value directly. */
+  /** Initial value is a "lazy". Set new value directly. Don't use this. */
   def useStateDirect[T](initial: () => T) = {
     val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
-    (c._1, t => c._2.asInstanceOf[js.Function1[T, Unit]](t))
+    //(c._1, t => c._2.asInstanceOf[js.Function1[T, Unit]](t))
+    (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
   }
 
   def useReducer[S, A](reducer: (S,A)=>S, initialState: S): (S, Dispatch[A]) = {
@@ -276,7 +282,7 @@ trait React {
   def useEffectMounting(didUpdate: EffectArg) =
     ReactJS.useEffect(didUpdate, emptyDependencies)
 
-  /** Run before browser updates the screen. */
+  /** Run before browser updates the screen. Kinda a "sync" effect. */
   def useLayoutEffect(didUpdate: EffectArg, dependencies: Dependencies) =
     ReactJS.useLayoutEffect(didUpdate, dependencies)
 
@@ -289,7 +295,7 @@ trait React {
     ReactJS.useMemo[T](value, dependencies.toJSArray)
 
   /** Memoize a lazy value. */
-  def useMemo[T](dependencies: Dependencies)(value: () => T): T =
+  def useMemo[T](dependencies: Dependencies)(value: js.Function0[T]): T =
     ReactJS.useMemo[T](value, dependencies)
 
   /** Memoize a lazy value. Set on mounting. */
@@ -302,39 +308,37 @@ trait React {
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
   /** Default API is for no-arg callback. Declare as val yourCB = useCallback... */
-  def useCallback[T](callback: () => T, dependencies: Dependencies): js.Function0[T] =
-  ReactJS.useCallback(
-      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
+  def useCallback[T](callback: js.Function0[T], dependencies: Dependencies): js.Function0[T] =
+    ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
 
-  def useCallback[T](dependencies: Dependencies)(callback: () => T): js.Function0[T] =
-  ReactJS.useCallback(
-      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
+  def useCallback[T](dependencies: Dependencies)(callback: js.Function0[T]): js.Function0[T] =
+    ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
 
-  def useCallback[T](dependencies: js.Any*)(callback: () => T): js.Function0[T] =
-  ReactJS.useCallback(
-      js.Any.fromFunction0[T](callback), dependencies.toJSArray).asInstanceOf[js.Function0[T]]
+  def useCallback[T](dependencies: js.Any*)(callback: js.Function0[T]): js.Function0[T] =
+    ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function0[T]]
 
-  def useCallback0[T](callback: () => T, dependencies: Dependencies): js.Function0[T] =
-    ReactJS.useCallback(
-      js.Any.fromFunction0[T](callback), dependencies).asInstanceOf[js.Function0[T]]
+  def useCallback[A1, T](callback: js.Function1[A1, T], dependencies: Dependencies): js.Function1[A1,T] =
+    ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function1[A1,T]]
 
-  def useCallback1[A1, T](callback: A1 => T, dependencies: Dependencies): js.Function1[A1,T] =
-    ReactJS.useCallback(
-      js.Any.fromFunction1[A1,T](callback), dependencies).asInstanceOf[js.Function1[A1,T]]
+  def useCallback[A1, T](dependencies: js.Any*)(callback: js.Function1[A1, T]): js.Function1[A1,T] =
+    ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function1[A1,T]]
 
-  def useCallback2[A1, A2, T](callback: (A1,A2) => T, dependencies: Dependencies): js.Function2[A1,A2,T] =
+  def useCallback[A1, A2, T](callback: (A1,A2) => T, dependencies: Dependencies): js.Function2[A1,A2,T] =
     ReactJS.useCallback(
       js.Any.fromFunction2[A1,A2,T](callback), dependencies).asInstanceOf[js.Function2[A1,A2,T]]
 
-  def useCallback3[A1, A2, A3, T](callback: (A1,A2,A3) => T, dependencies: Dependencies): js.Function3[A1,A2,A3,T] =
+  def useCallback[A1, A2, T](dependencies: js.Any*)(callback: js.Function2[A1,A2,T]): js.Function2[A1,A2,T] =
+    ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function2[A1,A2,T]]
+
+  def useCallback[A1, A2, A3, T](callback: (A1,A2,A3) => T, dependencies: Dependencies): js.Function3[A1,A2,A3,T] =
     ReactJS.useCallback(
       js.Any.fromFunction3[A1,A2,A3,T](callback), dependencies).asInstanceOf[js.Function3[A1,A2,A3,T]]
 
-  def useCallback4[A1, A2, A3, A4, T](callback: (A1,A2,A3,A4) => T, dependencies: Dependencies): js.Function4[A1,A2,A3,A4,T] =
+  def useCallback[A1, A2, A3, A4, T](callback: (A1,A2,A3,A4) => T, dependencies: Dependencies): js.Function4[A1,A2,A3,A4,T] =
     ReactJS.useCallback(
       js.Any.fromFunction4[A1,A2,A3,A4,T](callback), dependencies).asInstanceOf[js.Function4[A1,A2,A3,A4,T]]
 
-  def useCallback5[A1, A2, A3, A4, A5, T](callback: (A1,A2,A3,A4,A5) => T, dependencies: Dependencies): js.Function5[A1,A2,A3,A4,A5,T] =
+  def useCallback[A1, A2, A3, A4, A5, T](callback: (A1,A2,A3,A4,A5) => T, dependencies: Dependencies): js.Function5[A1,A2,A3,A4,A5,T] =
     ReactJS.useCallback(
       js.Any.fromFunction5[A1,A2,A3,A4,A5,T](callback), dependencies).asInstanceOf[js.Function5[A1,A2,A3,A4,A5,T]]
 
@@ -361,6 +365,7 @@ trait React {
 
 }
 
+/** Primary entry point into the React API. */
 object React extends React
 
 /**

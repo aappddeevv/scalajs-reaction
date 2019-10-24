@@ -20,8 +20,7 @@ object CommandBar {
   @JSImport("office-ui-fabric-react/lib/CommandBar", "CommandBar")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    React.createElement(JS, props)(children: _*)
+  def apply(props: Props) = React.createElement0(JS, props)
 
   @js.native
   trait ICommandBar extends Focusable {

@@ -35,8 +35,9 @@ import elements._
  * @todo Bake in cancellable when unmounting.
  * 
  * @tparam F Fetch effect. Produces a P. F may also hold an error, an implied
- * Throwable, which to detect an error. There are no constraints on F in this
- * class because Runner expresses an optionally synchronous computation.
+ * Throwable. There are no constraints on F in this class because Runner
+ * expresses an optionally synchronous computation.
+ * 
  * @tparam P Result inside F. Generally can be broken out into E and T i.e. P is
  * often a coproduct of E and T. P exists in the type signature so that we do
  * not have to add a context constraint to F.
@@ -63,61 +64,41 @@ class Fetcher[F[_], P, E, T](Name: String) {
 
   /** Initiate a fetch for P. */
   type FetchCallback = F[P] => Unit
-  /** Given a fetch request `F[P}` and a callback, run the F and call the callback
+  /** Given a fetch request `F[P]` and a callback, run the F and call the callback
    * to process the results. The results have to be split into an error part and
    * a "value" part so that the proper fetch state can be passed to the child.
    */
   type Runner = F[P] => (Either[E, T] => Unit) => Unit
 
   trait Props extends js.Object {
-    var child: (FetchState, FetchCallback) => ReactElement
-    var run: Runner
-    var initialValue: Option[F[P]]
-  }
-
-  private def makeProps(
-    c: (FetchState, FetchCallback) => ReactElement,
-    r: Runner,
-    i: Option[F[P]]
-  ) = new Props {
-    var child = c
-    var run = r
-    var initialValue = i
+    val children: (FetchState, FetchCallback) => ReactNode
+    val run: Runner
+    val initialValue: Option[F[P]]
   }
 
   /** Provide data loading status to a child.
-   * @param child Callback when fetch state changes. Convenience thunk to
+   * @param children Callback when fetch state changes. Convenience thunk to
    *  initiate fetch. Return child.
    * @param run Run a F[T] to obtain an error or a result.
    * @param initialValue Optional initial fetch, to kick things off.
    */
-  def apply(
-    child : (FetchState, FetchCallback) => ReactElement,
-    run : Runner,
-    initialValue : Option[F[P]]
-  ) = sfc(makeProps(child, run, initialValue))
+  def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
     import props._
     React.useDebugValue(Name)
-    // Use another state to force fetch, F[P] could always be the same
-    // in scala since scala has immutable effects.
-    val (request, setRequest) = React.useStateStrictDirect[Int](0)
     val (fstate, setFState) = React.useStateStrictDirect[FetchState](NotRequested)
-    val query = React.useRef[Option[F[P]]](initialValue)
-    //React.useEffectMountingCb{() =>
-    //  // cancel should go here
-    //  () => ()
-    //}
-    React.useEffect(request){() =>
-      query.current.foreach{ f =>
+    // setFState is guaranteed stable
+    val makeRequest = React.useCallback[F[P], Unit](fstate.asJsAny){f =>
+      if(fstate != Fetching) {
         setFState(Fetching)
         props.run(f){ _ match {
           case Right(item) => setFState(Success(item))
           case Left(e) => setFState(Error(e))
         }}}
     }
-    child(fstate, f => { query.current = Option(f); setRequest(request+1)})
+        
+    children(fstate, makeRequest)
   }
 }
 

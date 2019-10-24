@@ -2,10 +2,11 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package react
 package react_router
 package dom
+
+import ttg.react
+import react._
 
 import scala.scalajs.js
 import js.annotation._
@@ -29,6 +30,11 @@ trait ReactRouterDOM extends js.Object {
   def useRouteMatch[T](arg: String | Array[String]): Match[T] = js.native
 }
 
+/**
+ * Match object often passed to render props in the Route element.
+ * 
+ * @tparam T Params object. If you do not need params you can use Null, js.Any, etc.
+ */
 @js.native
 trait Match[T] extends js.Object {
   val params: T = js.native
@@ -37,7 +43,10 @@ trait Match[T] extends js.Object {
   val url: String = js.native
 }
 
-/** History from package `history`. Allows you control navigation via "commands" */
+/** History from package `history`. Allows you control navigation via "commands" 
+ * 
+ * @tparam S State, often js.Any, Null or Nothing if you do not need state. 
+ */
 @js.native
 trait History[S] extends js.Object {
   val length: Int = js.native
@@ -95,21 +104,31 @@ trait RouterContext extends js.Object {
   var router: js.Dynamic = js.native
 }
 
+/*** Route, most commonly used router component. Type parameter `S` stands for
+ * "state" which is state you can add to the history stack per push. `P` is a js
+ * object for query parameters, hence, each property should have a string value.
+ */
 object Route {
   @js.native
   @JSImport("react-router-dom", "Route")
   object JS extends ReactJsComponent
 
-  def always(child: ReactNode) = React.createElement(JS, null)(child)
+  def always(children: ReactNode) = React.createElement(JS, null)(children)
+
+  def always[S,P](children: js.Function1[RouteComponentProps[S,P],ReactNode]) =
+    React.createElement(JS, null)(children.asInstanceOf[ReactNode])
 
   def apply(props: Props, child: ReactNode) =
     React.createElement(JS, props)(child)
 
-  def apply(props: Props)(children: RouteComponentProps[_, _] => ReactNode) =
-    React.createElement(JS, props)(js.Any.fromFunction1(children).asInstanceOf[ReactNode])
+  def apply[S,P](props: Props)(children: js.Function1[RouteComponentProps[S, P],ReactNode]) =
+    React.createElement(JS, props)(children.asInstanceOf[ReactNode])
 
   def withPath(p: String, child: ReactNode) =
     React.createElement(JS, new Props { path=p })(child)
+
+  def withPath[S,P](p: String)(children: js.Function1[RouteComponentProps[S, P],ReactNode]) =
+    React.createElement(JS, new Props { path=p })(children.asInstanceOf[ReactNode])
 
   def withExactPath(p: String, child: ReactNode) =
     React.createElement(JS, new Props { exact=true; path=p })(child)
@@ -127,10 +146,11 @@ object Route {
     var strict: js.UndefOr[Boolean] = js.undefined
   }
 
-  /** P is params object. S is state stored in history. */
+  /** P is params object. S is state stored in history. If you are not using either,
+   * you can use `RouteComponentProps[Null, Nothing]`. */
   @js.native
   trait RouteComponentProps[S, P] extends js.Object {
-    val history: History[_] = js.native
+    val history: History[S] = js.native
     val location: Location[S] = js.native
     val `match`: Match[P] = js.native
   }

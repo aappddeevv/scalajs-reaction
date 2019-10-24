@@ -302,8 +302,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
   val FormContext = react.context.make[Context](null)
 
   trait Props extends js.Object {
-    var initialValue: Value
-    var children: FormProps => ReactNode
+    val initialValue: Value
     var submit: js.UndefOr[SubmitCallback] = js.undefined
     var reset: js.UndefOr[ResetCallback] = js.undefined
     var validate: js.UndefOr[FormValidator] = js.undefined
@@ -314,13 +313,14 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     var touched: js.UndefOr[Seq[String] => Unit] = js.undefined
   }
 
-  /**
-   * Create component. Child is a render prop.
-   */
-  def apply(props: Props)(c: FormProps => ReactNode) =
-    sfc(props.combine(jsobj("children" -> c)))
+  trait PropsWithChildren extends Props {
+    val children: FormProps => ReactNode    
+  }
 
-  val sfc = SFC1[Props]{ props =>
+  def apply(props: Props)(c: FormProps => ReactNode): ReactElement =
+    sfc(props.combine(jsobj("children" -> c)).asDyn)
+
+  val sfc = SFC1[PropsWithChildren]{ props =>
     React.useDebugValue(Name)
     val initialValue = React.useRef[Value](props.initialValue)
     val mounted = React.useRef[Boolean](false)

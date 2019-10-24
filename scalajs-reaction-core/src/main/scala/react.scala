@@ -10,7 +10,9 @@ import js.UndefOr
 import js.JSConverters._
 
 /**
- * A scalajs. facade for facebook's react in the spirit of ReasonReact.
+ * A scalajs. facade for facebook's react in the spirit of ReasonReact.  
+ * 
+ * TODO: Should this also contain all of the react API?
  */
 package object react {
 
@@ -20,14 +22,15 @@ package object react {
   /** Hook dependencies data structure. */
   type Dependencies = js.UndefOr[js.Array[js.Any]]
 
-  /** Use when no dependencies and you want an empty array. */
+  /** Empty array. */
   val emptyDependencies: Dependencies = js.defined(js.Array())
 
-  /** Undefined dependencies. */
+  /** Undefined array. */
   val undefinedDependencies = js.undefined
 
   /** Create a dependencies array from *any* scala objects. Make sure this is what you want. */
-  def dependencies(values: scala.Any*): Dependencies = values.toJSArray.asInstanceOf[Dependencies]
+  def dependencies(values: scala.Any*): Dependencies =
+    values.toJSArray.asInstanceOf[Dependencies]
 
   /** Noop for effect callback. */
   val noCleanUp = () => ()
