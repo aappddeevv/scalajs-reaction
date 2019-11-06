@@ -25,8 +25,23 @@ trait Children extends js.Object {
     def toArray(children: ReactChildren): js.Array[ReactElement] = js.native
 }
 
+trait TransitionConfig extends js.Object {
+  var timoutMs: js.UndefOr[Int] = js.undefined
+}
+
+trait DeferredValueConfig extends js.Object {
+  var timoutMs: js.UndefOr[Int] = js.undefined
+}
+
 @js.native
-private[react] trait ReactJS extends js.Object {
+trait Concurrent extends js.Object {
+  def useTransition(config: TransitionConfig): js.Tuple2[js.Any, js.Any] = js.native
+  def useDeferredValue(value: js.Any, config: DeferredValueConfig): js.Any = js.native
+  val SuspenseList: ReactJsComponent = js.native      
+}
+
+@js.native
+private[react] trait ReactJS extends js.Object with Concurrent {
 
   val Children: Children = js.native
 
@@ -48,8 +63,6 @@ private[react] trait ReactJS extends js.Object {
   val Fragment: ReactJsComponent = js.native
   val StrictMode: ReactJsComponent = js.native
   val Suspense: ReactJsComponent = js.native
-  val unstable_ConcurrentMode: ReactJsComponent = js.native
-  val unstable_Profiler: ReactJsComponent = js.native
 
   def createContext[T](
       defaultValue: T,
@@ -241,14 +254,12 @@ trait React {
   /** Initial value is strict. Set new value directly. Don't use this. */
   def useStateStrictDirect[T](initial: T) = {
     val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
-    //(c._1, (t:T) => c._2.asInstanceOf[js.Function1[T, Unit]](t))
     (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
   }
 
   /** Initial value is a "lazy". Set new value directly. Don't use this. */
   def useStateDirect[T](initial: () => T) = {
     val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
-    //(c._1, t => c._2.asInstanceOf[js.Function1[T, Unit]](t))
     (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
   }
 
@@ -356,12 +367,20 @@ trait React {
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent =
     ReactJS.`lazy`(lazyComponent)
 
+  def useTransition(config: TransitionConfig) = {
+    val p = ReactJS.useTransition(config)
+    (p._1.asInstanceOf[js.Function1[js.Function0[Unit], Unit]], p._2.asInstanceOf[Boolean])
+  }
+
+  /** Use a deferred value. Config indicats how long the value is good for. */
+  def useDeferredValue[T](value: T, config: DeferredValueConfig): T =
+    ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
+
   val Fragment = ReactJS.Fragment
   val StrictMode = ReactJS.StrictMode
   val Suspense = ReactJS.Suspense
+  val SuspenseList = ReactJS.SuspenseList  
   val Children= ReactJS.Children
-  val unstable_ConcurrentMode = ReactJS.unstable_ConcurrentMode
-  val unstable_Profiler = ReactJS.unstable_Profiler
 
 }
 

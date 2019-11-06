@@ -2,7 +2,6 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
 package fabric
 package components
 
@@ -11,6 +10,7 @@ import js.annotation._
 import js.|
 import org.scalajs.dom
 
+import ttg.react._
 import vdom._
 import fabric.styling._
 
@@ -19,8 +19,8 @@ object SearchBox {
   @JSImport("office-ui-fabric-react/lib/SearchBox", "SearchBox")
   object JS extends ReactJsComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    React.createElement(JS, props)(children: _*)
+  def apply(props: Props = null) =
+    React.createElement0(JS, props)
 
   @js.native
   trait ISearchBox extends Focusable {
@@ -56,14 +56,17 @@ object SearchBox {
 
     var styles: js.UndefOr[IStyleFunction[StyleProps, Styles]] = js.undefined
 
-    /** new value, as you type */
-    //var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+    // onChange?: (event?: React.ChangeEvent<HTMLInputElement>, newValue?: string) => void;
+    /** new value, as you type, already covered in superclass */
+    @JSName("onChange")
+    var onChangeValue: js.UndefOr[js.Function2[SyntheticChangeEvent[dom.html.Input], String, Unit]] = js.undefined
     /** Event returned. */
     var onClear: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
     /** Event returned. */
     var onEscape: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
-    /** For onChange & onSearch, return the string value or "" if no value.
-     * You can use implicit `.toTruthyUndefOr.toOption` to set "" => None.
+    /** For onChange & onSearch, return the string value or "" if no value.  You can
+     * use implicit `.asString.toTruthyUndefOr.toOption` to set "" => None.
+     * Typescript does not set this as a string but js.Any...not sure why.
      */
     var onSearch: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
   }

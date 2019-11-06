@@ -102,3 +102,50 @@ class Fetcher[F[_], P, E, T](Name: String) {
   }
 }
 
+/** A Fetcher that keeps the runner at the class level. */
+class Fetcher2[F[_],P,E,T](Name: String, runner: F[P] => (Either[E, T] => Unit) => Unit)
+    extends Fetcher[F, P, E, T](Name) {
+  def apply(
+    children: (FetchState, FetchCallback) => ReactNode,
+    initialValue: Option[F[P]] = None
+  ) = sfc(js.Dynamic.literal(
+    "children" -> children.asJsAny,
+    "run" -> runner.asJsAny,
+    "initialValue" -> initialValue.asJsAny
+  ))
+}
+
+class FetcherHook[F[_], P, E](Name: String, runner: F[P] => (Either[E, P] => Unit) => Unit) {
+  /** Load state passed to a child. */
+  sealed trait FetchState
+
+  /** Load was successful, hold item. */
+  case class Success(item: P) extends FetchState
+
+  /** Load resulted in an error. */
+  case class Error(content: E) extends FetchState
+
+  /** Loading still in progress. */
+  case object Fetching extends FetchState
+
+  /** Initial state until a fetch request is made. */
+  case object NotRequested extends FetchState
+
+  /** Initiate a fetch for P. */
+  type FetchCallback = F[P] => Unit
+
+  def useFetcher(remember: Boolean = false) = {
+    React.useDebugValue(Name)
+    val (fstate, setFState) = React.useStateStrictDirect[FetchState](NotRequested)
+    // setFState is guaranteed stable
+    val makeRequest = React.useCallback[F[P], Unit](fstate.asJsAny){f =>
+      if(fstate != Fetching) {
+        setFState(Fetching)
+        runner(f){ _ match {
+          case Right(item) => setFState(Success(item))
+          case Left(e) => setFState(Error(e))
+        }}}
+    }
+    (fstate, makeRequest)
+  }
+}

@@ -22,7 +22,7 @@ package object reactdom {
   ): Either[Throwable, Unit] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[Throwable,Unit]](
-      Left(new Exception(s"renderToElementWithId: No element with id $id found in the HTML."))
+      Left(new Exception(s"No element with id $id found in the HTML."))
     )(
       htmlel => Right(ReactDOMJS.render(el, htmlel, cb.orUndefined.map(js.Any.fromFunction0(_))))
     )
@@ -36,9 +36,26 @@ package object reactdom {
   ): Either[Throwable, ReactPortal] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[Throwable,ReactPortal]](
-      Left(new Exception(s"createPortalInElemeentWithId: No element with id $id found in the HTML."))
+      Left(new Exception(s"No element with id $id found in the HTML."))
     )(
       htmlel => Right(ReactDOMJS.createPortal(node, htmlel, key.orUndefined))
     )
   }
+
+  def createRoot(id: String): Either[String, ReactNode=>Unit] = {
+    val target = Option(dom.document.getElementById(id))
+    target.fold[Either[String,ReactNode=>Unit]](
+      Left(s"No element with id $id found."))(
+      htmlel => Right(ReactDOMJS.createRoot(htmlel).render(_))
+      )
+  }
+
+  def createSyncRoot(id: String): Either[String, ReactNode=>Unit] = {
+    val target = Option(dom.document.getElementById(id))
+    target.fold[Either[String,ReactNode=>Unit]](
+      Left(s"No element with id $id found."))(
+      htmlel => Right(ReactDOMJS.createSyncRoot(htmlel).render(_))
+    )
+  }
+
 }

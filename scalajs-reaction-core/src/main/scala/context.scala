@@ -19,7 +19,11 @@ import js.Dynamic.{literal => lit}
   */
 object context {
 
+  @deprecated("Use create()")
   def make[T](defaultValue: T): ReactContext[T] =
+    ReactJS.createContext(defaultValue, js.undefined)
+
+  def create[T](defaultValue: T): ReactContext[T] =
     ReactJS.createContext(defaultValue, js.undefined)
 
   def provider[T](ctx: ReactContext[T])(value: T)(children: ReactNode*): ReactElement = {

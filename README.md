@@ -1,6 +1,6 @@
 <p align="center"><img width="300" src="./logo.svg"/></p>
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
-[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.8+, react-native v0.59+, scala 2.13)
+[![Scala.js](https://www.scala-js.org/assets/badges/scalajs-0.6.28.svg)](https://www.scala-js.org) (react v16.11+, react-native v0.59+, scala 2.13)
 
 Note: The documentation site is being converted to docusaurus v2. Links to the
 demo do not work yet but you can see the demo by cloning the project and running

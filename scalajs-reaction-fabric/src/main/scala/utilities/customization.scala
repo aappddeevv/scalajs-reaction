@@ -2,13 +2,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package react
 package fabric
 package utilities
 
 import scala.scalajs.js
 import js.annotation._
+
+import ttg.react._
 
 /** Really a dict with (string,js.Any). Extend as needed with your setting keys.
  */

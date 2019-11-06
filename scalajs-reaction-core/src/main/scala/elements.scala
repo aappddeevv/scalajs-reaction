@@ -51,12 +51,17 @@ object elements {
    * resolved.
    */
   object Suspense {
-    def apply(fallback: ReactNode/* | Null = null*/, children: ReactNode) =
+    def apply(fallback: => ReactNode/* | Null = null*/)(children: => ReactNode) =
       ReactJS.createElement(
         ReactJS.Suspense,
         lit("fallback" -> fallback.asInstanceOf[js.Any]),
         children
       )
+  }
+
+  object SuspenseList {
+    def apply(items: ReactNode*) =
+      ReactJS.createElement(ReactJS.SuspenseList, null, items:_*)
   }
 
   /**

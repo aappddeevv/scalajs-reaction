@@ -2,8 +2,6 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
-package react
 package fabric
 package experiments
 
@@ -11,12 +9,10 @@ import scala.scalajs.js
 import js.annotation._
 import js.|
 
-import implicits._
-
-import fabric._
+import ttg.react._
+import implicits._, vdom._
 import fabric.components._
 import fabric.styling._
-import vdom._
 
 import org.scalajs.dom
 
