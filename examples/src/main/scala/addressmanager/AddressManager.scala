@@ -163,10 +163,8 @@ object AddressManager {
     val activeId = ReactRedux.useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
     val active = ReactRedux.useSelector[GlobalAppState, js.UndefOr[Address]](_.addressManager.active.toUndefOr)
     val dispatchG = ReactRedux.useDispatch[GlobalAppAction]()
-    val setActive = React.useCallback2[Id|Null, Address|Null, Unit]((id, addr) =>
-      dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny)),
-      dependencies(dispatchG)
-    )
+    val setActive = React.useCallback[Id|Null, Address|Null, Unit](dispatchG)((id, addr) =>
+      dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny)))
 
     // react hooks
     // see https://github.com/OfficeDev/office-ui-fabric-react/issues/9882
@@ -201,7 +199,7 @@ object AddressManager {
 
     val commandBar = React.useMemo(fetchState.loading, doFetch, setActive)(() => {
       dom.console.log(s"$Name: Calculating props", fetchState.loading)
-      CommandBar(cbopts(fetchState.loading, () => { setActive(null, null); doFetch() }))()
+      CommandBar(cbopts(fetchState.loading, () => { setActive(null, null); doFetch() }))
     })
 
     divWithClassname(cx(amstyles.component, props.className.getOrElse(null)),

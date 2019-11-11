@@ -22,6 +22,7 @@ import react.implicits._
 import vdom._
 import vdom.tags._
 
+import fabric._
 import fabric.styling._
 import fabric.merge_styles._
 
@@ -94,8 +95,9 @@ object AppBody {
   //     (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s)
   //     ))
 
+  import merge_styles._
   val getClassNames:
       GetClassNamesFn[StyleProps, Styles, ClassNames] =
-    (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s))
+    (p, s) => mergeStyleSets(concatStyleSetsWithProps(p, getStyles, s))
 
 }

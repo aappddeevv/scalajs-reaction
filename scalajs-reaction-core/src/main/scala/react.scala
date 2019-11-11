@@ -3,341 +3,303 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
+package react
 
 import scala.scalajs.js
+import js.annotation._
 import js.|
-import js.UndefOr
+import js._
 import js.JSConverters._
+import js.Dynamic.{literal => lit}
+
+import org.scalajs.dom
 
 /**
- * A scalajs. facade for facebook's react in the spirit of ReasonReact.  
+ * Scala-side access to JSReact APIs. Some of these methods overlay the raw JS
+ * version to provide the convenience of using scala types as inputs and saving
+ * a few conversion nits.
  * 
- * TODO: Should this also contain all of the react API?
+ * Some of the *N() hook functions like useCallback may be quite inefficient in
+ * their conversion from scala functions to js functions and back. Perhaps we
+ * need another parallel API function set with the js functions being assumed
+ * for those code bases that already have the js versions. Note that useCallback
+ * returns a js function so it can be used as a dependency.
  */
-package object react {
+trait React {
 
-  /** A js dispatch function for side effects. Used in useState. */
-  type Dispatch[A] = js.Function1[A, Unit]
-
-  /** Hook dependencies data structure. */
-  type Dependencies = js.UndefOr[js.Array[js.Any]]
-
-  /** Empty array. */
-  val emptyDependencies: Dependencies = js.defined(js.Array())
-
-  /** Undefined array. */
-  val undefinedDependencies = js.undefined
-
-  /** Create a dependencies array from *any* scala objects. Make sure this is what you want. */
-  def dependencies(values: scala.Any*): Dependencies =
-    values.toJSArray.asInstanceOf[Dependencies]
-
-  /** Noop for effect callback. */
-  val noCleanUp = () => ()
-
-  /** Convert a scala EffectCallbackArg to js using a proxy approach. 
-   * Use a general return of A vs unit to be more friendly.
-   */
-  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any =
-    {() => {
-      val callback: js.Function0[A] = arg()
-      callback
-    }}: js.Function0[js.Function0[A]]
+  /** Clone a ReactElement and add new props. You should not use this if you can avoid it. */
+  def cloneElement(element: ReactElement, props: js.Object): ReactElement =
+    ReactJS.cloneElement(element, props.asInstanceOf[js.Dynamic])
 
   /**
-   * Object returned from `createRef()`. It's typically either js component or a
-   * DOM element, both of which are js.Objects. You only use this type with the
-   * `React.createRef()` machinery. Use this instead of a string or ref
-   * callback. Introduced in 16.3.
-   * 
-   * @todo Validate a null value is present if the ref is never set. typescript
-   * says so.
-   */
-  @js.native
-  trait ReactRef[T] extends js.Object {
-    /** See react.syntax for syntax support on handling E|Null
-     * e.g. myref.current.toNonNullOption.
-     */
-    val current: T | Null = js.native
+    * Given a js.Object (or subclass), find a "children" property and assume its
+    * an array of ReactNodes. If not found, return an empty js array. This
+    * function is used for interop where your scala "make" method takes children
+    * as a separate parameter but your props (event JS friendly props) does not
+    * contain the children property--it's there if there are children on the js
+    * side. This is not needed in scalajs-react because the children are passed
+    * and managed explicitly.
+    *
+    * @todo Seems like this is an expensive call. Can we do better?
+    */
+  @inline def extractChildren(item: js.UndefOr[js.Object]): js.Array[ReactNode] =
+    if (item == null) js.Array() // need this since could be a "defined" null
+    else
+      item.toOption
+        .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
+        .getOrElse[js.Array[ReactNode]](js.Array())
+
+  /** Create a DOM element via its string name. */
+  def createDOMElement(tag: String, props: js.Object|js.Dynamic)(
+    children: ReactNode*): ReactDOMElement = 
+    ReactJS.createElement(tag, props, children:_*).asInstanceOf[ReactDOMElement]
+
+  /** Create an element with props and children. */
+  def createElement(tag: ReactType, props: js.Object)(
+      children: ReactNode*): ReactElement =
+    ReactJS.createElement(tag, props, children: _*)
+
+  /** Create an element with props and 0 children. */
+  def createElement0(tag: ReactType, props: js.Object): ReactElement =
+    ReactJS.createElement(tag, props)
+
+  /** Create an elemnt with 1 child only. */
+  def createElement1(tag: ReactType, props: js.Object, child: ReactNode): ReactElement =
+    ReactJS.createElement(tag, props, child)
+
+  /** Create an element without props but with children. */
+  def createElement(tag: ReactType)(
+    children: ReactNode*): ReactElement =
+    ReactJS.createElement(tag, js.undefined, children: _*)
+
+  /** Create a react fragment. Fragments are created as an "element" with a
+    * specific tag (symbol or number if target does not support symbol) vs say,
+    * the string "div".
+    */
+  def createFragment(key: Option[String], children: ReactNode*): ReactElement = {
+    val props = js.Dictionary.empty[js.Any]
+    key.foreach(props("key") = _)
+    ReactJS.createElement(ReactJS.Fragment, props, children: _*)
   }
 
-  /** Callback for react ref with settable E. */
-  type RefCb[E] = js.Function1[E|Null, Unit]
+  /** Create a `ReactRef`. */
+  def createRef[T](): react.ReactRef[T]  = ReactJS.createRef[T]()
 
-  /** Combine the callback and the createRef models. Also include the newer hooks model. */
-  type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
-
-  /** For use with useRef() hook which is slightly different than the mutable
-   * Ref. `current` is designed to be set directly or can be used on the `ref`
-   * attribute for a component.
+  /** Memoize a functional component defined in scala. Standard js comparison
+   * semantics using Object.is will be used on the props.
    */
-  trait MutableRef[T] extends js.Object {
-    var current: T
+  def memo[P <: js.Object](fc: SFC1[P]): SFC1[P] = new SFC1(ReactJS.memo(fc.run))
+
+  /** Memoize a functional component defined in scala; provide a compare function
+   * for the props.
+   */
+  def memo[P <: js.Object](fc: SFC1[P], compare: (P,P) => Boolean): SFC1[P] =
+    new SFC1(ReactJS.memo(fc.run, js.Any.fromFunction2[P,P,Boolean](compare)))
+
+  /** Use general P and scala equality comparisons to detect prop changes. */
+  def memoScala[P](fc: SFC1[P]): SFC1[P] =
+    new SFC1(ReactJS.memo(fc.run, js.Any.fromFunction2[P,P,Boolean]((l,r) => l == r)))
+
+  def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
+
+  /** Initial value is strict. Setter is an updater. Don't use this one. */
+  def useStateStrict[T](initial: T) = {
+    val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
+    (c._1, c._2.asInstanceOf[js.Function1[js.Function1[T,T], Unit]])
   }
 
-  /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
-  def refCB[E](f: E|Null => Unit): Ref[E] = js.Any.fromFunction1[E|Null,Unit](f)
-
-  /**
-   * Something that can be rendered in reactjs. We need to restrict this a bit
-   * more when returning values from the scala side API. reactjs allows this to
-   * be quite flexible including strings, numbers, booleans in additon to
-   * classes, functions, etc. This should probably be a js.Any as any API used
-   * in this library will ensure that the right types are used and this would
-   * get rid of the ugly `stringToElement` type functions below.  js.Object is
-   * technically not correct.
+  /** Initial value is a "lazy". Setter is an updater. Use this one or
+   * useReducer.
    */
-  @js.native
-  trait ReactNode extends js.Object
-
-  /** Output from `react.createElement` and is something you can render with key
-   * and ref accessors. A ReactNode with a key. Keep the trait parameterless at
-   * the expense of pushing the type parameter to `ref`.
-   */
-  @js.native
-  trait ReactElement extends ReactNode {
-    val key: UndefOr[String] = js.native
-    def ref[E]: UndefOr[RefCb[E]] = js.native
-    // ...add ref here...is it a string or a callback now?
-
-    /** Pretty sure this is always here, don't use it. */
-    val `type`: String = js.native
+  def useState[T](initial: () => T) = {
+    val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
+    (c._1, c._2.asInstanceOf[js.Function1[js.Function1[T,T], Unit]])
   }
 
-  @js.native
-  trait ReactChildren extends ReactElement
-
-  type KeyType = String | Int
-
-  /** Use these to mix into your traits to ensure you have a a key and ref to
-   * set. For example, add this to a Props class so that you can specify a key
-   * when you create it.  These are not special or used for tags, you can not
-   * use this trait and just define the key and/or ref in your Props trait
-   * directly.
-   */
-  trait ReactPropsJs extends js.Object {
-    var key: UndefOr[KeyType] = js.undefined
-    def ref[E]: UndefOr[RefCb[E]] = js.undefined
+  /** Initial value is strict. Set new value directly. Don't use this. */
+  def useStateStrictDirect[T](initial: T) = {
+    val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
+    (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
   }
 
-  /** Scala side verson of ReactPropsJs. It assumed that you use key and/or ref to
-   * create your actual react or react dom components. Hence the use of Option.
-   * It usually better to define them as UndefOr instead of Option so you can
-   * directly place them into a DOM element's props in your render function.
-   */
-  trait ReactProps {
-    val key: Option[String] = None
-    def ref[E]: Option[RefCb[E]] = None
+  /** Initial value is a "lazy". Set new value directly. Don't use this. */
+  def useStateDirect[T](initial: () => T) = {
+    val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
+    (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
   }
 
-  /**
-   * A standard HTML element that has been created using React.createElement.
-   * Props are optional of course.  We use this tag it to show that it came
-   * from the standard DOM components vs a custom one.
-   */
-  @js.native
-  trait ReactDOMElement extends ReactElement {
-    //def `type`: String = js.native
-
-    /** Raw JS props. You don't normally access this. Don't use. */
-    def props: UndefOr[js.Object] = js.native
+  def useReducer[S, A](reducer: (S,A)=>S, initialState: S): (S, Dispatch[A]) = {
+    val c = ReactJS.useReducer(reducer, initialState)
+    (c._1, c._2)
   }
 
-  /**
-   * A js-object that is returned from create-react-class. In reactjs a react
-   * class is a js object created using the "class" construct. This should
-   * really be ReactJsComponent but we keep this slightly different for those
-   * who care about such things.
-   */
-  @js.native
-  trait ReactClass extends js.Object
-
-  /** For creating a portal in react-dom. */
-  @js.native
-  trait ReactPortal extends ReactElement
-
-  /** Pure JS functions defined in scala are also components. */
-  type ScalaJSFunctionComponent = js.Function0[ReactNode]
-
-  /** Pure JS functions defined in scala are also components. */
-  type ScalaJSFunctionComponent1 = js.Function1[_ <: js.Object, ReactNode]
-
-  /** Something that can be used in `ReactJS.createElement()`. Given an object of
-   * this type, you must call `React.createElement` on it to create the element
-   * with optional props and children. If a parent is in a component, you use
-   * this type to represent it.
-   */
-  type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1
-
-  /**
-   * This type is used only for imported javascript authored components to
-   * "tag" a component type or created via other js-interop mechanisms such as
-   * redux integration. By using a separate type, you must use then
-   * scalajs-react's API to create an element. You can use this to annotate a
-   * js function react component as well e.g. () => ReactNode.
-   */
-  @js.native
-  trait ReactJsComponent extends js.Object
-
-  /** Components from js land that are functions and imported as such. May or may
-   * not make a difference to have this typed separately. You could also import
-   * it as a jsFunctionN object.
-   */
-  @js.native
-  trait ReactJsFunctionComponent extends js.Object
-
-  /** Not sure why I still have this. */
-  @js.native
-  trait ReactJsLazyComponent extends ReactJsComponent
-
-  /** All the types of components that can be imported from JS. These must be
-   * processed to be allowed to be used as Components in this facade. Keep in
-   * sync with `ReactType`.
-   */
-  type ImportedJsComponent = ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent
-
-  /** The type of `() => import("somecomponent")` which is used exclusively for
-   * the argument to React.lazy.
-   */
-  type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
-
-  /** Alias for internal use. @deprecated */
-  type ReactClassInternal = ReactClass
-
-  /** Return a "render nothing" element. React ignores nulls during rendering. */
-  val nullElement = null.asInstanceOf[ReactElement]
-
-  /** Convenience. Use implicits for syntax-based conversion. */
-  def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
-
-  /** Convenience. Use implicits for automatic conversion. */
-  def arrayToElement[T <: ReactNode](s: Seq[T]) = (s.toJSArray).asInstanceOf[ReactNode]
-
-  /** String to react node. Use implicits for automatic conversion and avoid
-   * calling this function.
-   */
-  def stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
-
-  /**
-   * Empty children value but non-empty array. Be careful as someone could
-   * mutate this global instance on you.
-   */
-  val emptyChildrenVal = js.Array[ReactNode]()
-
-  /** Allocate an empty child array. It's not shared like `emptyChildrenVal` */
-  def emptyChildren = js.Array[ReactNode]()
-
-  /** Make a callback. You don't need this but helps with type inference. There is
-   * some dedicated syntax support for `E|Null` handling.
-   */
-  def refCallback[E](f: E|Null => Unit): RefCb[E] = f
-
-  /** Children type. */
-  type PropsChildren = js.Array[ReactElement]
-
-  /** No children value. */
-  val noChildren: PropsChildren = js.Array()
-
-  /**
-   * Constant val of a single, empty js.Object. Use carefully since js allows
-   * mutation and this will be a shared instance. Prefer `noProps()`.
-   */
-  val noPropsVal: js.Object = new js.Object()
-
-  /** Type inferring empty js object. A new object is created with each call. */
-  def noProps[T <: js.Object](): T = (new js.Object()).asInstanceOf[T]
-
-  /**
-   * Turn a ReactRef to a js.Dynamic so you can call "component" methods
-   * directly.  Most notably "select", "value" or "focus()". I don't think this
-   * is right...
-   */
-  def refToJs[T](ref: ReactRef[T]): js.Dynamic = ref.asInstanceOf[js.Dynamic]
-
-  /**
-   * Merge js.Dynamic. See [[merge]] and use that.
-   * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
-   */
-  def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
-    // not js.Any? maybe keep js or scala values in here....
-    val result = js.Dictionary.empty[Any]
-    for (source <- objs) {
-      if(source != null)
-        for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-          result(key) = value
-    }
-    result.asInstanceOf[js.Dynamic]
+  def useReducer[S, A, I](reducer: (S,A)=>S, initialArg: I, init: I => S): (S, Dispatch[A]) = {
+    val c = ReactJS.useReducer(reducer, initialArg, init)
+    (c._1, c._2)
   }
 
-  /**
-   * Merge objects and Ts together. Good for merging props with data-
-   * attributes. This is like `Object.assign`. Last parameter wins.  Creates
-   * and returns new object. Input objects are not modified.
+  /** Effect is run on every render which is probably too much. */
+  def useEffectAlways(didUpdate: EffectArg) =
+    ReactJS.useEffect(didUpdate, undefinedDependencies)
+
+  /** Effect is run when dependencies change. */
+  def useEffect(didUpdate: EffectArg, dependencies: Dependencies) =
+    ReactJS.useEffect(didUpdate, dependencies)
+
+  /** Effect is run when dependencies change. */
+  def useEffect(dependencies: js.Any*)(didUpdate: EffectArg) =
+    ReactJS.useEffect(didUpdate, dependencies.toJSArray)
+
+  /** Effect is run when dependencies change. */
+  def useEffect(dependencies: Dependencies)(didUpdate: EffectArg) =
+    ReactJS.useEffect(didUpdate, dependencies)
+
+  /** Effect is run at mount/unmount time with `[]` as the 2nd argument. */
+  def useEffectMounting(didUpdate: EffectArg) =
+    ReactJS.useEffect(didUpdate, emptyDependencies)
+
+  /** Run before browser updates the screen. Kinda a "sync" effect. */
+  def useLayoutEffect(didUpdate: EffectArg, dependencies: Dependencies) =
+    ReactJS.useLayoutEffect(didUpdate, dependencies)
+
+  /** Memoize a lazy value. */
+  def useMemo[T](value: () => T, dependencies: Dependencies): T =
+    ReactJS.useMemo[T](value, dependencies)
+
+  /** Memoize a lazy value. */
+  def useMemo[T](dependencies: js.Any*)(value: () => T): T =
+    ReactJS.useMemo[T](value, dependencies.toJSArray)
+
+  /** Memoize a lazy value. */
+  def useMemo[T](dependencies: Dependencies)(value: js.Function0[T]): T =
+    ReactJS.useMemo[T](value, dependencies)
+
+  /** Memoize a lazy value. Set on mounting. */
+  def useMemoMounting[T](value: () => T): T = ReactJS.useMemo[T](value, emptyDependencies)
+
+  def useDebugValue[T](value: T): Unit =
+    ReactJS.useDebugValue[T](value, js.undefined)
+
+  def useDebugValue[T](value: T, format: T => String): Unit =
+    ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
+
+  /** Default API is for no-arg callback. Declare as val yourCB = useCallback... */
+  def useCallback[T](callback: js.Function0[T], dependencies: Dependencies): js.Function0[T] =
+    ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
+
+  def useCallback[T](dependencies: Dependencies)(callback: js.Function0[T]): js.Function0[T] =
+    ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
+
+  def useCallback[T](dependencies: js.Any*)(callback: js.Function0[T]): js.Function0[T] =
+    ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function0[T]]
+
+  def useCallback[A1, T](callback: js.Function1[A1, T], dependencies: Dependencies): js.Function1[A1,T] =
+    ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function1[A1,T]]
+
+  def useCallback[A1, T](dependencies: js.Any*)(callback: js.Function1[A1, T]): js.Function1[A1,T] =
+    ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function1[A1,T]]
+
+  def useCallback[A1, A2, T](callback: (A1,A2) => T, dependencies: Dependencies): js.Function2[A1,A2,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction2[A1,A2,T](callback), dependencies).asInstanceOf[js.Function2[A1,A2,T]]
+
+  def useCallback[A1, A2, T](dependencies: js.Any*)(callback: js.Function2[A1,A2,T]): js.Function2[A1,A2,T] =
+    ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function2[A1,A2,T]]
+
+  def useCallback[A1, A2, A3, T](callback: (A1,A2,A3) => T, dependencies: Dependencies): js.Function3[A1,A2,A3,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction3[A1,A2,A3,T](callback), dependencies).asInstanceOf[js.Function3[A1,A2,A3,T]]
+
+  def useCallback[A1, A2, A3, A4, T](callback: (A1,A2,A3,A4) => T, dependencies: Dependencies): js.Function4[A1,A2,A3,A4,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction4[A1,A2,A3,A4,T](callback), dependencies).asInstanceOf[js.Function4[A1,A2,A3,A4,T]]
+
+  def useCallback[A1, A2, A3, A4, A5, T](callback: (A1,A2,A3,A4,A5) => T, dependencies: Dependencies): js.Function5[A1,A2,A3,A4,A5,T] =
+    ReactJS.useCallback(
+      js.Any.fromFunction5[A1,A2,A3,A4,A5,T](callback), dependencies).asInstanceOf[js.Function5[A1,A2,A3,A4,A5,T]]
+
+  def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
+
+  /** Expose imperative functions in R to refs.
+   * @tparam T Ref type
+   * @tparam R js object whose properties are functions. This is not enforced in
+   * the type.
    */
-  def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null *): T = {
-    val result = js.Dictionary.empty[Any]
-    for (source <- objs) {
-      if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
-        for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-          result(key) = value
-    }
-    result.asInstanceOf[T]
+  def useImperativeHandle[T, R <: js.Object](ref: MutableRef[T],
+    thunk: () => R, dependencies: Dependencies): Unit =
+    ReactJS.useImperativeHandle[T,R](ref, thunk, dependencies)
+
+  def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent =
+    ReactJS.`lazy`(lazyComponent)
+
+  def useTransition(config: TransitionConfig) = {
+    val p = ReactJS.useTransition(config)
+    (p._1.asInstanceOf[js.Function1[js.Function0[Unit], Unit]], p._2.asInstanceOf[Boolean])
   }
 
-  /** Shallow copy. Should we call Object.assign directly? Faster? */
-  def copy[T <: js.Object](obj: js.Dynamic | js.Object): T = merge[T](obj)
+  /** Use a deferred value. Config indicats how long the value is good for. */
+  def useDeferredValue[T](value: T, config: DeferredValueConfig): T =
+    ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
 
-  /** Add a key. Mutates input object directly because hey, this is javascript! */
-  def withKey[T <: js.Object](element: T, key: String): ReactElement = {
-    element.asInstanceOf[js.Dynamic].key = key
-    return element.asInstanceOf[ReactElement]
+  //val Fragment = ReactJS.Fragment
+  //val StrictMode = ReactJS.StrictMode
+  //val Suspense = ReactJS.Suspense
+  //val SuspenseList = ReactJS.SuspenseList  
+  val Children = ReactJS.Children
+
+  /** Create a React.fragment element. */
+  object Fragment {
+    def apply(key: Option[String] = None)(children: ReactNode*) =
+      React.createFragment(key, children: _*)
+
+    /** Preferred creation function. */
+    def apply(children: ReactNode*) =
+      React.createFragment(None, children: _*)
   }
 
-  /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
-   * support makes this easier so you don't have to use this function.
+  /** Strict element. Wraps your root component typically. */
+  object StrictMode {
+    /** Wrap some children with a Strict component. */
+    def apply(children: ReactNode*): ReactNode =
+      ReactJS.createElement(ReactJS.StrictMode, null, children:_*)
+  }
+
+  /** Catch a thrown js.Promise from the child. Show fallback until the promise is
+   * resolved.
    */
-  def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
-    if (js.isUndefined(t) || t == null) None
-    else Option(t.asInstanceOf[T])
+  object Suspense {
+    def apply(fallback: => ReactNode/* | Null = null*/)(children: => ReactNode) =
+      ReactJS.createElement(
+        ReactJS.Suspense,
+        lit("fallback" -> fallback.asInstanceOf[js.Any]),
+        children
+      )
   }
 
-  /** Render something or return a null element. */
-  def when(cond: Boolean)(render: => ReactNode): ReactNode =
-    if(cond) render else nullElement
-
-  /** Render something if not cond or return a null element. */
-  def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
-    if(!cond) render else nullElement
-
-
-  /** Test equaliy with two js objects. Standard == in scala.js on 2 js objects
-   * (e.g. non-native traits) will not test in the same way that standard scala
-   * tests equality. Do not use this with ract components (js objects) because
-   * react component objects have circular data structures.
-   *
-   *  You may want to look at some standard js equality libraries--there are
-   *  many and are opimized in various ways. See
-   *  https://github.com/FormidableLabs/react-fast-compare/blob/master/index.js
-   *  in particular. This code is from
-   *  https://stackoverflow.com/questions/38126349/how-to-deeply-compare-two-js-like-objects-in-scala-js.
-   */
-  def jsEqual(a: js.Any, b: js.Any): Boolean = {
-    (a, b) match {
-      case (null, null) => true
-      case (a: js.Array[_], b: js.Array[_]) =>
-        // compare length and each individual item
-        a.length == b.length &&
-        a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual _).tupled)
-      case _ if a != null && a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
-          b != null && b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>
-        val aDict = a.asInstanceOf[js.Dictionary[js.Any]]
-        val bDict = b.asInstanceOf[js.Dictionary[js.Any]]
-        (aDict.keySet == bDict.keySet) &&
-        aDict.keySet.forall(key => jsEqual(aDict(key), bDict(key)))
-      case _ if ((a == null & b != null) || (a != null && b == null)) => false
-      case _ =>
-        // must be non-object values, this does a js style test
-        a == b
-    }
+  object SuspenseList {
+    def apply(items: ReactNode*) =
+      ReactJS.createElement(ReactJS.SuspenseList, null, items:_*)
   }
+
+}
+
+/** Primary entry point into the React API. */
+object React extends React
+
+/**
+  * React's context object contains the consumer and provider "components".
+  */
+@js.native
+trait ReactContext[T] extends js.Object {
+  type ValueType = T
+
+  /** Only takes a single attribute value, "value" with the context . */
+  val Provider: ReactJsComponent = js.native
+  val Consumer: ReactJsComponent = js.native
+
+  /** Not public API. */
+  var currentValue: T = js.native
+
+  /** Not public API. */
+  val defaultValue: T = js.native
 }

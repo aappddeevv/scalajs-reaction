@@ -15,7 +15,7 @@ import js.JSConverters._
 import js.annotation._
 import org.scalajs.dom
 import ttg.react._
-import elements._
+import React.Fragment
 import implicits._
 
 import ttg.react.vdom._

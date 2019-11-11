@@ -54,7 +54,7 @@ object EqualityTest {
   val sc12 = s1.copy(strv = "blah")
 
   def doit(): ReactNode =
-    Fragment(
+    React.Fragment(
       p("Equality testing"),
       p(s"js: t1 == t1: ${EqualityTestingJS.equality2(t1,t1)}"),
       p(s"js: t1 == t2: ${EqualityTestingJS.equality2(t1,t2)}"),

@@ -176,6 +176,8 @@ trait IContextualMenuItem extends WithIconProps {
   //var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
   var onClick: js.UndefOr[OC2|OC0]                 = js.undefined
   @JSName("onClick")
+  var onEventItemClick: js.UndefOr[OC2] = js.undefined
+  @JSName("onClick")
   var onEmptyClick: js.UndefOr[OC0] = js.undefined
   var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
   var className: js.UndefOr[String]                  = js.undefined

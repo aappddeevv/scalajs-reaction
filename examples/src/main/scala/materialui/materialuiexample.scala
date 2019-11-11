@@ -11,7 +11,7 @@ import js.|
 import org.scalajs.dom
 import ttg.react
 import react._
-import elements._
+import React.Fragment
 import react.implicits._
 import vdom._
 import vdom.styling._

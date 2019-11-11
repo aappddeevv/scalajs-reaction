@@ -17,12 +17,11 @@ import js.Dynamic.{literal => lit}
 import org.scalajs.dom
 import ttg.react
 import react._
-import elements._
+import React.Fragment
 import react.implicits._
 import redux._
 import vdom._
 import vdom.tags._
-import ttg.react.fabric
 import fabric._
 import fabric.components._
 import fabric.styling._
@@ -32,7 +31,7 @@ import react.mui._
 import cats._
 import cats.implicits._
 
-import ttg.react.components.reactbigcalendar._
+import react_big_calendar._
 import moment._
 import router._
 

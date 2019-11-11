@@ -22,7 +22,7 @@ import cats._
 import cats.implicits._
 
 import router.browser._
-import ttg.react.react_router.dom._
+import react_router.dom._
 import hooks._
 
 object routes {

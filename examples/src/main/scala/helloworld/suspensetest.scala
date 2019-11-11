@@ -16,9 +16,9 @@ import js.JSConverters._
 
 import ttg.react
 import react._
-import elements._
 import reactdom._
 import react.implicits._
+import React.{Fragment, Suspense}
 
 import vdom._
 import tags._
@@ -152,7 +152,7 @@ object SuspenseTest {
     //Fragment(
       //p("scala.js React.Suspense component test, parent is a SFC"),
       //p("Child is typescript SuspenseChild so we can throw a promise easily and test interop."),
-      Suspense(div("Loading (scalajs)..."), props.child)
+      React.Suspense(div("Loading (scalajs)..."))(props.child)
   //)
   }
 

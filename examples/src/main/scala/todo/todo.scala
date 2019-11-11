@@ -19,7 +19,6 @@ import react._
 import react.elements._
 import react.reactdom._
 import react.implicits._
-import react.fabric
 import fabric._
 import fabric.components._
 import fabric.styling._
@@ -146,6 +145,8 @@ object ToDos {
   trait Props extends js.Object {
     val title: String
     val todos: Seq[ToDo]
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
+    var className: js.UndefOr[String] = js.undefined
   }
 
   def apply(props: Props) = sfc(props)
@@ -165,10 +166,7 @@ object ToDos {
       ifield.current.foreach(_.focus())
     }
 
-    val cn = getClassNames(resolve[StyleProps, Styles](
-      new StyleProps { /* add style hints from props if any */ },
-      getStyles
-    ))
+    val cn = getClassNames(new StyleProps { className = props.className }, props.styles)
 
     div(new DivProps {
       className = cn.root
@@ -226,7 +224,7 @@ object fakedata {
 object ToDoStyling {
 
   @js.native
-  trait ClassNames extends js.Object {
+  trait ClassNames extends IClassNamesTag {
     var root: String      = js.native
     var todo: String      = js.native
     var title: String     = js.native
@@ -276,6 +274,7 @@ object ToDoStyling {
   }
 
   // example of memoizing, you need a js.Function to use memoizeFunction
-  val getClassNames =
-    fabric.Utilities.memoizeFunction[Styles, ClassNames](Styling.mergeStyleSets[ClassNames](_))
+  import fabric.merge_styles._
+  val getClassNames: GetClassNamesFn[StyleProps, Styles, ClassNames] =
+    (p,s) => mergeStyleSets(concatStyleSetsWithProps(p, getStyles, s))
 }

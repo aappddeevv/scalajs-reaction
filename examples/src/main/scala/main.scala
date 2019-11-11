@@ -22,7 +22,6 @@ import react.implicits._
 import redux._
 import vdom._
 import vdom.tags._
-import ttg.react.fabric
 import fabric._
 import fabric.components._
 import fabric.styling._

@@ -28,7 +28,7 @@ object Sidebar {
   trait ISidebar extends js.Object {
     val toggleCollapsed: js.Function0[Unit] = js.native
     val setCollapsed: js.Function1[Boolean,Unit] = js.native
-    val getCallapsed: js.Function0[Boolean] = js.native
+    val getCollapsed: js.Function0[Boolean] = js.native
   }
 
   trait Props
