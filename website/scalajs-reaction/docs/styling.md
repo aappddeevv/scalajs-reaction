@@ -90,9 +90,9 @@ typescript code, its probably good enough.
 do css-in-js styles as follows:
 
 ```scala
-// other imports ...
+// other imports for react and fabric ...
 
-import ttg.react.fabric.MergeStyles._
+import merge_styles._
 
 object MyComponent {
 

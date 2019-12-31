@@ -3,17 +3,14 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
 import js.JSConverters._
 
 import org.scalajs.dom
-import ttg.react
-import react._
-import elements._
-import react.implicits._
+import _root_.react._
+import implicits._
 import vdom._
 import vdom.tags._
 import vdom.styling._
@@ -21,7 +18,6 @@ import vdom.styling._
 import cats._
 import cats.implicits._
 
-import router.browser._
 import react_router.dom._
 import hooks._
 

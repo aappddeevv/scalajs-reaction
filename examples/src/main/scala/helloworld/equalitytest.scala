@@ -3,16 +3,14 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 package helloworld
 
 import scala.scalajs.js
 import js.annotation._
 
-import react._
-import react.implicits._
-import react.elements._
+import _root_.react._
+import _root_.react.implicits._
 import vdom._
 import vdom.styling._
 import vdom.tags._

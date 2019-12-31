@@ -3,7 +3,6 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
@@ -11,10 +10,8 @@ import js.Dynamic.{literal=>jsobj}
 import js.annotation._
 import js.JSConverters._
 
-import ttg.react
-import react._
+import _root_.react._
 import implicits._
-import elements._
 
 import vdom._
 import tags._

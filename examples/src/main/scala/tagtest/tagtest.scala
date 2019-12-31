@@ -3,14 +3,13 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 package tagtest
 
 import scala.scalajs.js
 import js.Dynamic.{literal => lit}
 import js.annotation._
-import elements._
+import _root_.react._
 import implicits._
 import vdom.StyleAttr
 import vdom.SetInnerHTML

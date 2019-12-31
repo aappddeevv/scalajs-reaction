@@ -2,7 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
 package examples
 
 import scala.scalajs.js
@@ -11,10 +11,9 @@ import js.annotation._
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
-import ttg.react._
-import ttg.react.implicits._
-import ttg.react.redux
-import elements._
+import _root_.react._
+import implicits._
+import react_redux._
 
 trait LabelAndChildProps extends js.Object {
   var label: js.UndefOr[String]     = js.undefined
@@ -35,18 +34,18 @@ object JSAppImports {
 trait StoreState extends js.Object {
 }
 
-trait StoreAction extends redux.Action {
+trait StoreAction extends Action {
 }
 
 @js.native
 @JSImport("JSExamples/store", JSImport.Namespace)
 object StoreNS extends js.Object {
-  val store: redux.Store[GlobalAppState, GlobalAppAction] = js.native
+  val store: Store[GlobalAppState, GlobalAppAction] = js.native
 }
 
 /** Maps of actions bundled into the namespace. Use js.Dynamic to find them to
  * make it easier to type into scala :-). Ideally all of these would be typed
- * all the way down.
+ * all the way down. Theses should extend redux's Action...
  */
 @js.native
 @JSImport("JSExamples/actions", JSImport.Namespace)

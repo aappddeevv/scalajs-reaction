@@ -5,7 +5,6 @@
 package react_router
 package dom
 
-import ttg.react
 import react._
 
 import scala.scalajs.js
@@ -53,7 +52,10 @@ trait History[S] extends js.Object {
   val action: Action = js.native
   val location: Location[S] = js.native
   def push(path: Path, state: js.UndefOr[S] = js.undefined): Unit = js.native
-  def push[S](location: LocationDescriptor[S]): Unit = js.native
+  @JSName("push")
+  def pushLocation[S](location: LocationDescriptor[S]): Unit = js.native
+  @JSName("push")  
+  def pushLocation[S](location: Location[S]): Unit = js.native  
   def replace(path: Path, state: js.UndefOr[S] = js.undefined): Unit = js.native
   def replace[S](location: LocationDescriptor[S]): Unit = js.native
   def go(n: Int): Unit = js.native
@@ -73,6 +75,7 @@ trait RouteProps[S] extends js.Object {
   var strict: js.UndefOr[Boolean] = js.undefined
 }
 
+/** Like Location but everything is optional. */
 trait LocationDescriptor[S] extends js.Object {
   var pathname: js.UndefOr[Pathname] = js.undefined
   var search: js.UndefOr[Search] = js.undefined
@@ -81,6 +84,9 @@ trait LocationDescriptor[S] extends js.Object {
   var key: js.UndefOr[LocationKey] = js.undefined
 }
 
+/** A simplified but overlapping version from the DOM lib per the js package
+ * 'history'
+ */
 @js.native
 trait Location[S] extends js.Object {
   val pathname: Pathname = js.native
@@ -107,6 +113,8 @@ trait RouterContext extends js.Object {
 /*** Route, most commonly used router component. Type parameter `S` stands for
  * "state" which is state you can add to the history stack per push. `P` is a js
  * object for query parameters, hence, each property should have a string value.
+ * Using the children props always renders regardless of path match. Typically,
+ * use the render prop.
  */
 object Route {
   @js.native
@@ -118,42 +126,54 @@ object Route {
   def always[S,P](children: js.Function1[RouteComponentProps[S,P],ReactNode]) =
     React.createElement(JS, null)(children.asInstanceOf[ReactNode])
 
-  def apply(props: Props, child: ReactNode) =
+  def apply[S,P](props: Props[S,P], child: ReactNode) =
     React.createElement(JS, props)(child)
 
-  def apply[S,P](props: Props)(children: js.Function1[RouteComponentProps[S, P],ReactNode]) =
+  /** Uses children prop. */
+  def apply[S,P](props: Props[S,P])(children: js.Function1[RouteComponentProps[S, P],ReactNode]) =
     React.createElement(JS, props)(children.asInstanceOf[ReactNode])
 
   def withPath(p: String, child: ReactNode) =
-    React.createElement(JS, new Props { path=p })(child)
+    React.createElement(JS, new Props[Nothing,Nothing] { path=p })(child)
 
+  /** Uses children prop. */
   def withPath[S,P](p: String)(children: js.Function1[RouteComponentProps[S, P],ReactNode]) =
-    React.createElement(JS, new Props { path=p })(children.asInstanceOf[ReactNode])
+    React.createElement(JS, new Props[S,P] { path=p })(children.asInstanceOf[ReactNode])
 
+  /** Uses render prop. */
+  def withPathRender[S,P](p: String)(thunk: js.Function1[RouteComponentProps[S,P], ReactNode]) =
+    React.createElement0(JS, new Props[S,P] { path=p; render=thunk })
+    
   def withExactPath(p: String, child: ReactNode) =
-    React.createElement(JS, new Props { exact=true; path=p })(child)
+    React.createElement(JS, new Props[Nothing,Nothing] { exact=true; path=p })(child)
 
-  trait Props extends js.Object {
+  /** Uses render prop. */
+  def withExactPathRender[S,P](p: String)(thunk: js.Function1[RouteComponentProps[S,P], ReactNode]) =
+    React.createElement0(JS, new Props[S,P] { exact=true; path=p; render=thunk })
+
+  trait Props[S,P] extends js.Object {
     var location: js.UndefOr[Location[_]] = js.undefined
     // component
     // skip component, not robust
     // render
-    var render: js.UndefOr[js.Function1[RouteComponentProps[_, _], ReactNode]] = js.undefined
+    /** Only renders if route matched. children prop always renders regardless of match. */
+    var render: js.UndefOr[js.Function1[RouteComponentProps[S,P], ReactNode]] = js.undefined
     // children thunk is in apply
     var path: js.UndefOr[String | Array[String]] = js.undefined
     var exact: js.UndefOr[Boolean] = js.undefined
     var sensitive: js.UndefOr[Boolean] = js.undefined
     var strict: js.UndefOr[Boolean] = js.undefined
   }
+}
 
-  /** P is params object. S is state stored in history. If you are not using either,
-   * you can use `RouteComponentProps[Null, Nothing]`. */
-  @js.native
-  trait RouteComponentProps[S, P] extends js.Object {
-    val history: History[S] = js.native
-    val location: Location[S] = js.native
-    val `match`: Match[P] = js.native
-  }
+/** P is params object. S is state stored in history. If you are not using either,
+ * you can use `RouteComponentProps[Null, Nothing]`. */
+@js.native
+trait RouteComponentProps[S, P] extends js.Object {
+  val history: History[S] = js.native
+  val location: Location[S] = js.native
+  /** Could be null so we should add `|Null`. */
+  val `match`: Match[P] = js.native
 }
 
 object HashRouter {
@@ -216,6 +236,7 @@ object Redirect {
   object JS extends ReactJsComponent
 
   def to(t: String) = React.createElement0(JS, new Props {to = t})
+  def toLocation(t: LocationDescriptor[_]) = React.createElement0(JS, new Props {toLocation = t})
 
   def apply(props: Props = null) =
     React.createElement0(JS, props)

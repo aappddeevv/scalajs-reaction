@@ -3,15 +3,13 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 // not in movie package!
 
 import scala.scalajs.js
 import js.Dynamic.{literal => lit}
-import ttg.react.vdom.tags._
+import _root_.react.vdom.tags._
 
-import elements._
 
 // object Loading {
 //   def make(key: Option[String] = None)(isLoading: Boolean => ReactNode) = {

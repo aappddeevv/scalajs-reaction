@@ -2,14 +2,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg.examples
 package materialui
 
 import scala.scalajs.js
 import js.Dynamic.{literal => jsobj}
 import js.|
 import org.scalajs.dom
-import ttg.react
 import react._
 import React.Fragment
 import react.implicits._
@@ -17,8 +16,8 @@ import vdom._
 import vdom.styling._
 import vdom.tags._
 
-import react.mui._
-import react.mui.components._
+import mui._
+import mui.components._
 import jss._
 
 import components._

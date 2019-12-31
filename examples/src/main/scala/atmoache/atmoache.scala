@@ -3,7 +3,6 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 package atmoache
 
@@ -14,11 +13,11 @@ import scala.scalajs.js
 import js.JSConverters._
 import js.annotation._
 import org.scalajs.dom
-import ttg.react._
+import _root_.react._
 import React.Fragment
 import implicits._
 
-import ttg.react.vdom._
+import vdom._
 import tags._
 import fabric._
 import fabric.components._

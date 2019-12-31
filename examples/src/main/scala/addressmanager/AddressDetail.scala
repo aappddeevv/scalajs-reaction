@@ -2,7 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
 package examples
 package addressmanager
 
@@ -13,13 +13,9 @@ import js.JSConverters._
 import js.|
 
 import org.scalajs.dom
-import ttg.react
-import ttg.react._
-import elements._
-import reactdom._
-import react.implicits._
-import redux._
-import react.redux
+import _root_.react._
+import implicits._
+import react_redux._
 import vdom._
 import vdom.tags._
 import fabric._
@@ -49,13 +45,13 @@ object AddressDetail {
     //val log = React.useContext[ConsoleLog](Contexts.logContext)
     //log(props.address.getOrElse("<no detail address provided>"))
     div(new DivProps { className = amstyles.detail.asString })(
-      Label()(s"""Name: ${props.address.flatMap(_.name.toOption).getOrElse("")}"""),
-      Label()(s"""City: ${props.address.flatMap(_.city.toOption).getOrElse("")}"""),
-      Label()(s"""State/Province: ${props.address
+      Label(s"""Name: ${props.address.flatMap(_.name.toOption).getOrElse("")}"""),
+      Label(s"""City: ${props.address.flatMap(_.city.toOption).getOrElse("")}"""),
+      Label(s"""State/Province: ${props.address
                   .flatMap(_.stateorprovince.toOption)
                   .getOrElse("")}"""),
-      Label()(s"""Zipcode: ${props.address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
-      Label()(s"""Country: ${props.address.flatMap(_.country.toOption).getOrElse("")}"""),
+      Label(s"""Zipcode: ${props.address.flatMap(_.postalcode.toOption).getOrElse("")}"""),
+      Label(s"""Country: ${props.address.flatMap(_.country.toOption).getOrElse("")}"""),
     )
   }
 }

@@ -2,11 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
@@ -15,22 +11,22 @@ import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
 import org.scalajs.dom
-import ttg.react
-import react._
+import _root_.react._
 import React.Fragment
-import react.implicits._
-import redux._
+import _root_.react.implicits._
+import react_redux._
 import vdom._
 import vdom.tags._
 import fabric._
 import fabric.components._
 import fabric.styling._
 import Styling._
-import react.mui._
+import mui._
 
 import cats._
 import cats.implicits._
 
+import bootstrap._
 import react_big_calendar._
 import moment._
 import router._
@@ -63,15 +59,15 @@ object Pages {
   def labelAndChild(name: String, c: ReactNode) =
     page(LabelAndChild(new LabelAndChildProps { label = "Wrapped in typescript" })(c))
 
-  def graphPage() =
+    def graphPage() =
     page(Graph())
 
-  def pressurePage() =
+    def pressurePage() =
     page(atmoache.app())
 
-  def todoPage() =
+    def todoPage() =
     page(Fragment(
-      Label()("Note: The To Do manager's data is reset each time you switch tabs."),
+          Label("Note: The To Do manager's data is reset each time you switch tabs."),
       todo.ToDos(new todo.ToDos.Props {
         val title = "Your To Do List"
         val todos = todo.fakedata.initialToDos
@@ -103,7 +99,7 @@ object Pages {
       val dao = adao
     }
     page(
-      Label()(
+      Label(
         "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes. NOT IMPLEMENTED :-) New and delete are not hooked up!"),
       AddressManager(opts)
     )

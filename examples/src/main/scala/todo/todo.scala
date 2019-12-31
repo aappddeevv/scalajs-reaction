@@ -3,7 +3,6 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 package todo
 
@@ -14,11 +13,9 @@ import js.Dynamic.{literal => lit, global => g}
 import js.JSConverters._
 
 import org.scalajs.dom
-import ttg.react
-import react._
-import react.elements._
-import react.reactdom._
-import react.implicits._
+import _root_.react._
+import react_dom._
+import _root_.react.implicits._
 import fabric._
 import fabric.components._
 import fabric.styling._
@@ -69,7 +66,7 @@ object ToDoListHeader {
 
   val sfc = SFC1[Props]{ props =>
     React.useDebugValue(Name)
-    div(Label()(s"# To Dos - ${props.length}"))
+    div(Label(s"# To Dos - ${props.length}"))
   }.memo
 }
 
@@ -171,7 +168,7 @@ object ToDos {
     div(new DivProps {
       className = cn.root
     })(
-      Label()(s"""App: ${props.title}"""),
+      Label(s"""App: ${props.title}"""),
       div(new DivProps { className = cn.dataEntry })(
         TextField(new TextField.Props {
           placeholder = "enter new todo"

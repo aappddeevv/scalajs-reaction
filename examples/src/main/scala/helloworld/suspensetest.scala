@@ -2,7 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
 package examples
 package helloworld
 
@@ -14,10 +14,9 @@ import org.scalajs.dom
 import js.Dynamic.{literal => lit}
 import js.JSConverters._
 
-import ttg.react
-import react._
-import reactdom._
-import react.implicits._
+import _root_.react._
+import react_dom._
+import implicits._
 import React.{Fragment, Suspense}
 
 import vdom._

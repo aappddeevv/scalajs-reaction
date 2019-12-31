@@ -97,14 +97,15 @@ lazy val jssettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.7"
+    //"org.scala-js" %%% "scalajs-dom" % "0.9.7"
+	"org.scala-js" %%% "scalajs-dom" % "0.9.8"
   )
 )
 
 lazy val commonSettings = Seq(
   scalacOptions ++= commonScalacOptions,
   libraryDependencies ++= Seq(
-    "org.scalatest" %%% "scalatest" % "3.1.0-RC3" % "test"
+    //"org.scalatest" %%% "scalatest" % "3.1.0-RC3" % "test"
   ),
   dependencyOverrides ++= Seq(
     // none
@@ -124,7 +125,8 @@ lazy val fpsettings = Seq(
 
 lazy val exampleFPSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats-effect" % catsVersion
+    "org.typelevel" %%% "cats-core" % catsVersion, 
+    "org.typelevel" %%% "cats-effect" % catsVersion,
     //"tech.sparse" %%% "trail" % "0.1.2", // 0.1.2 uses newest cats
   )
 )
@@ -140,51 +142,74 @@ lazy val root = project
   .aggregate(
     examples,
     docs,
-    `scalajs-reaction-core`,
-    `scalajs-reaction-fabric`,
-    `scalajs-reaction-fabric-experiments`,
-    `scalajs-reaction-native`,
-    `scalajs-reaction-vdom`,
+    `react`,
+    `fabric`,
+    `fabric-experiments`,
+    `native`,
+    `vdom`,
     `scalajs-reaction-router`,
-    `scalajs-reaction-react-redux`,
-    `scalajs-reaction-react-dom`,
-    `scalajs-reaction-prop-types`,
-    `scalajs-reaction-bootstrap`,
-    `scalajs-reaction-mui`,
+    `react-redux`,
+    `react-dom`,
+    `prop-types`,
+    `bootstrap`,
+    `mui`,
     `scalajs-reaction-router`,
     `react-big-calendar`,
     `scalajs-reaction-native-nativebase`,
     `scalajs-reaction-native-react-native-elements`,
     `scalajs-reaction-native-react-navigation`,
     `scalajs-reaction-native-react-native-sideswipe`,
-    `scalajs-reaction-jss`,
+    jss,
     `scalajs-reaction-form`,
     `react-router-dom`,
     pathtoregexp,
-    dataValidationJS
+    dataValidationJS,
+    msal
+    ,mssql
+    ,express
     //,dataValidationJVM
   )
   .enablePlugins(AutomateHeaderPlugin)
   .disablePlugins(BintrayPlugin)
 
-lazy val `scalajs-reaction-core` = project
+lazy val `react` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs package.")
   .settings(buildInfoPackage := "ttg.react")
 
-lazy val `scalajs-reaction-native` = project
+lazy val native = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs native package.")
   .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-vdom`
+    react, vdom
   )
 
-lazy val `react-big-calendar` = project
+lazy val msal = project
+  .in(file("components/msal"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .settings(description := "Microsoft Authentication Library msal")
+
+lazy val mssql = project
+  .in(file("components/mssql"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .settings(description := "Microsoft Sql Server based on tedious")
+
+lazy val express = project
+  .in(file("components/express"))
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .settings(description := "express node.js http server")
+
+val `react-big-calendar` = project
   .in(file("components/react-big-calendar"))
   .settings(libsettings)
   .settings(publishSettings)
@@ -194,7 +219,7 @@ lazy val `react-big-calendar` = project
     )
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react, vdom)
 
 lazy val pathtoregexp = project
   .in(file("components/pathtoregexp"))
@@ -207,8 +232,8 @@ lazy val pathtoregexp = project
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
 
-lazy val `scalajs-reaction-jss` = project
-  .in(file("components/scalajs-reaction-jss"))
+lazy val jss = project
+  .in(file("components/jss"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(
@@ -217,7 +242,7 @@ lazy val `scalajs-reaction-jss` = project
     )
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react, vdom)
 
 lazy val `react-router-dom` = project
   .in(file("components/react-router-dom"))
@@ -229,7 +254,7 @@ lazy val `react-router-dom` = project
     )
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react,vdom)
 
 lazy val `scalajs-reaction-native-react-navigation` = project
   .in(file("components/scalajs-reaction-native-react-navigation"))
@@ -242,8 +267,7 @@ lazy val `scalajs-reaction-native-react-navigation` = project
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-native`
+    react, native
   )
 
 lazy val `scalajs-reaction-native-react-native-sideswipe` = project
@@ -257,8 +281,7 @@ lazy val `scalajs-reaction-native-react-native-sideswipe` = project
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-native`
+    react,native
   )
 
 lazy val `scalajs-reaction-native-nativebase` = project
@@ -271,7 +294,7 @@ lazy val `scalajs-reaction-native-nativebase` = project
     )
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-native`)
+  .dependsOn(react, native)
 
 lazy val `scalajs-reaction-native-react-native-elements` = project
   .in(file("components/scalajs-reaction-native-react-native-elements"))
@@ -283,7 +306,7 @@ lazy val `scalajs-reaction-native-react-native-elements` = project
     )
   )
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-native`)
+  .dependsOn(react, native)
 
 // jvm and js based project
 // lazy val dataValidation =
@@ -326,69 +349,64 @@ lazy val dataValidationJS = project
 //       "org.scalameta" %% "scalameta" % "1.8.0" // old version required
 //     ))
 
-lazy val `scalajs-reaction-prop-types` = project
+lazy val `prop-types` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`)
+  .dependsOn(react)
   .settings(description := "prop-types package.")
 
-lazy val `scalajs-reaction-react-dom` = project
+lazy val `react-dom` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`)
+  .dependsOn(react)
   .settings(description := "react-dom package.")
 
-lazy val `scalajs-reaction-vdom` = project
+lazy val `vdom` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`)
+  .dependsOn(react)
   .settings(description := "vdom helpers.")
 
-lazy val `scalajs-reaction-react-redux` = project
+lazy val `react-redux` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`)
+  .dependsOn(react)
   .settings(
     description := "redux via react-redux."
   )
 
-lazy val `scalajs-reaction-fabric` = project
+lazy val `fabric` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react,vdom)
   .settings(description := "microsoft office-ui-fabric facade.")
 
-lazy val `scalajs-reaction-fabric-experiments` = project
+lazy val `fabric-experiments` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-vdom`,
-    `scalajs-reaction-fabric`
+  .dependsOn(react,vdom,fabric
   )
   .settings(description := "microsoft @uifbaric experiments.")
 
-lazy val `scalajs-reaction-bootstrap` = project
+lazy val `bootstrap` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react ,vdom)
   .settings(description := "bootstrap facade.")
 
-lazy val `scalajs-reaction-mui` = project
+lazy val `mui` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(
-    `scalajs-reaction-core`,
-    `scalajs-reaction-vdom`,
-    `scalajs-reaction-jss`
+    react, vdom, jss
   )
   .settings(description := "material ui facade.")
 
@@ -396,14 +414,14 @@ lazy val `scalajs-reaction-router` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react, vdom)
   .settings(description := "scaljs-reaction browser js oriented router")
 
 lazy val `scalajs-reaction-form` = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(`scalajs-reaction-core`, `scalajs-reaction-vdom`)
+  .dependsOn(react, vdom)
   .settings(description := "scalajs-reaect form library.")
 
 // Watch non-scala assets as well, we add this to root project even
@@ -422,15 +440,15 @@ lazy val examples: Project = project
   .settings(fpsettings)
   .settings(exampleFPSettings)
   .dependsOn(
-    `scalajs-reaction-fabric`,
-    `scalajs-reaction-fabric-experiments`,
-    `scalajs-reaction-react-redux`,
-    `scalajs-reaction-react-dom`,
-    `scalajs-reaction-prop-types`,
+    `fabric`,
+    `fabric-experiments`,
+    `react-redux`,
+    `react-dom`,
+    `prop-types`,
     `scalajs-reaction-router`,
     `scalajs-reaction-form`,
-    `scalajs-reaction-bootstrap`,
-    `scalajs-reaction-mui`,
+    `bootstrap`,
+    `mui`,
     `react-big-calendar`,
     `react-router-dom`
 //     ,dataValidationJS

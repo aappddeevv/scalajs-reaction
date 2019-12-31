@@ -2,7 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
 package examples
 package addressmanager
 
@@ -13,14 +13,9 @@ import js.JSConverters._
 import js.|
 import org.scalajs.dom
 
-import org.scalajs.dom
-import ttg.react
-import ttg.react._
-import elements._
-import reactdom._
-import react.implicits._
-import redux._
-import react.redux
+import _root_.react._
+import implicits._
+import react_redux._
 import vdom._
 import vdom.tags._
 import fabric._

@@ -2,7 +2,6 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
 package react
 package components
 package form
@@ -16,10 +15,9 @@ import ExecutionContext.Implicits.global
 import js.JSConverters._
 import util.Success
 
-import ttg.react
 import react._
 import implicits._
-import elements._
+
 
 import vdom._
 
@@ -318,7 +316,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
   }
 
   def apply(props: Props)(c: FormProps => ReactNode): ReactElement =
-    sfc(props.combine(jsobj("children" -> c)).asDyn)
+    sfc(props.combineDynamic(jsobj("children" -> c)).asDyn)
 
   val sfc = SFC1[PropsWithChildren]{ props =>
     React.useDebugValue(Name)

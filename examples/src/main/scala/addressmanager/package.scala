@@ -6,14 +6,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
 import js.|
 
-import react.implicits._
-import redux.Dispatch
+import _root_.react.implicits._
+import react_redux.Dispatch
 import js.JSConverters._
 
 package object addressmanager {

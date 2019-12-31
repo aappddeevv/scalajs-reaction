@@ -3,7 +3,6 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 
 import scala.scalajs.js
 import js.annotation._

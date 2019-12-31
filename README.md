@@ -106,25 +106,25 @@ val scalaJsReactVersion = "latest.version" // or 0.1.0-M7
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-reaction-core" % scalaJsReactVersion,
-    "ttg" %%% "scalajs-reaction-vdom" % scalaJsReactVersion,
+    "ttg" %%% "react" % scalaJsReactVersion,
+    "ttg" %%% "vdom" % scalaJsReactVersion,
 
     // optionals
     // if you need react-dom
-    "ttg" %%% "scalajs-reaction-react-dom" % scalaJsReactVersion
+    "ttg" %%% "react-dom" % scalaJsReactVersion
 
     // Microsoft fabric UI components, "MS office", css-in-"scala"
     // css-in-scala can be used independently of fabric
-    "ttg" %%% scalajs-reaction-fabric" % scalaJsReactVersion,
+    "ttg" %%% "fabric" % scalaJsReactVersion,
 
     // Material UI components (bootstrap is also available but limited)
-    "ttg" %%% scalajs-reaction-mui" % scalaJsReactVersion,
+    "ttg" %%% "mui" % scalaJsReactVersion,
 
     // if you integrate with redux
-    "ttg" %%% "scalajs-reaction-redux" % scalaJsReactVersion,
+    "ttg" %%% "redux" % scalaJsReactVersion,
     
     // if you need prop-types--you only need these for interop scenarios
-    "ttg" %%% "scalajs-reaction-prop-types" % scalaJsReactVersion,
+    "ttg" %%% "prop-types" % scalaJsReactVersion,
  
     // if you need react-native
     "ttg" %%% "scalajs-reaction-native" % scalaJsReactversion)
@@ -142,31 +142,52 @@ npm i --save react
 npm i --save react-dom
 ```
 
-React 16.8+, the one with hooks, is required.
+React 16.8+, the one with hooks, is required. Some experimental APIs are supported
+so you may want to use the latest experimental release.
 
 There are many modules available as most of the focus has been on bindings. All of these libraries use the group name `ttg`:
 
-* scalajs-reaction-core
-* scalajs-reaction-vdom
-* scalajs-reaction-react-dom
-* scalajs-reaction-fabric
-* scalajs-reaction-fabric-experiments
+* react 
+* vdom
+* react-dom
+* fabric
+* fabric-experiments
 * scalajs-reaction-react-redux
-* scalajs-reaction-prop-types
+* prop-types
 * scalajs-reaction-native
-* scalajs-reaction-mui
-* scalajs-reaction-bootstrap
-* scalajs-reaction-router
-* scalajs-reaction-react-big-calendar
+* mui
+* bootstrap
+* react-big-calendar
 * scalajs-reaction-native-nativebase
 * scalajs-reaction-native-native-elements
 * scalajs-reaction-native-react-navigation
 * scalajs-reaction-native-react-native-sideswipe
-* scalajs-reaction-jss
+* jss
 * scalajs-reaction-form
 * data-validation
+* express
+* apollo-react 
+* helmet
+* react-flexbox-grid
+* react-router-dom
+* msal
+* mssql
+* pathtoregexp
 
+Some of the external libs have just enough scala.js to write an app with but
+they are not fully fleshed out. In most cases, there are enhancements
+to make using the library easier, however, scala3 will introduce some
+refinements to the scala language that will make many things easier
+and I have chose not to try and be too clever until scala3 arrives.
+Most of the packages use a simple namespace hierarchy starting with
+the package name versus "ttg" or "scalajs-reaction" or anything
+complicated. You are likely only to use one set of react libraries
+per application so you should not encounter any package namespace
+collisions.
 
+In many cases, the full package label has been dramatically shortened
+to make it easier to import the content you need. The package names
+closely mirror the javascript libraries themselves.
 
 ### Styling
 

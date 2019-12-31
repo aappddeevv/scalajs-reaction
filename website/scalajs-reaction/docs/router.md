@@ -6,11 +6,14 @@ title: Routing
 Routing is a complex topic and many react projects have sprung up around
 routing. scalajs react facades also provide routing libraries. You can use any
 javascript based routing librar you wish, such as
-[react-router](https://reacttraining.com/react-router). To make it easier though
-we have provided two levels of routing support.
+[react-router](https://reacttraining.com/react-router). 
+
+NOTE: The approach below is deprecated. Just use react-router. A
+scalajs-reaction version of react-router-dom is provided. Consulting the example
+program's source code for an example of using react-router in scalajs-reaction.
 
 
-## Lowest Level 
+## Lowest Level (DEPRECATED)
 
 ReasonReact provides a small, ~100 line router, in the base distribution and
 that small router code is also included in the scalajs-react implementation.
@@ -69,7 +72,7 @@ You can route to some hashes by doing something like the following:
   })
 ```
 
-## Routing Component
+## Routing Component (DEPRECATED)
 
 We have a provided a DOM agnostic router component and a specialization of that
 routing component for the ReasonReact style router described in the previous

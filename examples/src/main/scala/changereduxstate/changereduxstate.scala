@@ -2,7 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
 package examples
 package changereduxstate
 
@@ -10,12 +10,11 @@ import scala.scalajs.js
 import js.annotation._
 import js.|
 
-import ttg.react._
-import elements._
-import ttg.react.implicits._
+import _root_.react._
+import implicits._
 import vdom._
 import tags._
-import redux._
+import react_redux._
 import fabric._
 import fabric.components._
 
@@ -38,9 +37,9 @@ object ChangeReduxState {
    */
   val sfc = SFC0 {
     React.useDebugValue(Name)
-    val label_ = ReactRedux.useSelector[GlobalAppState, String](
+    val label_ = useSelector[GlobalAppState, String](
       _.view.label.flatMap(_.toUndefOr).getOrElse("no redux label"))
-    val dispatch = ReactRedux.useDispatch[GlobalAppAction]()
+    val dispatch = useDispatch[GlobalAppAction]()
 
     println(s"label from redux state: $label_")
     div(new DivProps {
@@ -50,7 +49,7 @@ object ChangeReduxState {
         label = "Redux Label in Global App State"
         description = "The label typed here is displayed elsewhere in the examples."
         className = cstyles.label.asString
-        onChangeInput = js.defined((_, v) => dispatch(ActionsNS.ViewActions.setLabel(v)))
+        onChangeInput = js.defined((_, v) => dispatch(ActionsNS.ViewActions.setLabel(v).asInstanceOf[GlobalAppAction]))
         defaultValue = label_
       })()
     )

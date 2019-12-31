@@ -2,22 +2,20 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg.examples
 package bootstrap
 
 import scala.scalajs.js
-import js.|
 import org.scalajs.dom
-import ttg.react
+import js.|
 import react._
-import elements._
-import react.implicits._
+import implicits._
 import vdom._
 import vdom.styling._
 import vdom.tags._
 
-import react.bootstrap._
-import react.bootstrap.components._
+import bootstrap._
+import bootstrap.components._
 
 object BootstrapPage {
 

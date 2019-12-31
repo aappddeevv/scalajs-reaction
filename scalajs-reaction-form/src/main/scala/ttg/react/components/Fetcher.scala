@@ -2,7 +2,6 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
 package react
 package components
 package fetch
@@ -11,10 +10,9 @@ import scala.scalajs.js
 import js.JSConverters
 import org.scalajs.dom
 
-import ttg.react
 import react._
 import implicits._
-import elements._
+
 
 /**
   * Fetch data and render a child with a fetch status.  Child can process the

@@ -2,13 +2,13 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg
+package examples
 package addressmanager
 
 import scala.scalajs.js
 import js.annotation.JSImport
-import ttg.react._
-import ttg.react.elements._
+import _root_.react._
 import js.Dynamic.literal
 import js.JSConverters._
 

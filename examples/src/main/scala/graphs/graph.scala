@@ -2,17 +2,16 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react.examples
+package ttg
+package examples
 package graphs
 
 import scala.scalajs.js
 import js.Dynamic.{literal => jsobj}
 import org.scalajs.dom
-import ttg._
-import react._
+import _root_.react._
 import vdom._
 import tags._
-import elements._
 import implicits._
 
 import fabric._

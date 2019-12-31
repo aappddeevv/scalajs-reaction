@@ -14,7 +14,7 @@
 // import scala.scalajs.js.Thenable.Implicits._
 // import js.JSConverters._
 
-// import elements._
+// 
 // import implicits._
 // import vdom._
 // import tags._

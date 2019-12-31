@@ -3,14 +3,13 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
 import js.|
 
 /** Actions for changing global app state in redux. */
-trait GlobalAppAction extends redux.Action {
+trait GlobalAppAction extends react_redux.Action {
   // ...
 }
 

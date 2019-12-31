@@ -3,17 +3,15 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
-import ttg.react._
+import _root_.react._
 import fabric._
 import fabric.components._
 import implicits._
 import vdom._
 import vdom.tags._
-import elements._
 
 /** Render into a portal to see if it works. */
 object Header {

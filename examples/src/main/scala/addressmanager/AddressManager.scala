@@ -2,7 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg.react
+package ttg
 package examples
 package addressmanager
 
@@ -11,16 +11,11 @@ import js.Dynamic.{literal => lit}
 import js.annotation._
 import js.JSConverters._
 import js.|
-import org.scalajs.dom
 
 import org.scalajs.dom
-import ttg.react
-import ttg.react._
-import elements._
-import reactdom._
-import react.implicits._
-import redux._
-import react.redux
+import _root_.react._
+import implicits._
+import react_redux._
 import vdom._
 import vdom.tags._
 import fabric._
@@ -158,13 +153,13 @@ object AddressManager {
 
   val sfc = SFC1[Props] {  props =>
     // redux hooks
-    val label = ReactRedux.useSelector[GlobalAppState, js.UndefOr[String]](_.view.label.flatMap(_.toUndefOr))
-    val lastActiveAddressId = ReactRedux.useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.lastActiveAddressId.toUndefOr)
-    val activeId = ReactRedux.useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
-    val active = ReactRedux.useSelector[GlobalAppState, js.UndefOr[Address]](_.addressManager.active.toUndefOr)
-    val dispatchG = ReactRedux.useDispatch[GlobalAppAction]()
+    val label = useSelector[GlobalAppState, js.UndefOr[String]](_.view.label.flatMap(_.toUndefOr))
+    val lastActiveAddressId = useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.lastActiveAddressId.toUndefOr)
+    val activeId = useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
+    val active = useSelector[GlobalAppState, js.UndefOr[Address]](_.addressManager.active.toUndefOr)
+    val dispatchG = useDispatch[GlobalAppAction]()
     val setActive = React.useCallback[Id|Null, Address|Null, Unit](dispatchG)((id, addr) =>
-      dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny)))
+      dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny).asInstanceOf[GlobalAppAction]))
 
     // react hooks
     // see https://github.com/OfficeDev/office-ui-fabric-react/issues/9882
@@ -215,7 +210,7 @@ object AddressManager {
       ),
       divWithClassname(amstyles.footer.asString,
         addressStuff._2,
-        Label()(
+        Label(
           "Redux sourced label: " + label.getOrElse[String]("<no redux label provided>")),
       )
     )

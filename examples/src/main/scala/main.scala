@@ -2,11 +2,7 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 package ttg
-package react
 package examples
 
 import scala.scalajs.js
@@ -15,18 +11,16 @@ import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
 import org.scalajs.dom
-import ttg.react
-import react._
-import elements._
-import react.implicits._
-import redux._
+import _root_.react._
+import implicits._
+import react_redux._
 import vdom._
 import vdom.tags._
 import fabric._
 import fabric.components._
 import fabric.styling._
 import Styling._
-import react.mui._
+import mui._
 
 @js.native
 @JSImport("Examples/examples.css", JSImport.Namespace)
@@ -48,7 +42,7 @@ object Contexts {
 }
 
 object Main {
-  import react.context._
+  import context._
   import Contexts._
 
   val container       = "container"
@@ -67,30 +61,30 @@ object Main {
       injectionMode = InjectionMode.appendChild
     })
     uifabric_icons.initializeIcons()
-    val myjss = jss.jss.create(jss.jssPreset())
+    val myjss = jss.create(jss.jssPreset())
 
     // init message for store, although it does not do anything :-)
-    StoreNS.store.dispatch(ActionsNS.Actions.View.init())
+    StoreNS.store.dispatch(ActionsNS.Actions.View.init().asInstanceOf[GlobalAppAction])
 
-    reactdom.renderToElementWithId(
-      React.createElement(redux.ReactRedux.Provider, new redux.ProviderProps {
-        store = StoreNS.store
-      })(
-        // mui
-        StylesProvider(new StylesProvider.Props {
-          jss = myjss
-        })(
-          // fabric
-          Fabric(new Fabric.Props {
+    react_dom.createRoot(Main.container) match {
+      case Left(err) => println(s"Unable to render into dom: $err")
+      case Right(render) =>
+        render(
+          createElement(react_redux.Provider, new ProviderProps {
+            store = StoreNS.store.asInstanceOf[Store[js.Object, Action]]
           })(
-            logContext.provider(Contexts.logger)(
-              Application()
-            )
-        ))),
-      Main.container
-        // Start the SPA router by doing an initial push so that
-        // the router starts receiving pages.
-        ,None/*Option(() => react.router.browser.push(s"${BuildSettings.routePrefix}"))*/
-    )
+            // mui
+            StylesProvider(new StylesProvider.Props {
+              _jss = myjss
+            })(
+              // fabric
+              Fabric(new Fabric.Props {
+              })(
+                logContext.provider(Contexts.logger)(
+                  Application()
+                )
+              )))
+        )
+    }
   }
 }

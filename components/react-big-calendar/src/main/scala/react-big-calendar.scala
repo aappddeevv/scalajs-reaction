@@ -4,7 +4,6 @@
 
 package react_big_calendar
 
-import ttg.react
 import react._
 import scala.scalajs.js
 import js.annotation._
