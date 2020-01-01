@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[50],{65:function(s){s.exports=JSON.parse('{"layout":"docs","title":"Macros","id":"macros","description":"# macros","source":"/home/glampshire/proj/workspace/scalajs-react/website/scalajs-reaction/docs/macros.md","permalink":"/scalajs-reaction/docs/macros"}')}}]);

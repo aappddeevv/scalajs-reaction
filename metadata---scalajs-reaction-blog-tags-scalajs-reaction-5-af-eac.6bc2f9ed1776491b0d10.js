@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[38],{85:function(a){a.exports=JSON.parse('{"allTagsPath":"/scalajs-reaction/blog/tags","slug":"scalajs-reaction","name":"scalajs-reaction","count":2,"permalink":"/scalajs-reaction/blog/tags/scalajs-reaction"}')}}]);
