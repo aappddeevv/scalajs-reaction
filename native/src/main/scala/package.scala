@@ -7,8 +7,6 @@ package react
 import scala.scalajs.js
 import js.|
 
-import scala.scalajs.js
-
 package object native {
 
   type Runnable = js.Function1[js.Any, Unit]

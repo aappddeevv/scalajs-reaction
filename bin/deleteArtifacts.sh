@@ -9,7 +9,7 @@ if [[ -z "$BINTRAY_REPO" ]]; then
         BINTRAY_REPO=maven
 fi
 
-pkgs=(scalajs-react-form scalajs-react-components-react-big-calendar data-validation scalajs-react-native scalajs-react-bootstrap scalajs-react-mui scalajs-react-core scalajs-react-redux scalajs-react-fabric scalajs-react-vdom scalajs-react-prop-types scalajs-react-react-dom)
+pkgs=(form react-big-calendar data-validation native bootstrap mui react react-redux fabric vdom prop-types react-dom)
 
 # must have run jfrog config prior to set user and apikey
 for pkg in "${pkgs[@]}"; do

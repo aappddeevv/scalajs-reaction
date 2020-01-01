@@ -19,7 +19,7 @@ object SomeLibNS {
 
 object SomeLib {
   def YourComponent1(props: Props*)(children: ReactNode*) = 
-     React.createElement(SomeLibNS.YourComponent1, props)(children:_*)
+     createElement(SomeLibNS.YourComponent1, props)(children:_*)
 }
 ```
 
@@ -91,8 +91,7 @@ parameters. Let's import it into scala.js
 ```scala
 import scala.scalajs.js
 import js.annotation.JSImport
-import ttg.react._
-import ttg.react.elements._
+import react._
 import js.Dynamic.literal
 import js.JSConverters._
 
@@ -114,7 +113,7 @@ trait Address extends js.Object {
 }
 
 object AddressSummary {
-  def apply(props: Props) = React.createElement0(AddressSummaryNS.AddressSummary, props)
+  def apply(props: Props) = createElement0(AddressSummaryNS.AddressSummary, props)
 }
 ```
 

@@ -338,7 +338,7 @@ Widget/other libraries:
 
 Here's a simple screen using Text and Button.
 
-![Android screenshot](./android-screen.png){:width="300px"}
+![Android screenshot](assets/android-screen.png){:width="300px"}
 
 app.scala
 

@@ -14,16 +14,16 @@ val scalaJsReactVersion = "0.1.0-M7"
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-reaction-core" % scalaJsReactVersion,
-    "ttg" %%% "scalajs-reaction-vdom" % scalaJsReactVersion,
+    "ttg" %%% "react" % scalaJsReactVersion,
+    "ttg" %%% "vdom" % scalaJsReactVersion,
     // optional but includes a Microsoft UI component set
-    "ttg" %%% "scalajs-reaction-fabric" % scalaJsReactVersion,
+    "ttg" %%% "fabric" % scalaJsReactVersion,
     // optional unless you want to connect to redux state
-    "ttg" %%% "scalajs-reaction-redux" % scalaJsReactVersion
+    "ttg" %%% "react-redux" % scalaJsReactVersion
     // if you need react-dom
-    "ttg" %%% "scalajs-reaction-react-dom" % scalaJsReactVersion
+    "ttg" %%% "react-dom" % scalaJsReactVersion
     // if you need prop-types
-    "ttg" %%% "scalajs-reaction-prop-types" % scalaJsReactVersion
+    "ttg" %%% "prop-types" % scalaJsReactVersion
 )
 ```
 
@@ -38,15 +38,13 @@ import js.JSConverters._
 import org.scalajs.dom
 
 // top level types
-import ttg.react._
-
-// imports functions for creating elements via statelessComponent("MyComponent")
-import elements._
+import react._
 
 // imports renderToElementWithId, include this in the package with your top level render call
-import reactdom._
+import react_dom._
 
 // various converters, described below and in other sections
+// from react.implicits
 import implicits._
 
 // contains virtual dom objects
@@ -57,10 +55,7 @@ import vdom.tags._
 import vdom.svgtags._
 
 // import this if you are using the office-ui-fabric-react library, otherwise skip
-import fabric
 import fabric._
-
-// import the core components
 import fabric.components._
 import fabric.styling._
 ```
@@ -73,7 +68,7 @@ import js.annotation._
 import js.JSConverters._
 import js.Dynamic.{literal => jsobj}
 
-import ttg.react.{implicits, fabric, vdom, _}
+import react.{implicits, fabric, vdom, _}
 import components._
 import styling._
 import implicits._
@@ -90,20 +85,23 @@ is designed to be integrated into other javascript/reason react applications,
 you will most likely need to use javascript objects on your imported objects as
 well as your exported components.
 
-The `ttg.react.implicits._` imports a variety of syntax and automatic
+The `react.implicits._` imports a variety of syntax and automatic
 converters. Since implicit conversion can make your code base more complicated
 when automatic conversions go awry, the syntax enhancements and conversions are
 offered ala cart. However, you should use them when first starting out.
 
-The syntax could be:
+The imports are:
 ```scala
 // import only the syntax enhancements
-import ttg.react.syntax.all._
+import react.syntax.all._
 // import only conversions
-import ttg.react.instances.all._
+import react.instances.all._
 // imports both conversions and syntax
-import ttg.react.implicits._
+import react.implicits._
 ```
+
+Generally, unless you know what you are doing, use `import react.implicits._` at the top
+of your source file.
 
 ## npm and js packages
 

@@ -26,7 +26,7 @@ To use the data validation library, included it in your build:
 
 ```scala
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-reaction-forms" % "latest.version"
+    "ttg" %%% "forms" % "latest.version"
 )
 ```
 

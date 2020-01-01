@@ -147,20 +147,19 @@ lazy val root = project
     `fabric-experiments`,
     `native`,
     `vdom`,
-    `scalajs-reaction-router`,
     `react-redux`,
     `react-dom`,
     `prop-types`,
     `bootstrap`,
     `mui`,
-    `scalajs-reaction-router`,
+    router,
     `react-big-calendar`,
-    `scalajs-reaction-native-nativebase`,
-    `scalajs-reaction-native-react-native-elements`,
-    `scalajs-reaction-native-react-navigation`,
-    `scalajs-reaction-native-react-native-sideswipe`,
+    `react-native-nativebase`,
+    `react-native-elements`,
+    `react-navigation`,
+    `react-native-sideswipe`,
     jss,
-    `scalajs-reaction-form`,
+    form,
     `react-router-dom`,
     pathtoregexp,
     dataValidationJS,
@@ -177,12 +176,12 @@ lazy val `react` = project
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
   .settings(description := "reactjs package.")
-  .settings(buildInfoPackage := "ttg.react")
+  .settings(buildInfoPackage := "react")
 
 lazy val native = project
   .settings(libsettings)
   .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(description := "reactjs native package.")
   .dependsOn(
     react, vdom
@@ -192,21 +191,21 @@ lazy val msal = project
   .in(file("components/msal"))
   .settings(libsettings)
   .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(description := "Microsoft Authentication Library msal")
 
 lazy val mssql = project
   .in(file("components/mssql"))
   .settings(libsettings)
   .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(description := "Microsoft Sql Server based on tedious")
 
 lazy val express = project
   .in(file("components/express"))
   .settings(libsettings)
   .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .settings(description := "express node.js http server")
 
 val `react-big-calendar` = project
@@ -256,8 +255,8 @@ lazy val `react-router-dom` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(react,vdom)
 
-lazy val `scalajs-reaction-native-react-navigation` = project
-  .in(file("components/scalajs-reaction-native-react-navigation"))
+lazy val `react-navigation` = project
+  .in(file("components/react-navigation"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(
@@ -270,8 +269,8 @@ lazy val `scalajs-reaction-native-react-navigation` = project
     react, native
   )
 
-lazy val `scalajs-reaction-native-react-native-sideswipe` = project
-  .in(file("components/scalajs-reaction-native-react-native-sideswipe"))
+lazy val `react-native-sideswipe` = project
+  .in(file("components/react-native-sideswipe"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(
@@ -284,8 +283,8 @@ lazy val `scalajs-reaction-native-react-native-sideswipe` = project
     react,native
   )
 
-lazy val `scalajs-reaction-native-nativebase` = project
-  .in(file("components/scalajs-reaction-native-nativebase"))
+lazy val `react-native-nativebase` = project
+  .in(file("components/react-native-nativebase"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(
@@ -296,8 +295,8 @@ lazy val `scalajs-reaction-native-nativebase` = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(react, native)
 
-lazy val `scalajs-reaction-native-react-native-elements` = project
-  .in(file("components/scalajs-reaction-native-react-native-elements"))
+lazy val `react-native-elements` = project
+  .in(file("components/react-native-elements"))
   .settings(libsettings)
   .settings(publishSettings)
   .settings(
@@ -337,7 +336,7 @@ lazy val dataValidationJS = project
 //lazy val dataValidationJS = dataValidation.js
 //lazy val dataValidationJVM = dataValidation.jvm
 
-// lazy val `scalajs-react-macros` = project
+// lazy val `react-macros` = project
 //   .settings(libsettings)
 //   .settings(publishSettings)
 //   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
@@ -410,14 +409,14 @@ lazy val `mui` = project
   )
   .settings(description := "material ui facade.")
 
-lazy val `scalajs-reaction-router` = project
+lazy val router = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(react, vdom)
-  .settings(description := "scaljs-reaction browser js oriented router")
+  .settings(description := "scalajs-reaction browser js oriented router")
 
-lazy val `scalajs-reaction-form` = project
+lazy val form = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
@@ -445,8 +444,8 @@ lazy val examples: Project = project
     `react-redux`,
     `react-dom`,
     `prop-types`,
-    `scalajs-reaction-router`,
-    `scalajs-reaction-form`,
+    router,
+    form,
     `bootstrap`,
     `mui`,
     `react-big-calendar`,

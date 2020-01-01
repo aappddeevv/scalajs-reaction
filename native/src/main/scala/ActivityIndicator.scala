@@ -5,10 +5,8 @@
 package react
 package native
 
-
-
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
+import js.annotation.JSImport
 import js.|
 
 object ActivityIndicator {

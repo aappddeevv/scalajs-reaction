@@ -172,7 +172,7 @@ unless they are in a cheatsheet.
 There is a little known converter in scala.js. If you have two traits that are
 not related but have overlapping fields, you may need to cast one to the other
 what is essentially a structural cast, check out [funky structural
-cast-kindof](https://www.scala-js.org/api/scalajs-library/latest/#scala.scalajs.js.package@use[A](x:A):scala.scalajs.js.Using[A]).
+cast-kindof](https://www.scala-js.org/api/scalajs-library/latest/#scala.scalajs.js.package@use[A](x:A):scala.scalajs.js.Using[A]). It uses `use`.
 
 ## TL;DR
 Let's assume that typescript is not properly annotated and some undefineds and nulls get mixed up. 
@@ -186,6 +186,14 @@ use this type of declaration in your trait:
 var/val field1: js.UndefOr[String] = js.undefined
 ```
 
+But call the appropriate implicit.
+
+You can also use:
+
+```scala
+var field1: js.UndefOr[String] = js.undefined
+```
+
 and use `field1 = null` if you want to set it to null or extract using
 `field1.toNonNullOption` to extract an option more safely than just `toOption`
 since the value could secretly be a null.
@@ -194,15 +202,28 @@ If typescript says:
 ```typescript
 field1?: string|null
 ```
-Do the same thing as above because the first example was already doubly safe.
+Do the same thing as above because the first example was already doubly safe but
+you can be more specific.
+
+```scala
+val field1: js.UndefOr[String|Null]
+```
+
+Then you have a choice. You can use an implicit to change this to a `js.UndefOr[String]`
+or you can map into it and flatten the `String|Null` via a `field1.flatMap(_.toUndefOr)`.
+Check out the syntax extensions to get a feel for a wide range of how to treat this 
+common javascript pattern.
 
 If typescript says:
+
 ```typescript
 field1: string|null
 ```
+
 use 
+
 ```scala
-var/val field1: String
+var/val field1: String|Null
 ```
 
 and set it to null if you need to: `field1 = null`. If you want to have an
@@ -224,3 +245,6 @@ problems:
 ``` 
 
 Let's hope the typescript interface descriptions are correct!
+
+Again, please see the syntax extensions package as there are even easier
+ways to do the above.

@@ -97,9 +97,10 @@ This facade requires more scala.js code near interactions with UI
 toolkits. Higher level components, e.g. composition of smaller components, can
 use more idiomatic scala constructs.
 
-## Usage
+# Usage
 
 Include the library in your build:
+
 ```scala
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "latest.version" // or 0.1.0-M7
@@ -127,7 +128,7 @@ libraryDependencies ++= Seq(
     "ttg" %%% "prop-types" % scalaJsReactVersion,
  
     // if you need react-native
-    "ttg" %%% "scalajs-reaction-native" % scalaJsReactversion)
+    "ttg" %%% "native" % scalaJsReactversion)
 ```
 
 Do not forget to include the react libraries in your execution environment. For
@@ -152,24 +153,25 @@ There are many modules available as most of the focus has been on bindings. All 
 * react-dom
 * fabric
 * fabric-experiments
-* scalajs-reaction-react-redux
+* react-redux
 * prop-types
-* scalajs-reaction-native
+* native
 * mui
 * bootstrap
 * react-big-calendar
-* scalajs-reaction-native-nativebase
-* scalajs-reaction-native-native-elements
-* scalajs-reaction-native-react-navigation
-* scalajs-reaction-native-react-native-sideswipe
+* react-native-nativebase
+* react-native-elements
+* react-navigation
+* react-native-sideswipe
 * jss
-* scalajs-reaction-form
+* form: Advanced, all-scala.js forms package.
 * data-validation
 * express
 * apollo-react 
 * helmet
 * react-flexbox-grid
 * react-router-dom
+* router: Homegrown router. Just use react-router-dom.
 * msal
 * mssql
 * pathtoregexp
@@ -189,161 +191,6 @@ In many cases, the full package label has been dramatically shortened
 to make it easier to import the content you need. The package names
 closely mirror the javascript libraries themselves.
 
-### Styling
-
-Styling can be performed different ways. For a quick summary of different
-aspects of styling designs see this
-[blog](http://appddeevvmeanderings.blogspot.com/2017/08/web-app-styling-interlude-how-to.html).
-
-Even if you do not use Microsoft's fabric ui, fabric's `merge-styles` is
-independently available and provided in the fabric facade. You can use
-css-in-scala concepts to create your styles easily. See the ToDo example source
-code for a detailed example. It works nicely and is independent of
-fabric. `merge-styles` creates stylesheets from scala code. Here's an example
-showing the use of CSS variables. `merge-styles` is a little like glamor (which
-we recommend as well) but is also a bit different in that it is explicit about
-"selectors". Cssinjs (react-jss) is also available as a facade library (see
-scalajs-reaction github).
-
-The slightly older idiom is below. See the examples for the updated fabric
-styling idioms which are much more flexible.
-
-```scala
-  // Each key indicates an area of our component.
-  @js.native
-  trait ToDoClassNames extends js.Object {
-    var root: String      = js.native
-    var todo: String      = js.native
-    var title: String     = js.native
-    var dataEntry: String = js.native
-  }
-
-  def getClassNames(width: Int = 400) =
-    FabricStyling.mergeStyleSets[ToDoClassNames](
-      styleset(
-        "root" -> new IRawStyle {
-          selectors = selectorset(
-            ":global(:root)" -> lit(
-              "--label-width" -> s"${width}px",
-            ))
-         },
-         "todo" -> new IRawStyle {
-          displayName = "machina"
-          display = "flex"
-          marginBottom = "10px"
-          selectors = selectorset("& $title" -> new IRawStyle {})
-        },
-        "title" -> new IRawStyle {
-          width = "var(--label-width)"
-          marginRight = "10px"
-        },
-        "dataEntry" -> new IRawStyle {
-          display = "flex"
-          selectors = selectorset("& .ms-Textfield" -> new IRawStyle {
-            width = "var(--label-width)"
-            marginRight = "10px"
-          })
-        }
-      ))
-}
-
-// now use it
-
-val cn = getClassNames()
-val props = new DivProps {
-  className = cn.root
-}
-```
-
-If you have dynamically calculated styles, its best to memoize the result so you
-do not incur the processing overhead on each component creation. The above was
-static so we just create it once. To memoize, use yours or fabric's
-memoize. Fabric's `memoize` needs a js function, so:
-
-```scala
-// notice the fromFunction1 conversion from scala to js.Function, the "N" is for arity
-val memoizedClassNames = fabric.UtilitiesNS.memoizeFunction(js.Any.fromFunction1(getClassName))
-val cn = memoized(500)
-```
-
-You can also use a scala based memoization function.
-
-Alternatively, if you keep your CSS external and process it at build time, you
-can just import your style sheets and have them picked up by your bundler such
-as webpack:
-
-```scala
-@js.native
-@JSImport("Examples/todo/todo.css", JSImport.Namespace)
-object componentStyles extends js.Object
-
-object styles {
-  // or cast to js.Dictionary or anything else you want to use
-  val component = componentStyles.asInstanceOf[js.Dynamic]
-}
-
-// use: styles.component.root
-```
-
-In the example above, you would need to ensure webpack has an alias to the
-Examples directory and that you have setup your CSS processors
-correctly. post-css is quite popular when using webpack. Since a Dynamics was
-used, this is not type safe.
-
-A styling trait is provided to help you ensure you only provide style attributes
-for inline styling:
-
-```scala
-val hstyle = new StyleAttr { display = "flex" }
-
-val props = new DivProps {
-    style = hstyle
-}
-```
-
-Styling can also be performed using scala specific libraries such as
-[ScalaCSS](https://github.com/japgolly/scalacss).
-
-### Redux
-
-Redux integration requires you to export your component then import it with
-redux enhanced props. Please see the extended documentation for details.
-
-### Routing
-
-A few routing pieces are included in core:
-
-* A simple 100-line router is included based on the reason-react router
-implementation. See the example app for an example of how to use it.
-* An extensible router component that allows you to specify routing rules. A
-  customization for browser javascripts environments is included in the vdom
-  project.
-* A "Route" component that slightly mimics "react-router" also in the vdom
-  project. A single component handles both redirect and child rendering based on
-  a router predicate.
-
-You can apply some simple routing configuration patterns to create your own
-router or use a javascript based router such as react-router. It's up to you. I
-suggest creating your own since its so easy to create a function that maps
-routes to components. You can use the
-[sparsetech-trail](https://github.com/sparsetech/trail) library to match on URL
-patterns.
-
-### Widget Libraries
-
-Libraries (the start of them) are provided for bootstrap, material ui and
-fabric. Additional component libraries are also available. I add more as I
-encounter them. It' easy and quick to create a facade, even when you create it
-manually.
-
-### Forms & Data Validation
-
-A scalajs-react independent data-validation library is also provided that
-helps abstract out data validation and it supports general form use. 
-
-The form library (scalajs-react dependent) draws on several different reasonreact
-and advanced js form libraries for inspiration of the API. 
-
 # Documentation
 
 Client:
@@ -352,6 +199,13 @@ Client:
 Integrated API documentation:
 * [all basic modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
 
+Sometimes the documentation generation process does not work so
+if you need documents it is probably best to generate them
+locally. You can generate docs for each project separately
+using sbt's `react/doc` task or `doc` for each project
+to generate their documents. Or you can generate integrated documents 
+using unidoc with the sbt command `docs/unidoc`.
+
 # Demo
 
 You can start the demo locally if you run `sbt npmRunDemo`. A browser page
@@ -359,6 +213,9 @@ should open automatically. If not, point your browser to
 [https://localhost:8080](https://localhost:8080). You can also just load the
 demo files (after its built) into your browser but note that the icons will not
 render correctly since they require a fetch.
+
+Argh!!! I'm having trouble with gh-pages so the demo probably does not
+work at htis time. Run it locally after you clone the repo.
 
 # Motivation
 
@@ -372,16 +229,10 @@ functions. Scala.js easily supports creating classes that map into javascript
 classes and hence into react component classes. However, with parallel fiber
 coming to react and other enhancements that are planned, a more functional
 library should withstand the change in the core react infrastructure to
-something that is more sustainable in the long run. The current react approach
-makes it easy to introduce errors both at compile time and runtime. Even with
-the use of typescript, it's still quite a clunky API. Of course it is clunky for
-alot of "reasons" which is why Reason and ReasonReact was born. Facebook took an
-innovative approach to structuring Reason. Instead of trying to make a js
-superscript, which is what typescript does well, it is trying to go orthogonal
-like many other javascript transpiled languages have done e.g. elm, dart and of
-course scala.js.
+something that is more sustainable in the long run. 
 
-## Suitability
+# Suitability
+
 Scala.js requires a bundling model that does not allow it to be broken apart and
 deployed on a pure "file/module" basis. Because of this, scalajs-react is best
 suited for UIs where it is not required to code split the scala portion of the
@@ -393,7 +244,8 @@ The core scala.js infrastructure costs you about 2.5k and increases as you use
 features such as immutability, the collections library or, of course, add data
 structures to your code.
 
-## Related
+# Related
+
 There are a few [scala.js](https://www.scala-js.org/) react
 facades/implementations available:
 
@@ -451,7 +303,7 @@ syntax as well. The binding approach is called "precise" binding.
 react based, but reactive.
 * [udash-css](https://udash.io): A css-in-scala framework.
 
-## License
+# License
 
 MIT license. See the LICENSE file.
 

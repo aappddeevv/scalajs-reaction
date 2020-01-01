@@ -13,7 +13,7 @@ another project's vdom as well as long as the final "element" is typed as a
 
 To you use the vdom, do
 ```scala
-import ttg.react.vdom._
+import react.vdom._
 ```
 
 This import provides you the ability to create attributes as a list, as compared
@@ -46,6 +46,15 @@ If you only have children and no attribute, skip the first set of parenthesis,
 ```scala
 val aDiv = div("child1", "child2")
 ```
+
+To make this all easier with divs, you can use a pre-defined helper:
+
+```scala
+divWithClassname("my-class-name",
+  child1,
+  child2
+)
+````
 
 ### Attribute List Based VDOM
 

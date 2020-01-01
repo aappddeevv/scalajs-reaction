@@ -49,7 +49,8 @@ To preserve integration on the scala side, you have to do the same type of
 mapping from redux state to props.
 
 ```
-import ttg.react.redux
+import react_redux
+import react._
 
 // mimic the definition in js
 @js.native

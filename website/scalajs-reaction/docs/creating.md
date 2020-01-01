@@ -147,9 +147,13 @@ ergonomic API. The children must still be explicit in the `Props` type.
 object Component {
   trait Props extends js.Object {
     val arg: Int
-    var children: ReactNode
+    var children: js.Undefined[ReactNode] = js.undefined
   }
-  
+
+  // include basic api
+  def apply(props: js.UndefOr[Props] = js.undefiend) = sfc(props)
+ 
+  // ergonomic API 
   def apply(props: Props)(children: ReactNode*) = 
     sfc(props.combine(js.Dynamic.literal("children" -> children)))
     // or you could do a new Props {} but literal is easier here.
@@ -160,5 +164,3 @@ object Component {
   
 }
 ```
-
-A simple macro would probably be helpful here.
