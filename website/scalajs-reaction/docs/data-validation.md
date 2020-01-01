@@ -41,6 +41,6 @@ libraryDependencies ++= Seq(
 Then setup the validation algebra you want to use:
 
 ```scala
-
+// example here!
 
 ````

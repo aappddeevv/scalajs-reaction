@@ -9,9 +9,10 @@ javascript based routing librar you wish, such as
 [react-router](https://reacttraining.com/react-router). 
 
 NOTE: The approach below is deprecated. Just use react-router. A
-scalajs-reaction version of react-router-dom is provided. Consulting the example
+scalajs-reaction version of react-router-dom is provided. Consult the example
 program's source code for an example of using react-router in scalajs-reaction.
 
+DON'T LOOK BELOW!
 
 ## Lowest Level (DEPRECATED)
 

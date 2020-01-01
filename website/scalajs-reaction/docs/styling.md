@@ -22,7 +22,7 @@ or [glamor (javascript)](https://github.com/threepointone/glamor).
 If you are looking for something that mildly helps you detect errors, such as bad styling attribute names, you can use vdom's style for inline styles as described in that section. In addition, it also provides inline styles via
 
 ```scala
-import ttg.react.vdom.style._
+import react.vdom.style._
 val style1 = new StyleAttr { display: "flex" }
 val style2 = new StyleAttr { flexDirection: "column" }
 
@@ -97,7 +97,7 @@ import merge_styles._
 object MyComponent {
 
   trait Props extends js.Object {
-    var rootClassName: js.UndefOr[String] = js.undefined
+    var className: js.UndefOr[String] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     val children: String => ReactNode
   }
@@ -108,7 +108,7 @@ object MyComponent {
   val sfc = SFC1[Props] { props =>
     React.useDebugValue(Name)
     val cn = getClassNames(new StyleProps {
-      className = props.rootClassName
+      className = props.className
     }, props.styles)
 
     divWithClassname(

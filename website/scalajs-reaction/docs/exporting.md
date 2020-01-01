@@ -4,7 +4,7 @@ title: Exporting From Scala to JS
 ---
 
 Exporting a component for use in javascript environments requires you to export
-the function component.
+the function component. It is quite easy.
 
 Since your function component already takes a js object as the props parameter,
 you can simple export the component using scala.js export API.
@@ -31,8 +31,10 @@ Component object for convenience.
 ## Exporting from scala.js and javascript bundling
 
 When you bundle, say using webpack, your `MyComponent` will be available at the
-name `WebPackLibName.ToDo` because ToDo was exported at the module level and
-webpack bundles all modules together and manipulates those exports.
+name `WebPackLibName.MyComponent` because MyComponent was exported at the module level.
+WebPackLibName is the name of the access point given to the webpacka configuration.
+Since MyComponent was exported at the top level of this access point, the
+dotted notation is all you need to access it.
 
 If you want to use typescript as your "javascript" language for
 external-to-scala.js components, you will need to reproduce your typescript

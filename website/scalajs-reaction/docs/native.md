@@ -349,13 +349,10 @@ import js.JSConverters._
 import concurrent._
 import concurrent.ExecutionContext.Implicits.global
 
-import ttg.react
 import react._
-import elements._
 import react.implicits._
-import ttg.react.native
-import native._
-import native.styling._
+import react.native._
+import react.native.styling._
 
 object App {
 
@@ -404,9 +401,6 @@ object App {
     )
   }
 
-  @JSExport("JS")
-  val JS = c.wrapScalaForJs[js.Object](_ => App())//_ => apply())
-
   trait Styles extends StyleSet {
     val container: ViewStyle
     val welcome: TextStyle
@@ -441,8 +435,7 @@ main.scala:
 import scala.scalajs.js
 import js.annotation._
 
-import ttg.react.native
-import native._
+import react.native._
 
 @JSExportTopLevel("Main")
 object Main {

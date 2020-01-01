@@ -3,7 +3,9 @@ id: facades
 title: Facades
 ---
 
-A few facades are provided, or at least, a WIP version is provided.
+A few facades are provided. A few are mentioned below but check out
+the list at the start of the document or the github site for
+a complete list.
 
 # fabric
 
@@ -14,7 +16,7 @@ and styling. A simple facade has been included in `scalajs-react-fabric` that is
 a WIP since the API is quite large and complex. Fabric is written in
 typescript. `scalajs-react`s demo application was written mostly with fabric.
 
-The lib is `scalajs-react-fabric`.
+The lib is `ttg.fabric`.
 
 Fabric requires that your top level element (or at least high up in the
 component tree) be `Fabric`:
@@ -31,14 +33,14 @@ Fabric()(
 binding are provisional until v4 comes out. Styling is based on
 [CSSinJS](https://github.com/cssinjs).
 
-The lib is `scalajs-react-mui`.
+The lib is `ttg.mui`.
 
 The default jss styling configuration usage as integrated into the underlying
 react toolkit does not contain "extend" or "composes" which I think are
 important. To add these properly to the list of jss plugins you can do:
 
 ```scala
-import ttg.react.mui._
+import react.mui._
 val myjss = JSS.create(jssPreset())
 
 // call this until 4.x comes out
@@ -81,4 +83,4 @@ myself.
 project is still maturing and we will wait for it to mature a bit more until we
 complete the bindings for it. Styling is still maturing.
 
-The lib is `scalajs-react-bootstrap`.
+The lib is `ttg.bootstrap`.

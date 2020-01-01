@@ -3,21 +3,19 @@ id: vdom
 title: Virtual DOM
 ---
 
-A simple "virtual DOM" has been provided. For facade libraries, this usually
-means some way to create HTML elements with attributes and children. It does
-*not* mean a virtual dom implementation since react already provides that.
-
-`scalajs-react-vdom` is a separate vdom that you can use if you want to. You can
-another project's vdom as well as long as the final "element" is typed as a
-`ReactNode`.
+scalajs-reaction has a "virtual DOM."
+The vdom is there to help you create elements and their properties
+more easily. `vdom` is a separate package 
 
 To you use the vdom, do
 ```scala
 import react.vdom._
+import tags._ // to import standard HTML vdom tags
 ```
 
-This import provides you the ability to create attributes as a list, as compared
-to non-native JS traits and create elements using their name.
+This import also provides you the ability to create attributes as a list (discussed 
+below), compared
+to using non-native JS traits, and create elements using their name.
 
 ```scala
 // create a div, ReactDomElement < ReactNode
@@ -27,10 +25,8 @@ val aDiv: ReactDomElement = div(...attributes...)(..children...)
 The 2 parameter list (which allows you to easily curry as well) helps break up
 the lists between attributes and children which improves type
 inference. Children need to be `ReactNode` or a subclass of this such as
-`ReactElement`. An `import ttg.react.implicits._` will bring in an implicit
-conversation from `Component` to `ReactElement` for you. Otherwise on each child
-you must call `elements.createElement` or use a syntax import and do
-`yourComponent.toEl`. The implicits make it easy.
+`ReactElement`. An `import react.implicits._` will bring in an implicit
+conversion to a `ReactNode` for you. 
 
 The first parameter list takes a statically defined attribute trait whose name
 is the capitalized version of the element:
@@ -39,15 +35,13 @@ is the capitalized version of the element:
 val aDiv = div(new DivProps { className = "myDivClassName" })("child1", "child2")
 ```
 
-vdom html elements create ReactNodes directly.
-
 If you only have children and no attribute, skip the first set of parenthesis,
 
 ```scala
 val aDiv = div("child1", "child2")
 ```
 
-To make this all easier with divs, you can use a pre-defined helper:
+In the case of div, you can use a pre-defined helper:
 
 ```scala
 divWithClassname("my-class-name",
@@ -60,7 +54,10 @@ divWithClassname("my-class-name",
 
 Another attribute list based vdom is available by importing
 `vdom.prefix_<^._`. Elements should be prefixed with `<.` as in `<.div` and
-attributes are specified using `^.` as in `^.className`.
+attributes are specified using `^.` as in `^.className`. This is alot
+like the API that scalajs-reaction (not scalajs-reaction) uses and is 
+common in other scala.js facade libraries. I recommend not using this 
+style though.
 
 The attribute list VDOM has less type safety and allows you to add attributes
 outside the prescribed list based on a statically defined trait, but it can be
@@ -98,9 +95,9 @@ import vdom._
 val style1 = new StyleAttr { display: "flex" }
 val style2 = new StyleAttr { flexDirection: "column" }
 
-import ttg.react.vdom.style._
+import react.vdom.style._
 // style2 takes precedence
-val flexVertical = merge(style1, style2)
+val flexVertical = style1.combine(style2)
 ```
 you can add style attribute anything missing via:
 ```scala

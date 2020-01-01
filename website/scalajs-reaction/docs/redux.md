@@ -18,6 +18,7 @@ facade to use redux inside your scala.js defined components.
 
 At its core, `react-redux`, the react integration layer with redux, creates
 an intermediate component that:
+
 1. Obtains the store from the context (or props if
 they are passed down with the name "store" or it finds the storeKey).
 1. Calls mapStateToProps (with the redux state and your component's props)  calls
@@ -59,7 +60,6 @@ trait GlobalAppState extends js.Object {
 }
 
 object MyComponent {
-
     trait Props extends js.Object { 
        // ...
     }
@@ -72,11 +72,6 @@ object MyComponent {
       // other react-redux calls such is ReactRedux.useDispatch[GlobalAction]()
       div(label)
     }
-    
-    // if we wish to use this in js
-    @JSExportTopLevel
-    val exported = sfc.run
-    
 }
 ```
 

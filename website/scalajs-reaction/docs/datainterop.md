@@ -7,18 +7,22 @@ Since there is an emphasis on interop with javascript reactjs components, you
 need to also interop with javascript data. Scala.js offers `js.UndefOr` to
 interop with fields in data structures that do not exist. Of course, in
 javascript a value can be undefined or null and sometimes they mean the same
-thing and sometimes not. Also, scala itself offers the ability to assign `null`
+thing and sometimes not to an API. Sometimes APIs are not precise and either
+undefined or null means "not present."
+
+scala itself offers the ability to assign `null`
 (subclass of `Null`) to most values e.g. a String can be a value ("george"),
 empty ("") or null.
 
-The key message below is that even with a typescript description to guide you,
+The key message is that even with a typescript description to guide you,
 you need to be defensive since null and undefined are often used interchangeably
-in javascript since its so easy to do `if(a) ...` and if a is null or undefined,
+in javascript since its so easy to do `a ? ...` or `!!a` ior `if(a) ...` and if a is null or undefined,
 it will evaluate to "false".
 
 ## JS -> Scala
+
 Given that we also use native and non-native JS traits to describe the shape of
-data, we may wonder how to handle data from web apis, for example in the
+data, we may wonder how to handle data from web APIs, for example in the
 structure:
 
 ```typescript
@@ -37,13 +41,10 @@ nullable field in the source database that was not requested or was requested
 and was null.
 
 The question is how to best model these in scala so that we do not have to write
-an object conversion for each data structure. There was talk at one time to
-create a structure like UndefOr for nulls, `NullOr` however when you use a union
-type with null (whose type is Null), strange things can happen in scala's type
-system, such as collapsing a `T|Null` to just T since a T can be null to begin
-with.
+an object conversions for each data structure. 
 
-If you know the data is either there or not there, then UndefOr is fine:
+If you know the data is either there or not there, then UndefOr is fine recognizing
+that "null" is a valid value:
 
 ```scala
 trait Foo extends js.Object {
@@ -83,7 +84,8 @@ None, not just if its' undefined. UndefOr's `isEmpty` function just checks if
 its undefined, so its not quite right for our needs. What we need is to get to a
 scala Option (or something like that) when the value is null *or* undefined.
 
-scalajs-react provides a pimp:
+scalajs-reaction provides a pimp:
+
 ```scala
 final case class JsUndefOrOps[A](a: UndefOr[A]) {
   def isNull  = a == null
@@ -104,12 +106,14 @@ example, we would like an Option-based variant that is None if `isEmpty==true`
 and the value otherwise. Using `UndefOr.toOption` actually may wrap a "null"
 value and produce a `Some(null)` instead of None. So clearly, just using
 `.toOption` is not a good answer. So at the expense of a little boolean check,
-perhaps we could do something more convenient. Let's state what we want, an
+perhaps we could do something more convenient. 
+
+Let's state what we want, an
 Option that reflects both UndefOr and possible underlying null value:
 
 ```scala
 final case class JsUndefOrOps[A](a: UndefOr[A]) {
-  @inline def toNonNullOption = if(a.isEmpty) None else a.toOption
+  @inline def toNonNullOption = if(a == null || a.isEmpty) None else a.toOption
 }
 ```
 
@@ -137,16 +141,20 @@ trait Foo extends js.Object {
 }
 ```
 
-does not communicate that it can be null explicitly as in typescript. Perhaps, a
+does not communicate that it can be null but we know scala allows this. 
+
+Perhaps we should use 
 `var field1: String|Null`. There's nothing wrong with that except scala already
-defines that String to be potentially null so why go through the hassle!
+defines that String to be potentially null so why go through the hassle? 
+See below why we might want to be that explicit.
 
 If you see a trait with just a plain String and you want an Option just wrap it
 just like in, `Option(field1)` since Option translates null to None in plain
 scala to begin with.
 
 ## Scala -> JS
-The story is a bit easier on he Scala -> JS connection. You generally need this
+
+The story is a bit easier on the Scala -> JS connection. You generally need this
 when stuffing data into a data structured destined for the js side of the world.
 
 * Have (a: Option[T]): 
@@ -162,6 +170,7 @@ when stuffing data into a data structured destined for the js side of the world.
      desired semantics.
 
 ## pimps
+
 Check out
 [syntax.scala](https://github.com/aappddeevv/scalajs-react/blob/master/scalajs-react-core/src/main/scala/syntax.scala)
 for many pimps that you can apply to UndefOr values to help with data
@@ -169,12 +178,14 @@ manipulation on the scala side. There's alot there and its easy to forget them
 unless they are in a cheatsheet.
 
 ## Don't Forget About a Structural Check
+
 There is a little known converter in scala.js. If you have two traits that are
 not related but have overlapping fields, you may need to cast one to the other
 what is essentially a structural cast, check out [funky structural
 cast-kindof](https://www.scala-js.org/api/scalajs-library/latest/#scala.scalajs.js.package@use[A](x:A):scala.scalajs.js.Using[A]). It uses `use`.
 
 ## TL;DR
+
 Let's assume that typescript is not properly annotated and some undefineds and nulls get mixed up. 
 
 If your typescript says:
@@ -182,16 +193,9 @@ If your typescript says:
 field1?: string
 ```
 use this type of declaration in your trait:
+
 ```scala
 var/val field1: js.UndefOr[String] = js.undefined
-```
-
-But call the appropriate implicit.
-
-You can also use:
-
-```scala
-var field1: js.UndefOr[String] = js.undefined
 ```
 
 and use `field1 = null` if you want to set it to null or extract using
@@ -199,20 +203,30 @@ and use `field1 = null` if you want to set it to null or extract using
 since the value could secretly be a null.
 
 If typescript says:
+
 ```typescript
 field1?: string|null
 ```
-Do the same thing as above because the first example was already doubly safe but
-you can be more specific.
+
+You can be more specific in scala.js than just saying its String as in scala
+a value like that can be null. However, we can be more procise:
 
 ```scala
 val field1: js.UndefOr[String|Null]
 ```
 
-Then you have a choice. You can use an implicit to change this to a `js.UndefOr[String]`
-or you can map into it and flatten the `String|Null` via a `field1.flatMap(_.toUndefOr)`.
+You have a choice of how explicit you want to make this. 
+
+If you use `String|Null` you can use an implicit `absorbNull` to change this to a `js.UndefOr[String]`
+like so `field1.absorbNull` or `field1.absorbNullKeepTruthy`.
+or you can map into it and flatten the `String|Null` via a `field1.flatMap(_.toUndefOr)`. If 
+the field was just `val field1: String|Null` then there is an implicit conversion
+from `String|Null` to `js.UndefOr[]` via `aStringNull.toUndefOr` which when flatMapped,
+gives you a `js.UndefOr[String]`. Again, you have a choice on how you want to do this.
+
 Check out the syntax extensions to get a feel for a wide range of how to treat this 
-common javascript pattern.
+common javascript pattern. There are some specialized conversions for `js.UndefOr[String|Null]`
+and `js.UndefOr[Boolean|Null]`.
 
 If typescript says:
 
@@ -220,31 +234,15 @@ If typescript says:
 field1: string|null
 ```
 
-use 
+and you use 
 
 ```scala
 var/val field1: String|Null
 ```
 
-and set it to null if you need to: `field1 = null`. If you want to have an
-option, use `Option(field1)`. You must use `Option` and not `Some` which would
-wrap a null value to `Some(null)`. To be extra safe use `toSafeOption` or the
-pimp from the react implicits `js.Any -> Option` via `toNonNullOption`. You may
-need to provide a type parameter explicitly if type inference is insufficient.
-
-`toSafeOption` is defined in the react package object as follows which should
-automatically weed out the weird `Some(null)` and "its really undefined"
-problems:
-
-```scala
-  def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
-    if (js.isUndefined(t)) None
-    else Option(t.asInstanceOf[T])
-  }
-
-``` 
+you can set it null if you need to: `field1 = null`.
 
 Let's hope the typescript interface descriptions are correct!
 
-Again, please see the syntax extensions package as there are even easier
-ways to do the above.
+Again, please see the syntax extensions package a multitude of ways to manage these nits.
+

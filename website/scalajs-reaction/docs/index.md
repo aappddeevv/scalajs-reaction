@@ -15,13 +15,18 @@ val scalaJsReactVersion = "0.1.0-M7"
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
     "ttg" %%% "react" % scalaJsReactVersion,
+
     "ttg" %%% "vdom" % scalaJsReactVersion,
+
     // optional but includes a Microsoft UI component set
     "ttg" %%% "fabric" % scalaJsReactVersion,
+
     // optional unless you want to connect to redux state
     "ttg" %%% "react-redux" % scalaJsReactVersion
+
     // if you need react-dom
     "ttg" %%% "react-dom" % scalaJsReactVersion
+
     // if you need prop-types
     "ttg" %%% "prop-types" % scalaJsReactVersion
 )
@@ -94,8 +99,10 @@ The imports are:
 ```scala
 // import only the syntax enhancements
 import react.syntax.all._
+
 // import only conversions
 import react.instances.all._
+
 // imports both conversions and syntax
 import react.implicits._
 ```

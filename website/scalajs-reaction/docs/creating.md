@@ -23,16 +23,20 @@ Some good tutorials on react hooks and how to use them can be found at:
 * https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70
 * https://usehooks.com/
 
-## Stateless Component Approach #1 (Easiest)
+## Stateless Component
 
-The easiest approach to creating a component is to use a simple function
-definition to define your SFC. There are two type aliases defined, SFC0 (no
-args) and SFC1 (1 arg), to create components. These components are equivalent to
+The easiest way to create a component is to use a simple function.
+There are helpers defined:
+
+* SFC0: Create a function component with no args.
+* SFC1: Create a function component with "prop" args.
+
+These components are equivalent to
 defining your component in javascript using a javascript function.
 
 ```scala
 object Component1 {
-    // some syntax ceremony so you can call Component1() to create.
+    // defining apply so you call Component1() to create.
     def apply() = sfc
     // SFC0 does not take any arguments.
     val sfc = SFC0 { div("hello world") }
@@ -52,32 +56,39 @@ object Component2 {
 }
 ```
 
-You may want to use `def apply(props: js.UndefOr[Props] = js.undefined) = ...`
+You can use `def apply(props: js.UndefOr[Props] = js.undefined) = ...`
 to make it easier to call the function component without arguments.
 
-To use these function-based components, they must be converted to a
-ReactElement. For SFC1, you can use `yourFunctionComponent(arg)` to convert the
-SFC to a react element and rely on an implicit conversion. You can also
-automatically convert a tuple:
+The components must be converted to a
+ReactElement for rendering. 
+
+For SFC1, you can use `Component2(arg)` to convert the
+SFC to a react node. An implicit conversion takes a SFC0/SFC1
+and calls "createElement" for you. 
+
+You can also
+automatically convert a tuple of the component and props:
 
 ```scala
 (component2, new Props {...})
 ```
 
-A nice benefit of using SFCs is that you can export them easily for use in the
+A nice benefit of using SFC and this approach is that you can easly export them 
+for use in the
 js/ts side of your application assuming the parameter is js friendly.
 
 ## Stateful Components
 
 Since the API is based on hooks, just use the hooks `useState` or `useReducer`
-hooks.
+hooks inside your component. You can define your own hooks using standard
+scala functions, they do not have to be javascript functions.
 
 ## Attributes
 
-You can define your make function to take either a list of attributes or an
+A component's props can take either a list of attributes or an
 object that bundles the attributes together. You can choose how you want to
-define the make parameters.  In scala if you define your non-native JS traits
-(you cannot instantiate a trait annotated with @js.native), then you can create
+define the make parameters.  If you define your non-native JS traits
+ with vars you can create
 them without having to use "override val" syntax:
 
 ```scala
@@ -86,7 +97,10 @@ trait MyOpts extends js.Object {
   var prop2: js.UndefOr[String] = js.undefined
 }
 ```
-Then you can do:
+
+You can create your props using "new" and without the "val" or "override"
+keywords:
+
 ```scala
 new MyOpts { 
   prop1 = "foo",
@@ -102,6 +116,10 @@ new MyOpts {
 }
 ```
 
+Scala 3 should allow you to create these javascript objects (that's what they
+are under the hood) without needing to use the word new. You could also define
+a companion object and define a constructor function that is more ergonomic.
+
 In order to allow your props to contain other attributes, such as those from
 div, just have your props inherit from the appropriate attributes trait that is
 provided:
@@ -113,17 +131,19 @@ trait MyOpts extends HTMLAttributes[dom.html.Div] {
 ```
 
 You may need to filter your props so you can access only your attributes. See
-office-ui-fabric-react for an example of a function that can do that
-filtering. There are many approaches to supporting this.
+office-ui-fabric-react for an example of a filtering function 
+. 
 
 ## Child Elements
 
-Children in scalajs-react are react nodes. Just include the children in a
-property in the props object for an SFC1. That's it. 
+Include a children property in a
+props object for an SFC1. That's it. 
 
-If you wish, you could alter the scala side API slightly to make it more
-friendly. Here's one way but its not super friendly because the children
-are inside the Props object.
+If you wish, you could alter your API slightly to make it more
+friendly. 
+
+For example, here's a component that exposes a children property
+but its awkward. 
 
 ```scala
 object Component {
@@ -140,7 +160,8 @@ object Component {
 }
 ```
 
-Here's another way. It has a small amount of boilerplate but produces a more
+You can use scala's standard multiple parameter lists feature
+to produces a more
 ergonomic API. The children must still be explicit in the `Props` type.
 
 ```scala

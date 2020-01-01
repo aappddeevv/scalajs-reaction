@@ -4,8 +4,7 @@ title: Importing from JS to Scala
 ---
 
 Importing a component javascript means you need to create a "Component" in
-scala. There is a simple function call to do that for you. You still need to
-perform the scala.js `@JSImport`.
+scala.js through `@JSImport`.
 
 ```scala
 // import a react component exported as part of a namespace export
@@ -18,13 +17,34 @@ object SomeLibNS {
 }
 
 object SomeLib {
-  def YourComponent1(props: Props*)(children: ReactNode*) = 
+  def YourComponent1(props: Props)(children: ReactNode*) = 
      createElement(SomeLibNS.YourComponent1, props)(children:_*)
 }
 ```
 
+You can think of this as a template, here's a more ergonomic way 
+of doing the above:
+
+```scala
+object YourComponent1 {
+  @js.native
+  @JSImport("some-lib", "YourComponent1")
+  object JS extends ReactJsComponent
+
+  trait Props extends js.Object {
+    var param1: js.UndefOr[String] = js.undefined
+  }
+  
+  def apply(props: Props)(children: ReactNode*) = 
+    createElement(JS, props)(children:_*)
+}
+```
+
+Since this is an imported component, the children do not need to
+be in the Props trait directly.
+
 How you hook up attributes and children values to your component is up to
-you. The definition in SomeLib is what you want it to be. In typescript, it is
+you. In typescript, it is
 common to define an interface that declares the allowed properties to be passed
 in. The equivalent in scala.js are JS traits. You will want to make them
 non-native JS traits so you can instantiate them.
@@ -36,16 +56,16 @@ package. Let's say you want to be able to pass in any HTML element properties to
 your component.
 
 ```scala
-import ttg.react.vdom._
+import react.vdom._
 
-trait YourComponent1 extends HTMLAttributes[dom.html.Element] {
+trait Props extends HTMLAttributes[dom.html.Element] {
   // className already declared in HTMLAttributes.
 }
 ```
 
 ## Import Typescript SFC
 
-A stateless functional component is just a function. However, react can take a
+A functional component is just a function. However, react can take a
 function definition in its `React.createElement` API. Hence, you can import a
 SFC and just "label" it a `ReactJSComponent`. Here's an example:
 
@@ -79,7 +99,7 @@ to type in:
 export interface Address {
     customeraddressid: string | null
     name?: string | null
-    city?: string | null
+    city?: string
     stateorprovince?: string | null
     postalcode?: string | null
 }
@@ -95,30 +115,34 @@ import react._
 import js.Dynamic.literal
 import js.JSConverters._
 
-@js.native
-@JSImport("JSExamples/AddressSummary", JSImport.Namespace)
-object AddressSummaryNS extends js.Object {
-  val AddressSummary: ReactJSComponent = js.native
-}
-
-// model null explicitly or could use syntax extensions
-// such as `.toNonNullOption`.
-trait Props extends js.Object {
-   var className: js.UndefOr[String | Null]
-   var address: js.UndefOr[Address | Null]
-}
-
+// use non-native JS trait so you can create an Address in scala.js
 trait Address extends js.Object {
-   // ...
+  val customeraddressid: js.UndefOr[String|Null]
+  var name: js.UndefOr[String|Null] = js.undefined
+  var city: js.UndefOr[String] = js.undefined
+  ...
 }
+
 
 object AddressSummary {
-  def apply(props: Props) = createElement0(AddressSummaryNS.AddressSummary, props)
+
+  @js.native
+  @JSImport("JSExamples", "AddressSummary")
+  object JS extends ReactJsComponent
+
+  trait Props extends js.Object {
+   var className: js.UndefOr[String | Null]
+   var address: js.UndefOr[Address | Null]
+  }
+
+  def apply(props: Props) = 
+    createElement0(AddressSummaryNS.AddressSummary, props)
 }
 ```
 
-The `0` indicates that `React.createElement` takes no children and is provided
-as API so you avoid appending a useless `()`.
+The `0` indicates that `createElement` takes no children and is provided
+as API so you avoid appending a useless `()`. There are no children
+to worry about so the children parameter list is dropped.
 
 ## Typescript
 
