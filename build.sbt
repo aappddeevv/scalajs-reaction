@@ -142,6 +142,7 @@ lazy val root = project
   .aggregate(
     examples,
     docs,
+    helmet,
     `react`,
     `fabric`,
     `fabric-experiments`,
@@ -159,7 +160,7 @@ lazy val root = project
     `react-navigation`,
     `react-native-sideswipe`,
     jss,
-    form,
+    forms,
     `react-router-dom`,
     pathtoregexp,
     dataValidationJS,
@@ -378,6 +379,13 @@ lazy val `react-redux` = project
     description := "redux via react-redux."
   )
 
+lazy val helmet = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(react,vdom)
+  .settings(description := "react-helmet")
+
 lazy val `fabric` = project
   .settings(libsettings)
   .settings(publishSettings)
@@ -416,12 +424,12 @@ lazy val router = project
   .dependsOn(react, vdom)
   .settings(description := "scalajs-reaction browser js oriented router")
 
-lazy val form = project
+lazy val forms = project
   .settings(libsettings)
   .settings(publishSettings)
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(react, vdom)
-  .settings(description := "scalajs-reaect form library.")
+  .settings(description := "scalajs-reaction forms library.")
 
 // Watch non-scala assets as well, we add this to root project even
 // though its only relevant to examples project.
@@ -439,13 +447,14 @@ lazy val examples: Project = project
   .settings(fpsettings)
   .settings(exampleFPSettings)
   .dependsOn(
+    helmet,
     `fabric`,
     `fabric-experiments`,
     `react-redux`,
     `react-dom`,
     `prop-types`,
     router,
-    form,
+    forms,
     `bootstrap`,
     `mui`,
     `react-big-calendar`,

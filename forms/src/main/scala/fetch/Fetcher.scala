@@ -83,10 +83,10 @@ class Fetcher[F[_], P, E, T](Name: String) {
 
   val sfc = SFC1[Props] { props =>
     import props._
-    React.useDebugValue(Name)
-    val (fstate, setFState) = React.useStateStrictDirect[FetchState](NotRequested)
+    useDebugValue(Name)
+    val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
-    val makeRequest = React.useCallback[F[P], Unit](fstate.asJsAny){f =>
+    val makeRequest = useCallback[F[P], Unit](fstate.asJsAny){f =>
       if(fstate != Fetching) {
         setFState(Fetching)
         props.run(f){ _ match {
@@ -132,10 +132,10 @@ class FetcherHook[F[_], P, E](Name: String, runner: F[P] => (Either[E, P] => Uni
   type FetchCallback = F[P] => Unit
 
   def useFetcher(remember: Boolean = false) = {
-    React.useDebugValue(Name)
-    val (fstate, setFState) = React.useStateStrictDirect[FetchState](NotRequested)
+    useDebugValue(Name)
+    val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
-    val makeRequest = React.useCallback[F[P], Unit](fstate.asJsAny){f =>
+    val makeRequest = useCallback[F[P], Unit](fstate.asJsAny){f =>
       if(fstate != Fetching) {
         setFState(Fetching)
         runner(f){ _ match {

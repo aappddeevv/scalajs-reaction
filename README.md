@@ -166,8 +166,9 @@ There are many modules available as most of the focus has been on bindings. All 
 * react-navigation
 * react-native-sideswipe
 * jss
-* form: Advanced, all-scala.js forms package.
+* forms: Advanced, all-scala.js forms package.
 * data-validation
+* react-helmet
 * express
 * apollo-react 
 * helmet

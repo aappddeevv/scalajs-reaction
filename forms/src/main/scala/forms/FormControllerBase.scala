@@ -3,7 +3,7 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg 
-package form
+package forms
 
 import scala.scalajs.js
 import js.Dynamic.{literal => jsobj}

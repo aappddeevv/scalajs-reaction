@@ -3,7 +3,7 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg 
-package form
+package forms
 
 trait MapErrors extends HasErrors.Service {
     type Errors = collection.immutable.Map[String, String]
