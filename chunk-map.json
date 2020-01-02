@@ -1,11 +1,11 @@
 {
   "main": [
-    "/scalajs-reaction/main.abaf6604617bd7d0526b.css",
-    "/scalajs-reaction/main.abaf6604617bd7d0526b.js"
+    "/scalajs-reaction/main.6c28dd997c45e85e20a5.css",
+    "/scalajs-reaction/main.6c28dd997c45e85e20a5.js"
   ],
   "component---home-glampshire-proj-workspace-scalajs-react-website-scalajs-reaction-src-pages-index-js-5-e-3-4f6": [
-    "/scalajs-reaction/component---home-glampshire-proj-workspace-scalajs-react-website-scalajs-reaction-src-pages-index-js-5-e-3-4f6.bb4a529da22645976565.css",
-    "/scalajs-reaction/component---home-glampshire-proj-workspace-scalajs-react-website-scalajs-reaction-src-pages-index-js-5-e-3-4f6.bb4a529da22645976565.js"
+    "/scalajs-reaction/component---home-glampshire-proj-workspace-scalajs-react-website-scalajs-reaction-src-pages-index-js-5-e-3-4f6.65ff50d4ba0246cfdf8d.css",
+    "/scalajs-reaction/component---home-glampshire-proj-workspace-scalajs-react-website-scalajs-reaction-src-pages-index-js-5-e-3-4f6.65ff50d4ba0246cfdf8d.js"
   ],
   "metadata---scalajs-reaction-6-f-1-b1c": [
     "/scalajs-reaction/metadata---scalajs-reaction-6-f-1-b1c.4a7a71654276c719e5c1.js"
@@ -44,71 +44,71 @@
     "/scalajs-reaction/component---theme-doc-legacy-page-9-e-7-ca5.4b874e836fa8280b0393.js"
   ],
   "docsMetadata---scalajs-reaction-docs-2-a-3-097": [
-    "/scalajs-reaction/docsMetadata---scalajs-reaction-docs-2-a-3-097.2c9d728ab6d6772c2bdc.js"
+    "/scalajs-reaction/docsMetadata---scalajs-reaction-docs-2-a-3-097.4827d7336509a59b8d86.js"
   ],
   "component---theme-doc-legacy-item-031-769": [
     "/scalajs-reaction/component---theme-doc-legacy-item-031-769.a92164bc7e4300bf6abb.css",
     "/scalajs-reaction/component---theme-doc-legacy-item-031-769.a92164bc7e4300bf6abb.js"
   ],
-  "content---scalajs-reaction-docs-bundlingc-3-f-a3d": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-bundlingc-3-f-a3d.a66a27429b45160cfd09.js"
-  ],
-  "metadata---scalajs-reaction-docs-bundling-33-c-77e": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-bundling-33-c-77e.f01acb5be47ebb912015.js"
-  ],
   "content---scalajs-reaction-docs-creating-462-c51": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-creating-462-c51.1b55bee7000af84cee62.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-creating-462-c51.cc40700a22112a242c59.js"
   ],
   "metadata---scalajs-reaction-docs-creating-62-f-157": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-creating-62-f-157.c8698bf3f5fa67774924.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-creating-62-f-157.90d3624d362322ec2d26.js"
   ],
   "content---scalajs-reaction-docs-data-validationb-69-27a": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-data-validationb-69-27a.f78ca047ef29187fe48e.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-data-validationb-69-27a.f08316a5eb202284f357.js"
   ],
   "metadata---scalajs-reaction-docs-data-validationaa-4-de7": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-data-validationaa-4-de7.9a4980afe821db03fc59.js"
-  ],
-  "content---scalajs-reaction-docs-doc-151-f-d94": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-doc-151-f-d94.2881503abe5bf9735f4b.js"
-  ],
-  "metadata---scalajs-reaction-docs-doc-1-ee-0-280": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-doc-1-ee-0-280.299c5ca79dd601fd8489.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-data-validationaa-4-de7.520e98c28a50000bd8df.js"
   ],
   "content---scalajs-reaction-docs-exporting-093-03e": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-exporting-093-03e.7373890d3d9eca4681d1.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-exporting-093-03e.c2240a9406b3ba5cbf3e.js"
   ],
   "metadata---scalajs-reaction-docs-exporting-55-f-338": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-exporting-55-f-338.e5bab1ad76af9d12a002.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-exporting-55-f-338.19a026ed854e6ad08886.js"
   ],
   "content---scalajs-reaction-docs-facades-79-d-ea4": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-facades-79-d-ea4.13d4034e2d4b6bf0d1b5.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-facades-79-d-ea4.b7410c3a8f9df0573f4d.js"
   ],
   "metadata---scalajs-reaction-docs-facades-45-c-335": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-facades-45-c-335.66995c0494f11b79e172.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-facades-45-c-335.dc1934e85ce4d22d24a8.js"
   ],
   "content---scalajs-reaction-docs-formsd-7-a-85b": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-formsd-7-a-85b.89e245a5b99384a3dcf4.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-formsd-7-a-85b.9eb3e91bc7478d185f2d.js"
   ],
   "metadata---scalajs-reaction-docs-forms-37-b-755": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-forms-37-b-755.fe5b3bb67d913aac6017.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-forms-37-b-755.a91a06b089c8872454f1.js"
   ],
   "content---scalajs-reaction-docs-importingefd-806": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-importingefd-806.20b8f9122191a477f0f5.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-importingefd-806.dcd24ce5dca4b549441c.js"
   ],
   "metadata---scalajs-reaction-docs-importingfc-4-969": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-importingfc-4-969.fbf6a1d63039498f214f.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-importingfc-4-969.1276710d585975be27e2.js"
+  ],
+  "content---scalajs-reaction-docs-bundlingc-3-f-a3d": [
+    "/scalajs-reaction/content---scalajs-reaction-docs-bundlingc-3-f-a3d.6d055e8edb6022d40640.js"
+  ],
+  "metadata---scalajs-reaction-docs-bundling-33-c-77e": [
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-bundling-33-c-77e.cdc991210077318f3945.js"
   ],
   "content---scalajs-reaction-docs-index-290-57f": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-index-290-57f.9c9c2fa78ebeb0ce314a.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-index-290-57f.89d487defc57f8e0f89f.js"
   ],
   "metadata---scalajs-reaction-docs-index-078-d13": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-index-078-d13.e2910a7a22ff000eb6a4.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-index-078-d13.e9e0bdd76c429ca84a47.js"
   ],
   "content---scalajs-reaction-docs-introf-93-977": [
-    "/scalajs-reaction/content---scalajs-reaction-docs-introf-93-977.c6dfa32f359d749b4ee1.js"
+    "/scalajs-reaction/content---scalajs-reaction-docs-introf-93-977.9d16bebcfaa72aa046f5.js"
   ],
   "metadata---scalajs-reaction-docs-intro-984-78c": [
-    "/scalajs-reaction/metadata---scalajs-reaction-docs-intro-984-78c.a4f5d359dd2814337141.js"
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-intro-984-78c.7349ac0bc48e8cbf6758.js"
+  ],
+  "content---scalajs-reaction-docs-doc-151-f-d94": [
+    "/scalajs-reaction/content---scalajs-reaction-docs-doc-151-f-d94.278114be46023160f6ab.js"
+  ],
+  "metadata---scalajs-reaction-docs-doc-1-ee-0-280": [
+    "/scalajs-reaction/metadata---scalajs-reaction-docs-doc-1-ee-0-280.ff84e046c91f1c2d4a56.js"
   ],
   "content---scalajs-reaction-docs-macros-7-cc-deb": [
     "/scalajs-reaction/content---scalajs-reaction-docs-macros-7-cc-deb.12b79cc18a4498f84055.js"
