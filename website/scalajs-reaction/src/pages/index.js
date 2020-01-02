@@ -20,7 +20,7 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-        scalajs-reaction uses reactjs hooks to make component creation and use easy.
+        scalajs-reaction uses reactjs hooks to make component creation and use easy. You use common, everyday, highly inferable scala idoms--no macros or tricks.
       </>
     ),
   },
@@ -29,7 +29,7 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-         Your real focus should be on creating great web applications not on the framework or interop.
+         Your real focus should be on creating great web applications not on the framework or making the interop work.
       </>
     ),
   },
@@ -96,7 +96,7 @@ function Home() {
       
           <section className={styles.features}>
           <div className="container">
-          <p>It is easy to create a comment. Here is the hello world component. This creates a functional component that takes zero args.</p>
+          <p>It is easy to create a component. The code below creates a functional component that takes zero args.</p>
           <p>
           <CodeBlock className="scala">{`
           val HelloWorld = SFC0 { div("hello world") }
@@ -104,7 +104,7 @@ function Home() {
       </CodeBlock>
           </p>
           <p>A functional component that takes props (one argument) with a mandatory [name] property is</p>
-          <CodeBlock className="scala">{`
+          <p><CodeBlock className="scala">{`
 object MyComponent {
   trait Props extends js.Object {
      val name: String
@@ -114,15 +114,28 @@ object MyComponent {
   }
   def apply(props: Props) = sfc(props)
 }
-
-// use MyComponent
+`}
+      </CodeBlock>
+</p>
+<p>By defining an apply method (or not) you decide how component users 
+create elements.</p>
+<p>To use MyComponent, we just need to create it. Creating an element is as natural and easy
+as calling it's apply function.</p>
+<p>
+<CodeBlock className="scala">{`
+// scala code
 div(
-  MyComponent(new Props { 
-    val name = "world" 
+  MyComponent(new Props {
+    val name = "world"
   })
 )
 `}
-      </CodeBlock>
+</CodeBlock>
+</p>
+<p>You can create custom Props creation methods if you choose. Everything above
+is just pure scala.js--not tricks or macros. Type inference is very good
+and it is a natural scala programming style.</p>
+
           </div>
           </section>
 
