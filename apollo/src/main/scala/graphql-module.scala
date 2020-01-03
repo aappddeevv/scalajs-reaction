@@ -44,3 +44,11 @@ trait GraphQLError extends js.Error {
   //originalError
   //extensions
 }
+
+@js.native
+trait ExecutionResult[T <: js.Any, Ext <: js.Object] extends js.Object {
+  val data: js.UndefOr[T] = js.native
+  // could also just have this be a js.Dictionary[js.Any]
+  val extensions: js.UndefOr[Ext] = js.native
+  val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
+}

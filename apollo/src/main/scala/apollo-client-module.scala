@@ -19,14 +19,22 @@ trait ApolloClientOptions extends js.Object {
 }
 
 @js.native
-trait ApolloClient extends js.Object {
+@JSImport("apollo-client", "ApolloClient")
+class ApolloClient() extends apollo_cache.DataProxy {
+  import apollo_cache._
   def stop(): Unit = js.native
-  def readQuery[T <: js.Object](query: DocumentNode, optimistic: js.UndefOr[Boolean] = js.undefined): T | Null = js.native
+
+  def readQuery[QueryType <: js.Object, TVars <: js.Object](options: Query[TVars], optimistic: js.UndefOr[Boolean] = js.undefined): QueryType | Null = js.native
+  def readFragment[TVars <: js.Object, FragmentType <: js.Object](options: Fragment[TVars],
+    optimistic: js.UndefOr[Boolean] = js.undefined): FragmentType | Null = js.native
+  def writeQuery[T <: js.Any, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit = js.native
+  def writeFragment[T <: js.Any, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit = js.native
+  def writeData[T <: js.Any](options: WriteDataOptions[T]): Unit = js.native
 }
 
 @js.native
 @JSImport("apollo-client", "ApolloClient")
-class ApolloBaseClient(config: js.UndefOr[ApolloClientOptions] = js.undefined) extends ApolloClient
+class ApolloBaseClient(config: js.UndefOr[ApolloClientOptions] = js.undefined) extends ApolloClient()
 
 @js.native
 sealed trait NetworkStatus extends js.Any
@@ -78,4 +86,96 @@ trait QueryBaseOptions[TVars <: js.Object] extends js.Object {
   var metadata: js.UndefOr[js.Object] = js.undefined
 }
 
+trait QueryOptions[TVars <: js.Object] extends QueryBaseOptions[TVars] {
+  var fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
+}
 
+trait ModifiableWatchQueryOptions[TVars <: js.Object] extends QueryOptions[TVars] {
+  var pollInterval: js.UndefOr[Int] = js.undefined
+  var notifyOnNEtworkStatusChange: js.UndefOr[Boolean] = js.undefined
+  var returnPartialData: js.UndefOr[Boolean] = js.undefined
+}
+
+trait WatchQueryOptions[TVars <: js.Object] extends ModifiableWatchQueryOptions[TVars] with QueryBaseOptions[TVars] {
+  //var fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
+}
+
+trait FetchMoreOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
+  trait Options extends js.Object {
+    var fetchMoreResult: js.UndefOr[T] = js.undefined
+    var variables: js.UndefOr[TVars] = js.undefined
+  }
+  var updateQuery: js.UndefOr[js.Function2[T, Options, T]] = js.undefined
+}
+
+trait FetchMoreQueryOptions[TVars <: js.Object] extends js.Object {
+  var query: js.UndefOr[DocumentNode] = js.undefined
+  // this can take a subset of TVars
+  var variables: js.UndefOr[TVars] = js.undefined
+  var context: js.UndefOr[js.Any] = js.undefined
+}
+
+@js.native
+trait ApolloQueryResult[T <: js.Any] extends js.Object {
+  val data: T = js.native
+  val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
+  val loading: Boolean = js.native
+  val networkStatus: NetworkStatus = js.native
+  val stale: Boolean = js.native
+}
+
+@js.native
+trait ApolloCurrentResult[T <: js.Any] extends js.Object {
+  // T | {}
+  val data: T = js.native
+  val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
+  val loading: Boolean = js.native
+  val networkStatus: NetworkStatus = js.native
+  val error: js.UndefOr[ApolloError] = js.native
+  val partial: js.UndefOr[Boolean] = js.native
+}
+
+/** Class but we keep as a trait. Extends observable which we do not have
+ * yet.
+ */
+@js.native
+trait ObservableQuery[T <: js.Any, TVars <: js.Object] extends js.Object {
+  val queryId: String = js.native
+  val options: WatchQueryOptions[TVars] = js.native
+  val queryName: js.UndefOr[String] = js.native
+  val variables: TVars = js.native
+
+  def result(): js.Promise[ApolloQueryResult[T]] = js.native
+  def currentResult(): ApolloCurrentResult[T] = js.native
+
+  def getLastResult(): ApolloQueryResult[T]
+  def getLastError(): ApolloError = js.native
+  def resetLastResults(): Unit = js.native
+  def resetQueryStoreErrors(): Unit = js.native
+  def refetch(variables: TVars): js.Promise[ApolloQueryResult[T]] = js.native
+  def fetchMore(fetchMoreOptions: FetchMoreQueryOptions[TVars] with FetchMoreOptions[T, TVars]):
+      js.Promise[ApolloQueryResult[T]] = js.native
+  // subscribeToMore
+  // setOptions
+  // setVariables
+  // updateQuery
+  def stopPolling(): Unit = js.native
+  def startPolling(pollInterval: Int): Unit = js.native
+}
+
+@js.native
+trait ApolloNetworkError extends js.Object {
+  val name: String = js.native
+  val response: js.Object = js.native
+  val statusCode: Int = js.native
+  val bodyText: String = js.native
+}
+
+@js.native
+trait ApolloError extends js.Error {
+  //val message: String = js.native  
+  val operation: js.Object = js.native
+  val response: js.Object = js.native
+  val graphQLErrors: js.Object = js.native
+  val networkError: js.Error= js.native//ApolloNetworkError = js.native
+}

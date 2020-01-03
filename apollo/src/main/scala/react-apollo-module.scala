@@ -15,6 +15,22 @@ import apollo_boost._
 
 // @apollo/react-common
 @js.native
+trait ObservableQueryFields[T <: js.Any, TVars <: js.Object] extends js.Object {
+  // this looks quite complicated
+  @JSName("fetchMore")
+  val fetchMore: js.Function1[FetchMoreOptions[T, TVars] with FetchMoreQueryOptions[TVars],js.Promise[ApolloQueryResult[T]]] = js.native
+  val variables: TVars = js.native
+
+  // from pick ObservableQuery
+  def refetch(variables: TVars): js.Promise[ApolloQueryResult[T]] = js.native
+  // subscribeToMore
+  // updateQuery
+  def stopPolling(): Unit = js.native
+  def startPolling(pollInterval: Int): Unit = js.native
+}
+
+// @apollo/react-common
+@js.native
 trait QueryResult[T <: js.Any, TVars <: js.Object] extends js.Object {
   val client: apollo_client.ApolloClient = js.native
   val data: js.UndefOr[T] = js.native
@@ -35,9 +51,10 @@ object module extends js.Object {
     options: js.UndefOr[LazyQueryHookOptions[T, TVars]|js.Dynamic] = js.undefined):
       js.Tuple2[QueryLazyOptions[TVars], QueryResult[T, TVars]] = js.native
 
+  // Need Ext for ExecutionResult...
   def useMutation[T <: js.Any, TVars <: js.Object](mutation: DocumentNode,
     options: js.UndefOr[MutationHookOptions[T, TVars]] = js.undefined):
-      js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]] = js.native
+      js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T, js.Object]]], MutationResult[T]] = js.native
 
   def useSubscription[T <: js.Any, TVars <: js.Object](subscription: DocumentNode,
     options: js.UndefOr[SubscriptionHookOptions[T, TVars]] = js.undefined):
@@ -61,33 +78,6 @@ trait ApolloContextValue extends js.Object {
   var renderPromises: js.UndefOr[js.Object] = js.undefined
 }
 
-@js.native
-trait ApolloError extends js.Object {
-  val message: String = js.native  
-  val operation: js.Object = js.native
-  val response: js.Object = js.native
-  val graphQLErrors: js.Object = js.native
-  val networkError: ApolloNetworkError = js.native
-}
-
-@js.native
-trait ApolloNetworkError extends js.Object {
-  val name: String = js.native
-  val response: js.Object = js.native
-  val statusCode: Int = js.native
-  val bodyText: String = js.native
-}
-
-/** From apollo-common */
-@js.native
-trait ApolloQueryResult[T <: js.Any] extends js.Object {
-  val data: T = js.native
-  val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
-  val loading: Boolean = js.native
-  val networkStatus: NetworkStatus = js.native
-  val stale: Boolean = js.native
-}
-
 trait BaseQueryOptions[TVars <: js.Object] extends js.Object {
   var ssr: js.UndefOr[Boolean] = js.undefined
   var variables: js.UndefOr[TVars|js.Dynamic] = js.undefined
@@ -99,7 +89,6 @@ trait BaseQueryOptions[TVars <: js.Object] extends js.Object {
   var partialRefetch: js.UndefOr[Boolean] = js.undefined
   var returnPartialData: js.UndefOr[Boolean] = js.undefined
 }
-
 
 // @apollo/react-common
 trait Skip extends js.Object {
@@ -155,14 +144,6 @@ object ApolloProvider {
 
   def apply(c: apollo_client.ApolloClient)(children: ReactNode*) =
     react.createElement(JS, new Props { client = c})(children:_*)
-}
-
-// @apollo/react-common
-@js.native
-trait ExecutionResult[T <: js.Any] extends js.Object {
-  val data: js.UndefOr[T] = js.native
-  val extensions: js.UndefOr[js.Dictionary[js.Any]] = js.native
-  val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
 }
 
 // @apollo/react-common

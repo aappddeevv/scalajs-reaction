@@ -53,17 +53,25 @@ trait Operation[TVars <: js.Object] extends js.Object {
 }
 
 @js.native
-trait ApolloLink extends js.Object {
-  def concat(next: ApolloLink): ApolloLink = js.native
+trait ApolloLinkCombinators extends js.Object {
+  def empty(): ApolloLink = js.native
+  def from(links: js.Array[ApolloLink]): ApolloLink = js.native
+  def split(): ApolloLink = js.native
+  def concat(lhs: ApolloLink, righs: ApolloLink): ApolloLink = js.native
+  // execute???
 }
+
+@js.native
+trait ApolloLink extends ApolloLinkCombinators
 
 /** Static methods on the HttpLink class. */
 @js.native
 @JSImport("apollo-link", "ApolloLink")
-object ApolloLink extends js.Object {
-  val empty: ApolloLink = js.native
-  def from(links: js.Array[ApolloLink]): ApolloLink = js.native
-}
+object ApolloLink extends ApolloLinkCombinators
+
+@js.native
+@JSImport("apollo-link", JSImport.Namespace)
+object apollo_link_module extends ApolloLinkCombinators
 
 @js.native
 @JSImport("apollo-link-http", "HttpLink")
@@ -97,4 +105,41 @@ object setContext extends js.Object {
 object setContextF extends js.Object {
   /** (QL request, previous context in chain of context changers) => promise new context. Using "updater" pattern. */
   def apply[TVars <: js.Object, C <: js.Object](setter: js.Function2[GraphQLRequest[TVars], C, js.Thenable[_]]): ApolloLink = js.native
+}
+
+// apollo-link-http-common
+@js.native
+trait ServerError extends js.Error {
+  val response: org.scalajs.dom.experimental.Response = js.native
+  val result: js.Dictionary[js.Any] = js.native
+  val statusCode: Int = js.native
+}
+
+// apollo-link-http-common
+@js.native
+trait ServerParseError extends js.Error {
+  val response: org.scalajs.dom.experimental.Response = js.native
+  val statusCode: Int = js.native
+  val bodyText: String = js.native
+}
+
+@js.native
+trait ErrorResponse extends js.Object {
+  val graphQLErrors: js.UndefOr[js.Array[GraphQLError]] = js.native
+  val networkError: js.Error | ServerError | ServerParseError = js.native
+  def response[T <: js.Any, Ext <: js.Object]: js.UndefOr[ExecutionResult[T,Ext]] = js.native
+  val operation: Operation[js.Object] = js.native
+  def forward[TVars <: js.Object, T <: js.Any, C <: js.Object, Ext <: js.Object]: NextLink[TVars, T, C, Ext] = js.native
+}
+
+@js.native
+@JSImport("apollo-link-error", JSImport.Namespace)
+object apollo_link_error_module extends js.Object {
+  def onError[T <: js.Any, C <: js.Object, Ext <: js.Object](errorHandler: ErrorHandler[T,C,Ext]): ApolloLink = js.native
+}
+
+// apollo-link
+@js.native
+trait FetchResult[T <: js.Any, C <: js.Object, Ext <: js.Object] extends ExecutionResult[T,Ext] {
+  val context: js.UndefOr[C]
 }
