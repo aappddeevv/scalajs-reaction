@@ -160,6 +160,7 @@ lazy val root = project
     `react-navigation`,
     `react-native-sideswipe`,
     jss,
+    apollo,
     forms,
     `react-router-dom`,
     pathtoregexp,
@@ -385,6 +386,13 @@ lazy val helmet = project
   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
   .dependsOn(react,vdom)
   .settings(description := "react-helmet")
+
+lazy val apollo = project
+  .settings(libsettings)
+  .settings(publishSettings)
+  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .dependsOn(react,vdom)
+  .settings(description := "Combination of apollo-boost, graphql, react-apollo")
 
 lazy val `fabric` = project
   .settings(libsettings)

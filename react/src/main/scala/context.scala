@@ -45,9 +45,6 @@ object context {
     def provider(value: T)(children: ReactNode*) =
       context.provider[T](ctx)(value)(children: _*)
 
-    ///** Create provider that provides None. */
-    //def makeProvider(children: ReactNode*) = context.makeProvider[T](ctx)(js.undefined)(children: _*)
-
     /** Create a consumer that takes an Option[T] */
     def consumer(f: T => ReactNode, key: Option[String] = None) =
       context.consumer[T](ctx)(js.Any.toFunction1(f))

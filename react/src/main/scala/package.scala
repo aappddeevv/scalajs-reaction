@@ -8,9 +8,7 @@ import js.UndefOr
 import js.JSConverters._
 
 /**
- * A scalajs. facade for facebook's react in the spirit of ReasonReact.  
- * 
- * TODO: Should this also contain all of the react API?
+ * A scala.js react facaded in the spirit of ReasonReact.
  */
 package object react extends react.React {
 
@@ -24,6 +22,8 @@ package object react extends react.React {
   val emptyDependencies: Dependencies = js.defined(js.Array())
 
   /** Undefined array. */
+  // for 1.0.0 this needs to be defined as type Unit
+  //val undefinedDependencies: Unit = js.undefined
   val undefinedDependencies = js.undefined
 
   /** Create a dependencies array from *any* scala objects. Make sure this is what you want. */
@@ -89,8 +89,9 @@ package object react extends react.React {
   trait ReactNode extends js.Object
 
   /** Output from `react.createElement` and is something you can render with key
-   * and ref accessors. A ReactNode with a key. Keep the trait parameterless at
-   * the expense of pushing the type parameter to `ref`.
+   * and ref accessors which are present on objects vs primitives (and a
+   * primitive can be a ReactNode on its own). A ReactNode with a key. Keep the
+   * trait parameterless at the expense of pushing the type parameter to `ref`.
    */
   @js.native
   trait ReactElement extends ReactNode {
@@ -100,6 +101,12 @@ package object react extends react.React {
 
     /** Pretty sure this is always here, don't use it. */
     val `type`: String = js.native
+  }
+
+  object ReactElement {
+    implicit class RichReactElement(el: ReactElement) {
+      def withKey(key: String): ReactElement = merge[ReactElement](el, js.Dynamic.literal("key" -> key))
+    }
   }
 
   @js.native

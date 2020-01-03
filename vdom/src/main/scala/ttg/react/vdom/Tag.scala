@@ -18,7 +18,7 @@ import implicits._
   */
 class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
   def apply(attrs: Attrs*)(children: ReactNode*): ReactDOMElement =
-    React.createDOMElement(name, Attrs.concat(tagAttrs ++ attrs).toJs)(children: _*)
+    react.createDOMElement(name, Attrs.concat(tagAttrs ++ attrs).toJs)(children: _*)
 }
 
 /**
@@ -30,11 +30,11 @@ class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) { self =>
 
   /** Properties and and maybe children. */
   def apply(attrs: P)(children: ReactNode*): ReactDOMElement =
-    React.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
+    react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
 
   /** Only children, no props. */
   def apply(children: ReactNode*): ReactDOMElement =
-    React.createDOMElement(name, tagAttrs)(children: _*)
+    react.createDOMElement(name, tagAttrs)(children: _*)
 
   /** Merge attributes of type P or dynamic into this tag. By adding dynamic
     * literal, you are not type safe. Escape hatch! This is more convenient then

@@ -21,8 +21,7 @@ import fabric.styling._
  * office-ui-fabric-react/lib/Utilities == @uifabric/utilities
  */
 @js.native
-@JSImport("@uifabric/utilities", JSImport.Namespace)
-object Utilities extends js.Object {
+trait uifabric_utilities_module extends js.Object {
 
   /** This is another tough one to type in scala.js. If you use a scala function
    * to define f, an implicit will convert it to a js function automatically. Or

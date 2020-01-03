@@ -170,7 +170,7 @@ There are many modules available as most of the focus has been on bindings. All 
 * data-validation
 * react-helmet
 * express
-* apollo-react 
+* apollo 
 * helmet
 * react-flexbox-grid
 * react-router-dom

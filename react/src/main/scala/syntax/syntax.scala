@@ -41,6 +41,7 @@ trait AllSyntax
     with MiscOrSyntax
     with JsRefSyntax
     with JSPromiseSyntax
+    with ContextSyntax
 
 object syntax {
   object all         extends AllSyntax
@@ -56,4 +57,5 @@ object syntax {
   object miscor      extends MiscOrSyntax
   object jsref extends JsRefSyntax
   object jspromise extends JSPromiseSyntax
+  object context extends ContextSyntax
 }

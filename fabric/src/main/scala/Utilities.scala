@@ -7,6 +7,7 @@ package fabric
 import scala.scalajs.js
 import js.annotation._
 
+/** Import through office-ui-fabric-react/lib/Utilities. */
 @js.native
-@JSImport("@uifabric/merge-styles", JSImport.Namespace)
-object merge_styles extends styling.MergeStyles
+@JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
+object Utilities extends uifabric_utilities_module

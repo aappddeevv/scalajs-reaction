@@ -26,6 +26,10 @@ import org.scalajs.dom
  */
 trait React {
 
+  /** Create a context. */
+  def createContext[T](defaultValue: T): ReactContext[T] =
+    ReactJS.createContext(defaultValue, js.undefined)
+
   /** Clone a ReactElement and add new props. You should not use this if you can avoid it. */
   def cloneElement(element: ReactElement, props: js.Object): ReactElement =
     ReactJS.cloneElement(element, props.asInstanceOf[js.Dynamic])
@@ -249,11 +253,11 @@ trait React {
   /** Create a React.fragment element. */
   object Fragment {
     def apply(key: Option[String] = None)(children: ReactNode*) =
-      React.createFragment(key, children: _*)
+      createFragment(key, children: _*)
 
     /** Preferred creation function. */
     def apply(children: ReactNode*) =
-      React.createFragment(None, children: _*)
+      createFragment(None, children: _*)
   }
 
   /** Strict element. Wraps your root component typically. */
@@ -291,10 +295,15 @@ object React extends React
   */
 @js.native
 trait ReactContext[T] extends js.Object {
+  /** Convenience = type parameter. */
   type ValueType = T
+
+  /** Mutable var per https://reactjs.org/docs/context.html#reactcreatecontext */
+  var displayName: String = js.native
 
   /** Only takes a single attribute value, "value" with the context . */
   val Provider: ReactJsComponent = js.native
+  /** Requires function as a childe. */
   val Consumer: ReactJsComponent = js.native
 
   /** Not public API. */

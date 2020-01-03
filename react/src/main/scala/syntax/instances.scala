@@ -37,6 +37,8 @@ trait ValueConverters {
     s.map(cv).toJSArray.asInstanceOf[ReactElement]
   }
 
+  //implicit def _iterableReactElementToNode(s: Iterable[ReactElement]) = s.toJSArray.asInstanceOf[ReactNode]
+
   implicit def _undefOrReactNodeToReactNode(n: js.UndefOr[ReactNode]): ReactNode =
     n.getOrElse(null)
 

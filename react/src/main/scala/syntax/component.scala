@@ -13,7 +13,7 @@ trait ComponentSyntax {
    * SFCs should be declared with vals.
    */
   implicit class MemoSFC[P <: js.Object](val sfc: SFC1[P]) {
-    def memo = React.memo(sfc)
+    def memo = react.memo(sfc)
   }
 
   implicit def sfc0ToEl(sfc: SFC0): ReactElement =

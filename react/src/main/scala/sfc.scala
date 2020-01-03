@@ -28,7 +28,7 @@ object SFC0 {
 /** A functional component with one arg, the props. You can export the `.run`
  * function for use in reactjs.
  * 
- * @tparam P Props type. Use `js.UndefOr[P]` for optional args.
+ * @tparam P Props type.
  */
 class SFC1[P](val run: js.Function1[P, ReactNode]) {
   /** Create a reactjs component given some props. */
@@ -46,9 +46,6 @@ object SFC1 {
    * props type.
    */
   def apply[P <: js.Object](f: P => ReactNode) = new SFC1[P](f)
-
-  /** Make it explicit to create a SFC1 that takes a scala object for props. */
-  def scala[P](f: P => ReactNode) = new SFC1[P](f)
 }
 
 /** A stateless functional component with two args, the props and something
@@ -68,7 +65,5 @@ object SFCWithRef {
    * `createRef`.
    */
   def apply[P <: js.Object, R](f: (P,Ref[R]) => ReactElement) = new SFCWithRef[P,R](f)
-
-  def scala[P, R](f: (P,Ref[R]) => ReactElement) = new SFCWithRef[P,R](f)
 }
 
