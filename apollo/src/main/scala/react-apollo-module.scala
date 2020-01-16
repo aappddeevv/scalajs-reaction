@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -13,56 +13,76 @@ import react._
 import apollo_client._
 import apollo_boost._
 
-// @apollo/react-common
+// @apollo/react-common, but pulls from ObservableQuery
 @js.native
 trait ObservableQueryFields[T <: js.Any, TVars <: js.Object] extends js.Object {
   // this looks quite complicated
   @JSName("fetchMore")
-  val fetchMore: js.Function1[FetchMoreOptions[T, TVars] with FetchMoreQueryOptions[TVars],js.Promise[ApolloQueryResult[T]]] = js.native
+  val fetchMore
+      : js.Function1[FetchMoreOptions[T, TVars] with FetchMoreQueryOptions[TVars], js.Promise[ApolloQueryResult[T]]] =
+    js.native
   val variables: TVars = js.native
 
   // from pick ObservableQuery
   def refetch(variables: TVars): js.Promise[ApolloQueryResult[T]] = js.native
   // subscribeToMore
-  // updateQuery
+  def updateQuery(f: js.Function2[T, UpdateQueryOptions[TVars], T]): Unit = js.native
   def stopPolling(): Unit = js.native
   def startPolling(pollInterval: Int): Unit = js.native
 }
 
 // @apollo/react-common
 @js.native
-trait QueryResult[T <: js.Any, TVars <: js.Object] extends js.Object {
+trait QueryResult[T <: js.Any, TVars <: js.Object] extends ObservableQueryFields[T, TVars] {
   val client: apollo_client.ApolloClient = js.native
+  // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
+  // ts defs say T | undefined but not null !?!?
   val data: js.UndefOr[T] = js.native
   val error: js.UndefOr[ApolloError] = js.native
   val loading: Boolean = js.native
-  val networkStatus: NetworkStatus = js.native  
+  val networkStatus: NetworkStatus = js.native
   val called: Boolean = js.native
+}
+
+object QueryResult {
+  implicit class RichQueryResult(qr: QueryResult[_,_]) {
+    def successfullyLoaded = !qr.loading &&
+    qr.error.isEmpty &&
+    qr.data.isDefined &&
+     qr.networkStatus == NetworkStatus.ready
+  }
 }
 
 @js.native
 @JSImport("react-apollo", JSImport.Namespace)
 object module extends js.Object {
   // ... from @apollo/react-hooks
-  def useQuery[T <: js.Any, TVars <: js.Object](query: DocumentNode,
-    options: js.UndefOr[QueryHookOptions[T, TVars]|js.Dynamic] = js.undefined): QueryResult[T, TVars] = js.native
+  def useQuery[T <: js.Any, TVars <: js.Object](
+      query: DocumentNode,
+      options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
+  ): QueryResult[T, TVars] = js.native
 
-  def useLazyQuery[T <: js.Any, TVars <: js.Object](query: DocumentNode,
-    options: js.UndefOr[LazyQueryHookOptions[T, TVars]|js.Dynamic] = js.undefined):
-      js.Tuple2[QueryLazyOptions[TVars], QueryResult[T, TVars]] = js.native
+  def useLazyQuery[T <: js.Any, TVars <: js.Object](
+      query: DocumentNode,
+      options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
+  ): js.Tuple2[QueryLazyOptions[TVars], QueryResult[T, TVars]] = js.native
 
   // Need Ext for ExecutionResult...
-  def useMutation[T <: js.Any, TVars <: js.Object](mutation: DocumentNode,
-    options: js.UndefOr[MutationHookOptions[T, TVars]] = js.undefined):
-      js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T, js.Object]]], MutationResult[T]] = js.native
+  def useMutation[T <: js.Any, TVars <: js.Object](
+      mutation: DocumentNode,
+      options: js.UndefOr[MutationHookOptions[T, TVars]] = js.undefined
+  ): js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]] =
+    js.native
 
-  def useSubscription[T <: js.Any, TVars <: js.Object](subscription: DocumentNode,
-    options: js.UndefOr[SubscriptionHookOptions[T, TVars]] = js.undefined):
-      SubscriptionResult[T] with Variables[TVars] = js.native
+  def useSubscription[T <: js.Any, TVars <: js.Object](
+      subscription: DocumentNode,
+      options: js.UndefOr[SubscriptionHookOptions[T, TVars]] = js.undefined
+  ): SubscriptionResult[T] with Variables[TVars] = js.native
 
-  def useBaseQuery[T <: js.Any, TVars <: js.Object](query: DocumentNode,
-    options: js.UndefOr[QueryHookOptions[T, TVars]] = js.undefined):
-      js.Tuple2[js.Function1[js.UndefOr[QueryLazyOptions[TVars]], Unit], QueryResult[T, TVars]] = js.native
+  def useBaseQuery[T <: js.Any, TVars <: js.Object](
+      query: DocumentNode,
+      options: js.UndefOr[QueryHookOptions[T, TVars]] = js.undefined
+  ): js.Tuple2[js.Function1[js.UndefOr[QueryLazyOptions[TVars]], Unit], QueryResult[T, TVars]] = js.native
 
   def useApolloClient(): apollo_client.ApolloClient = js.native
 
@@ -80,11 +100,12 @@ trait ApolloContextValue extends js.Object {
 
 trait BaseQueryOptions[TVars <: js.Object] extends js.Object {
   var ssr: js.UndefOr[Boolean] = js.undefined
-  var variables: js.UndefOr[TVars|js.Dynamic] = js.undefined
+  var variables: js.UndefOr[TVars | js.Dynamic] = js.undefined
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
   var errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined
   var pollInterval: js.UndefOr[Int] = js.undefined
   var client: js.UndefOr[ApolloClient] = js.undefined
+  var notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined
   var context: js.UndefOr[js.Object] = js.undefined
   var partialRefetch: js.UndefOr[Boolean] = js.undefined
   var returnPartialData: js.UndefOr[Boolean] = js.undefined
@@ -103,16 +124,14 @@ trait QueryFunctionOptions[T <: js.Any, TVars <: js.Object] extends BaseQueryOpt
 }
 
 // @apollo/react-hooks
-trait QueryHookOptions[T <: js.Any, TVars <: js.Object]
-    extends QueryFunctionOptions[T, TVars]
-    with Skip {
+trait QueryHookOptions[T <: js.Any, TVars <: js.Object] extends QueryFunctionOptions[T, TVars] with Skip {
   // children?
   var query: js.UndefOr[DocumentNode] = js.undefined
 }
 
 // @apollo/react-hooks
 object QueryHookOptions {
-  def variables[T <: js.Any, TVars <: js.Object](v: TVars|js.Dynamic) = new QueryHookOptions[T,TVars] {
+  def variables[T <: js.Any, TVars <: js.Object](v: TVars | js.Dynamic) = new QueryHookOptions[T, TVars] {
     variables = v
   }
 }
@@ -126,9 +145,8 @@ trait QueryLazyOptions[TVars <: js.Object] extends js.Object {
 }
 
 // @apollo/react-hooks
-trait LazyQueryHookOptions[T <: js.Any, TVars <: js.Object]
-    extends QueryFunctionOptions[T, TVars] {
-    var query: js.UndefOr[DocumentNode] = js.undefined
+trait LazyQueryHookOptions[T <: js.Any, TVars <: js.Object] extends QueryFunctionOptions[T, TVars] {
+  var query: js.UndefOr[DocumentNode] = js.undefined
 }
 
 // @apollo/react-common
@@ -140,10 +158,10 @@ object ApolloProvider {
   trait Props extends ApolloContextValue
 
   def apply(props: Props)(children: ReactNode*) =
-    react.createElement(JS, props)(children:_*)
+    react.createElement(JS, props)(children: _*)
 
   def apply(c: apollo_client.ApolloClient)(children: ReactNode*) =
-    react.createElement(JS, new Props { client = c})(children:_*)
+    react.createElement(JS, new Props { client = c })(children: _*)
 }
 
 // @apollo/react-common
@@ -154,7 +172,7 @@ trait BaseMutationOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
   var refetchQueriesByName: js.UndefOr[js.Array[String]] = js.undefined
   // this is not quite right, how to do varargs js funciton decl?
   @JSName("refetchQueries")
-  var refetchQueriesBy: js.UndefOr[js.Function1[js.Array[js.Any], js.Array[String]]] = js.undefined  
+  var refetchQueriesBy: js.UndefOr[js.Function1[js.Array[js.Any], js.Array[String]]] = js.undefined
   val awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined
   val errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined
   // update

@@ -2,14 +2,17 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package fabric
-package styling
+package react
 
 import scala.scalajs.js
-import js.annotation._
+import js._
 
-trait IFabricConfig {
-  var fontBaseUrl: js.UndefOr[String] = js.undefined
-  var mergeStyles: js.UndefOr[IStylesheetConfig] = js.undefined
+class CallbackOps[A,B](cb: Callback[A,B]) {
 }
 
+object CallbackOps {
+}
+
+trait CallbackSyntax {
+  implicit def callbackSyntax[A,B](cb: Callback[A,B]) = new CallbackOps(cb)
+}

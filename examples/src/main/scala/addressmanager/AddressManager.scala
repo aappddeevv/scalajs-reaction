@@ -98,7 +98,7 @@ object AddressManager {
     val (request, setRequest) = React.useStateStrictDirect[Int](0)
     val (state, setState) = React.useStateStrictDirect[FetchState](FetchState())
 
-    React.useEffect(request){() =>
+    useEffect(request){() =>
       println("Fetching address data...")
       setState(state.copy(loading = true))
       dao
@@ -117,6 +117,7 @@ object AddressManager {
               cb(emptyAddressList)
           })
         )
+     ()
     }
     // fetch state, "make request"
     (state, () => setRequest(request + 1))

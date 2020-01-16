@@ -3,11 +3,12 @@
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package fabric
+package components
 
 import scala.scalajs.js
 import js.annotation._
 
-/** Import through office-ui-fabric-react/lib/Utilities. */
-@js.native
-@JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
-object Utilities extends uifabric_utilities_module
+object Overlay {
+  trait Props extends js.Object {
+  }
+}

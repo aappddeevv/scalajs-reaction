@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -13,8 +13,8 @@ import org.scalajs.dom
 import dom.html
 
 /*
- We using the implementation of events from http://github.com/japgolly/scalajs-react,
- many thanks to him and japgolly.
+ We are kind-of using the implementation of events from
+ http://github.com/japgolly/scalajs-react, many thanks.
  */
 
 trait Events {
@@ -37,16 +37,18 @@ trait Events {
   type ReactMouseEventI    = SyntheticMouseEvent[html.Input]
 
   /**
-    * @tparam T node type typically dom.EventTarget but should be the EventTarget type
-    *  e.g. HTMLButtonElement from scalajs.dom.raw or scalajs.dom.html.Button.
-    * A popular general choice is scalajs.dom.html.Element. T represents the type
-    * of the element that was the target of the event e.g. a click on a button.
+    * @tparam T node type typically dom.EventTarget but should be the
+    *  EventTarget type e.g. HTMLButtonElement (from scalajs.dom.raw) or
+    *  scalajs.dom.html.Button (which points to the raw type but is ergonomic).
+    *  A popular generic choice for `T` is scalajs.dom.html.Element. `T`
+    *  represents the type of the element that was the target of the event
+    *  e.g. a click on a button.
     *
     * @tparam E Synthetic event subclass
     */
   type EventHandler[T <: dom.EventTarget, E <: SyntheticEvent[T]] = js.Function1[E, Unit]
 
-  /** General event handler. */
+  /** General event handler parameterized on the receiver. */
   type ReactEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticEvent[T]]
   type MouseEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticMouseEvent[T]]
   type KeyboardEventHandler[T <: dom.EventTarget]    = EventHandler[T, SyntheticKeyboardEvent[T]]
@@ -78,6 +80,7 @@ trait BaseSyntheticEvent[E, +C, +T] extends js.Object {
   def stopPropagation(): Unit         = js.native
   def isPropagationStopped(): Boolean = js.native
   val `type`: String                  = js.native
+  /** Persist the event to process asynchronously */
   def persist(): Unit                 = js.native  
 }
 

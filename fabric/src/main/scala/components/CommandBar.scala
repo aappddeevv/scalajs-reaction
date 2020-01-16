@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -9,6 +9,7 @@ import scala.scalajs.js
 import js.annotation._
 import js.|
 import org.scalajs.dom
+import js.Dynamic.literal
 
 import react._
 import vdom._
@@ -20,19 +21,43 @@ object CommandBar {
   @JSImport("office-ui-fabric-react/lib/CommandBar", "CommandBar")
   object JS extends ReactJsComponent
 
-  def apply(props: Props) = React.createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   @js.native
   trait ICommandBar extends Focusable {
     def remeasure(): Unit = js.native
   }
 
-  trait Props extends HTMLAttributes[dom.html.Div] {
+  trait PropsBase extends HTMLAttributes[dom.html.Div] {
+    var theme: js.UndefOr[Theme] = js.undefined
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var componentRef: js.UndefOr[ICommandBar => Unit] = js.undefined
     var isSearchBoxVisble: js.UndefOr[Boolean]        = js.undefined
     var searchBoxPlaceholderText: js.UndefOr[String]  = js.undefined
-    val items: js.Array[IContextualMenuItem]
-    var farItems: js.UndefOr[js.Array[IContextualMenuItem]] = js.undefined
+    var farItems: js.UndefOr[js.Array[_ >: ItemProps]] = js.undefined
+    var overflowItems: js.UndefOr[js.Array[_ >: ItemProps]] = js.undefined
+    var overflowButtonProps: js.UndefOr[Button.Props] = js.undefined
+    var shiftOnReduce:  js.UndefOr[Boolean]        = js.undefined
+    var onReduceData: js.UndefOr[js.Function1[Data, js.UndefOr[Data]]] = js.undefined
+    var onGrowData: js.UndefOr[js.Function1[Data, Data]] = js.undefined
+    var onDataReduced: js.UndefOr[js.Function1[ItemProps, Unit]] = js.undefined
+    var onDataGrown: js.UndefOr[js.Function1[ItemProps, Unit]] = js.undefined
+  }
+
+  trait PropsInit extends PropsBase {
+    var items: js.UndefOr[js.Array[_ >: ItemProps]] = js.undefined
+  }
+
+  object PropsInit {
+    implicit class RichProps(p: PropsInit) {
+      def required(_items: js.Array[ItemProps]) = react.merge[Props](p, literal("items" -> _items))
+      def required = p.asInstanceOf[Props]
+    }
+  }
+
+  trait Props extends PropsBase {
+    /** Required in the end, but made optional so you can create props then merge. */
+    val items: js.Array[_ >: ItemProps]
   }
 
   trait ItemProps extends IContextualMenuItem {
@@ -53,6 +78,15 @@ object CommandBar {
     var root: js.UndefOr[IStyle] = js.undefined
     var primarySet: js.UndefOr[IStyle] = js.undefined
     var secondarySet: js.UndefOr[IStyle] = js.undefined
+  }
+
+  @js.native
+  trait Data extends js.Object {
+    val primaryItems: js.Array[ItemProps] = js.native
+    val overflowItems: js.Array[ItemProps] = js.native
+    val farItems: js.Array[ItemProps] = js.native
+    val minimumOverflowItems: js.UndefOr[Int] = js.native
+    val cacheKey: String = js.native
   }
 
 }

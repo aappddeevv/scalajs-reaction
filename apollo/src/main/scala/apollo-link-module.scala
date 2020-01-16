@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -47,7 +47,7 @@ trait Operation[TVars <: js.Object] extends js.Object {
   val variables: TVars = js.native
   val operationName: String = js.native
   val extensions: js.Object = js.native
-  def setContext(context: js.Object|js.Dynamic): js.Object = js.native
+  def setContext(context: js.Object | js.Dynamic): js.Object = js.native
   def getContext(): js.Object = js.native
   def toKey(): String = js.native
 }
@@ -83,12 +83,12 @@ class HttpLink(options: js.UndefOr[HttpLinkOptions] = js.undefined) extends Apol
 @js.native
 @JSImport("apollo-link-http", "createHttpLink")
 object createHttpLink extends js.Object {
-  def apply(linkOptions: js.UndefOr[FetchOptions|js.Dynamic] = js.undefined): ApolloLink = js.native
+  def apply(linkOptions: js.UndefOr[FetchOptions | js.Dynamic] = js.undefined): ApolloLink = js.native
 }
 
 object HttpLink {
   def apply(target: String) = new HttpLink(
-   new HttpLinkOptions {
+    new HttpLinkOptions {
       uri = target
     }
   )
@@ -97,14 +97,18 @@ object HttpLink {
 @js.native
 @JSImport("apollo-link-context", "setContext")
 object setContext extends js.Object {
-  def apply[TVars <: js.Object, C <: js.Object](setter: js.Function2[GraphQLRequest[TVars], C, js.Any]): ApolloLink = js.native  
+  def apply[TVars <: js.Object, C <: js.Object](setter: js.Function2[GraphQLRequest[TVars], C, js.Any]): ApolloLink =
+    js.native
 }
 
 @js.native
 @JSImport("apollo-link-context", "setContext")
 object setContextF extends js.Object {
+
   /** (QL request, previous context in chain of context changers) => promise new context. Using "updater" pattern. */
-  def apply[TVars <: js.Object, C <: js.Object](setter: js.Function2[GraphQLRequest[TVars], C, js.Thenable[_]]): ApolloLink = js.native
+  def apply[TVars <: js.Object, C <: js.Object](
+      setter: js.Function2[GraphQLRequest[TVars], C, js.Thenable[_]]
+  ): ApolloLink = js.native
 }
 
 // apollo-link-http-common
@@ -127,19 +131,20 @@ trait ServerParseError extends js.Error {
 trait ErrorResponse extends js.Object {
   val graphQLErrors: js.UndefOr[js.Array[GraphQLError]] = js.native
   val networkError: js.Error | ServerError | ServerParseError = js.native
-  def response[T <: js.Any, Ext <: js.Object]: js.UndefOr[ExecutionResult[T,Ext]] = js.native
+  def response[T <: js.Any]: js.UndefOr[ExecutionResult[T]] = js.native
   val operation: Operation[js.Object] = js.native
-  def forward[TVars <: js.Object, T <: js.Any, C <: js.Object, Ext <: js.Object]: NextLink[TVars, T, C, Ext] = js.native
+  def forward[TVars <: js.Object, T <: js.Any]: NextLink[TVars, T] = js.native
 }
 
 @js.native
 @JSImport("apollo-link-error", JSImport.Namespace)
 object apollo_link_error_module extends js.Object {
-  def onError[T <: js.Any, C <: js.Object, Ext <: js.Object](errorHandler: ErrorHandler[T,C,Ext]): ApolloLink = js.native
+  def onError[T <: js.Any](errorHandler: ErrorHandler[T]): ApolloLink =
+    js.native
 }
 
 // apollo-link
 @js.native
-trait FetchResult[T <: js.Any, C <: js.Object, Ext <: js.Object] extends ExecutionResult[T,Ext] {
-  val context: js.UndefOr[C]
+trait FetchResult[T <: js.Any] extends ExecutionResult[T] {
+  def context[C <: js.Object]: js.UndefOr[C]
 }

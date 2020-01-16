@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -71,8 +71,10 @@ object Panel {
     val custom = 7.asInstanceOf[Type]
   }
 
-  trait Props extends ComponentRef[IPanel] {
+  trait Props extends ComponentRef[IPanel] with Theme {
     var isOpen: js.UndefOr[Boolean] = js.undefined
+    var allowTouchBodyScroll: js.UndefOr[Boolean] = js.undefined    
+    var focusTrapZoneProps: js.UndefOr[FocusTrapZone.Props] = js.undefined
     var hasCloseButton: js.UndefOr[Boolean] = js.undefined
     var isLightDismiss: js.UndefOr[Boolean] = js.undefined
     var isHiddenOnDismiss: js.UndefOr[Boolean] = js.undefined
@@ -82,7 +84,6 @@ object Panel {
     var onDismiss: js.UndefOr[js.Function1[ReactEvent[dom.html.Element], Unit]] = js.undefined
     var onDismissed: js.UndefOr[js.Function0[Unit]] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-    var theme: js.UndefOr[ITheme] = js.undefined
     var `type`: js.UndefOr[Type] = js.undefined
     var className: js.UndefOr[String] = js.undefined
     var customWidth: js.UndefOr[String] = js.undefined
@@ -90,9 +91,12 @@ object Panel {
     var headerClassName: js.UndefOr[String] = js.undefined
     var elementToFocusOnDismiss: js.UndefOr[dom.html.Element] = js.undefined
     var layerProps: js.UndefOr[Layer.Props] = js.undefined
+    var overlapProps: js.UndefOr[Overlay.Props] = js.undefined
     var onLightDismissClick: js.UndefOr[js.Function0[Unit]] = js.undefined
-    var onOuterClick: js.UndefOr[js.Function0[Unit]] = js.undefined
 
+    var onOpen: js.UndefOr[js.Function0[Unit]] = js.undefined
+    var onOpened: js.UndefOr[js.Function0[Unit]] = js.undefined
+    var onOuterClick: js.UndefOr[js.Function0[Unit]] = js.undefined    
     var onRenderNavigation: js.UndefOr[IRenderFunction[Props]] = js.undefined
     /** This is not quite right. See API docs. */
     var onRenderHeader: js.UndefOr[IRenderFunction[Props]] = js.undefined

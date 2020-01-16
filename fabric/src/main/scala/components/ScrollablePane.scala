@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -21,7 +21,7 @@ object ScrollablePane {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    React.createElement(JS, props)(children: _*)
+    createElement(JS, props)(children: _*)
 
   @js.native
   trait IScrollablePane extends js.Object {
@@ -33,11 +33,15 @@ object ScrollablePane {
       extends HTMLAttributes[dom.html.Element]
       with ComponentRef[IScrollablePane] {
     val initialScrollPosition: js.UndefOr[Double] = js.undefined
-    var scrollbarVisibility: js.UndefOr[Boolean] = js.undefined
+    var scrollbarVisibility: js.UndefOr[Visibility] = js.undefined
+    var theme: js.UndefOr[ITheme] = js.undefined
+    var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
   }
 
   trait StyleProps extends js.Object {
-    val className: js.UndefOr[String] = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var theme: js.UndefOr[ITheme] = js.undefined
+    var scrollbarVisibility: js.UndefOr[Visibility] = js.undefined
   }
 
   trait Styles extends fabric.styling.IStyleSetTag {
@@ -51,9 +55,8 @@ object ScrollablePane {
   @js.native
   sealed trait Visibility extends js.Any
   object Visibility {
-    var auto = "auto"
-    var always = "always"
+    var auto = "auto".asInstanceOf[Visibility]
+    var always = "always".asInstanceOf[Visibility]
   }
-
 }
 

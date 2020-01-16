@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -27,8 +27,8 @@ object Button {
       extends ComponentRef[IButton]
       with WithIconProps
       with AllHTMLAttributes[dom.html.Button]
-      with Attributes
-      with Theme {
+      with Theme
+      with ReactPropsJs {
     // having variance problems
     //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
     //var href: js.UndefOr[String] = js.undefined
@@ -94,7 +94,7 @@ object Button {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      React.createElement(JS, props)(children: _*)
+      createElement(JS, props)(children: _*)
   }
 
   object Primary {
@@ -103,7 +103,52 @@ object Button {
     object JS extends ReactJsComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      React.createElement(JS, props)(children: _*)
+      createElement(JS, props)(children: _*)
+  }
+
+  object Action {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/Button", "ActionButton")
+    object JS extends ReactJsComponent
+
+    def apply(props: Props = null)(children: ReactNode*) =
+      createElement(JS, props)(children: _*)
+  }
+
+  object CommandBar {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/Button", "CommandBarButton")
+    object JS extends ReactJsComponent
+
+    def apply(props: Props = null)(children: ReactNode*) =
+      createElement(JS, props)(children: _*)
+  }
+
+    object Command {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/Button", "CommandButton")
+    object JS extends ReactJsComponent
+
+    def apply(props: Props = null)(children: ReactNode*) =
+      createElement(JS, props)(children: _*)
+  }
+
+  object Compound {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/Button", "CompoundButton")
+    object JS extends ReactJsComponent
+
+    def apply(props: Props = null)(children: ReactNode*) =
+      createElement(JS, props)(children: _*)
+  }
+
+  object MessageBar {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/Button", "MessageBarButton")
+    object JS extends ReactJsComponent
+
+    def apply(props: Props = null)(children: ReactNode*) =
+      createElement(JS, props)(children: _*)
   }
 
   object Icon {
@@ -111,8 +156,8 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "IconButton")
     object JS extends ReactJsComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
-      React.createElement(JS, props)(children: _*)
+    def apply(props: Props = null)(children: ReactNode*) = createElement(JS, props)(children: _*)
+    def only(props: Props = null) = createElement0(JS, props)
   }
 
 

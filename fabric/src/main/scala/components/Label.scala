@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -20,10 +20,10 @@ object Label {
   object JS extends ReactJsComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    React.createElement(JS, props)(children: _*)
+    createElement(JS, props)(children: _*)
 
   def apply(children: ReactNode*) =
-    React.createElement(JS, null)(children: _*)
+    createElement(JS, null)(children: _*)
 
 
   trait Props extends LabelHTMLAttributes[html.Label] with ComponentRef[js.Any] with Disabled with Theme {

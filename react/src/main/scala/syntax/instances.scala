@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -18,11 +18,10 @@ import js.JSConverters._
  * general implicit create an `UndefOr[T]`.
   */
 trait ValueConverters {
-  implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) =
-    react.arrayToElement(arr)
+  implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) = arrayToElement(arr)
 
   // shouldn't these just be collapsed into a scala.AnyVal?
-  implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = react.arrayToElement(s)
+  implicit def _seqToElement[T <: ReactNode](s: Seq[T]) = arrayToElement(s.toJSArray)
 
   implicit def _anyValToElement(v: AnyVal): ReactNode = v.asInstanceOf[ReactNode]
 

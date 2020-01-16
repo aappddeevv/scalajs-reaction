@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -112,9 +112,10 @@ object EffectArg {
   
   @inline implicit def fromThunk(f: () => Unit): EffectArg =
     js.Any.fromFunction0[Unit](f).asInstanceOf[EffectArg]
-
-  @inline implicit def fromAny[A](f: () => A): EffectArg =
-    js.Any.fromFunction0[A](f).asInstanceOf[EffectArg]
+  
+  // this caused too many errors/warinings from reactjs about a bad return value
+  //@inline implicit def fromAny[A](f: () => A): EffectArg =
+  //  js.Any.fromFunction0[A](f).asInstanceOf[EffectArg]
 
   @inline implicit def fromThunkCb(f: () => (() => Unit)): EffectArg =
     convertEffectCallbackArg(f).asInstanceOf[EffectArg]

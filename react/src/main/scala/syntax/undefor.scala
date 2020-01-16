@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -7,6 +7,7 @@ package react
 import scala.scalajs.js
 import js._
 
+/** Handle js.UndefOr. Note that js.Undef.orNull exists in scala.js 1.0 */
 trait UndefOrCommon[A] {
   val a: UndefOr[A]
 
@@ -72,11 +73,14 @@ final case class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCom
 
 /** Handled js.UndefOr[T|Null] directly vs needing to flatmap into it. */
 final case class JsUndefOrNullOps[T](val a: UndefOr[T|Null]) {
-  /** Treat null as undefined. */
+  /** Treat null as undefined and change type from T|Null to T. */
   @inline def absorbNull: js.UndefOr[T] = a.flatMap{value =>
     if(value == null) js.undefined
     else value.asInstanceOf[js.UndefOr[T]]
   }
+
+  /** Absorb the null so that js.UndefOr[T|Null] => js.UndefOr[T] */
+  @inline def ?? = absorbNull
 
   /** T|Null may still have T not being truthy, so absorb null and non-truthiness => js.undefined. */
   @inline def absorbNullKeepTruthy: js.UndefOr[T] = a flatMap { value =>
@@ -84,7 +88,7 @@ final case class JsUndefOrNullOps[T](val a: UndefOr[T|Null]) {
   }
 }
 
-/** Note that js.UndefOr already has a `.orNull` method. */
+/** Note that js.UndefOr and js.| already have a `.orNull` method. */
 final case class JsUndefOrOps[A](a: UndefOr[A]) extends UndefOrCommon[A] {}
 
 trait JsUndefOrSyntax {

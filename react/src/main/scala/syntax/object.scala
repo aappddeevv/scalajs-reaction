@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -12,7 +12,7 @@ final case class JsObjectOps[A <: js.Object](o: A) {
   def asAnyDict                                = o.asInstanceOf[js.Dictionary[js.Any]]
   def asDyn                                    = o.asInstanceOf[js.Dynamic]
   def asUndefOr[A]: js.UndefOr[A]              = o.asInstanceOf[js.UndefOr[A]]
-  def combine(that: A) = react.merge[A](o, that)
+  def combine(that: js.UndefOr[A]) = react.merge[A](o, that)
   def combineDynamic(that: js.Dynamic) = react.merge[A](o, that.asInstanceOf[A])
   def combineGeneric(that: js.Object) = react.merge[A](o, that.asInstanceOf[A])
   def combineTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]

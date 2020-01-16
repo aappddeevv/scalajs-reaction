@@ -2,6 +2,11 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-import scala.scalajs.js
+package react
 
-package object graphql
+/** Simple effects for UI code. DO NOT USE, NOT SURE I'LL KEEP THIS. */
+abstract class Callback[-A,+B] extends (A => B) {
+}
+
+object Callback {
+}

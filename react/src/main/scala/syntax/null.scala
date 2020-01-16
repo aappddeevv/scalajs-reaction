@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -19,6 +19,7 @@ x.fold[String | Unit](())(x => x)
   * sometimes its better to create a new target type then target implicits to
   * convert from each individual type (in the or) to the new target type. You
   * must model your type as `A|Null` for this implicit to be picked up.
+ * Note that `js.|.orNull` exist in scala.js 1.0.
   */
 final case class OrNullOps[A](a: A | Null) {
   @inline def isDefined: Boolean = a != null
@@ -26,9 +27,6 @@ final case class OrNullOps[A](a: A | Null) {
 
   /** Convert an A|Null to a well formed Option. Should we check or undefined? */
   def toNonNullOption: Option[A] =
-    // doesn't Option(a.asInstanceOf[A]) work?
-    //if (a == null) Option.empty[A]
-    //else Option(a.asInstanceOf[A])
     Option(a.asInstanceOf[A])
 
   /** Like .toNonNullOption */
@@ -45,13 +43,22 @@ final case class OrNullOps[A](a: A | Null) {
     if (!isDefined) js.undefined
     else js.defined(a.asInstanceOf[A])
 
+  /** Avoid calling toUndefOr */
+  def getOrElse[B >: A](b: B): B = toUndefOr.getOrElse(b)
+
   def toTruthyUndefOr: js.UndefOr[A] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
       js.defined(a.asInstanceOf[A])
     else js.undefined
 
   /** Collapse A|Null => A but the value may be null! You are on your own */
-  def merge: A = forceGet
+  @inline def merge: A = forceGet
+
+  /** Absorb the null and change A|Null => A */
+  @inline def absorbNull: A = forceGet
+
+  /** Same as absorbNull */
+  @inline def ?? = absorbNull
 }
 
 trait OrNullSyntax {

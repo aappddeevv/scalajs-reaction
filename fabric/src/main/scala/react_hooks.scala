@@ -2,6 +2,6 @@
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
-import scala.scalajs.js
+package fabric
 
-package object graphql
+package object react_hooks extends api

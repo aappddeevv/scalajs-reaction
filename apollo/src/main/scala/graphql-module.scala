@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -40,15 +40,16 @@ trait GraphQLError extends js.Error {
   //path
   //nodes
   //source
-  //positions 
+  //positions
   //originalError
   //extensions
 }
 
+/** Return type T, Ext is not used alot so it remains member local. */
 @js.native
-trait ExecutionResult[T <: js.Any, Ext <: js.Object] extends js.Object {
+trait ExecutionResult[T <: js.Any] extends js.Object {
   val data: js.UndefOr[T] = js.native
   // could also just have this be a js.Dictionary[js.Any]
-  val extensions: js.UndefOr[Ext] = js.native
+  def extensions[Ext <: js.Object]: js.UndefOr[Ext] = js.native
   val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
 }

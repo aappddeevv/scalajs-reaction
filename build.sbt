@@ -28,7 +28,7 @@ lazy val licenseSettings = Seq(
     (HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment),
   headerLicense := Some(
     HeaderLicense.Custom(
-      """|Copyright (c) 2018 The Trapelo Group LLC
+      """|Copyright (c) 2019 The Trapelo Group LLC
          |This software is licensed under the MIT License (MIT).
          |For more information see LICENSE or https://opensource.org/licenses/MIT
          |""".stripMargin
@@ -97,7 +97,6 @@ lazy val jssettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    //"org.scala-js" %%% "scalajs-dom" % "0.9.7"
 	"org.scala-js" %%% "scalajs-dom" % "0.9.8"
   )
 )
@@ -110,12 +109,12 @@ lazy val commonSettings = Seq(
   dependencyOverrides ++= Seq(
     // none
   ),
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full), // was 0.10.3
   autoAPIMappings := true
 )
 
-// supports scala 2.13 and scalajs 0.6
-val catsVersion = "2.0.0-M4"
+// supports scala 2.13 and scalajs 0.6/1.0.0
+val catsVersion = "2.1.0"
 
 lazy val fpsettings = Seq(
   libraryDependencies ++= Seq(
@@ -126,8 +125,7 @@ lazy val fpsettings = Seq(
 lazy val exampleFPSettings = Seq(
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-core" % catsVersion, 
-    "org.typelevel" %%% "cats-effect" % catsVersion,
-    //"tech.sparse" %%% "trail" % "0.1.2", // 0.1.2 uses newest cats
+    //"org.typelevel" %%% "cats-effect" % catsVersion,
   )
 )
 

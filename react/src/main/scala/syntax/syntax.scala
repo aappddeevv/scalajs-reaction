@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -42,6 +42,7 @@ trait AllSyntax
     with JsRefSyntax
     with JSPromiseSyntax
     with ContextSyntax
+    with CallbackSyntax
 
 object syntax {
   object all         extends AllSyntax
@@ -58,4 +59,5 @@ object syntax {
   object jsref extends JsRefSyntax
   object jspromise extends JSPromiseSyntax
   object context extends ContextSyntax
+  object callback extends CallbackSyntax
 }

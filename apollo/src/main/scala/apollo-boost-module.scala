@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -49,7 +49,7 @@ trait ClientStateConfig extends js.Object {
  * imports import this as ApolloClient which is confusing.
  */
 @js.native
-@JSImport("apollo-boost", "DefaultClient")
+@JSImport("apollo-boost", JSImport.Default)
 class DefaultClient(config: js.UndefOr[PresetConfig[_]]=js.undefined) extends apollo_client.ApolloClient
 
 trait PresetConfig[TVars <: js.Object] extends js.Object {

@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -143,6 +143,9 @@ trait React {
 
   /** Effect is run on every render which is probably too much. */
   def useEffectAlways(didUpdate: EffectArg) =
+    // 0.6
+    //ReactJS.useEffect(didUpdate, undefinedDependencies)
+    // 1.0
     ReactJS.useEffect(didUpdate, undefinedDependencies)
 
   /** Effect is run when dependencies change. */
@@ -185,6 +188,10 @@ trait React {
 
   def useDebugValue[T](value: T, format: T => String): Unit =
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
+
+  /** Default API is for no-arg callback. Declare as val yourCB = useCallback... */
+  def useCallback[T](callback: js.Function0[T]): js.Function0[T] =
+    ReactJS.useCallback(callback, emptyDependencies).asInstanceOf[js.Function0[T]]
 
   /** Default API is for no-arg callback. Declare as val yourCB = useCallback... */
   def useCallback[T](callback: js.Function0[T], dependencies: Dependencies): js.Function0[T] =
@@ -240,7 +247,7 @@ trait React {
     (p._1.asInstanceOf[js.Function1[js.Function0[Unit], Unit]], p._2.asInstanceOf[Boolean])
   }
 
-  /** Use a deferred value. Config indicats how long the value is good for. */
+  /** Use a deferred value. Config indicates how long the value is good for. */
   def useDeferredValue[T](value: T, config: DeferredValueConfig): T =
     ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
 

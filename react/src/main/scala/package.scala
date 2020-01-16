@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -18,15 +18,19 @@ package object react extends react.React {
   /** Hook dependencies data structure. */
   type Dependencies = js.UndefOr[js.Array[js.Any]]
 
-  /** Empty array. */
+  /** Empty array which is different than undefinedDependencies. Typically
+   * indicates mount/unmount hook comptutation.
+   */
   val emptyDependencies: Dependencies = js.defined(js.Array())
 
-  /** Undefined array. */
+  /** Undefined array typically indicates per render hook computation. */
   // for 1.0.0 this needs to be defined as type Unit
-  //val undefinedDependencies: Unit = js.undefined
-  val undefinedDependencies = js.undefined
+  val undefinedDependencies: Unit = js.undefined
+  //val undefinedDependencies = js.undefined
 
-  /** Create a dependencies array from *any* scala objects. Make sure this is what you want. */
+  /** Create a dependencies array from *any* scala objects. Make sure this is what
+   * you want.
+   */
   def dependencies(values: scala.Any*): Dependencies =
     values.toJSArray.asInstanceOf[Dependencies]
 
@@ -195,7 +199,7 @@ package object react extends react.React {
   @js.native
   trait ReactJsFunctionComponent extends js.Object
 
-  /** Not sure why I still have this. */
+  /** Not sure why I still have this. Probably should avoid. */
   @js.native
   trait ReactJsLazyComponent extends ReactJsComponent
 
@@ -264,33 +268,40 @@ package object react extends react.React {
   def refToJs[T](ref: ReactRef[T]): js.Dynamic = ref.asInstanceOf[js.Dynamic]
 
   /**
-   * Merge js.Dynamic. See [[merge]] and use that.
+   * Merge js.Dynamics into a fresh object. You should really use [[merge]].
    * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
    */
   def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
-    // not js.Any? maybe keep js or scala values in here....
-    val result = js.Dictionary.empty[Any]
-    for (source <- objs) {
-      if(source != null)
-        for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-          result(key) = value
-    }
-    result.asInstanceOf[js.Dynamic]
+    js.Object.assign(js.Dynamic.literal(),
+      objs.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[js.Dynamic]
+    // // not js.Any? maybe keep js or scala values in here....
+    // val result = js.Dictionary.empty[Any]
+    // for (source <- objs) {
+    //   if(source != null)
+    //     for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+    //       result(key) = value
+    // }
+    // result.asInstanceOf[js.Dynamic]
   }
 
   /**
-   * Merge objects and Ts together. Good for merging props with data-
-   * attributes. This is like `Object.assign`. Last parameter wins.  Creates
-   * and returns new object. Input objects are not modified.
+   * Shallow merge objects into a new object and cast. Useful when merging props
+   * with data- attributes or component properties together. Last value wins. A
+   * syntax version of this function is available on js objects called
+   * `combine`. Creates and returns new object. Note, should we just call
+   * js.Object.assign here?
    */
   def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null *): T = {
-    val result = js.Dictionary.empty[Any]
-    for (source <- objs) {
-      if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
-        for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-          result(key) = value
-    }
-    result.asInstanceOf[T]
+    js.Object.assign(js.Dynamic.literal(),
+      objs.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[T]
+    //objs.toJSArray.asInstanceOf[js.Array[js.Object]]:_*).asInstanceOf[T]
+    // val result = js.Dictionary.empty[Any]
+    // for (source <- objs) {
+    //   if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
+    //     for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+    //       result(key) = value
+    // }
+    // result.asInstanceOf[T]
   }
 
   /** Shallow copy. Should we call Object.assign directly? Faster? */
@@ -310,11 +321,11 @@ package object react extends react.React {
     else Option(t.asInstanceOf[T])
   }
 
-  /** Render something or return a null element. */
+  /** Render something or return a null element. Render is by name. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
     if(cond) render else nullElement
 
-  /** Render something if not cond or return a null element. */
+  /** Render something if not cond or return a null element. Render is by name. */
   def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
     if(!cond) render else nullElement
 

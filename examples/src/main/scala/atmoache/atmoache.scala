@@ -190,7 +190,7 @@ object app {
       State()
     )
 
-    React.useEffect(state.cityName){() =>
+    useEffect(state.cityName){() =>
       state.cityName match {
         case Some(name) =>
           dao.fetch(name)
@@ -206,6 +206,7 @@ object app {
             }
         case None => dispatch(WeatherLoaded(emptyWeatherList))
       }
+     ()
     }
 
     Fragment(

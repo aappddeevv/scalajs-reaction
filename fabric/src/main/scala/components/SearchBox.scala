@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The Trapelo Group LLC
+// Copyright (c) 2019 The Trapelo Group LLC
 // This software is licensed under the MIT License (MIT).
 // For more information see LICENSE or https://opensource.org/licenses/MIT
 
@@ -20,7 +20,7 @@ object SearchBox {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null) =
-    React.createElement0(JS, props)
+    createElement0(JS, props)
 
   @js.native
   trait ISearchBox extends Focusable {
