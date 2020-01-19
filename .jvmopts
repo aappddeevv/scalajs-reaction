@@ -1,0 +1,6 @@
+-Xss8m
+-Xms1G
+-Xmx8G
+-Dsun.reflect.inflationThreshold=50
+-XX:-UseJVMCINativeLibrary
+

@@ -1,23 +1,44 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 
 import scala.scalajs.js
-import js.annotation._
+
+import js.Dynamic.literal
+
+/** Removing only the "r" on the end may be confusing... */
+final class ReactContextOps2[T](private val ctx: ReactContext[T]) extends AnyVal {
+
+  def provide(value: T)(children: ReactNode*) =
+    createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]))(children: _*)
+
+  def consume(f: T => ReactNode, key: String) =
+    createElement(ctx.Consumer, literal("key" -> key))(js.Any.toFunction1(f).asInstanceOf[ReactNode])
+
+  def consume(f: T => ReactNode) =
+    createElement(ctx.Consumer, null)(js.Any.toFunction1(f).asInstanceOf[ReactNode])
+}
 
 trait ContextSyntax {
-
-  implicit class ReactContextOps2[T](ctx: ReactContext[T]) {
-
-    /** Create provider that provides an optional value. */
-    def Provider(value: T)(children: ReactNode*) =
-      context.provider[T](ctx)(value)(children: _*)
-
-    /** Create a consumer that takes an Option[T] */
-    def Consumer(f: T => ReactNode, key: Option[String] = None) =
-      context.consumer[T](ctx)(js.Any.toFunction1(f))
-  }
-
+  @inline implicit def contextToRichContext[T](ctx: ReactContext[T]) =
+    new ReactContextOps2[T](ctx)
 }

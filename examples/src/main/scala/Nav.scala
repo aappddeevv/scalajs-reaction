@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -10,7 +7,7 @@ import js.Dynamic.{literal=>jsobj}
 import js.annotation._
 import js.JSConverters._
 
-import _root_.react._
+import react._
 import implicits._
 
 import vdom._

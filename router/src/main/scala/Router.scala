@@ -1,13 +1,12 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
 package router
 package browser
 
 import scala.scalajs.js
 import org.scalajs.dom
+import react._
+import react.implicits._
+import vdom._
 
 /** Specification of a specific set of information for routing. This one is
   * mostly based on the DOM but its contents can be generically used in most
@@ -61,25 +60,25 @@ case class ParsedPathParts(
   */
 trait Router {
 
-  private[ttg] def makeEvent(t: String): dom.Event = {
+  private[router] def makeEvent(t: String): dom.Event = {
     js.Dynamic.newInstance(js.Dynamic.global.Event)(t).asInstanceOf[dom.Event]
   }
 
-  private[ttg] def search(): Option[String] = {
+  private[router] def search(): Option[String] = {
     dom.window.location.search match {
       case "" | "?" => None
       case x        => Option(x.drop(1)) // drop ?
     }
   }
 
-  private[ttg] def hash(): Option[String] = {
+  private[router] def hash(): Option[String] = {
     dom.window.location.hash match {
       case "" | "#" => None
       case x        => Option(x.drop(1)) // drop #
     }
   }
 
-  private[ttg] def path(): Seq[String] = {
+  private[router] def path(): Seq[String] = {
     dom.window.location.pathname match {
       case "" | "/" => Nil
       case x        =>
@@ -89,7 +88,7 @@ trait Router {
     }
   }
 
-  private[ttg] def url() = {
+  private[router] def url() = {
     // dom.window.location.pathname
     PathParts(path(), hash(), search(), dom.window.location.pathname)
   }

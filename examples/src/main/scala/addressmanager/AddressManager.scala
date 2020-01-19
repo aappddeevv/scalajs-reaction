@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -159,14 +156,14 @@ object AddressManager {
     val activeId = useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
     val active = useSelector[GlobalAppState, js.UndefOr[Address]](_.addressManager.active.toUndefOr)
     val dispatchG = useDispatch[GlobalAppAction]()
-    val setActive = React.useCallback[Id|Null, Address|Null, Unit](dispatchG)((id, addr) =>
+    val setActive = useCallback[Id|Null, Address|Null, Unit](dispatchG)((id, addr) =>
       dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny).asInstanceOf[GlobalAppAction]))
 
     // react hooks
     // see https://github.com/OfficeDev/office-ui-fabric-react/issues/9882
     // we solve it via a lazy val
     lazy val selection: ISelection[Address] =
-      React.useMemo[ISelection[Address]](() => createSelection{ () =>
+      React.useMemo[ISelection[Address]](deps(setActive))(() => createSelection{ () =>
         dom.console.log(s"$Name: Selection.onSelectionChanged(): notification via Selection object!", selection.getSelection())
         val selected = selection.getSelection().headOption
         selected.fold(
@@ -176,7 +173,7 @@ object AddressManager {
           // Some
           addr => setActive(addr.customeraddressid.get, addr) // :-) with get
         )
-      }, dependencies(setActive))
+      })
     val (fetchState, doFetch) = useFetch(props.dao, selection.setItems(_, true))
     dom.console.log(s"$Name: loading", fetchState.loading)
     React.useEffectMounting{() =>
@@ -188,12 +185,12 @@ object AddressManager {
       fetchState.data.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
     }.toOption
 
-    val addressStuff = React.useMemo(active)(() => {
+    val addressStuff = useMemo(active)(() => {
       val t = active.toNonNullOption
       (AddressDetail(t), AddressSummary(amstyles.footer.asUndefOr[String].toOption, t))
     })
 
-    val commandBar = React.useMemo(fetchState.loading, doFetch, setActive)(() => {
+    val commandBar = useMemo(unsafe_deps(fetchState.loading, doFetch, setActive))(() => {
       dom.console.log(s"$Name: Calculating props", fetchState.loading)
       CommandBar(cbopts(fetchState.loading, () => { setActive(null, null); doFetch() }))
     })

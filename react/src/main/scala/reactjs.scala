@@ -1,27 +1,40 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 
 import scala.scalajs.js
+
 import js.annotation._
 import js.|
-import js._
-import js.JSConverters._
-import js.Dynamic.{literal => lit}
-
-import org.scalajs.dom
 
 @js.native
 trait Children extends js.Object {
- def map(children: ReactChildren, f: js.Function1[ReactElement, ReactElement]): ReactChildren = js.native
-    def map(children: ReactChildren, f: js.Function2[ReactElement, Int, ReactElement]): ReactChildren = js.native
-    def forEach(children: ReactChildren, f: js.Function1[ReactElement, Unit]): Unit = js.native
-    def forEach(children: ReactChildren, f: js.Function2[ReactElement, Int, Unit]): Unit = js.native
-    def only(children: ReactChildren): ReactElement = js.native
-    def count(children: ReactChildren): Int = js.native
-    def toArray(children: ReactChildren): js.Array[ReactElement] = js.native
+  def map(children: ReactChildren, f: js.Function1[ReactElement, ReactElement]): ReactChildren      = js.native
+  def map(children: ReactChildren, f: js.Function2[ReactElement, Int, ReactElement]): ReactChildren = js.native
+  def forEach(children: ReactChildren, f: js.Function1[ReactElement, Unit]): Unit                   = js.native
+  def forEach(children: ReactChildren, f: js.Function2[ReactElement, Int, Unit]): Unit              = js.native
+  def only(children: ReactChildren): ReactElement                                                   = js.native
+  def count(children: ReactChildren): Int                                                           = js.native
+  def toArray(children: ReactChildren): js.Array[ReactElement]                                      = js.native
 }
 
 trait TransitionConfig extends js.Object {
@@ -33,10 +46,10 @@ trait DeferredValueConfig extends js.Object {
 }
 
 @js.native
-trait Concurrent extends js.Object {
-  def useTransition(config: TransitionConfig): js.Tuple2[js.Any, js.Any] = js.native
+private[react] trait Concurrent extends js.Object {
+  def useTransition(config: TransitionConfig): js.Tuple2[js.Any, js.Any]   = js.native
   def useDeferredValue(value: js.Any, config: DeferredValueConfig): js.Any = js.native
-  val SuspenseList: ReactJsComponent = js.native
+  val SuspenseList: ReactJsComponent                                       = js.native
   // unstable_withSuspenseConfig
 }
 
@@ -52,24 +65,20 @@ private[react] trait ReactJS extends js.Object with Concurrent {
    * React.Component). P is kept very general here an is not even forced to be a
    * js object.
    */
-  def createElement[P](
-      el: ReactType,
-      props: UndefOr[P],
-      children: ReactNode*): ReactElement = js.native
+  def createElement[P](el: ReactType, props: js.UndefOr[P], children: ReactNode*): ReactElement = js.native
 
   // should not use rally ever...
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
 
-  val Fragment: ReactJsComponent = js.native
+  val Fragment: ReactJsComponent   = js.native
   val StrictMode: ReactJsComponent = js.native
-  val Suspense: ReactJsComponent = js.native
+  val Suspense: ReactJsComponent   = js.native
 
-  def createContext[T](
-      defaultValue: T,
-      calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] = js.native
+  def createContext[T](defaultValue: T, calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] =
+    js.native
 
   /** Create a ref to be assigned to a "ref" property on a component. */
-  def createRef[T](): react.ReactRef[T]  = js.native
+  def createRef[T](): react.ReactRef[T] = js.native
 
   // needs better typing :-)
   def forwardRef[T](): js.Object = js.native
@@ -84,9 +93,10 @@ private[react] trait ReactJS extends js.Object with Concurrent {
    * to be wrapped properly to use with this facade. `P` is kept very general
    * here.
    */
-  def memo[P](f: js.Function1[P,ReactNode],
-    compare: js.UndefOr[js.Function2[P,P,Boolean]] = js.undefined):
-      js.Function1[P, ReactElement] = js.native
+  def memo[P](
+    f: js.Function1[P, ReactNode],
+    compare: js.UndefOr[js.Function2[P, P, Boolean]] = js.undefined
+  ): js.Function1[P, ReactElement] = js.native
 
   def isValidElement(obj: js.Object): Boolean = js.native
 }
@@ -99,7 +109,7 @@ trait DynamicImport extends js.Object {
   val `default`: ReactJsComponent
 }
 
-/** Magnet pattern to create a friendly arg converter for effect hooks. As much 
+/** Magnet pattern to create a friendly arg converter for effect hooks. As much
  * as possible these need to be casts vs creating new functions.
  */
 @js.native
@@ -109,10 +119,10 @@ object EffectArg {
 
   @inline implicit def fromThunkJS(f: js.Function0[Unit]): EffectArg =
     f.asInstanceOf[EffectArg]
-  
+
   @inline implicit def fromThunk(f: () => Unit): EffectArg =
     js.Any.fromFunction0[Unit](f).asInstanceOf[EffectArg]
-  
+
   // this caused too many errors/warinings from reactjs about a bad return value
   //@inline implicit def fromAny[A](f: () => A): EffectArg =
   //  js.Any.fromFunction0[A](f).asInstanceOf[EffectArg]
@@ -124,24 +134,29 @@ object EffectArg {
     convertEffectCallbackArg(f).asInstanceOf[EffectArg]
 
   @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
-    ({() => f()}:js.Function0[js.Function0[A]]).asInstanceOf[EffectArg]
+    ({ () =>
+      f()
+    }: js.Function0[js.Function0[A]]).asInstanceOf[EffectArg]
 }
 
 @js.native
-private [react] trait Hooks extends js.Object {
+private[react] trait Hooks extends js.Object {
 
   // expose imperative code on ref.current
-  def useImperativeHandle[T, R <: js.Object](ref: MutableRef[T], thunk: js.Function0[R],
-    dependencies: Dependencies): Unit = js.native
+  def useImperativeHandle[T, R <: js.Object](
+    ref: MutableRef[T],
+    thunk: js.Function0[R],
+    dependencies: js.UndefOr[Dependencies]
+  ): Unit = js.native
 
   def useContext[T](context: ReactContext[T]): T = js.native
 
   def useDebugValue[T](value: T, format: js.UndefOr[js.Function1[T, String]] = js.undefined): Unit = js.native
 
   // callback and the return value will require extensive casting
-  def useCallback(cb: js.Any, deps: Dependencies): js.Any = js.native
+  def useCallback(cb: js.Any, deps: js.UndefOr[Dependencies]): js.Any = js.native
 
-  def useMemo[T](value: js.Function0[T], dependencies: Dependencies): T = js.native
+  def useMemo[T](value: js.Function0[T], dependencies: Dependencies | Unit): T = js.native
 
   def useRef[T](initialValue: T): MutableRef[T] = js.native
 
@@ -154,21 +169,20 @@ private [react] trait Hooks extends js.Object {
   def useReducer[S, A, I](
     reducer: js.Function2[S, A, S],
     initialArg: I,
-    init: js.Function1[I,S]
+    init: js.Function1[I, S]
   ): js.Tuple2[S, Dispatch[A]] = js.native
 
   // js.Tuple2 is a shortcut to a 2 element array
   def useState[T](initialValue: js.Any): js.Tuple2[T, js.Any] = js.native
 
   // didUpdate is () => Unit or () => (() => Unit)
-  def useEffect(didUpdate: js.Any, dependencies: Dependencies): Unit = js.native
+  def useEffect(didUpdate: js.Any, dependencies: Dependencies | Unit): Unit = js.native
 
   // didUpdate is () => Unit or () => (() => Unit)
-  def useLayoutEffect(didUpdate: js.Any,
-    dependencies: js.UndefOr[js.Array[js.Any]] = js.undefined): Unit = js.native    
+  def useLayoutEffect(didUpdate: js.Any, dependencies: Dependencies | Unit): Unit = js.native
 }
 
 /** Public access to react API. */
 @js.native
 @JSImport("react", JSImport.Namespace)
-object ReactJS extends ReactJS with Hooks
+private[react] object ReactJS extends ReactJS with Hooks

@@ -1,13 +1,30 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
-package ttg.data
+package data
 package validation
 
-import util.{Try, Success, Failure}
-import scala.util.matching.Regex
 import java.util.regex.Pattern
+
+import scala.util.matching.Regex
 
 import cats._
 import cats.data._
@@ -17,14 +34,14 @@ import cats.implicits._
 case class Error(val message: String, val path: Path = Path.empty)
 
 /** A validation concept involves a function that evaluates a value and
-  * the ability to create a success or failure based on an input type wrapped in `F`.
-  * `F` must be able to express the concept of success or failure. Note that at
-  * this level, `F` could be a product type or sum type (coproduct). Usually they
-  * are sum types.
-  *
-  * Should we consider message gathering to be a "logging" activity and use a
-  * writer monad?
-  */
+ * the ability to create a success or failure based on an input type wrapped in `F`.
+ * `F` must be able to express the concept of success or failure. Note that at
+ * this level, `F` could be a product type or sum type (coproduct). Usually they
+ * are sum types.
+ *
+ * Should we consider message gathering to be a "logging" activity and use a
+ * writer monad?
+ */
 trait Algebra[F[_]] {
   def apply[I, O](implicit validator: Validator[F, I, O]): Validator[F, I, O] =
     validator
@@ -33,11 +50,11 @@ trait Algebra[F[_]] {
   def fail[I]: Validator[F, I, I]
 
   /** Since we can fail and succeed, add logic support. This is really a Semigroup "combine"
-    * for a specific logic operation. Explicitly use or create an import for them as
-    * needed. We could defined an `isValid` type method
-    * in this trait but that's a bit of a code smell that we are using procedural logic
-    * and we can use these semigroups in other places and algorithms.
-    */
+   * for a specific logic operation. Explicitly use or create an import for them as
+   * needed. We could defined an `isValid` type method
+   * in this trait but that's a bit of a code smell that we are using procedural logic
+   * and we can use these semigroups in other places and algorithms.
+   */
   trait Logic {
     val AndSemigroupK: SemigroupK[F]
     val OrSemigroupK: SemigroupK[F]
@@ -49,20 +66,20 @@ trait Algebra[F[_]] {
 trait ApplicativeAlgebra[F[_], E] extends Algebra[F] {
   implicit val A: ApplicativeError[F, E]
   def succeed[I]: Validator[F, I, I] = pure(A.pure)
-  def fail[I]: Validator[F, I, I] = failure(_ => "failed")
+  def fail[I]: Validator[F, I, I]    = failure(_ => "failed")
 
   // is this needed? potentially remove...requires knowing details of E
   // which you may know only in a specific implementation of the interpreter
   //def fail[I,O](error: E): Validator[F,I,O] = pure(_ => A.raiseError[O](error))
   /** Create an `E` potentially with the value and a message if `E` supports
-    * string messages, which it may not.
-    */
+   * string messages, which it may not.
+   */
   def failure[I](message: I => String): Validator[F, I, I]
 }
 
 /** Test is wrapped in an effect. Error generation is still strict. Fail processing can
-  * use test value & test result to create error output.
-  */
+ * use test value & test result to create error output.
+ */
 // trait EffectAlgebra[F[_], E, G[_], TR] extends Algebra[G] {
 //   //implicit protected def gfunctor: Functor[G] = Functor[G]
 //   //def isFailed(v: TR): Boolean
@@ -81,8 +98,7 @@ trait ApplicativeAlgebra[F[_], E] extends Algebra[F] {
 
 /** A boolean test for validity is a strict test */
 trait StrictApplicativeAlgebra[F[_], E] extends ApplicativeAlgebra[F, E] {
-  def test[T](id: String, failed: Validator[F, T, T])(
-      isValid: T => Boolean): Validator[F, T, T] =
+  def test[T](id: String, failed: Validator[F, T, T])(isValid: T => Boolean): Validator[F, T, T] =
     pure(t => if (isValid(t)) succeed(t) else failed(t))
   //pure(t => if(isValid(t)) A.pure(t) else A.raiseError(failed(t)))
 }
@@ -93,14 +109,12 @@ object StrictApplicativeAlgebra {
   def apply[F[_], E](implicit alg: StrictApplicativeAlgebra[F, E]) = alg
 
   // https://stackoverflow.com/questions/42126125/merging-multiple-validated-into-single-one
-  implicit object validatedAlg
-      extends StrictApplicativeAlgebra[ValidatedNec[String, ?],
-                                       NonEmptyChain[String]] {
+  implicit object validatedAlg extends StrictApplicativeAlgebra[ValidatedNec[String, *], NonEmptyChain[String]] {
     type FF[T] = ValidatedNec[String, T]
-    type EE = NonEmptyChain[String]
-    val A = ApplicativeError[ValidatedNec[String, ?], EE]
+    type EE    = NonEmptyChain[String]
+    val A = ApplicativeError[ValidatedNec[String, *], EE]
     val logic = new Logic {
-      import Validated.{Invalid, Valid, invalid}
+      import Validated.{ invalid, Invalid, Valid }
       val AndSemigroupK = new SemigroupK[FF] {
         def combineK[T](x: FF[T], y: FF[T]): FF[T] = (x, y) match {
           case (r @ Valid(_), Valid(_))         => r
@@ -125,7 +139,7 @@ object StrictApplicativeAlgebra {
 
   implicit object optionAlg extends StrictApplicativeAlgebra[Option, Unit] {
     type FF[T] = Option[T]
-    val A = ApplicativeError[Option, Unit]
+    val A                                = ApplicativeError[Option, Unit]
     def failure[I](message: I => String) = pure(t => A.raiseError(()))
     val logic = new Logic {
       val AndSemigroupK = new SemigroupK[FF] {
@@ -144,10 +158,9 @@ object StrictApplicativeAlgebra {
     }
   }
 
-  implicit object eitherAlg
-      extends StrictApplicativeAlgebra[Either[String, ?], String] {
+  implicit object eitherAlg extends StrictApplicativeAlgebra[Either[String, *], String] {
     type FF[T] = Either[String, T]
-    val A = ApplicativeError[Either[String, ?], String]
+    val A                                = ApplicativeError[Either[String, *], String]
     def failure[I](message: I => String) = pure(t => A.raiseError(message(t)))
     val logic = new Logic {
       val AndSemigroupK = new SemigroupK[FF] {
@@ -169,9 +182,8 @@ object StrictApplicativeAlgebra {
   }
 
   implicit object eitherNecAlg
-      extends StrictApplicativeAlgebra[Either[NonEmptyChain[String], ?],
-                                       NonEmptyChain[String]] {
-    type EE = NonEmptyChain[String]
+      extends StrictApplicativeAlgebra[Either[NonEmptyChain[String], *], NonEmptyChain[String]] {
+    type EE    = NonEmptyChain[String]
     type FF[T] = Either[EE, T]
     val A = ApplicativeError[FF, EE]
     def failure[I](message: I => String) =
@@ -203,18 +215,16 @@ trait LogicOps[F[_], E] {
   import alg._
 
   /** *and* the results, if one fails, return invalid. Collects *all* messages if failed. */
-  def andAll[T](left: Validator[F, T, T],
-                right: Validator[F, T, T]*): Validator[F, T, T] = pure { t =>
+  def andAll[T](left: Validator[F, T, T], right: Validator[F, T, T]*): Validator[F, T, T] = pure { t =>
     val combine = logic.AndSemigroupK.algebra[T].combine _
-    val list = NonEmptyChain(left, right: _*).map(_(t))
+    val list    = NonEmptyChain(left, right: _*).map(_(t))
     list.tail.foldLeft(list.head)(combine)
   }
 
   /** *or* the results, if one succeeds, return valid. Collects *all* messages if failed. */
-  def orAll[T](left: Validator[F, T, T],
-               right: Validator[F, T, T]*): Validator[F, T, T] = pure { t =>
+  def orAll[T](left: Validator[F, T, T], right: Validator[F, T, T]*): Validator[F, T, T] = pure { t =>
     val combine = logic.OrSemigroupK.algebra[T].combine _
-    val list = NonEmptyChain(left, right: _*).map(_(t))
+    val list    = NonEmptyChain(left, right: _*).map(_(t))
     list.tail.foldLeft(list.head)(combine)
   }
 }
@@ -239,24 +249,25 @@ trait OptionOps[F[_], E] {
   import alg._
 
   def required[I](validator: Validator[F, I, I]): Validator[F, Option[I], I] =
-    required(validator,
-             failure[Option[I]](_ => "value is required")
-               .map(_.get /* never called */ ))
+    required(
+      validator,
+      failure[Option[I]](_ => "value is required")
+        .map(_.get /* never called */ )
+    )
 
-  def required[I](
-      validator: Validator[F, I, I],
-      orElse: Validator[F, Option[I], I]): Validator[F, Option[I], I] =
+  def required[I](validator: Validator[F, I, I], orElse: Validator[F, Option[I], I]): Validator[F, Option[I], I] =
     pure(
       _.fold(orElse(None))(
         validator(_)
-      ))
+      )
+    )
 
-  def optional[I](
-      validator: Validator[F, I, I]): Validator[F, Option[I], Option[I]] =
+  def optional[I](validator: Validator[F, I, I]): Validator[F, Option[I], Option[I]] =
     pure(
       _.fold(succeed[Option[I]](None))(
         validator(_).map(Option(_))
-      ))
+      )
+    )
 }
 
 trait StringOps[F[_], E] {
@@ -293,7 +304,8 @@ trait StringOps[F[_], E] {
       failure(
         _ =>
           if (partialMatchAllowed) s"must match regular expression '$pattern'"
-          else s"must full match regular expression '$pattern'")
+          else s"must full match regular expression '$pattern'"
+      )
     )(
       t =>
         if (partialMatchAllowed) pattern.matcher(t).find()
@@ -314,9 +326,7 @@ trait StringOps[F[_], E] {
   )
 
   def isIn[T](set: Set[T], prefix: String) =
-    test[T](
-      "ttg.isIn",
-      failure(t => set.mkString(s"$prefix $t, expected one of: [", ", ", "]")))(
+    test[T]("ttg.isIn", failure(t => set.mkString(s"$prefix $t, expected one of: [", ", ", "]")))(
       set.contains
     )
 }
@@ -336,22 +346,21 @@ trait ConversionOps[F[_], E] {
   // making this a val crashs at startup even if you are not using it.
   def parseInt: Validator[F, String, Int] =
     parseInt(failure[String](_ => "Must be a whole number").map(_ => 0))
-    //testInt(failure[String](_ => "Must be a whole number").map(_ => 0))
+  //testInt(failure[String](_ => "Must be a whole number").map(_ => 0))
 
-  def testInt(orElse: Validator[F, String,Int]): Validator[F,String,Int] =
-    pure{ value =>
+  def testInt(orElse: Validator[F, String, Int]): Validator[F, String, Int] =
+    pure { value =>
       failure[String](_ => "blah").map(_ => 10) apply (value)
-      // util.Try(value.toInt) match {
-      //   case util.Success(i) => succeed(i)
-      //   case util.Failure(_) => failure[Int](_ => "Expected whole number")(0)
-      // }
+    // util.Try(value.toInt) match {
+    //   case util.Success(i) => succeed(i)
+    //   case util.Failure(_) => failure[Int](_ => "Expected whole number")(0)
+    // }
     }
 
   def parseDouble: Validator[F, String, Double] =
     parseDouble(failure[String](_ => "Must be a number").map(_ => 0.0))
 
-  def parseDouble(
-      orElse: Validator[F, String, Double]): Validator[F, String, Double] =
+  def parseDouble(orElse: Validator[F, String, Double]): Validator[F, String, Double] =
     pure { value =>
       util.Try(value.toDouble) match {
         case util.Success(d) => succeed(d)
@@ -367,7 +376,6 @@ trait ConversionOps[F[_], E] {
 trait NumberOps[F[_], E] {
   implicit val alg: StrictApplicativeAlgebra[F, E]
   import alg._
-  import scala.collection.immutable.NumericRange
 
   def gt[T: Ordering](bound: T, prefix: String = "Got") =
     test[T]("ttg.gt", failure(t => s"$prefix $t, expected more than $bound"))(
@@ -375,8 +383,7 @@ trait NumberOps[F[_], E] {
     )
 
   def gte[T: Ordering](bound: T, prefix: String = "Got") =
-    test[T]("ttg.gte",
-            failure(t => s"$prefix $t, exected equal or more than $bound"))(
+    test[T]("ttg.gte", failure(t => s"$prefix $t, exected equal or more than $bound"))(
       Ordering[T].gteq(_, bound)
     )
 
@@ -386,8 +393,7 @@ trait NumberOps[F[_], E] {
     )
 
   def lte[T: Ordering](bound: T, prefix: String = "Got") =
-    test[T]("ttg.lte",
-            failure(t => s"$prefix $t, expected equal or less than $bound"))(
+    test[T]("ttg.lte", failure(t => s"$prefix $t, expected equal or less than $bound"))(
       Ordering[T].lteq(_, bound)
     )
 
@@ -398,15 +404,13 @@ trait NumberOps[F[_], E] {
 
   /** Inclusive */
   def between[T: Ordering](lower: T, upper: T, prefix: String = "Got") =
-    test[T]("ttg.between",
-            failure(t => s"$prefix $t, should be between [$lower, $upper]"))(
+    test[T]("ttg.between", failure(t => s"$prefix $t, should be between [$lower, $upper]"))(
       t => Ordering[T].gteq(t, lower) && Ordering[T].lteq(t, upper)
     )
 
   /** Exclsive. */
   def within[T: Ordering](lower: T, upper: T, prefix: String = "Got") =
-    test[T]("ttg.within",
-            failure(t => s"$prefix $t, shoud be between ($lower, $upper)"))(
+    test[T]("ttg.within", failure(t => s"$prefix $t, shoud be between ($lower, $upper)"))(
       t => Ordering[T].gt(t, lower) && Ordering[T].lt(t, upper)
     )
 }
@@ -420,6 +424,7 @@ trait ValidationAlgebra[F[_], E]
     with ConversionOps[F, E]
 
 object ValidationAlgebra extends ValidationAlgebraInstances {
+
   /** Summoner of instance. */
   def apply[F[_], E](implicit alg: ValidationAlgebra[F, E]) = alg
 }
@@ -428,9 +433,9 @@ trait ValidationAlgebraInstances {
   import StrictApplicativeAlgebra._
 
   implicit lazy val validatedAlgebra =
-    new ValidationAlgebra[ValidatedNec[String, ?], NonEmptyChain[String]] {
+    new ValidationAlgebra[ValidatedNec[String, *], NonEmptyChain[String]] {
       val alg =
-        StrictApplicativeAlgebra[ValidatedNec[String, ?], NonEmptyChain[String]]
+        StrictApplicativeAlgebra[ValidatedNec[String, *], NonEmptyChain[String]]
     }
 
   implicit lazy val optionAlegbra = new ValidationAlgebra[Option, Unit] {
@@ -438,9 +443,7 @@ trait ValidationAlgebraInstances {
   }
 
   implicit lazy val eitherStringAlgebra =
-    new ValidationAlgebra[Either[NonEmptyChain[String], ?],
-                          NonEmptyChain[String]] {
-      val alg = StrictApplicativeAlgebra[Either[NonEmptyChain[String], ?],
-                                         NonEmptyChain[String]]
-    }  
+    new ValidationAlgebra[Either[NonEmptyChain[String], *], NonEmptyChain[String]] {
+      val alg = StrictApplicativeAlgebra[Either[NonEmptyChain[String], *], NonEmptyChain[String]]
+    }
 }

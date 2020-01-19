@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -11,9 +8,8 @@ import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
 import org.scalajs.dom
-import _root_.react._
-import React.Fragment
-import _root_.react.implicits._
+import react._
+import react.implicits._
 import react_redux._
 import vdom._
 import vdom.tags._
@@ -29,7 +25,7 @@ import cats.implicits._
 import bootstrap._
 import react_big_calendar._
 import moment._
-import router._
+//import router._
 
 import styles._
 
@@ -111,7 +107,7 @@ object Pages {
 
   def readme(text: String) =
     page(
-      div(s"Build with React ${ReactJS.version}"),
+      div(s"Build with React ${react.version}"),
       ReactMarkdownC.make(new ReactMarkdownProps { source = text })
     )
 

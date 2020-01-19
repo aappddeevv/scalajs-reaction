@@ -1,18 +1,37 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 package vdom
 
-// needed because I could not figure out the propert variance construct
-import scala.annotation.unchecked.{uncheckedVariance => uv}
-import scalajs.js
-import js.annotation.JSName
-import js.Dynamic.{literal => lit}
-import js.|
-import org.scalajs.dom
+// needed because I could not figure out the proper variance construct
+import scala.annotation.unchecked.{ uncheckedVariance => uv }
 
+import scala.scalajs.js
+
+import js.Dynamic.{ literal => lit }
+import js.annotation.JSName
+import js.|
+
+import org.scalajs.dom
 
 /** Used to set the inner HTML dangerously. */
 trait SetInnerHTML extends js.Object {
@@ -31,13 +50,9 @@ trait ClassAttributes[E] extends Attributes {
 }
 
 /** A props trait that takes all HTML props. Use wisely. */
-trait HTMLProps[+T <: dom.EventTarget]
-    extends AllHTMLAttributes[T @uv]
-    with ClassAttributes[T @uv] {}
+trait HTMLProps[+T <: dom.EventTarget] extends AllHTMLAttributes[T @uv] with ClassAttributes[T @uv] {}
 
-trait ElementAttributesOnly
-    extends HTMLAttributes[dom.html.Element]
-    with ClassAttributes[dom.html.Element]
+trait ElementAttributesOnly extends HTMLAttributes[dom.html.Element] with ClassAttributes[dom.html.Element]
 
 /**
  * The HTML tags (elements/components) for standard DOM elements. Each tag is
@@ -93,14 +108,10 @@ trait tags {
   type BrProps = ElementAttributesOnly
   final lazy val br = tagt[BrProps]("br")
 
-  trait ButtonProps
-      extends ButtonHTMLAttributes[dom.html.Button]
-      with ClassAttributes[dom.html.Button]
+  trait ButtonProps extends ButtonHTMLAttributes[dom.html.Button] with ClassAttributes[dom.html.Button]
   final lazy val button = tagt[ButtonProps]("button")
 
-  trait CanvasProps
-      extends CanvasHTMLAttributes[dom.html.Canvas]
-      with ClassAttributes[dom.html.Canvas]
+  trait CanvasProps extends CanvasHTMLAttributes[dom.html.Canvas] with ClassAttributes[dom.html.Canvas]
   final lazy val canvas = tagt[CanvasProps]("canvas")
 
   // should be dom.html.Caption
@@ -120,18 +131,14 @@ trait tags {
   final lazy val col = tagt[ColProps]("col")
 
   // should be  dom.hmtl.Colgroup
-  trait ColgroupProps
-      extends ColgroupHTMLAttributes[dom.html.Element]
-      with ClassAttributes[dom.html.Element]
+  trait ColgroupProps extends ColgroupHTMLAttributes[dom.html.Element] with ClassAttributes[dom.html.Element]
   final lazy val colgroup = tagt[ColgroupProps]("colgroup")
 
   // shoud be dom.html.Data
   type DataProps = ElementAttributesOnly
   final lazy val data = tagt[DataProps]("data")
 
-  trait DataListProps
-      extends HTMLAttributes[dom.html.DataList]
-      with ClassAttributes[dom.html.DataList]
+  trait DataListProps extends HTMLAttributes[dom.html.DataList] with ClassAttributes[dom.html.DataList]
   final lazy val datalist = tagt[DataListProps]("datalist")
 
   trait DDProps extends HTMLAttributes[dom.html.DD] with ClassAttributes[dom.html.DD]
@@ -153,16 +160,14 @@ trait tags {
   type DialogProps = ElementAttributesOnly
   final lazy val dialog = tagt[DialogProps]("dialog")
 
-  trait DivProps
-      extends HTMLAttributes[dom.html.Div]
-      with ClassAttributes[dom.html.Div]
+  trait DivProps extends HTMLAttributes[dom.html.Div] with ClassAttributes[dom.html.Div]
   final lazy val div = tagt[DivProps]("div")
 
   /** A common scenario to wrap a div just to add the classname. */
   def divWithClassname(
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = div(new DivProps { className = cn })(children:_*)
+  ) = div(new DivProps { className = cn })(children: _*)
 
   // should be dom.html.Dl
   type DlProps = ElementAttributesOnly
@@ -179,9 +184,7 @@ trait tags {
   trait EmbedProps extends EmbedHTMLAttributes[dom.html.Embed] with ClassAttributes[dom.html.Embed]
   final lazy val embed = tagt[EmbedProps]("embed")
 
-  trait FieldsetProps
-      extends FieldsetHTMLAttributes[dom.html.FieldSet]
-      with ClassAttributes[dom.html.FieldSet]
+  trait FieldsetProps extends FieldsetHTMLAttributes[dom.html.FieldSet] with ClassAttributes[dom.html.FieldSet]
   final lazy val fieldset = tagt[FieldsetProps]("fieldset")
 
   type FigcaptionProps = ElementAttributesOnly
@@ -222,9 +225,7 @@ trait tags {
   type IProps = ElementAttributesOnly
   final lazy val i = tagt[IProps]("i")
 
-  trait IframeProps
-      extends IframeHTMLAttributes[dom.html.IFrame]
-      with ClassAttributes[dom.html.IFrame]
+  trait IframeProps extends IframeHTMLAttributes[dom.html.IFrame] with ClassAttributes[dom.html.IFrame]
   final lazy val iframe = tagt[IframeProps]("iframe")
 
   trait ImgProps extends ImgHTMLAttributes[dom.html.Image] with ClassAttributes[dom.html.Image]
@@ -308,9 +309,7 @@ trait tags {
   trait MenuProps extends MenuHTMLAttributes[dom.html.Menu] with ClassAttributes[dom.html.Menu]
   final lazy val menu = tagt[MenuProps]("menu")
 
-  trait MenuitemProps
-      extends HTMLAttributes[dom.html.Element]
-      with ClassAttributes[dom.html.Element]
+  trait MenuitemProps extends HTMLAttributes[dom.html.Element] with ClassAttributes[dom.html.Element]
   final lazy val menuitem = tagt[MenuitemProps]("menuitem")
 
   trait MetaProps extends MetaHTMLAttributes[dom.html.Meta] with ClassAttributes[dom.html.Meta]
@@ -326,22 +325,16 @@ trait tags {
   type NoscriptProps = ElementAttributesOnly
   final lazy val noscript = tagt[NoscriptProps]("noscript")
 
-  trait ObjectProps
-      extends ObjectHTMLAttributes[dom.html.Object]
-      with ClassAttributes[dom.html.Object]
+  trait ObjectProps extends ObjectHTMLAttributes[dom.html.Object] with ClassAttributes[dom.html.Object]
   final lazy val `object` = tagt[ObjectProps]("object")
 
   trait OlProps extends OlHTMLAttributes[dom.html.Element] with ClassAttributes[dom.html.Element]
   final lazy val ol = tagt[OlProps]("ol")
 
-  trait OptgroupProps
-      extends OptgroupHTMLAttributes[dom.html.OptGroup]
-      with ClassAttributes[dom.html.OptGroup]
+  trait OptgroupProps extends OptgroupHTMLAttributes[dom.html.OptGroup] with ClassAttributes[dom.html.OptGroup]
   final lazy val optgroup = tagt[OptgroupProps]("optgroup")
 
-  trait OptionProps
-      extends OptionHTMLAttributes[dom.html.Option]
-      with ClassAttributes[dom.html.Option]
+  trait OptionProps extends OptionHTMLAttributes[dom.html.Option] with ClassAttributes[dom.html.Option]
   final lazy val option = tagt[OptionProps]("option")
 
   // should be dom.html.Output
@@ -360,9 +353,7 @@ trait tags {
   type PreProps = ElementAttributesOnly
   final lazy val pre = tagt[PreProps]("pre")
 
-  trait ProgressProps
-      extends ProgressHTMLAttributes[dom.html.Progress]
-      with ClassAttributes[dom.html.Progress]
+  trait ProgressProps extends ProgressHTMLAttributes[dom.html.Progress] with ClassAttributes[dom.html.Progress]
   final lazy val progress = tagt[ProgressProps]("progress")
 
   trait QProps extends QuoteHTMLAttributes[dom.html.Quote] with ClassAttributes[dom.html.Quote]
@@ -383,25 +374,19 @@ trait tags {
   type SampProps = ElementAttributesOnly
   final lazy val samp = tagt[SampProps]("samp")
 
-  trait ScriptProps
-      extends ScriptHTMLAttributes[dom.html.Script]
-      with ClassAttributes[dom.html.Script]
+  trait ScriptProps extends ScriptHTMLAttributes[dom.html.Script] with ClassAttributes[dom.html.Script]
   final lazy val scripf = tagt[ScriptProps]("script")
 
   type SectionProps = ElementAttributesOnly
   final lazy val section = tagt[SectionProps]("section")
 
-  trait SelectProps
-      extends SelectHTMLAttributes[dom.html.Select]
-      with ClassAttributes[dom.html.Select]
+  trait SelectProps extends SelectHTMLAttributes[dom.html.Select] with ClassAttributes[dom.html.Select]
   final lazy val select = tagt[SelectProps]("select")
 
   type SmallProps = ElementAttributesOnly
   final lazy val small = tagt[SmallProps]("small")
 
-  trait SourceProps
-      extends SourceHTMLAttributes[dom.html.Source]
-      with ClassAttributes[dom.html.Source]
+  trait SourceProps extends SourceHTMLAttributes[dom.html.Source] with ClassAttributes[dom.html.Source]
   final lazy val source = tagt[SourceProps]("source")
 
   trait SpanProps extends HTMLAttributes[dom.html.Span] with ClassAttributes[dom.html.Span]
@@ -410,7 +395,7 @@ trait tags {
   def spanWithClassname(
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = span(new SpanProps { className = cn })(children:_*)
+  ) = span(new SpanProps { className = cn })(children: _*)
 
   type StrongProps = ElementAttributesOnly
   final lazy val strong = tagt[StrongProps]("strong")
@@ -430,40 +415,26 @@ trait tags {
   trait TableProps extends TableHTMLAttributes[dom.html.Table] with ClassAttributes[dom.html.Table]
   final lazy val table = tagt[TableProps]("table")
 
-  trait TbodyProps
-      extends HTMLAttributes[dom.html.TableSection]
-      with ClassAttributes[dom.html.TableSection]
+  trait TbodyProps extends HTMLAttributes[dom.html.TableSection] with ClassAttributes[dom.html.TableSection]
   final lazy val tbody = tagt[TbodyProps]("tbody")
 
-  trait TdProps
-      extends HTMLAttributes[dom.html.TableDataCell]
-      with ClassAttributes[dom.html.TableDataCell]
+  trait TdProps extends HTMLAttributes[dom.html.TableDataCell] with ClassAttributes[dom.html.TableDataCell]
   final lazy val td = tagt[TdProps]("td")
 
-  trait TextareaProps
-      extends TextAreaHTMLAttributes[dom.html.TextArea]
-      with ClassAttributes[dom.html.TextArea]
+  trait TextareaProps extends TextAreaHTMLAttributes[dom.html.TextArea] with ClassAttributes[dom.html.TextArea]
   final lazy val textarea = tagt[TextareaProps]("textarea")
 
-  trait TfootProps
-      extends HTMLAttributes[dom.html.TableSection]
-      with ClassAttributes[dom.html.TableSection]
+  trait TfootProps extends HTMLAttributes[dom.html.TableSection] with ClassAttributes[dom.html.TableSection]
   final lazy val tfoot = tagt[TfootProps]("tfoot")
 
-  trait ThProps
-      extends ThHTMLAttributes[dom.html.TableHeaderCell]
-      with ClassAttributes[dom.html.TableHeaderCell]
+  trait ThProps extends ThHTMLAttributes[dom.html.TableHeaderCell] with ClassAttributes[dom.html.TableHeaderCell]
   final lazy val th = tagt[ThProps]("th")
 
-  trait TheadProps
-      extends HTMLAttributes[dom.html.TableSection]
-      with ClassAttributes[dom.html.TableSection]
+  trait TheadProps extends HTMLAttributes[dom.html.TableSection] with ClassAttributes[dom.html.TableSection]
   final lazy val thead = tagt[TheadProps]("thead")
 
   // should be dom.html.Time
-  trait TimeProps
-      extends TimeHTMLAttributes[dom.html.Element]
-      with ClassAttributes[dom.html.Element]
+  trait TimeProps extends TimeHTMLAttributes[dom.html.Element] with ClassAttributes[dom.html.Element]
   final lazy val time = tagt[TimeProps]("time")
 
   trait TitleProps extends HTMLAttributes[dom.html.Title] with ClassAttributes[dom.html.Title]
@@ -496,8 +467,8 @@ trait tags {
 object tags extends tags
 
 /**
-  * Mostly handlers for DOM nodes.
-  */
+ * Mostly handlers for DOM nodes.
+ */
 trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
 
   /** reactjs specific */
@@ -684,6 +655,7 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var lang: js.UndefOr[String]        = js.undefined
   var slot: js.UndefOr[String]        = js.undefined
   var spellCheck: js.UndefOr[Boolean] = js.undefined
+
   /** The react style attribute, which should be an object.  If you use this in
    * the raw, you can use `StyleAttr` but its typed more open here to be any
    * object.
@@ -729,8 +701,8 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
         'aria-describedby'?: string;
    */
-  var `aria-details`: js.UndefOr[String] = js.undefined//'?: string;
-  var `aria-disabled`: js.UndefOr[Boolean|String] = js.undefined//?: boolean | 'false' | 'true';
+  var `aria-details`: js.UndefOr[String]            = js.undefined //'?: string;
+  var `aria-disabled`: js.UndefOr[Boolean | String] = js.undefined //?: boolean | 'false' | 'true';
   /*
         'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
         'aria-errormessage'?: string;
@@ -739,13 +711,14 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-grabbed'?: boolean | 'false' | 'true';
         'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
    */
-  var `aria-hidden`: js.UndefOr[Boolean|String] = js.undefined //?: boolean | 'false' | 'true';
-  var `aria-invalid`: js.UndefOr[Boolean|String] = js.undefined // : boolean | 'false' | 'true' | 'grammar' | 'spelling';
+  var `aria-hidden`: js.UndefOr[Boolean | String] = js.undefined //?: boolean | 'false' | 'true';
+  var `aria-invalid`
+    : js.UndefOr[Boolean | String] = js.undefined // : boolean | 'false' | 'true' | 'grammar' | 'spelling';
 
   var `aria-keyshortcuts`: js.UndefOr[String] = js.undefined
-  var `aria-label`: js.UndefOr[String] = js.undefined
-  var `aria-labelledby`: js.UndefOr[String] = js.undefined
-  var `aria-level`: js.UndefOr[Int] = js.undefined
+  var `aria-label`: js.UndefOr[String]        = js.undefined
+  var `aria-labelledby`: js.UndefOr[String]   = js.undefined
+  var `aria-level`: js.UndefOr[Int]           = js.undefined
   /*
         'aria-live'?: 'off' | 'assertive' | 'polite';
         'aria-modal'?: boolean | 'false' | 'true';
@@ -755,7 +728,7 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-owns'?: string;
    */
   var `aria-placeholder`: js.UndefOr[String] = js.undefined
-  var `aria-posinset`: js.UndefOr[Int] = js.undefined
+  var `aria-posinset`: js.UndefOr[Int]       = js.undefined
   /*
         'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
         'aria-readonly'?: boolean | 'false' | 'true';
@@ -769,9 +742,9 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-setsize'?: number;
         'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
    */
-  var `aria-valuemax`: js.UndefOr[Int] = js.undefined
-  var `aria-valuemin`: js.UndefOr[Int] = js.undefined
-  var `aria-valuenow`: js.UndefOr[Int] = js.undefined
+  var `aria-valuemax`: js.UndefOr[Int]     = js.undefined
+  var `aria-valuemin`: js.UndefOr[Int]     = js.undefined
+  var `aria-valuenow`: js.UndefOr[Int]     = js.undefined
   var `aria-valuetext`: js.UndefOr[String] = js.undefined
 }
 

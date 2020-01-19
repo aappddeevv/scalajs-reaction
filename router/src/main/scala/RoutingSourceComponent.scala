@@ -1,13 +1,9 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg
 package router
 package browser
 
 import react._
-
+import react.implicits._
 import scala.scalajs.js
 
 /** 
@@ -27,7 +23,7 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
   def makeContextValue(info: Option[Info]): RouterInfo
 
   val RouterContext: ReactContext[RouterInfo] =
-    context.make[RouterInfo](makeContextValue(None))
+    createContext[RouterInfo](makeContextValue(None))
 
   // specific to the class
   protected val routing: RoutingSource[Info, To]
@@ -61,7 +57,7 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
         unsubscribe()
       })
     }
-    context.provider(RouterContext)(makeContextValue(state))(
+    RouterContext.provide(makeContextValue(state))(
       props.children
     )
   }
@@ -100,9 +96,9 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
     val sfc = SFC1[Props]{ props =>
       import props._
       React.useDebugValue(Name)
-      context.consumer(RouterContext)(routerInfo => {
+      RouterContext.consume(routerInfo => {
         if(cond(routerInfo))
-          context.provider(RouterContext)(modify(routerInfo)) {
+          RouterContext.provide(modify(routerInfo)) {
             child()
           }
           else null
@@ -110,3 +106,107 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

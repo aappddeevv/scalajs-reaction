@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -30,7 +27,6 @@ import styles._
  */
 object AddressDetail {
   import examples.Contexts._
-  import context._
 
   val Name = "AddressDetail"
 
@@ -41,7 +37,7 @@ object AddressDetail {
   def apply(address_ : Option[Address]) = sfc(new Props{ val address = address_ })
 
   val sfc = SFC1[Props]{ props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     //val log = React.useContext[ConsoleLog](Contexts.logContext)
     //log(props.address.getOrElse("<no detail address provided>"))
     div(new DivProps { className = amstyles.detail.asString })(

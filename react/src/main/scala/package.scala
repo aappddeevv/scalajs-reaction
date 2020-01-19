@@ -1,11 +1,29 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 import scala.scalajs.js
-import js.|
-import js.UndefOr
+
 import js.JSConverters._
+import js.UndefOr
+import js.|
 
 /**
  * A scala.js react facaded in the spirit of ReasonReact.
@@ -15,48 +33,56 @@ package object react extends react.React {
   /** A js dispatch function for side effects. Used in useState. */
   type Dispatch[A] = js.Function1[A, Unit]
 
-  /** Hook dependencies data structure. */
-  type Dependencies = js.UndefOr[js.Array[js.Any]]
+  type AllType =
+    Boolean | Byte | Short | Float | String | Double | Int | js.Object | js.Dictionary[_] | js.Symbol | Null | Unit
+
+  /** Hook dependencies data structure. Should this bescala.Any? */
+  type Dependencies = js.Array[AllType]
 
   /** Empty array which is different than undefinedDependencies. Typically
    * indicates mount/unmount hook comptutation.
    */
-  val emptyDependencies: Dependencies = js.defined(js.Array())
+  val emptyDependencies: Dependencies = js.Array()
 
   /** Undefined array typically indicates per render hook computation. */
-  // for 1.0.0 this needs to be defined as type Unit
-  val undefinedDependencies: Unit = js.undefined
-  //val undefinedDependencies = js.undefined
+  val undefinedDependencies: js.UndefOr[Dependencies] = js.undefined
 
-  /** Create a dependencies array from *any* scala objects. Make sure this is what
-   * you want.
+  /** Create a dependencies array. With on args, its a zero-length array. */
+  def deps(values: AllType*): Dependencies = values.toJSArray
+
+  /** Escape hatch. Create a dependencies array from *any* list of scala
+   * objects. Make sure you think about each value type in the list of
+   * dependencies. Use this inference helper to remind you to think about the
+   * types and scala-js interop.
    */
-  def dependencies(values: scala.Any*): Dependencies =
+  def unsafe_deps(values: scala.Any*): Dependencies =
     values.toJSArray.asInstanceOf[Dependencies]
 
   /** Noop for effect callback. */
   val noCleanUp = () => ()
 
-  /** Convert a scala EffectCallbackArg to js using a proxy approach. 
+  /** Convert a scala EffectCallbackArg to js using a proxy approach.
    * Use a general return of A vs unit to be more friendly.
    */
-  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any =
-    {() => {
+  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () =>
+    {
       val callback: js.Function0[A] = arg()
       callback
-    }}: js.Function0[js.Function0[A]]
+    }
+  }: js.Function0[js.Function0[A]]
 
   /**
    * Object returned from `createRef()`. It's typically either js component or a
    * DOM element, both of which are js.Objects. You only use this type with the
    * `React.createRef()` machinery. Use this instead of a string or ref
    * callback. Introduced in 16.3.
-   * 
+   *
    * @todo Validate a null value is present if the ref is never set. typescript
    * says so.
    */
   @js.native
   trait ReactRef[T] extends js.Object {
+
     /** See react.syntax for syntax support on handling E|Null
      * e.g. myref.current.toNonNullOption.
      */
@@ -64,7 +90,7 @@ package object react extends react.React {
   }
 
   /** Callback for react ref with settable E. */
-  type RefCb[E] = js.Function1[E|Null, Unit]
+  type RefCb[E] = js.Function1[E | Null, Unit]
 
   /** Combine the callback and the createRef models. Also include the newer hooks model. */
   type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
@@ -78,7 +104,7 @@ package object react extends react.React {
   }
 
   /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
-  def refCB[E](f: E|Null => Unit): Ref[E] = js.Any.fromFunction1[E|Null,Unit](f)
+  def refCB[E](f: E | Null => Unit): Ref[E] = js.Any.fromFunction1[E | Null, Unit](f)
 
   /**
    * Something that can be rendered in reactjs. We need to restrict this a bit
@@ -99,7 +125,7 @@ package object react extends react.React {
    */
   @js.native
   trait ReactElement extends ReactNode {
-    val key: UndefOr[String] = js.native
+    val key: UndefOr[String]      = js.native
     def ref[E]: UndefOr[RefCb[E]] = js.native
     // ...add ref here...is it a string or a callback now?
 
@@ -116,6 +142,7 @@ package object react extends react.React {
   @js.native
   trait ReactChildren extends ReactElement
 
+  /** Very un-ergonomic, but this is what FB has. */
   type KeyType = String | Int
 
   /** Use these to mix into your traits to ensure you have a a key and ref to
@@ -124,9 +151,31 @@ package object react extends react.React {
    * use this trait and just define the key and/or ref in your Props trait
    * directly.
    */
+  @deprecated("Use ReactJSProps", "0.1.0")
   trait ReactPropsJs extends js.Object {
-    var key: UndefOr[KeyType] = js.undefined
+    var key: UndefOr[KeyType]     = js.undefined
     def ref[E]: UndefOr[RefCb[E]] = js.undefined
+  }
+
+  /** Use this instead of ReactPropsJs. */
+  trait ReactJSProps extends js.Object {
+    var key: UndefOr[KeyType]     = js.undefined
+    def ref[E]: UndefOr[RefCb[E]] = js.undefined
+  }
+
+  /** Option key, which must be a string. */
+  trait MaybeHasStrKey extends js.Object {
+    var key: js.UndefOr[String] = js.undefined
+  }
+
+  /** Known to contain a key. */
+  trait HasKey extends js.Object {
+    val key: KeyType
+  }
+
+  /** With key but key is known to be a String which is the common scenario. */
+  trait HasStrKey extends js.Object {
+    val key: String
   }
 
   /** Scala side verson of ReactPropsJs. It assumed that you use key and/or ref to
@@ -134,13 +183,13 @@ package object react extends react.React {
    * It usually better to define them as UndefOr instead of Option so you can
    * directly place them into a DOM element's props in your render function.
    */
-  trait ReactProps {
-    val key: Option[String] = None
-    def ref[E]: Option[RefCb[E]] = None
-  }
+  // trait ReactProps {
+  //   val key: Option[String] = None
+  //   def ref[E]: Option[RefCb[E]] = None
+  // }
 
   /**
-   * A standard HTML element that has been created using React.createElement.
+   * A standard HTML element that has been created using createElement.
    * Props are optional of course.  We use this tag it to show that it came
    * from the standard DOM components vs a custom one.
    */
@@ -172,11 +221,12 @@ package object react extends react.React {
   type ScalaJSFunctionComponent1 = js.Function1[_ <: js.Object, ReactNode]
 
   /** Something that can be used in `ReactJS.createElement()`. Given an object of
-   * this type, you must call `React.createElement` on it to create the element
+   * this type, you must call `createElement` on it to create the element
    * with optional props and children. If a parent is in a component, you use
    * this type to represent it.
    */
-  type ReactType = ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1
+  type ReactType =
+    ReactClass | String | ReactJsComponent | ReactJsFunctionComponent | ReactJsLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1
 
   /**
    * This type is used only for imported javascript authored components to
@@ -214,7 +264,7 @@ package object react extends react.React {
    */
   type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
 
-  /** Alias for internal use. @deprecated */
+  /** Alias for internal use. */
   type ReactClassInternal = ReactClass
 
   /** Return a "render nothing" element. React ignores nulls during rendering. */
@@ -243,7 +293,7 @@ package object react extends react.React {
   /** Make a callback. You don't need this but helps with type inference. There is
    * some dedicated syntax support for `E|Null` handling.
    */
-  def refCallback[E](f: E|Null => Unit): RefCb[E] = f
+  def refCallback[E](f: E | Null => Unit): RefCb[E] = f
 
   /** Children type. */
   type PropsChildren = js.Array[ReactElement]
@@ -271,18 +321,16 @@ package object react extends react.React {
    * Merge js.Dynamics into a fresh object. You should really use [[merge]].
    * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
    */
-  def mergeJSObjects(objs: js.Dynamic*): js.Dynamic = {
-    js.Object.assign(js.Dynamic.literal(),
-      objs.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[js.Dynamic]
-    // // not js.Any? maybe keep js or scala values in here....
-    // val result = js.Dictionary.empty[Any]
-    // for (source <- objs) {
-    //   if(source != null)
-    //     for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-    //       result(key) = value
-    // }
-    // result.asInstanceOf[js.Dynamic]
-  }
+  def mergeJSObjects(objs: js.Dynamic*): js.Dynamic =
+    js.Object.assign(js.Dynamic.literal(), objs.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[js.Dynamic]
+  // // not js.Any? maybe keep js or scala values in here....
+  // val result = js.Dictionary.empty[Any]
+  // for (source <- objs) {
+  //   if(source != null)
+  //     for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+  //       result(key) = value
+  // }
+  // result.asInstanceOf[js.Dynamic]
 
   /**
    * Shallow merge objects into a new object and cast. Useful when merging props
@@ -291,18 +339,16 @@ package object react extends react.React {
    * `combine`. Creates and returns new object. Note, should we just call
    * js.Object.assign here?
    */
-  def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null *): T = {
-    js.Object.assign(js.Dynamic.literal(),
-      objs.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[T]
-    //objs.toJSArray.asInstanceOf[js.Array[js.Object]]:_*).asInstanceOf[T]
-    // val result = js.Dictionary.empty[Any]
-    // for (source <- objs) {
-    //   if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
-    //     for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
-    //       result(key) = value
-    // }
-    // result.asInstanceOf[T]
-  }
+  def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null*): T =
+    js.Object.assign(js.Dynamic.literal(), objs.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[T]
+  //objs.toJSArray.asInstanceOf[js.Array[js.Object]]:_*).asInstanceOf[T]
+  // val result = js.Dictionary.empty[Any]
+  // for (source <- objs) {
+  //   if(source != null && source.asInstanceOf[js.UndefOr[js.Object]].isDefined)
+  //     for ((key, value) <- source.asInstanceOf[js.Dictionary[Any]])
+  //       result(key) = value
+  // }
+  // result.asInstanceOf[T]
 
   /** Shallow copy. Should we call Object.assign directly? Faster? */
   def copy[T <: js.Object](obj: js.Dynamic | js.Object): T = merge[T](obj)
@@ -316,19 +362,17 @@ package object react extends react.React {
   /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
    * support makes this easier so you don't have to use this function.
    */
-  def toSafeOption[T <: js.Any](t: js.Any): Option[T] = {
+  def toSafeOption[T <: js.Any](t: js.Any): Option[T] =
     if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])
-  }
 
   /** Render something or return a null element. Render is by name. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
-    if(cond) render else nullElement
+    if (cond) render else nullElement
 
   /** Render something if not cond or return a null element. Render is by name. */
   def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
-    if(!cond) render else nullElement
-
+    if (!cond) render else nullElement
 
   /** Test equaliy with two js objects. Standard == in scala.js on 2 js objects
    * (e.g. non-native traits) will not test in the same way that standard scala
@@ -341,24 +385,24 @@ package object react extends react.React {
    *  in particular. This code is from
    *  https://stackoverflow.com/questions/38126349/how-to-deeply-compare-two-js-like-objects-in-scala-js.
    */
-  def jsEqual(a: js.Any, b: js.Any): Boolean = {
+  def jsEqual(a: js.Any, b: js.Any): Boolean =
     (a, b) match {
-      case (null, null) => true
+      case (null, null)                     => true
       case (a: js.Array[_], b: js.Array[_]) =>
         // compare length and each individual item
         a.length == b.length &&
-        a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual _).tupled)
-      case _ if a != null && a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
-          b != null && b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>
+          a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual _).tupled)
+      case _
+          if a != null && a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
+            b != null && b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>
         val aDict = a.asInstanceOf[js.Dictionary[js.Any]]
         val bDict = b.asInstanceOf[js.Dictionary[js.Any]]
         (aDict.keySet == bDict.keySet) &&
         aDict.keySet.forall(key => jsEqual(aDict(key), bDict(key)))
       case _ if ((a == null & b != null) || (a != null && b == null)) => false
-      case _ =>
+      case _                                                          =>
         // must be non-object values, this does a js style test
         a == b
     }
-  }
 
 }

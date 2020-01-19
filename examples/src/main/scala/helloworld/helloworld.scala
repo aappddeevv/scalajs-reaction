@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -9,11 +6,8 @@ package helloworld
 import scala.scalajs.js
 import js.annotation._
 import org.scalajs.dom
-
-import _root_.react._
-
-import _root_.react.implicits._
-
+import react._
+import react.implicits._
 import vdom._
 import tags._
 

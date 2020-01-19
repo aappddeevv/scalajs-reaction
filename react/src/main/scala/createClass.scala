@@ -1,33 +1,48 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 
-import collection.mutable
-import scala.scalajs.js
-
 object createClass {
 
-  val statics = Map(
-    "getDerivedStateFromProps"->true,
-    "displayName" -> "true"
+  val statics: Map[String, Any] = Map(
+    "getDerivedStateFromProps" -> true,
+    "displayName"              -> "true"
   )
 
   val lifecycle = Map(
-    "componentDidMount" -> true,
-    "componentDidUpdate" -> true,
-    "componentWillUpdate" -> true,
+    "componentDidMount"     -> true,
+    "componentDidUpdate"    -> true,
+    "componentWillUpdate"   -> true,
     "shouldComponentUpdate" -> true,
-    "componentDidCatch" -> true,
-    "componentWillUnmount" -> true,
-    "render" -> true
+    "componentDidCatch"     -> true,
+    "componentWillUnmount"  -> true,
+    "render"                -> true
   )
 
   /**
    * Create a function that creates a class using tricks on Component. This
    * avoids react-create-class and will always be more up to date.
    */
+  /*
   def apply(spec: js.Object): ReactClass = {
     val prototype = js.Object.create(ReactJS.Component.prototype.asInstanceOf[js.Object])
     val specKeys = js.Object.keys(spec)
@@ -39,17 +54,17 @@ object createClass {
       // auto-bind
       val cp = CreateClassComponent.asInstanceOf[js.Dynamic].prototype
       // autobind, need Array.forEach directly, not in scala.js API
-      js.Object.keys(cp.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic].forEach(((th,key) => {
+      js.Object.keys(cp.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic].forEach(js.defined{(th,key) =>
         if(js.typeOf(th.key) == "function" && !lifecycle.contains(key))
           th.key = th.key.bind(t)
-      }):js.ThisFunction1[js.Dynamic, String, Unit], t)
+      }, t)
     }
     // add spec methods
     for(key <- specKeys) {
       val specValue = spec.asInstanceOf[js.Dynamic].selectDynamic(key)
       if(statics.contains(key))
         CreateClassComponent.asInstanceOf[js.Dynamic].updateDynamic(key)(specValue)
-      else 
+      else
         prototype.asInstanceOf[js.Dynamic].updateDynamic(key)(specValue)
     }
     // reswizzle to be a react Component
@@ -59,5 +74,6 @@ object createClass {
     ComponentDyn.__defined = false
     CreateClassComponent.asInstanceOf[ReactClass]
   }
+ */
 
 }

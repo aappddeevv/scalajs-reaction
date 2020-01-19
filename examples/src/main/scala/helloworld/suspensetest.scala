@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -14,7 +11,7 @@ import org.scalajs.dom
 import js.Dynamic.{literal => lit}
 import js.JSConverters._
 
-import _root_.react._
+import react._
 import react_dom._
 import implicits._
 import React.{Fragment, Suspense}
@@ -226,19 +223,19 @@ object SuspenseTest {
 
   // direct parent import
   def SuspenseParent(props: SProps = null)(children: ReactNode*) =
-    React.createElement(SuspenseParentNS.SuspenseParentJS, props)(children:_*)
+    createElement(SuspenseParentNS.SuspenseParentJS, props)(children:_*)
 
   // lazy is called in the ts file
   def LazySuspenseChild(props: SProps = null)(children: ReactNode*) =
-    React.createElement(SuspenseParentNS.SuspenseChildJS, props)(children:_*)
+    createElement(SuspenseParentNS.SuspenseChildJS, props)(children:_*)
 
   // child is imported directly
   def SuspenseChild(props: SProps = null)(children: ReactNode*) =
-    React.createElement(SuspenseChildJS, props)(children:_*)
+    createElement(SuspenseChildJS, props)(children:_*)
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
-    React.createElement(React.`lazy`(SuspenseParentNS.X), props)(children:_*)
+    createElement(React.`lazy`(SuspenseParentNS.X), props)(children:_*)
 
   def blah(): ReactNode = {
     Fragment(

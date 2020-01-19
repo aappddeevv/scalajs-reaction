@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -11,7 +8,7 @@ import js.annotation._
 import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
-import _root_.react._
+import react._
 import implicits._
 import react_redux._
 
@@ -28,7 +25,7 @@ object LabelAndChildNS extends js.Object {
 
 object JSAppImports {
   def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
-    React.createElement(LabelAndChildNS.LabelAndChild, props)(children: _*)
+    createElement(LabelAndChildNS.LabelAndChild, props)(children: _*)
 }
 
 trait StoreState extends js.Object {
@@ -65,7 +62,7 @@ trait ReactMarkdownProps extends js.Object {
 
 object ReactMarkdownC {
   def make(props: ReactMarkdownProps = noProps()) =
-    React.createElement0(ReactMarkdown, props)
+    createElement0(ReactMarkdown, props)
 }
 
 @js.native
@@ -89,7 +86,7 @@ trait ReactWeatherDisplayProps extends js.Object {
 
 object ReactWeatherDisplay {
   def apply(props: ReactWeatherDisplayProps = null) =
-    React.createElement0(ReactWeatherDisplayJS, props)
+    createElement0(ReactWeatherDisplayJS, props)
 }
 
 class PrettyJsonOptions(
@@ -141,5 +138,5 @@ class ReactContentLoaderOptions(
 
 object ReactContentLoaderComponents {
   def BulletList(props: ReactContentLoaderOptions = null)(children: ReactNode*) =
-    React.createElement(ReactContentLoader.List, props)(children: _*)
+    createElement(ReactContentLoader.List, props)(children: _*)
 }

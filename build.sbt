@@ -1,20 +1,6 @@
-// Build file for ReasonRect like scala.js reactjs bindings.
-// Now that's a mouthful...
 import scala.sys.process._
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
-// reload build.sbt on changes
 Global / onChangedBuildSource := ReloadOnSourceChanges
-
-// Run publish and release separately
-// Don't forget bintray & unpublish
-// You can use `packagedArtifacts` to build artifacts in each project's target.
-// To release: run `publish` then `bintrayRelease`.
-//bintrayReleaseOnPublish := false
-//bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native",
-//  "office", "material-ui", "bootstrap")
-//bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-react")
-//bintrayRepository in ThisBuild := "maven2"
 
 lazy val bintraySettings = Seq(
   bintrayReleaseOnPublish := false,
@@ -23,57 +9,15 @@ lazy val bintraySettings = Seq(
   publishMavenStyle := true
 )
 
-lazy val licenseSettings = Seq(
-  headerMappings := headerMappings.value +
-    (HeaderFileType.scala -> HeaderCommentStyle.cppStyleLineComment),
-  headerLicense := Some(
-    HeaderLicense.Custom(
-      """|Copyright (c) 2019 The Trapelo Group LLC
-         |This software is licensed under the MIT License (MIT).
-         |For more information see LICENSE or https://opensource.org/licenses/MIT
-         |""".stripMargin
-    )
-  )
-)
-
-// lazy val macroSettings = Seq (
-//   resolvers += Resolver.sonatypeRepo("releases"),
-//   resolvers += Resolver.bintrayRepo("scalameta", "maven"),
-//   addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
-//   scalacOptions += "-Xplugin-require:macroparadise",
-// )
-
-val ivyLocal = Resolver.file("local", file(Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns)
-
-lazy val buildSettings = Seq(
-  organization := "ttg",
-  licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  //scalaVersion := "2.12.8",
-  scalaVersion := "2.13.0",
+lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.jcenterRepo
     //ivyLocal
-  ),
-  autoCompilerPlugins := true
-) ++ licenseSettings
-
-lazy val noPublishSettings = Seq(
-  skip in publish := true, // this did not seem to work
-  publish := {},
-  publishLocal := {},
-  publishArtifact := false
-)
-
-lazy val exampleSettings = Seq(
-  libraryDependencies ++= Seq(
-    // any special ones??
   )
 )
 
-lazy val publishSettings = Seq(
-  homepage := Some(url("https://github.com/aappddeevv/scalajs-react"))
-) ++ bintraySettings
+lazy val ivyLocal = Resolver.file("local", file(Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns)
 
 val commonScalacOptions = Seq(
   "-deprecation",
@@ -82,13 +26,14 @@ val commonScalacOptions = Seq(
   "-feature",
   "-language:_",
   "-unchecked",
-  //  "-Yno-adapted-args",
-  "-Ywarn-numeric-widen"
-//    "-Xfuture",
-//  "-Ypartial-unification",
+  "-Ywarn-numeric-widen",
+  "-Ywarn-value-discard",
+  "-Ywarn-unused:imports,locals",
+  "-Xlint:infer-any",
+  "-Yrangepos"
 )
 
-lazy val jssettings = Seq(
+lazy val jsSettings = Seq(
   scalacOptions ++= (
     if (scalaJSVersion.startsWith("0.6.")) Seq("-P:scalajs:sjsDefinedByDefault")
     else Nil
@@ -97,23 +42,26 @@ lazy val jssettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-	"org.scala-js" %%% "scalajs-dom" % "0.9.8"
+    "org.scala-js" %%% "scalajs-dom" % "0.9.8"
   )
 )
 
-lazy val commonSettings = Seq(
+def buildinfo_settings(pkg: String) =
+  Seq(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, isSnapshot),
+    buildInfoObject := "BuildInfo",
+    buildInfoPackage := pkg
+  )
+
+lazy val compilerSettings = Seq(
+  scalaVersion := "2.13.1",
   scalacOptions ++= commonScalacOptions,
-  libraryDependencies ++= Seq(
-    //"org.scalatest" %%% "scalatest" % "3.1.0-RC3" % "test"
-  ),
-  dependencyOverrides ++= Seq(
-    // none
-  ),
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full), // was 0.10.3
-  autoAPIMappings := true
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
+  addCompilerPlugin(scalafixSemanticdb),
+  autoAPIMappings := true,
+  autoCompilerPlugins := true // kind-projector
 )
 
-// supports scala 2.13 and scalajs 0.6/1.0.0
 val catsVersion = "2.1.0"
 
 lazy val fpsettings = Seq(
@@ -122,36 +70,48 @@ lazy val fpsettings = Seq(
   )
 )
 
-lazy val exampleFPSettings = Seq(
-  libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats-core" % catsVersion, 
-    //"org.typelevel" %%% "cats-effect" % catsVersion,
+def std_settings(p: String, d: String) =
+  Seq(
+    name := p,
+    description := d,
+    libraryDependencies ++= Seq(
+      "org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
+    )
+  ) ++ resolverSettings ++ compilerSettings ++ bintraySettings ++ jsSettings
+
+inThisBuild(
+  List(
+    organization := "ttg",
+    organizationName := "The Trapelo Group",
+    startYear := Some(2018),
+    licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
+    homepage := Some(url("https://github.io/aappddeevv/scalajs-reaction/")),
+    developers := List(
+      Developer("aappddeevv", "Devon Miller", "aappddeevv@gmail.com", url("https://aappddeevv.github.io"))
+    ),
+    scmInfo := Some(
+      ScmInfo(url("https://github.com/scalajs-reaction"), "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
+    ),
+    scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
   )
 )
 
-lazy val libsettings = buildSettings ++ commonSettings ++ jssettings
-lazy val jvmlibsettings = buildSettings ++ commonSettings
-
 lazy val root = project
   .in(file("."))
-  .settings(jvmlibsettings)
-  .settings(noPublishSettings)
-  .settings(name := "scalajs-react")
+  .settings(skip in publish := true)
   .aggregate(
-    examples,
-    docs,
     helmet,
-    `react`,
-    `fabric`,
+    react,
+    fabric,
     `fabric-experiments`,
-    `native`,
-    `vdom`,
+    native,
+    vdom,
     `react-redux`,
     `react-dom`,
     `prop-types`,
-    `bootstrap`,
-    `mui`,
-    router,
+    bootstrap,
+    mui,
+    //router,
     `react-big-calendar`,
     `react-native-nativebase`,
     `react-native-elements`,
@@ -163,149 +123,94 @@ lazy val root = project
     `react-router-dom`,
     pathtoregexp,
     dataValidationJS,
-    msal
-    ,mssql
-    ,express
-    //,dataValidationJVM
+    msal,
+    mssql,
+    express
   )
-  .enablePlugins(AutomateHeaderPlugin)
-  .disablePlugins(BintrayPlugin)
 
 lazy val `react` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin, BuildInfoPlugin)
-  .settings(description := "reactjs package.")
-  .settings(buildInfoPackage := "react")
+  .settings(std_settings("react", "reactjs package"))
+  .settings(buildinfo_settings("react"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val native = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .settings(description := "reactjs native package.")
-  .dependsOn(
-    react, vdom
-  )
+  .settings(std_settings("native", "reactjs native package"))
+  .settings(buildinfo_settings("native"))
+  .dependsOn(react, vdom)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val msal = project
   .in(file("components/msal"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .settings(description := "Microsoft Authentication Library msal")
+  .settings(std_settings("msal", "Microsoft Authentication Library msal"))
+  .settings(buildinfo_settings("msal"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val mssql = project
   .in(file("components/mssql"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .settings(description := "Microsoft Sql Server based on tedious")
+  .settings(std_settings("mssql", "Microsoft Sql Server based on tedious"))
+  .settings(buildinfo_settings("mssql"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val express = project
   .in(file("components/express"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .settings(description := "express node.js http server")
+  .settings(std_settings("express", "express node.js http server"))
+  .settings(buildinfo_settings("express"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
-val `react-big-calendar` = project
+lazy val `react-big-calendar` = project
   .in(file("components/react-big-calendar"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "scalajs reaction react-big-calendar"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(std_settings("react-big-calendar", "react-big-calender bindings"))
+  .settings(buildinfo_settings("react_big_calendar"))
   .dependsOn(react, vdom)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val pathtoregexp = project
   .in(file("components/pathtoregexp"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "pathtoregexp"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(std_settings("pathtoregex", "pathtoregexp"))
+  .settings(buildinfo_settings("pathtoregex"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val jss = project
   .in(file("components/jss"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "cssinjs jss"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(std_settings("jss", "cssinjs jss"))
+  .settings(buildinfo_settings("jss"))
   .dependsOn(react, vdom)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-router-dom` = project
   .in(file("components/react-router-dom"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "scalajs reaction react-router-dom bindings (hook)"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(react,vdom)
+  .settings(std_settings("react-router-dom", "scalajs reaction react-router-dom bindings (hook)"))
+  .settings(buildinfo_settings("react_router.dom"))
+  .dependsOn(react, vdom)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-navigation` = project
   .in(file("components/react-navigation"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "react-navigation facade"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    react, native
-  )
+  .settings(std_settings("react-navigation", "react-navigation facade"))
+  .settings(buildinfo_settings("react_navigation"))
+  .dependsOn(react, native)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-native-sideswipe` = project
   .in(file("components/react-native-sideswipe"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "react-native-sideswipe"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    react,native
-  )
+  .settings(std_settings("react-native-sideswipe", "react-native-sideswipe"))
+  .settings(buildinfo_settings("react_native_sideswipe"))
+  .dependsOn(react, native)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-native-nativebase` = project
   .in(file("components/react-native-nativebase"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "nativebase library"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(std_settings("react-native-nativebase", "nativebase library"))
+  .settings(buildinfo_settings("react_native_nativebase"))
   .dependsOn(react, native)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-native-elements` = project
   .in(file("components/react-native-elements"))
-  .settings(libsettings)
-  .settings(publishSettings)
-  .settings(
-    Seq(
-      description := "react-native-elements library"
-    )
-  )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(std_settings("react-native-elements", "react-native-elements library"))
+  .settings(buildinfo_settings("react_native_elements"))
   .dependsOn(react, native)
+  .enablePlugins(ScalaJSPlugin)
 
 // jvm and js based project
 // lazy val dataValidation =
@@ -322,16 +227,10 @@ lazy val `react-native-elements` = project
 
 lazy val dataValidationJS = project
   .in(file("data-validation"))
-  .settings(name := "data-validation")
-  .settings(libsettings)
-  .settings(publishSettings)
   .settings(fpsettings)
-  .settings(
-    description :=
-      "General purpose data validation library based on cats and applicatives."
-  )
-// needed if not using cross-
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .settings(std_settings("data-validation", "General purpose data validation library based on cats and applicatives."))
+  .settings(buildinfo_settings("data.validation"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 //lazy val dataValidationJS = dataValidation.js
 //lazy val dataValidationJVM = dataValidation.jvm
@@ -339,7 +238,7 @@ lazy val dataValidationJS = project
 // lazy val `react-macros` = project
 //   .settings(libsettings)
 //   .settings(publishSettings)
-//   .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+//   .enablePlugins(ScalaJSPlugin)
 //   .settings(macroSettings)
 //   .settings(
 //     description := "Helpful macros.",
@@ -349,152 +248,129 @@ lazy val dataValidationJS = project
 //     ))
 
 lazy val `prop-types` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react)
-  .settings(description := "prop-types package.")
+  .settings(std_settings("prop-types", "prop-types package."))
+  .settings(buildinfo_settings("prop_types"))
 
 lazy val `react-dom` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react)
-  .settings(description := "react-dom package.")
+  .settings(std_settings("react-dom", "react-dom package."))
+  .settings(buildinfo_settings("react_dom"))
 
-lazy val `vdom` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+lazy val vdom = project
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react)
-  .settings(description := "vdom helpers.")
+  .settings(std_settings("vdom", "vdom helpers"))
+  .settings(buildinfo_settings("vdom"))
 
 lazy val `react-redux` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react)
-  .settings(
-    description := "redux via react-redux."
-  )
+  .settings(std_settings("react-redux", "redux via react-redux."))
+  .settings(buildinfo_settings("react_redux"))
 
 lazy val helmet = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(react,vdom)
-  .settings(description := "react-helmet")
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom)
+  .settings(std_settings("helmet", "react-helmet"))
+  .settings(buildinfo_settings("helmet"))
 
 lazy val apollo = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(react,vdom)
-  .settings(description := "Combination of apollo-boost, graphql, react-apollo")
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom)
+  .settings(std_settings("apollo", "Combination of apollo-boost, graphql, react-apollo"))
+  .settings(buildinfo_settings("apollo"))
 
-lazy val `fabric` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(react,vdom)
-  .settings(description := "microsoft office-ui-fabric facade.")
+lazy val fabric = project
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom)
+  .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
+  .settings(buildinfo_settings("fabric"))
 
 lazy val `fabric-experiments` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(react,vdom,fabric
-  )
-  .settings(description := "microsoft @uifbaric experiments.")
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom, fabric)
+  .settings(std_settings("fabric-experiments", "microsoft @uifbaric experiments."))
+  .settings(buildinfo_settings("fabric.experiments"))
 
-lazy val `bootstrap` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(react ,vdom)
-  .settings(description := "bootstrap facade.")
+lazy val bootstrap = project
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom)
+  .settings(std_settings("bootstrap", "bootstrap facade."))
+  .settings(buildinfo_settings("bootstrap"))
 
-lazy val `mui` = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .dependsOn(
-    react, vdom, jss
-  )
-  .settings(description := "material ui facade.")
+lazy val mui = project
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom, jss)
+  .settings(std_settings("mui", "material ui facade."))
+  .settings(buildinfo_settings("mui"))
 
 lazy val router = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom)
-  .settings(description := "scalajs-reaction browser js oriented router")
+  .settings(std_settings("router", "scalajs-reaction browser js oriented router"))
+  .settings(buildinfo_settings("router"))
 
 lazy val forms = project
-  .settings(libsettings)
-  .settings(publishSettings)
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom)
-  .settings(description := "scalajs-reaction forms library.")
-
-// Watch non-scala assets as well, we add this to root project even
-// though its only relevant to examples project.
-watchSources += baseDirectory.value / "examples/src/main/assets"
+  .settings(std_settings("forms", "scalajs-reaction forms library."))
+  .settings(buildinfo_settings("forms"))
 
 lazy val examples: Project = project
-  .settings(libsettings)
-  .settings(noPublishSettings)
+  .settings(fpsettings)
   .settings(
-    // https://github.com/vpavkin/scala-js-momentjs/pull/41
-    libraryDependencies ++= Seq(
+    scalaVersion := "2.13.1",
+    // Watch non-scala assets.
+    watchSources += baseDirectory.value / "examples/src/main/assets"
+    ,libraryDependencies ++= Seq(
       "ru.pavkin" %%% "scala-js-momentjs" % "0.10.0" //"0.10.0-SNAPSHOT"
     )
   )
-  .settings(fpsettings)
-  .settings(exampleFPSettings)
   .dependsOn(
     helmet,
-    `fabric`,
+    fabric,
     `fabric-experiments`,
     `react-redux`,
     `react-dom`,
     `prop-types`,
-    router,
+    //router,
     forms,
-    `bootstrap`,
-    `mui`,
+    bootstrap,
+    mui,
     `react-big-calendar`,
     `react-router-dom`
 //     ,dataValidationJS
   )
-  .enablePlugins(ScalaJSPlugin, AutomateHeaderPlugin)
-  .disablePlugins(BintrayPlugin)
-  .settings(exampleSettings)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .settings(buildinfo_settings("ttg.examples"))
   .settings(artifactPath.in(Compile, fastOptJS) := crossTarget.in(Compile, fastOptJS).value / "Scala.js")
   .settings(artifactPath.in(Compile, fullOptJS) := crossTarget.in(Compile, fullOptJS).value / "Scala.js")
 
 lazy val docs = project
-  .settings(exampleSettings ++ libsettings)
-  .settings(noPublishSettings)
-  .enablePlugins(ScalaUnidocPlugin)
-  .enablePlugins(ScalaJSPlugin)
+  .in(file("scalajs-reaction-docs"))
   .settings(
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject --
-      inProjects(examples)
-    //-- inProjects(dataValidationJVM) // exclude one of them to avoid dupes
+    moduleName := "scalajs-reaction-docs"
+    //name := "scalajs-reaction-docs"
+    ,
+    skip.in(publish) := true
+    //,mdocVariables := Map("VERSION" -> version.value)
+    //scalacOptions -= -"Yno-imports",
+    //scalacOptions -= "-Ydata-warnings",
+    ,
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples),
+    target in (ScalaUnidoc, unidoc) := (baseDirectory in LocalRootProject).value / "website" / "scalajs-reaction" / "static" / "api",
+    cleanFiles += (target in (ScalaUnidoc, unidoc)).value
   )
+  .dependsOn(root) // but root does not depend on docs
+  .enablePlugins(ScalaJSPlugin, ScalaUnidocPlugin)
 
-val copyAPI = taskKey[Unit]("Copy API files to website build dir")
-copyAPI := {
-  IO.copyDirectory(
-    // a bit hard-coded
-    file("./docs/target/scala-2.13/unidoc"),
-    file("./website/scalajs-reaction/static/api"),
-    overwrite = true
-  )
-}
-
-addCommandAlias("fmt", ";scalafmt")
+addCommandAlias("prepare", "headerCreate; fix; fmt")
+addCommandAlias("fmt", "all scalafmtSbt scalafmt")
+addCommandAlias("fix", "all compile:scalafix")
+addCommandAlias("check", "all scalafmtSbtCheck scalafmtCheck")
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")
 npmBuild := {

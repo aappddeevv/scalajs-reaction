@@ -1,13 +1,13 @@
 *.class
 *.log
 *.orig
+*.jar
 
 # sbt specific
 .cache
 .history
 .lib/
 blah/
-.metals/
 
 target/
 lib_managed/
@@ -15,6 +15,12 @@ src_managed/
 project/boot/
 project/plugins/project/
 node_modules/*
+
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
 
 .ensime*
 .classpath
@@ -28,6 +34,7 @@ docs/src/main/resources/microsite/static
 dist/*
 
 .emacs.desktop
-.metals
-.bloop
+.metals/
+.bloop/
 package-lock.json
+project/secret

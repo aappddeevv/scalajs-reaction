@@ -45,7 +45,7 @@ support for class based components. Anyway, you should be using hooks.
 
 # API Documentation
 
-* [API: all modules](../api/ttg/react)
+* [API: all modules](../api)
 
 The API focuses on integration with existing javascript libraries.
 For example, it is easy to interface with redux and it allows

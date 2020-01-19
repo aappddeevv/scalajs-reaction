@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -13,8 +10,7 @@ import scala.scalajs.js
 import js.JSConverters._
 import js.annotation._
 import org.scalajs.dom
-import _root_.react._
-import React.Fragment
+import react._
 import implicits._
 
 import vdom._
@@ -190,7 +186,7 @@ object app {
       State()
     )
 
-    useEffect(state.cityName){() =>
+    useEffect(unsafe_deps(state.cityName)){() =>
       state.cityName match {
         case Some(name) =>
           dao.fetch(name)

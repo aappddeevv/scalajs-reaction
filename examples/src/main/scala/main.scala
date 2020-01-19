@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -11,7 +8,7 @@ import js.JSConverters._
 import js.Dynamic.{literal => lit}
 
 import org.scalajs.dom
-import _root_.react._
+import react._
 import implicits._
 import react_redux._
 import vdom._
@@ -38,11 +35,10 @@ import addressmanager.fakedata._
 object Contexts {
   type ConsoleLog = js.Function1[js.Any, Unit]
   val logger     = js.Dynamic.global.console.log.asInstanceOf[ConsoleLog]
-  val logContext = context.make[ConsoleLog](logger)
+  val logContext = createContext[ConsoleLog](logger)
 }
 
 object Main {
-  import context._
   import Contexts._
 
   val container       = "container"
@@ -80,7 +76,7 @@ object Main {
               // fabric
               Fabric(new Fabric.Props {
               })(
-                logContext.provider(Contexts.logger)(
+                logContext.provide(Contexts.logger)(
                   Application()
                 )
               )))

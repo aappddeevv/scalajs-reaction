@@ -1,13 +1,33 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 package vdom
 
-import scala.annotation.unchecked.{uncheckedVariance => uv}
-import scalajs.js
+import scala.annotation.unchecked.{ uncheckedVariance => uv }
+
+import scala.scalajs.js
+
 import js.|
+
 import org.scalajs.dom
 
 /** A props trait that takes all SVG props. */
@@ -85,32 +105,30 @@ trait SVGAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var alignmentBaseline
     : js.UndefOr[String] = js.undefined //?: "auto" | "baseline" | "before-edge" | "text-before-edge" | "middle" | "central" | "after-edge" |
 //   "text-after-edge" | "ideographic" | "alphabetic" | "hanging" | "mathematical" | "inherit";
-  var allowReorder: js.UndefOr[String]        = js.undefined //?: "no" | "yes";
-  var alphabetic: js.UndefOr[String | Double] = js.undefined
-  var amplitude: js.UndefOr[String | Double]  = js.undefined
-  var arabicForm
-    : js.UndefOr[String]                              = js.undefined // ?: "initial" | "medial" | "terminal" | "isolated";
-  var ascent: js.UndefOr[String | Double]             = js.undefined
-  var attributeName: js.UndefOr[String]               = js.undefined;
-  var attributeType: js.UndefOr[String]               = js.undefined;
-  var autoReverse: js.UndefOr[String | Double]        = js.undefined
-  var azimuth: js.UndefOr[String | Double]            = js.undefined
-  var baseFrequency: js.UndefOr[String | Double]      = js.undefined
-  var baselineShift: js.UndefOr[String | Double]      = js.undefined
-  var baseProfile: js.UndefOr[String | Double]        = js.undefined
-  var bbox: js.UndefOr[String | Double]               = js.undefined
-  var begin: js.UndefOr[String | Double]              = js.undefined
-  var bias: js.UndefOr[String | Double]               = js.undefined
-  var by: js.UndefOr[String | Double]                 = js.undefined
-  var calcMode: js.UndefOr[String | Double]           = js.undefined
-  var capHeight: js.UndefOr[String | Double]          = js.undefined
-  var clip: js.UndefOr[String | Double]               = js.undefined
-  var clipPath: js.UndefOr[String]                    = js.undefined;
-  var clipPathUnits: js.UndefOr[String | Double]      = js.undefined
-  var clipRule: js.UndefOr[String | Double]           = js.undefined
-  var colorInterpolation: js.UndefOr[String | Double] = js.undefined
-  var colorInterpolationFilters
-    : js.UndefOr[String]                                      = js.undefined //?: "auto" | "sRGB" | "linearRGB" | "inherit";
+  var allowReorder: js.UndefOr[String]                        = js.undefined //?: "no" | "yes";
+  var alphabetic: js.UndefOr[String | Double]                 = js.undefined
+  var amplitude: js.UndefOr[String | Double]                  = js.undefined
+  var arabicForm: js.UndefOr[String]                          = js.undefined // ?: "initial" | "medial" | "terminal" | "isolated";
+  var ascent: js.UndefOr[String | Double]                     = js.undefined
+  var attributeName: js.UndefOr[String]                       = js.undefined;
+  var attributeType: js.UndefOr[String]                       = js.undefined;
+  var autoReverse: js.UndefOr[String | Double]                = js.undefined
+  var azimuth: js.UndefOr[String | Double]                    = js.undefined
+  var baseFrequency: js.UndefOr[String | Double]              = js.undefined
+  var baselineShift: js.UndefOr[String | Double]              = js.undefined
+  var baseProfile: js.UndefOr[String | Double]                = js.undefined
+  var bbox: js.UndefOr[String | Double]                       = js.undefined
+  var begin: js.UndefOr[String | Double]                      = js.undefined
+  var bias: js.UndefOr[String | Double]                       = js.undefined
+  var by: js.UndefOr[String | Double]                         = js.undefined
+  var calcMode: js.UndefOr[String | Double]                   = js.undefined
+  var capHeight: js.UndefOr[String | Double]                  = js.undefined
+  var clip: js.UndefOr[String | Double]                       = js.undefined
+  var clipPath: js.UndefOr[String]                            = js.undefined;
+  var clipPathUnits: js.UndefOr[String | Double]              = js.undefined
+  var clipRule: js.UndefOr[String | Double]                   = js.undefined
+  var colorInterpolation: js.UndefOr[String | Double]         = js.undefined
+  var colorInterpolationFilters: js.UndefOr[String]           = js.undefined //?: "auto" | "sRGB" | "linearRGB" | "inherit";
   var colorProfile: js.UndefOr[String | Double]               = js.undefined
   var colorRendering: js.UndefOr[String | Double]             = js.undefined
   var contentScriptType: js.UndefOr[String | Double]          = js.undefined
@@ -260,68 +278,67 @@ trait SVGAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var strokeDasharray: js.UndefOr[String | Double]            = js.undefined
   var strokeDashoffset: js.UndefOr[String | Double]           = js.undefined
   var strokeLinecap: js.UndefOr[String]                       = js.undefined //?: "butt" | "round" | "square" | "inherit";
-  var strokeLinejoin
-    : js.UndefOr[String]                              = js.undefined //?: "miter" | "round" | "bevel" | "inherit";
-  var strokeMiterlimit: js.UndefOr[String | Double]   = js.undefined
-  var strokeOpacity: js.UndefOr[String | Double]      = js.undefined
-  var strokeWidth: js.UndefOr[String | Double]        = js.undefined
-  var surfaceScale: js.UndefOr[String | Double]       = js.undefined
-  var systemLanguage: js.UndefOr[String | Double]     = js.undefined
-  var tableValues: js.UndefOr[String | Double]        = js.undefined
-  var targetX: js.UndefOr[String | Double]            = js.undefined
-  var targetY: js.UndefOr[String | Double]            = js.undefined
-  var textAnchor: js.UndefOr[String]                  = js.undefined
-  var textDecoration: js.UndefOr[String | Double]     = js.undefined
-  var textLength: js.UndefOr[String | Double]         = js.undefined
-  var textRendering: js.UndefOr[String | Double]      = js.undefined
-  var to: js.UndefOr[String | Double]                 = js.undefined
-  var transform: js.UndefOr[String]                   = js.undefined
-  var u1: js.UndefOr[String | Double]                 = js.undefined
-  var u2: js.UndefOr[String | Double]                 = js.undefined
-  var underlinePosition: js.UndefOr[String | Double]  = js.undefined
-  var underlineThickness: js.UndefOr[String | Double] = js.undefined
-  var unicode: js.UndefOr[String | Double]            = js.undefined
-  var unicodeBidi: js.UndefOr[String | Double]        = js.undefined
-  var unicodeRange: js.UndefOr[String | Double]       = js.undefined
-  var unitsPerEm: js.UndefOr[String | Double]         = js.undefined
-  var vAlphabetic: js.UndefOr[String | Double]        = js.undefined
-  var values: js.UndefOr[String]                      = js.undefined
-  var vectorEffect: js.UndefOr[String | Double]       = js.undefined
-  var version: js.UndefOr[String]                     = js.undefined
-  var vertAdvY: js.UndefOr[String | Double]           = js.undefined
-  var vertOriginX: js.UndefOr[String | Double]        = js.undefined
-  var vertOriginY: js.UndefOr[String | Double]        = js.undefined
-  var vHanging: js.UndefOr[String | Double]           = js.undefined
-  var vIdeographic: js.UndefOr[String | Double]       = js.undefined
-  var viewBox: js.UndefOr[String]                     = js.undefined
-  var viewTarget: js.UndefOr[String | Double]         = js.undefined
-  var visibility: js.UndefOr[String | Double]         = js.undefined
-  var vMathematical: js.UndefOr[String | Double]      = js.undefined
-  var widths: js.UndefOr[String | Double]             = js.undefined
-  var wordSpacing: js.UndefOr[String | Double]        = js.undefined
-  var writingMode: js.UndefOr[String | Double]        = js.undefined
-  var x1: js.UndefOr[String | Double]                 = js.undefined
-  var x2: js.UndefOr[String | Double]                 = js.undefined
-  var x: js.UndefOr[String | Double]                  = js.undefined
-  var xChannelSelector: js.UndefOr[String]            = js.undefined
-  var xHeight: js.UndefOr[String | Double]            = js.undefined
-  var xlinkActuate: js.UndefOr[String]                = js.undefined
-  var xlinkArcrole: js.UndefOr[String]                = js.undefined
-  var xlinkHref: js.UndefOr[String]                   = js.undefined
-  var xlinkRole: js.UndefOr[String]                   = js.undefined
-  var xlinkShow: js.UndefOr[String]                   = js.undefined
-  var xlinkTitle: js.UndefOr[String]                  = js.undefined
-  var xlinkType: js.UndefOr[String]                   = js.undefined
-  var xmlBase: js.UndefOr[String]                     = js.undefined
-  var xmlLang: js.UndefOr[String]                     = js.undefined
-  var xmlns: js.UndefOr[String]                       = js.undefined
-  var xmlnsXlink: js.UndefOr[String]                  = js.undefined
-  var xmlSpace: js.UndefOr[String]                    = js.undefined
-  var y1: js.UndefOr[String | Double]                 = js.undefined
-  var y2: js.UndefOr[String | Double]                 = js.undefined
-  var y: js.UndefOr[String | Double]                  = js.undefined
-  var yChannelSelector: js.UndefOr[String]            = js.undefined
-  var z: js.UndefOr[String | Double]                  = js.undefined
+  var strokeLinejoin: js.UndefOr[String]                      = js.undefined //?: "miter" | "round" | "bevel" | "inherit";
+  var strokeMiterlimit: js.UndefOr[String | Double]           = js.undefined
+  var strokeOpacity: js.UndefOr[String | Double]              = js.undefined
+  var strokeWidth: js.UndefOr[String | Double]                = js.undefined
+  var surfaceScale: js.UndefOr[String | Double]               = js.undefined
+  var systemLanguage: js.UndefOr[String | Double]             = js.undefined
+  var tableValues: js.UndefOr[String | Double]                = js.undefined
+  var targetX: js.UndefOr[String | Double]                    = js.undefined
+  var targetY: js.UndefOr[String | Double]                    = js.undefined
+  var textAnchor: js.UndefOr[String]                          = js.undefined
+  var textDecoration: js.UndefOr[String | Double]             = js.undefined
+  var textLength: js.UndefOr[String | Double]                 = js.undefined
+  var textRendering: js.UndefOr[String | Double]              = js.undefined
+  var to: js.UndefOr[String | Double]                         = js.undefined
+  var transform: js.UndefOr[String]                           = js.undefined
+  var u1: js.UndefOr[String | Double]                         = js.undefined
+  var u2: js.UndefOr[String | Double]                         = js.undefined
+  var underlinePosition: js.UndefOr[String | Double]          = js.undefined
+  var underlineThickness: js.UndefOr[String | Double]         = js.undefined
+  var unicode: js.UndefOr[String | Double]                    = js.undefined
+  var unicodeBidi: js.UndefOr[String | Double]                = js.undefined
+  var unicodeRange: js.UndefOr[String | Double]               = js.undefined
+  var unitsPerEm: js.UndefOr[String | Double]                 = js.undefined
+  var vAlphabetic: js.UndefOr[String | Double]                = js.undefined
+  var values: js.UndefOr[String]                              = js.undefined
+  var vectorEffect: js.UndefOr[String | Double]               = js.undefined
+  var version: js.UndefOr[String]                             = js.undefined
+  var vertAdvY: js.UndefOr[String | Double]                   = js.undefined
+  var vertOriginX: js.UndefOr[String | Double]                = js.undefined
+  var vertOriginY: js.UndefOr[String | Double]                = js.undefined
+  var vHanging: js.UndefOr[String | Double]                   = js.undefined
+  var vIdeographic: js.UndefOr[String | Double]               = js.undefined
+  var viewBox: js.UndefOr[String]                             = js.undefined
+  var viewTarget: js.UndefOr[String | Double]                 = js.undefined
+  var visibility: js.UndefOr[String | Double]                 = js.undefined
+  var vMathematical: js.UndefOr[String | Double]              = js.undefined
+  var widths: js.UndefOr[String | Double]                     = js.undefined
+  var wordSpacing: js.UndefOr[String | Double]                = js.undefined
+  var writingMode: js.UndefOr[String | Double]                = js.undefined
+  var x1: js.UndefOr[String | Double]                         = js.undefined
+  var x2: js.UndefOr[String | Double]                         = js.undefined
+  var x: js.UndefOr[String | Double]                          = js.undefined
+  var xChannelSelector: js.UndefOr[String]                    = js.undefined
+  var xHeight: js.UndefOr[String | Double]                    = js.undefined
+  var xlinkActuate: js.UndefOr[String]                        = js.undefined
+  var xlinkArcrole: js.UndefOr[String]                        = js.undefined
+  var xlinkHref: js.UndefOr[String]                           = js.undefined
+  var xlinkRole: js.UndefOr[String]                           = js.undefined
+  var xlinkShow: js.UndefOr[String]                           = js.undefined
+  var xlinkTitle: js.UndefOr[String]                          = js.undefined
+  var xlinkType: js.UndefOr[String]                           = js.undefined
+  var xmlBase: js.UndefOr[String]                             = js.undefined
+  var xmlLang: js.UndefOr[String]                             = js.undefined
+  var xmlns: js.UndefOr[String]                               = js.undefined
+  var xmlnsXlink: js.UndefOr[String]                          = js.undefined
+  var xmlSpace: js.UndefOr[String]                            = js.undefined
+  var y1: js.UndefOr[String | Double]                         = js.undefined
+  var y2: js.UndefOr[String | Double]                         = js.undefined
+  var y: js.UndefOr[String | Double]                          = js.undefined
+  var yChannelSelector: js.UndefOr[String]                    = js.undefined
+  var z: js.UndefOr[String | Double]                          = js.undefined
 }
 
 object svgtags extends svgtags

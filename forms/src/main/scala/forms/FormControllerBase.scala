@@ -1,24 +1,42 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
-package ttg 
 package forms
 
-import scala.scalajs.js
-import js.Dynamic.{literal => jsobj}
-import js.annotation._
-import org.scalajs.dom
+import concurrent.ExecutionContext.Implicits.global
 import concurrent._
-import ExecutionContext.Implicits.global
-import js.JSConverters._
-import util.Success
+
+import scala.scalajs.js
+
+import js.Dynamic.{ literal => jsobj }
+
+import org.scalajs.dom
 
 import react._
+
 import implicits._
 
-
 import vdom._
+
+import util.Success
 
 trait HasValues {
   val _values: HasValues.Service
@@ -41,7 +59,7 @@ object HasTouches {
     type Touches
     def EmptyTouches: Touches
     def touch(id: String, touches: Touches): Touches
-    def touched(id: String, touches: Touches): Boolean    
+    def touched(id: String, touches: Touches): Boolean
   }
 }
 
@@ -60,29 +78,30 @@ object HasErrors {
 }
 
 /**
-  * A component to manage data editing lifecycle. Supply the initial values and
-  * optionally track fine-grained changes. Very few assumptions are made in this
-  * base class leaving the details to subclasses. A react context is provided
-  * for child components, if desired.
- * 
+ * A component to manage data editing lifecycle. Supply the initial values and
+ * optionally track fine-grained changes. Very few assumptions are made in this
+ * base class leaving the details to subclasses. A react context is provided
+ * for child components, if desired.
+ *
  * The form can be used as controlled or uncontrolled. Provide a "value"
  * parameter to ake it controlled. Controlled is a better model if you have
  * components (such as a reset button) outside the form's structure that can
  * alter the value being edited.
- * 
+ *
  * @todo Remove dependency on Future. Make general F or use js.Promise.
-  */
+ */
 trait FormControllerBase extends HasValues with HasTouches with HasErrors {
 
   val Name: String
 
-  import _errors.{Errors, EmptyErrors}
+  import _errors.{ EmptyErrors, Errors }
+  import _touches.{ EmptyTouches, Touches }
   import _values.Value
-  import _touches.{Touches, EmptyTouches}
 
   /** THIS ASSUMES A SPECIFIC ERRROR MODEL, BROKE ABSTRACTION */
   /** Validate a single value, return user message. Used for field level validations. */
   type Validator = Option[scala.Any] => Future[String]
+
   /** Validators indexed by attribute name. */
   type Validators = js.Dictionary[Validator]
   val EmptyValidators = js.Dictionary.empty[Validator]
@@ -90,20 +109,24 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
   /** Validate values, only checking Seq[String] fields, or all fields (form level
    * validation) if Nil. Return errors.
    */
-  type FormValidator = (Value, Seq[String]) => Future[Errors]
-  type ResetCallback = (Value, FormActions) => Future[Unit]
+  type FormValidator  = (Value, Seq[String]) => Future[Errors]
+  type ResetCallback  = (Value, FormActions) => Future[Unit]
   type SubmitCallback = (Value, FormActions) => Future[Unit]
 
   /** Actions that are sent by child form elements. */
   sealed trait Action
+
   /** Send the attibute that changed and an updated Value object. */
   case class FieldValue(field: String, value: Value, validate: Boolean) extends Action
+
   /** Set field errors. Either replacing all of the existing or merging this into
    * the existing field errors.
    */
   case class FieldErrors(errors: Errors, merge: Boolean) extends Action
+
   /** Touch a field potentially forcing validation. */
   case class Touched(field: String, validate: Boolean) extends Action
+
   /** Indicate whether we are validating, performed asynchronously. This action
    * does not perform validation itself, it just provides the status or the
    * result of validation if f = false.
@@ -111,8 +134,10 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
    * @param  errors validation errors from the validation ffort, if any
    */
   case class Validating(f: Boolean, errors: Option[Errors]) extends Action
+
   /** Reset using the values provided including initialValues. */
   case class Reset(values: Value) extends Action
+
   /** Submit the form.
    * @param f Whether submission should start or if it has ended.
    */
@@ -128,7 +153,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     validating: Boolean = false,
     resetting: Boolean = false,
     errors: Errors = EmptyErrors,
-    touched: Touches = EmptyTouches,
+    touched: Touches = EmptyTouches
     /** This is here in case we allow child components to add validators. */
     //validators: Box[Validators] = Box(EmptyValidators)
   )
@@ -168,10 +193,8 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     submit: (() => Unit) = () => (),
     /** Does not call the reset callback. */
     reset: (Option[Value] => Unit) = _ => (),
-    validateField: (String => Future[Errors]) = _ =>
-    Future.successful(EmptyErrors),
-    validateForm: (Value => Future[Errors]) = _ =>
-    Future.successful(EmptyErrors),
+    validateField: (String => Future[Errors]) = _ => Future.successful(EmptyErrors),
+    validateForm: (Value => Future[Errors]) = _ => Future.successful(EmptyErrors)
   )
 
   def setError(dispatch: Dispatch[Action], field: String, message: String) = {
@@ -179,10 +202,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     dispatch(FieldErrors(anerror, true))
   }
 
-  def resetForm(
-    dispatch: Dispatch[Action],
-    initialValue: MutableRef[Value],
-    nextValues: Option[Value]) = {
+  def resetForm(dispatch: Dispatch[Action], initialValue: MutableRef[Value], nextValues: Option[Value]) = {
     initialValue.current = nextValues.getOrElse(initialValue.current)
     dispatch(Reset(initialValue.current))
   }
@@ -191,7 +211,8 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     currentValue: Value,
     dispatch: Dispatch[Action],
     initialValue: MutableRef[Value],
-    validate: js.UndefOr[FormValidator]) =
+    validate: js.UndefOr[FormValidator]
+  ) =
     FormActions(
       setFieldValue = (f, v, s) => dispatch(FieldValue(f, v, s)),
       setError = setError(dispatch, _, _),
@@ -200,13 +221,13 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
       reset = resetForm(dispatch, initialValue, _),
       submit = () => dispatch(Submitting(true)),
       validateForm = v =>
-      validate
-        .map(_(v, Nil))
-        .getOrElse(Future.successful(EmptyErrors)),
+        validate
+          .map(_(v, Nil))
+          .getOrElse(Future.successful(EmptyErrors)),
       validateField = f =>
-      validate
-        .map(_(currentValue, Seq(f)))
-        .getOrElse(Future.successful(EmptyErrors)),
+        validate
+          .map(_(currentValue, Seq(f)))
+          .getOrElse(Future.successful(EmptyErrors))
     )
 
   /** Handlers for controls. These are close to what's needed for most html
@@ -221,7 +242,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
      * the form will not submit.
      */
     handleSubmit: FormEventHandler[dom.html.Form] = _ => (),
-    handleReset: FormEventHandler[dom.html.Form] = _ => (),
+    handleReset: FormEventHandler[dom.html.Form] = _ => ()
   )
 
   def handleReset(
@@ -229,15 +250,16 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     dispatch: Dispatch[Action],
     initialValue: MutableRef[Value],
     factions: FormActions,
-    reset: js.UndefOr[ResetCallback]): FormEventHandler[dom.html.Form] =
+    reset: js.UndefOr[ResetCallback]
+  ): FormEventHandler[dom.html.Form] =
     e =>
-  reset
-    .fold(
-      Future.unit
-    )(_(currentValue, factions))
-    .onComplete {
-      case _ => resetForm(dispatch, initialValue, None)
-    }
+      reset
+        .fold(
+          Future.unit
+        )(_(currentValue, factions))
+        .onComplete {
+          case _ => resetForm(dispatch, initialValue, None)
+        }
 
   def handleSubmit(dispatch: Dispatch[Action]): FormEventHandler[dom.html.Form] = e => {
     e.preventDefault()
@@ -249,7 +271,8 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     dispatch: Dispatch[Action],
     initialValue: MutableRef[Value],
     factions: FormActions,
-    reset: js.UndefOr[ResetCallback]) =
+    reset: js.UndefOr[ResetCallback]
+  ) =
     FormHandlers(
       handleChange = (f, v) => dispatch(FieldValue(f, v, true)),
       handleBlur = (f) => dispatch(Touched(f, true)),
@@ -258,11 +281,8 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     )
 
   /** Dummy for now. Always return EmptyErrors. */
-  def runFieldLevelValidations(
-    validators: js.Dictionary[Validator],
-    values: Value): Future[Errors] = {
+  def runFieldLevelValidations(validators: js.Dictionary[Validator], values: Value): Future[Errors] =
     Future.successful(EmptyErrors)
-  }
 
   /**
    * Run validation handlers. Merge resulting errors. Maybe the return value
@@ -277,7 +297,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     handler: js.UndefOr[FormValidator]
   ): Future[Errors] = {
     val fieldF = runFieldLevelValidations(fieldLevelValidators, values)
-    val hF = handler.fold(Future.successful(EmptyErrors)) { _(values, Nil) }
+    val hF     = handler.fold(Future.successful(EmptyErrors)) { _(values, Nil) }
     // if either fail, the overall result fails
     val combined = for {
       ferrs <- fieldF
@@ -295,104 +315,106 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     validate: js.UndefOr[FormValidator]
   )
 
-  import react.context._
-  val FormContext = react.context.make[Context](null)
+  val FormContext = react.createContext[Context](null)
 
   trait Props extends js.Object {
     val initialValue: Value
-    var submit: js.UndefOr[SubmitCallback] = js.undefined
-    var reset: js.UndefOr[ResetCallback] = js.undefined
-    var validate: js.UndefOr[FormValidator] = js.undefined
-    var validateOnBlur: js.UndefOr[Boolean] = js.undefined
-    var validateOnChange: js.UndefOr[Boolean] = js.undefined
-    var isInitialValid: js.UndefOr[() => Boolean] = js.undefined
+    var submit: js.UndefOr[SubmitCallback]             = js.undefined
+    var reset: js.UndefOr[ResetCallback]               = js.undefined
+    var validate: js.UndefOr[FormValidator]            = js.undefined
+    var validateOnBlur: js.UndefOr[Boolean]            = js.undefined
+    var validateOnChange: js.UndefOr[Boolean]          = js.undefined
+    var isInitialValid: js.UndefOr[() => Boolean]      = js.undefined
     var onChange: js.UndefOr[(Value, Boolean) => Unit] = js.undefined
-    var touched: js.UndefOr[Seq[String] => Unit] = js.undefined
+    var touched: js.UndefOr[Seq[String] => Unit]       = js.undefined
   }
 
   trait PropsWithChildren extends Props {
-    val children: FormProps => ReactNode    
+    val children: FormProps => ReactNode
   }
 
   def apply(props: Props)(c: FormProps => ReactNode): ReactElement =
     sfc(props.combineDynamic(jsobj("children" -> c)).asDyn)
 
-  val sfc = SFC1[PropsWithChildren]{ props =>
+  val sfc = SFC1[PropsWithChildren] { props =>
     useDebugValue(Name)
     val initialValue = useRef[Value](props.initialValue)
-    val mounted = useRef[Boolean](false)
-    val submitCount = useRef[Int](0)
+    val mounted      = useRef[Boolean](false)
+    val submitCount  = useRef[Int](0)
 
     useEffectMounting(() => {
       mounted.current = true
       (() => mounted.current = false)
     })
 
-    val (state, dispatch) = useReducer[State, Action, Null]((s, a) => {
-      a match {
-        case x @ Reset(nextvalues) =>
-          submitCount.current = 0
-          State(
-            value = nextvalues,
-            postAction = Option(x)
-          )
-        case x @ Submitting(f) =>
-          // Formik sets all touched value to true, why?
-          submitCount.current = submitCount.current + 1
-          s.copy(
-            submitting = f,
-            postAction = if(f) Option(x) else None
-          )
-        case x @ FieldValue(_, newvalues, doValidate) =>
-          s.copy(
-            value = newvalues,
-            postAction = if(doValidate) Option(x) else None
-          )
-        case Validating(f, eopt) =>
-          s.copy(
-            validating = f,
-            errors = eopt.fold(s.errors)(identity)
-          )
-        // If you validate on change then blur on the form, you may run validations twice.
-        case x @ Touched(field, doValidate) =>
-          val newtouched = _touches.touch(field, s.touched)
-          s.copy(
-            touched = newtouched,
-            postAction = if(doValidate) Option(x) else None
-          )
-        case x @ FieldErrors(errs, merge) =>
-          s.copy(
-            errors =
-              if (merge) _errors.combine(s.errors, errs)
-              else errs
-          )
-      }},
+    val (state, dispatch) = useReducer[State, Action, Null](
+      (s, a) => {
+        a match {
+          case x @ Reset(nextvalues) =>
+            submitCount.current = 0
+            State(
+              value = nextvalues,
+              postAction = Option(x)
+            )
+          case x @ Submitting(f) =>
+            // Formik sets all touched value to true, why?
+            submitCount.current = submitCount.current + 1
+            s.copy(
+              submitting = f,
+              postAction = if (f) Option(x) else None
+            )
+          case x @ FieldValue(_, newvalues, doValidate) =>
+            s.copy(
+              value = newvalues,
+              postAction = if (doValidate) Option(x) else None
+            )
+          case Validating(f, eopt) =>
+            s.copy(
+              validating = f,
+              errors = eopt.fold(s.errors)(identity)
+            )
+          // If you validate on change then blur on the form, you may run validations twice.
+          case x @ Touched(field, doValidate) =>
+            val newtouched = _touches.touch(field, s.touched)
+            s.copy(
+              touched = newtouched,
+              postAction = if (doValidate) Option(x) else None
+            )
+          case x @ FieldErrors(errs, merge) =>
+            s.copy(
+              errors =
+                if (merge) _errors.combine(s.errors, errs)
+                else errs
+            )
+        }
+      },
       null,
       _ => State(value = props.initialValue)
     )
 
     // effects after state change
     // TODO: Set "validating" flag at start and end correctly.
-    useEffect(dependencies(
-      state.postAction,
-      props.validate,
-      props.submit,
-      props.touched,
-      props.validateOnChange,
-      props.validateOnBlur,
-      props.onChange.isDefined
-    )){() =>
+    useEffect(
+      unsafe_deps(
+        state.postAction,
+        props.validate,
+        props.submit,
+        props.touched,
+        props.validateOnChange,
+        props.validateOnBlur,
+        props.onChange.isDefined
+      )
+    ) { () =>
       state.postAction match {
         case Some(Reset(nextvalues)) =>
           props.onChange.foreach(_(nextvalues, true))
 
         case Some(Touched(field, doValidate)) =>
-          (if(doValidate && props.validateOnBlur.getOrElse(true))
-              runValidations(state.value, EmptyValidators, props.validate)
-           else Future.successful(EmptyErrors))
-            .onComplete {
-              case _ => props.touched.foreach(_(Seq(field)))
-            }
+          (if (doValidate && props.validateOnBlur.getOrElse(true))
+             runValidations(state.value, EmptyValidators, props.validate)
+           else Future.successful(EmptyErrors)).onComplete {
+            case _ => props.touched.foreach(_(Seq(field)))
+          }
 
         case Some(FieldValue(field, newvalues, doValidate)) =>
           val fut =
@@ -409,27 +431,24 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
           }
 
         case Some(Submitting(f)) =>
-          if(f)
-            runValidations(state.value, EmptyValidators, props.validate)
-              .flatMap { errs =>
-                // call user callback
-                if (_errors.count(errs) == 0)
-                  props.submit.fold(
-                    Future.unit
-                  )(
-                    _(state.value, makeFormActions(state.value, dispatch, initialValue,
-                      props.validate))
-                  )
-                else Future.unit
-              }
-              .onComplete {
-                case _ => dispatch(Submitting(false))
-              }
+          if (f)
+            runValidations(state.value, EmptyValidators, props.validate).flatMap { errs =>
+              // call user callback
+              if (_errors.count(errs) == 0)
+                props.submit.fold(
+                  Future.unit
+                )(
+                  _(state.value, makeFormActions(state.value, dispatch, initialValue, props.validate))
+                )
+              else Future.unit
+            }.onComplete {
+              case _ => dispatch(Submitting(false))
+            }
         case _ => // should never happen
       }
     }
 
-    val cvalues = state.value //props.value.getOrElse(state.value)
+    val cvalues  = state.value //props.value.getOrElse(state.value)
     val factions = makeFormActions(cvalues, dispatch, initialValue, props.validate)
     // compare initialValue to current values
     val dirty =
@@ -447,8 +466,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
       dirty = dirty,
       errors = state.errors,
       touched = state.touched,
-      handlers = makeFormHandlers(cvalues, dispatch, initialValue,
-        factions, props.reset),
+      handlers = makeFormHandlers(cvalues, dispatch, initialValue, factions, props.reset),
       actions = factions,
       isValidating = state.validating,
       isSubmitting = state.submitting,
@@ -456,7 +474,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
       didMount = mounted.current
     )
     val context = Context(fprops, initialValue.current, props.validate)
-    FormContext.provider(context)(
+    FormContext.provide(context)(
       props.children(fprops)
     )
   }

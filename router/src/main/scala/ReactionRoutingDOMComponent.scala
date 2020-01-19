@@ -1,14 +1,11 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
-package ttg 
 package router
 package browser
 
 import scala.scalajs.js
 import org.scalajs.dom
 import react._
+import react.implicits._
 import vdom._
 
 /**
@@ -114,7 +111,7 @@ trait ReactionRouterDOMComponent
 
     val sfc = SFC1[Props] { props =>
       import props._
-      context.consumer(RouterContext){ctx =>
+      RouterContext.consume{ctx =>
         ctx.info match {
           case Some(info) =>
             config.rules(info) match {

@@ -1,29 +1,43 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package jss
 
 import scala.scalajs.js
-import js.|
+
 import js.annotation._
-
-import react._
-
 @js.native
 trait Plugin extends js.Object {
   // bunch of on* methods...
 }
 
 trait AddRuleOptions extends js.Object {
-  var index: js.UndefOr[Int] = js.undefined
+  var index: js.UndefOr[Int]        = js.undefined
   var className: js.UndefOr[String] = js.undefined
 }
 
 @js.native
 trait Rule extends js.Object {
-  val className: String = js.native
-  val key: String = js.native
+  val className: String    = js.native
+  val key: String          = js.native
   val isProcessed: Boolean = js.native
   val options: RuleOptions = js.native
 }
@@ -31,10 +45,10 @@ trait Rule extends js.Object {
 @js.native
 trait RuleOptions extends js.Object {
   @JSName("jss")
-  val _jss: JSS = js.native
+  val _jss: JSS                     = js.native
   val sheet: js.UndefOr[Stylesheet] = js.native
-  val index: js.UndefOr[Int] = js.native
-  val selector: js.UndefOr[String] = js.native
+  val index: js.UndefOr[Int]        = js.native
+  val selector: js.UndefOr[String]  = js.native
   // more...
   // should make this a trait parameter so can we index our names?
   val classes: js.Dictionary[String] = js.native
@@ -42,24 +56,22 @@ trait RuleOptions extends js.Object {
 
 @js.native
 trait Stylesheet extends js.Object {
-  def attach(): Unit = js.native
-  def detach(): Unit = js.native
-  def deploy(): Unit = js.native
-  def addRule(name: String, style: JssStyle,
-    options: js.UndefOr[AddRuleOptions]): Rule = js.native
-  def addRule(style: JssStyle,
-    options: js.UndefOr[AddRuleOptions]): Rule = js.native
-  def deleteRule(name: String): Unit = js.native
-  def getRule(name: String): js.Dynamic = js.native
+  def attach(): Unit                                                                    = js.native
+  def detach(): Unit                                                                    = js.native
+  def deploy(): Unit                                                                    = js.native
+  def addRule(name: String, style: JssStyle, options: js.UndefOr[AddRuleOptions]): Rule = js.native
+  def addRule(style: JssStyle, options: js.UndefOr[AddRuleOptions]): Rule               = js.native
+  def deleteRule(name: String): Unit                                                    = js.native
+  def getRule(name: String): js.Dynamic                                                 = js.native
   // more typing needed...
   def addRules(rules: js.Object): Unit = js.native
 }
 
 trait StylesheetFactoryOptions extends js.Object {
-  var meta: js.UndefOr[String] = js.undefined
-  var index: js.UndefOr[Int] = js.undefined
+  var meta: js.UndefOr[String]           = js.undefined
+  var index: js.UndefOr[Int]             = js.undefined
   var classNamePrefx: js.UndefOr[String] = js.undefined
-  var link: js.UndefOr[Boolean] = js.undefined
+  var link: js.UndefOr[Boolean]          = js.undefined
   // more...
 }
 
@@ -69,8 +81,8 @@ trait IdOptions extends js.Object {
 
 trait JssOptions extends js.Object {
   var plugins: js.UndefOr[js.Array[Plugin]] = js.undefined
-  var virtual: js.UndefOr[String] = js.undefined
-  var insertionPoint: js.UndefOr[String] = js.undefined
+  var virtual: js.UndefOr[String]           = js.undefined
+  var insertionPoint: js.UndefOr[String]    = js.undefined
   //var createGenerateId: js.UndefOr[] = js.undefined
   var id: js.UndefOr[IdOptions] = js.undefined
 }
@@ -78,10 +90,12 @@ trait JssOptions extends js.Object {
 @js.native
 trait JSS extends js.Object {
   def use(plugin: js.Object*): Unit = js.native
-  def createStyleSheet(styles: js.UndefOr[RuleTag] = js.undefined,
-    options: js.UndefOr[StylesheetFactoryOptions] = js.undefined): Stylesheet = js.native
+  def createStyleSheet(
+    styles: js.UndefOr[RuleTag] = js.undefined,
+    options: js.UndefOr[StylesheetFactoryOptions] = js.undefined
+  ): Stylesheet                                 = js.native
   def removeStyleSheet(sheet: Stylesheet): Unit = js.native
-  def setup(options: JssOptions): Unit = js.native
+  def setup(options: JssOptions): Unit          = js.native
 }
 
 @js.native
@@ -94,7 +108,7 @@ object preset extends js.Object {
 @JSImport("jss", JSImport.Namespace)
 private[jss] object module extends JSS {
   @JSName("jss")
-  val _jss: JSS = js.native
+  val _jss: JSS                                                  = js.native
   def create(config: js.UndefOr[JssOptions] = js.undefined): JSS = js.native
 }
 

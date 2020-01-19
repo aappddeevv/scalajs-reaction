@@ -1,12 +1,30 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 
 import scala.scalajs.js
-import js._
+
 import js.JSConverters._
+import js._
 
 /** Mostly obvious converters so you can have a variety of children types and
  * have them convert to ReactNode/ReactElements as needed. Watch out for values
@@ -16,7 +34,7 @@ import js.JSConverters._
  * js.defined first and then these implicit conversions will apply automatically
  * or you should use `.toNode` to convert the ReactNode value then let the
  * general implicit create an `UndefOr[T]`.
-  */
+ */
 trait ValueConverters {
   implicit def _jsArrayToElement[T <: ReactNode](arr: js.Array[T]) = arrayToElement(arr)
 
@@ -31,18 +49,15 @@ trait ValueConverters {
     s.getOrElse(null.asInstanceOf[ReactNode])
 
   /** Elements should have key set. */
-  implicit def _iterableToElement[T](s: Iterable[T])(
-      implicit cv: T => ReactNode): ReactNode = {
+  implicit def _iterableToElement[T](s: Iterable[T])(implicit cv: T => ReactNode): ReactNode =
     s.map(cv).toJSArray.asInstanceOf[ReactElement]
-  }
 
   //implicit def _iterableReactElementToNode(s: Iterable[ReactElement]) = s.toJSArray.asInstanceOf[ReactNode]
 
   implicit def _undefOrReactNodeToReactNode(n: js.UndefOr[ReactNode]): ReactNode =
     n.getOrElse(null)
 
-  implicit def _undefOrReactNodeArrayToReactNode(
-      n: js.UndefOr[js.Array[ReactNode]]): ReactNode =
+  implicit def _undefOrReactNodeArrayToReactNode(n: js.UndefOr[js.Array[ReactNode]]): ReactNode =
     n.map(i => _iterableToElement(i)).getOrElse(null)
 
   /** Since null is a valid react node, convert an optional string to null. */
@@ -75,10 +90,10 @@ trait ValueConverters {
 trait AllInstances extends ValueConverters
 
 /** Instances is the wrong concept here as these are not typeclass
-  * instances--but close enough as they are not syntax extensions "'element'
-  * converters" would be better similiar to `JSConverters` in scala.js.
-  */
+ * instances--but close enough as they are not syntax extensions "'element'
+ * converters" would be better similiar to `JSConverters` in scala.js.
+ */
 object instances {
-  object all       extends AllInstances
-  object value     extends ValueConverters
+  object all   extends AllInstances
+  object value extends ValueConverters
 }

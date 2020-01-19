@@ -1,14 +1,32 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 package vdom
 
 import scala.scalajs.js
+
 import js.|
+
 import org.scalajs.dom
-import js.JSConverters._
 
 object styling {
 
@@ -23,57 +41,52 @@ object styling {
   }
 
   /**
-    * Add a single style prop but it returns a dictionary since it can't be a
-    * StyleAttr anymore.
-    */
-  @inline def unsafeAddProp(
-      style: StyleAttr,
-      name: String,
-      value: String): js.Dictionary[String] = {
+   * Add a single style prop but it returns a dictionary since it can't be a
+   * StyleAttr anymore.
+   */
+  @inline def unsafeAddProp(style: StyleAttr, name: String, value: String): js.Dictionary[String] =
     react
       .mergeJSObjects(style.asInstanceOf[js.Dynamic], js.Dynamic.literal(name -> value))
       .asInstanceOf[js.Dictionary[String]]
-  }
 
   /**
-    * Merge a StyleAttr and a js.Dyanmic assume the returned value is StyleAttr.
-    */
+   * Merge a StyleAttr and a js.Dyanmic assume the returned value is StyleAttr.
+   */
   @inline def mergeUnsafePropsTo(style: StyleAttr, unsafe: js.Dynamic) =
     merge(style, unsafe.asInstanceOf[StyleAttr]).asInstanceOf[StyleAttr]
 
   /**
-    * Obtain a style attribute value. Assumes variable is at :root element via
-    * :root.  Cache the CSSStyleDeclaration from window.getComputedStyle if you
-    * read frequently. Obtain an el via `document.querySelector(class)` or
-    * `document.getElementById`. You can use the psuedo-selector name of `:root`
-    * for the HTML element.
-    */
-  @inline def getCSSVar(vname: String, el: dom.Element = dom.document.documentElement): String = {
+   * Obtain a style attribute value. Assumes variable is at :root element via
+   * :root.  Cache the CSSStyleDeclaration from window.getComputedStyle if you
+   * read frequently. Obtain an el via `document.querySelector(class)` or
+   * `document.getElementById`. You can use the psuedo-selector name of `:root`
+   * for the HTML element.
+   */
+  @inline def getCSSVar(vname: String, el: dom.Element = dom.document.documentElement): String =
     dom.window.getComputedStyle(el, null).getPropertyValue(vname)
-  }
 
   /**
-    * Set CSS variable on the :root element. Cache the computed style if you
-    * update frequently.
-    */
+   * Set CSS variable on the :root element. Cache the computed style if you
+   * update frequently.
+   */
   @inline def setCSSVar(
-      vname: String,
-      value: String,
-      el: dom.Element = dom.document.documentElement,
-      priority: Option[String] = None): Unit = {
+    vname: String,
+    value: String,
+    el: dom.Element = dom.document.documentElement,
+    priority: Option[String] = None
+  ): Unit =
     dom.document.documentElement.asInstanceOf[dom.html.Element].style.setProperty(vname, value)
-  }
 }
 
 trait RawFontStyle extends js.Object {
-  var font: js.UndefOr[String]              = js.undefined
-  var fontFamily: js.UndefOr[String]        = js.undefined
-  var fontSize: js.UndefOr[String | Double] = js.undefined
-  var fontSizeAdjust: js.UndefOr[String|Double]    = js.undefined
-  var fontStretch: js.UndefOr[String|Double]       = js.undefined
-  var fontStyle: js.UndefOr[String|Double]         = js.undefined
-  var fontVariant: js.UndefOr[String|Double]       = js.undefined
-  var fontWeight: js.UndefOr[String|Double]        = js.undefined
+  var font: js.UndefOr[String]                    = js.undefined
+  var fontFamily: js.UndefOr[String]              = js.undefined
+  var fontSize: js.UndefOr[String | Double]       = js.undefined
+  var fontSizeAdjust: js.UndefOr[String | Double] = js.undefined
+  var fontStretch: js.UndefOr[String | Double]    = js.undefined
+  var fontStyle: js.UndefOr[String | Double]      = js.undefined
+  var fontVariant: js.UndefOr[String | Double]    = js.undefined
+  var fontWeight: js.UndefOr[String | Double]     = js.undefined
 }
 
 trait FontFace extends RawFontStyle {
@@ -83,9 +96,9 @@ trait FontFace extends RawFontStyle {
 }
 
 /**
-  * Use to create a mildly useful style object. It won't typecheck the values themselves but
-  * it will check the field themselves to ensure they are valid.
-  */
+ * Use to create a mildly useful style object. It won't typecheck the values themselves but
+ * it will check the field themselves to ensure they are valid.
+ */
 trait RawStyleBase extends RawFontStyle {
   var azimuth: js.UndefOr[String]                    = js.undefined
   var background: js.UndefOr[String]                 = js.undefined
@@ -137,7 +150,7 @@ trait RawStyleBase extends RawFontStyle {
   var height: js.UndefOr[String | Double]        = js.undefined
   var left: js.UndefOr[String]                   = js.undefined
   var letterSpacing: js.UndefOr[String]          = js.undefined
-  var lineHeight: js.UndefOr[String|Double]             = js.undefined
+  var lineHeight: js.UndefOr[String | Double]    = js.undefined
   var listStyle: js.UndefOr[String]              = js.undefined
   var listStyleImage: js.UndefOr[String]         = js.undefined
   var listStylePosition: js.UndefOr[String]      = js.undefined
@@ -206,7 +219,7 @@ trait RawStyleBase extends RawFontStyle {
   var zIndex: js.UndefOr[String]                 = js.undefined
   /* Below properties based on https://www.w3.org/Style/CSS/all-properties */
   /* Color Level 3 - REC */
-  var opacity: js.UndefOr[String|Double] = js.undefined
+  var opacity: js.UndefOr[String | Double] = js.undefined
   /* Backgrounds and Borders Level 3 - CR */
   /* backgroundRepeat - already defined by CSS2Properties */
   /* backgroundAttachment - already defined by CSS2Properties */
@@ -473,9 +486,9 @@ trait RawStyleBase extends RawFontStyle {
 }
 
 /**
-  * A style trait that can provide some protection that the
-  * values you provide *are* valid styling keywords e.g.
-  * backgroundColor. Use this like
-  * `new StyleAttr{ backgroundColor = "red" }`.
-  */
+ * A style trait that can provide some protection that the
+ * values you provide *are* valid styling keywords e.g.
+ * backgroundColor. Use this like
+ * `new StyleAttr{ backgroundColor = "red" }`.
+ */
 trait StyleAttr extends RawStyleBase

@@ -68,7 +68,7 @@ not have a JSX macro/processor. Attributes start with `^.` as in
 `^.className`. If you import both `import ^._` and `import ^._` you can do away
 with those symbols completely at the risk of having a name clash. If define your
 own symbols such as `E` or `A`, you can use those. Just repeat the definition of
-those symbols as they are defined in ttg.react.redux package object and use
+those symbols as they are defined in react.redux package object and use
 yours.
 
 The attributes in a list are automatically converted to a js.Object behind the

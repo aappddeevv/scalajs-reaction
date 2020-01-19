@@ -1,15 +1,33 @@
-// Copyright (c) 2019 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package react
 
 import scala.scalajs.js
+
 import js._
 
 /** Handle js.UndefOr. Note that js.Undef.orNull exists in scala.js 1.0 */
 trait UndefOrCommon[A] {
-  val a: UndefOr[A]
+  def a: UndefOr[A]
 
   /** Tests for overall nullness which is different than `.isEmpty|.nonEmpty`. */
   def isNull = a == null
@@ -36,7 +54,8 @@ trait UndefOrCommon[A] {
   def filterNull: js.UndefOr[A] = a.filter(_ != null)
 
   /** undefined => null, else the value remains, inverse of filterNull. */
-  def orElseNull: js.UndefOr[A] = a orElse js.defined(null.asInstanceOf[A])
+  // use js.UndefOr.orNull
+  //def orElseNull: js.UndefOr[A] = a orElse js.defined(null.asInstanceOf[A])
 
   /** Very dangerous! */
   def as[B]: js.UndefOr[B] = a.map(_.asInstanceOf[B])
@@ -65,36 +84,40 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
 //   })
 // }
 
-final case class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
+final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
   def orTrue: Boolean  = a.getOrElse(true)
   def orFalse: Boolean = a.getOrElse(false)
-  def notUndef: UndefOr[Boolean] = a.map(!_)
+
+  /** Flip the boolean if defined. */
+  def flip: UndefOr[Boolean] = a.map(!_)
 }
 
 /** Handled js.UndefOr[T|Null] directly vs needing to flatmap into it. */
-final case class JsUndefOrNullOps[T](val a: UndefOr[T|Null]) {
+final class JsUndefOrNullOps[T](val a: UndefOr[T | Null]) extends AnyVal {
+
   /** Treat null as undefined and change type from T|Null to T. */
-  @inline def absorbNull: js.UndefOr[T] = a.flatMap{value =>
-    if(value == null) js.undefined
+  def absorbNull: js.UndefOr[T] = a.flatMap { value =>
+    if (value == null) js.undefined
     else value.asInstanceOf[js.UndefOr[T]]
   }
 
   /** Absorb the null so that js.UndefOr[T|Null] => js.UndefOr[T] */
-  @inline def ?? = absorbNull
+  def ?? = absorbNull
 
   /** T|Null may still have T not being truthy, so absorb null and non-truthiness => js.undefined. */
-  @inline def absorbNullKeepTruthy: js.UndefOr[T] = a flatMap { value =>
-    if(value == null) js.undefined else JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
+  def absorbNullKeepTruthy: js.UndefOr[T] = a flatMap { value =>
+    if (value == null) js.undefined
+    else new JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
   }
 }
 
 /** Note that js.UndefOr and js.| already have a `.orNull` method. */
-final case class JsUndefOrOps[A](a: UndefOr[A]) extends UndefOrCommon[A] {}
+final class JsUndefOrOps[A](val a: UndefOr[A]) extends UndefOrCommon[A] {}
 
 trait JsUndefOrSyntax {
-  implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A])     = JsUndefOrOps(a)
-  implicit def jsUndefOrStringOps(a: js.UndefOr[String])   = JsUndefOrStringOps(a)
+  @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A])   = new JsUndefOrOps(a)
+  @inline implicit def jsUndefOrStringOps(a: js.UndefOr[String]) = new JsUndefOrStringOps(a)
 //  implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
-  implicit def jsUndefOrNullOps[A](a: js.UndefOr[A|Null]) = JsUndefOrNullOps[A](a)
-  implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]) = JsUndefOrBooleanOps(a)  
+  @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]) = new JsUndefOrNullOps[A](a)
+  @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean])  = new JsUndefOrBooleanOps(a)
 }

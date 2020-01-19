@@ -1,6 +1,3 @@
-// Copyright (c) 2018 The Trapelo Group LLC
-// This software is licensed under the MIT License (MIT).
-// For more information see LICENSE or https://opensource.org/licenses/MIT
 
 package ttg
 package examples
@@ -15,7 +12,7 @@ import _root_.react.vdom.tags._
 //   def make(key: Option[String] = None)(isLoading: Boolean => ReactNode) = {
 //     val props = js.Dictionary.empty[js.Any]
 //     key.foreach(props("key") = _)
-//     // JSReact.createElement(JSReact.Loading,
+//     // JScreateElement(JSReact.Loading,
 //     //   props,
 //     //   js.Any.fromFunction1(isLoading).asInstanceOf[ReactNode])
 //     null
@@ -27,7 +24,7 @@ import _root_.react.vdom.tags._
 //     val props = js.Dictionary.empty[js.Any]
 //     key.foreach(props("key") = _)
 //     props("ms") = ms.toDouble
-//     JSReact.createElement(JSReact.Timeout,
+//     JScreateElement(JSReact.Timeout,
 //                           props,
 //                           js.Any.fromFunction1(renderPropsChild).asInstanceOf[ReactNode])
 //   }
@@ -37,7 +34,7 @@ import _root_.react.vdom.tags._
 //   def make(ms: Long, key: Option[String] = None)(fallback: ReactNode, children: ReactNode*) =
 //     Timeout.make(ms, key) { didTimeout =>
 //       elements.fragmentElement()(
-//         React.createElement("span", lit("hidden" -> didTimeout))(children: _*),
+//         createElement("span", lit("hidden" -> didTimeout))(children: _*),
 //         if (didTimeout) fallback else null
 //       )
 //     }
