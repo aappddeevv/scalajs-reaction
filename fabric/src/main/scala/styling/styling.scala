@@ -160,7 +160,7 @@ package object styling {
    *
    * @tparam SP Style props
    * @tparam S Styles js object, derived from IStyleSetTag
-   * @typaram C Class names object derived from IClassNamesTag.
+   * @tparam C Class names object derived from IClassNamesTag.
    */
   type GetClassNamesFn[SP <: js.Any, S <: IStyleSetTag, C <: IClassNamesTag] =
     js.Function2[SP, js.UndefOr[IStyleFunctionOrObject[SP, S]], C]

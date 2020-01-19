@@ -1,22 +1,45 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 
 import scala.scalajs.js
+
 import js.JSConverters._
 
 import org.scalajs.dom
+
 import react._
+
 import implicits._
+
 import vdom._
-import vdom.tags._
 import vdom.styling._
+import vdom.tags._
 
 import cats._
 import cats.implicits._
-
 import react_router.dom._
-import hooks._
+import react_router.dom.hooks._
 
 object routes {
 
@@ -41,8 +64,7 @@ object routes {
         Route.withPath("/todo", Pages.todoPage()),
         Route.withPath("/helloworld", Pages.helloWorldPage()),
         Route.withPath("/changeredux", Pages.changeReduxStatePage()),
-        Route.withPath("/labelandchild",
-          Pages.labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld())),
+        Route.withPath("/labelandchild", Pages.labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld())),
         Route.withPath("/tagtest", Pages.tagTest()),
         Route.withPath("/pressure", Pages.pressurePage()),
         Route.withPath("/graph", Pages.graphPage()),
@@ -50,7 +72,8 @@ object routes {
         Route.withPath("/bootstrap", Pages.bootstrapPage()),
         Route.withPath("/mui", Pages.materialUIPage()),
         Route.always(Redirect.to("/readme"))
-      ))
+      )
+    )
   }
 }
 
@@ -80,10 +103,11 @@ object Application {
       Header(),
       HashRouter(
         routes.sfc
-          // ReactionRouter.Route(RouterConfig.config(
-          //   n = nsegments,
-          //   baseUrl = baseUrl
-          // ))
-      ))
+        // ReactionRouter.Route(RouterConfig.config(
+        //   n = nsegments,
+        //   baseUrl = baseUrl
+        // ))
+      )
+    )
   }
 }

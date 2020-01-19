@@ -1,3 +1,23 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
@@ -6,19 +26,25 @@ package atmoache
 // A copy of the app at: http//github.com/gladimdim/atmoache although greatly
 // changed in almost every way :-)
 
+import concurrent.ExecutionContext.Implicits.global
+
 import scala.scalajs.js
+
 import js.JSConverters._
 import js.annotation._
+
 import org.scalajs.dom
+
 import react._
+
 import implicits._
 
 import vdom._
-import tags._
+
 import fabric._
 import fabric.components._
 
-import concurrent.ExecutionContext.Implicits.global
+import tags._
 import util.control._
 
 @js.native
@@ -49,10 +75,11 @@ object Controls {
   def apply(
     onCitySet_ : Option[String] => Unit,
     cityName_ : Option[String]
-  ) = sfc(new Props {
-    var onCitySet = onCitySet_
-    var cityName = cityName_
-  })
+  ) =
+    sfc(new Props {
+      var onCitySet = onCitySet_
+      var cityName  = cityName_
+    })
 
   val sfc = SFC1[Props] { props =>
     React.useDebugValue("Controls")
@@ -61,15 +88,12 @@ object Controls {
       className = styles.controls.asString
     })(
       TextField(new TextField.Props {
-        placeholder =
-          "City Name (e.g. Boston, New York, or Los Angeles,US. See openweather.org)"
+        placeholder = "City Name (e.g. Boston, New York, or Los Angeles,US. See openweather.org)"
         autoFocus = true
         // We just need change events but not track each change
         defaultValue = props.cityName.getOrElse[String]("")
-        onKeyPress =
-          js.defined(e =>
-            if (e.which == dom.ext.KeyCode.Enter) props.onCitySet(state))
-        onChangeInput = js.defined((_, v:String) => setState(Option(v)))
+        onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) props.onCitySet(state))
+        onChangeInput = js.defined((_, v: String) => setState(Option(v)))
       })(),
       Button.Primary(new Button.Props {
         text = "Get Weather Summary"
@@ -94,7 +118,7 @@ object DailyWeatherSummary {
       case _                                                                       => "sunny"
     }
 
-  val layout = new StyleAttr {}
+  val layout     = new StyleAttr   {}
   val labelProps = new Label.Props {}
 
   trait Props extends js.Object {
@@ -102,15 +126,14 @@ object DailyWeatherSummary {
     var key: String
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props)        = sfc(props)
   def apply(s: Daily, k: String) = sfc(new Props { var summary = s; var key = k })
 
-  val sfc = SFC1[Props] { arg =>
-    val cond = arg.summary.facets.headOption.map(f =>
-      convertCondition(f.label)).orUndefined
+  val sfc = SFC1[Props] { argx =>
+    val cond = argx.summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
     val props = new ReactWeatherDisplayProps {
-      temperature = arg.summary.temp
-      currentTemperature = arg.summary.temp
+      temperature = argx.summary.temp
+      currentTemperature = argx.summary.temp
       width = 150
       height = 150
       condition = cond
@@ -120,7 +143,7 @@ object DailyWeatherSummary {
       className = "daily"
       style = layout
     })(
-      Label(labelProps)(arg.summary.dateStr),
+      Label(labelProps)(argx.summary.dateStr),
       ReactWeatherDisplay(props)
     )
   }
@@ -147,16 +170,15 @@ object app {
 
   def renderError(
     message: Option[String] = None
-  ) = {
+  ) =
     div(new DivProps {})(
       s"""Cannot find weather forecast, the error is: ${message
-          .getOrElse[String]("<no message>")}"""
+        .getOrElse[String]("<no message>")}"""
     )
-  }
 
   def renderResults(
-    weather: WeatherList,
-  ) = {
+    weather: WeatherList
+  ) =
     div(new DivProps {
       style = new StyleAttr {
         display = "flex"
@@ -168,28 +190,29 @@ object app {
           DailyWeatherSummary(p, i.toString())
       }
     )
-  }
 
   def apply() = sfc
 
   val sfc = SFC0 {
     React.useDebugValue(Name)
-    val (state, dispatch) = React.useReducer[State,Action](
-      (s,a) => a match {
-        case UpdateCity(cityNameOpt) =>
-          s.copy(cityName = cityNameOpt)
-        case WeatherLoaded(daily) =>
-          s.copy(weather = daily, failed = false, errorMessage = None)
-        case FailedToGetCity(emsg, cname) =>
-          State(failed = true, errorMessage = Some(emsg), cityName = cname)
-      },
+    val (state, dispatch) = React.useReducer[State, Action](
+      (s, a) =>
+        a match {
+          case UpdateCity(cityNameOpt) =>
+            s.copy(cityName = cityNameOpt)
+          case WeatherLoaded(daily) =>
+            s.copy(weather = daily, failed = false, errorMessage = None)
+          case FailedToGetCity(emsg, cname) =>
+            State(failed = true, errorMessage = Some(emsg), cityName = cname)
+        },
       State()
     )
 
-    useEffect(unsafe_deps(state.cityName)){() =>
+    useEffect(unsafe_deps(state.cityName)) { () =>
       state.cityName match {
         case Some(name) =>
-          dao.fetch(name)
+          dao
+            .fetch(name)
             .map {
               _ match {
                 case Left(e)  => dispatch(FailedToGetCity(e, state.cityName))
@@ -202,7 +225,7 @@ object app {
             }
         case None => dispatch(WeatherLoaded(emptyWeatherList))
       }
-     ()
+      ()
     }
 
     Fragment(

@@ -1,13 +1,29 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 // not in movie package!
 
-import scala.scalajs.js
-import js.Dynamic.{literal => lit}
-import _root_.react.vdom.tags._
-
-
+//                           js.Any.fromFunction1(renderPropsChild).asInstanceOf[ReactNode])//           //reactdom.deferredUpdates { () =>//       }//   import concurrent.duration._//   /** Delay (ms resolution) providing a value via a js.Promise. *///   case class SetValue(value: V) extends Action//       val initialState  = _ => State(defaultValue)
 // object Loading {
 //   def make(key: Option[String] = None)(isLoading: Boolean => ReactNode) = {
 //     val props = js.Dictionary.empty[js.Any]
@@ -26,7 +42,7 @@ import _root_.react.vdom.tags._
 //     props("ms") = ms.toDouble
 //     JScreateElement(JSReact.Timeout,
 //                           props,
-//                           js.Any.fromFunction1(renderPropsChild).asInstanceOf[ReactNode])
+
 //   }
 // }
 
@@ -41,9 +57,9 @@ import _root_.react.vdom.tags._
 // }
 
 // object Delay {
-//   import concurrent.duration._
 
-//   /** Delay (ms resolution) providing a value via a js.Promise. */
+
+
 //   def delayPromise[A](delay: FiniteDuration): A => js.Promise[A] =
 //     data => new js.Promise[A]((res, rej) => js.timers.setTimeout(delay) { res(data) })
 
@@ -64,7 +80,7 @@ import _root_.react.vdom.tags._
 // /** Instantiate for each V type. */
 // trait AsyncValueTemplate[V] {
 //   sealed trait Action
-//   case class SetValue(value: V) extends Action
+
 
 //   case class State(asyncValue: V)
 //   val av = reducerComponentWithRetainedProps[State, V, Action]("AsyncValue")
@@ -72,7 +88,7 @@ import _root_.react.vdom.tags._
 
 //   def make(value: V, defaultValue: V)(children: V => ReactNode) =
 //     av.copy(new methods {
-//       val initialState  = _ => State(defaultValue)
+
 //       val retainedProps = value
 //       val reducer = (action, state, gen) => {
 //         action match {
@@ -87,10 +103,10 @@ import _root_.react.vdom.tags._
 //       }
 //       didUpdate = js.defined { on =>
 //         if (on.newSelf.retainedProps != on.oldSelf.retainedProps)
-//           //reactdom.deferredUpdates { () =>
+
 //             on.newSelf.send(SetValue(value))
 //           //}
-//       }
+
 //       val render = self => children(self.state.asyncValue)
 //     })
 // }

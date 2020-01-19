@@ -145,7 +145,7 @@ const prod = {
 
 module.exports = function (env) {
     const isProd = env && env.BUILD_KIND && env.BUILD_KIND==="production"
-    //const scalapath = path.join(__dirname, "examples/target/scala-2.12/examples-" + (isProd ? "opt.js":"fastopt.js"))
+    //const scalapath = path.join(__dirname, "examples/target/scala-2.13/examples-" + (isProd ? "opt.js":"fastopt.js"))
     const scalapath = path.join(__dirname, "examples/target/scala-2.13/Scala.js")
     const dist = path.join(__dirname, "dist")
     const staticAssets = copies(dist)

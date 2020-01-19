@@ -1,17 +1,41 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 package tagtest
 
 import scala.scalajs.js
-import js.Dynamic.{literal => lit}
+
+import js.Dynamic.{ literal => lit }
 import js.annotation._
-import _root_.react._
+
+import react._
+
 import implicits._
-import vdom.StyleAttr
+
 import vdom.SetInnerHTML
-import vdom.tags._
+import vdom.StyleAttr
 import vdom.svgtags._
+import vdom.tags._
 
 @js.native
 @JSImport("Examples/tagtest/README.md", JSImport.Default)
@@ -86,12 +110,12 @@ object TagTest {
       ul(
         li("first item"),
         li("second item"),
-        li("third item"),
+        li("third item")
       ),
       ol(
         li("first item"),
         li("second item"),
-        li("third item"),
+        li("third item")
       ),
       // 2 different syntax if no children
       h1("Heading 1"),
@@ -117,16 +141,19 @@ object TagTest {
         thead(
           tr(
             th("First name"),
-            th("Last name"),
-          )),
-        tbody(tr(
-          td("John"),
-          td("Doe"),
+            th("Last name")
+          )
         ),
+        tbody(
+          tr(
+            td("John"),
+            td("Doe")
+          ),
           tr(
             td("Jane"),
-            td("Doe"),
-          ))
+            td("Doe")
+          )
+        )
       ),
       label("SVG test"),
       svg(new SVGProps { width = "12cm"; height = "4cm"; viewBox = "0 0 1200 400" })(
@@ -167,7 +194,7 @@ object TagTest {
 </svg>
 """
         }
-      })(),
+      })()
     )
   }
 }

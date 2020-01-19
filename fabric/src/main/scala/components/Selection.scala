@@ -27,8 +27,6 @@ import scala.scalajs.js
 import js.annotation._
 import js.|
 
-import react._
-
 @js.native
 trait ISelection[T <: js.Object] extends js.Object {
   val count: Int

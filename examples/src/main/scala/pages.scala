@@ -1,40 +1,60 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 
 import scala.scalajs.js
-import js.annotation._
+
+import js.Dynamic.{ literal => lit }
 import js.JSConverters._
-import js.Dynamic.{literal => lit}
+import js.annotation._
 
 import org.scalajs.dom
+
 import react._
 import react.implicits._
-import react_redux._
+
 import vdom._
 import vdom.tags._
+
 import fabric._
 import fabric.components._
 import fabric.styling._
-import Styling._
-import mui._
 
+import Styling._
+import bootstrap._
 import cats._
 import cats.implicits._
-
-import bootstrap._
+import mui._
 import react_big_calendar._
-import moment._
-//import router._
-
+import react_redux._
 import styles._
 
 object Pages {
 
   import JSAppImports._
-  import todo._
   import addressmanager._
   import graphs._
+  import todo._
 
   //   className = estyles.scrollme.asString
   def page(n: ReactNode*) =
@@ -55,29 +75,30 @@ object Pages {
   def labelAndChild(name: String, c: ReactNode) =
     page(LabelAndChild(new LabelAndChildProps { label = "Wrapped in typescript" })(c))
 
-    def graphPage() =
+  def graphPage() =
     page(Graph())
 
-    def pressurePage() =
+  def pressurePage() =
     page(atmoache.app())
 
-    def todoPage() =
-    page(Fragment(
-          Label("Note: The To Do manager's data is reset each time you switch tabs."),
-      todo.ToDos(new todo.ToDos.Props {
-        val title = "Your To Do List"
-        val todos = todo.fakedata.initialToDos
-      })
-    ))
+  def todoPage() =
+    page(
+      Fragment(
+        Label("Note: The To Do manager's data is reset each time you switch tabs."),
+        todo.ToDos(new todo.ToDos.Props {
+          val title = "Your To Do List"
+          val todos = todo.fakedata.initialToDos
+        })
+      )
+    )
 
   def helloWorldPage() =
     page(
       p("This uses a bunch of different methods calls approaches."),
       helloworld.HelloWorld("apply".some),
-      helloworld.HelloWorld.make2(
-        new helloworld.HelloWorldProps {
-          name = "make2"
-        }),
+      helloworld.HelloWorld.make2(new helloworld.HelloWorldProps {
+        name = "make2"
+      }),
       helloworld.HelloWorld.withMount("withMount".some),
       helloworld.HelloWorld.make3("test ref content"),
       div(12),
@@ -96,14 +117,14 @@ object Pages {
     }
     page(
       Label(
-        "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes. NOT IMPLEMENTED :-) New and delete are not hooked up!"),
+        "Note: Selection state and addresses are stored one level up from the tab so it is preserved between tab changes. NOT IMPLEMENTED :-) New and delete are not hooked up!"
+      ),
       AddressManager(opts)
     )
   }
 
-  def changeReduxStatePage() = {
+  def changeReduxStatePage() =
     page(examples.changereduxstate.ChangeReduxState())
-  }
 
   def readme(text: String) =
     page(
@@ -114,7 +135,7 @@ object Pages {
   def tagTest() = page(tagtest.TagTest())
 
   import examples.bootstrap.BootstrapPage
-  def bootstrapPage() = page(BootstrapPage(new BootstrapPage.Props{}))
+  def bootstrapPage() = page(BootstrapPage(new BootstrapPage.Props {}))
 
   def materialUIPage() = page(examples.materialui.MaterialUIPage())
 

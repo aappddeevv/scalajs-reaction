@@ -13,11 +13,8 @@ lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
     Resolver.jcenterRepo
-    //ivyLocal
   )
 )
-
-lazy val ivyLocal = Resolver.file("local", file(Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns)
 
 val commonScalacOptions = Seq(
   "-deprecation",
@@ -34,10 +31,6 @@ val commonScalacOptions = Seq(
 )
 
 lazy val jsSettings = Seq(
-  scalacOptions ++= (
-    if (scalaJSVersion.startsWith("0.6.")) Seq("-P:scalajs:sjsDefinedByDefault")
-    else Nil
-  ),
   //scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.ESModule) },
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
@@ -54,12 +47,11 @@ def buildinfo_settings(pkg: String) =
   )
 
 lazy val compilerSettings = Seq(
-  scalaVersion := "2.13.1",
   scalacOptions ++= commonScalacOptions,
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
   addCompilerPlugin(scalafixSemanticdb),
   autoAPIMappings := true,
-  autoCompilerPlugins := true // kind-projector
+  autoCompilerPlugins := true
 )
 
 val catsVersion = "2.1.0"
@@ -81,6 +73,7 @@ def std_settings(p: String, d: String) =
 
 inThisBuild(
   List(
+    scalaVersion := "2.13.1",
     organization := "ttg",
     organizationName := "The Trapelo Group",
     startYear := Some(2018),
@@ -125,7 +118,9 @@ lazy val root = project
     dataValidationJS,
     msal,
     mssql,
-    express
+    express,
+    //examples,
+    //docs,
   )
 
 lazy val `react` = project
@@ -319,23 +314,22 @@ lazy val forms = project
   .settings(std_settings("forms", "scalajs-reaction forms library."))
   .settings(buildinfo_settings("forms"))
 
-lazy val examples: Project = project
+lazy val examples = project
   .settings(fpsettings)
+  .settings(std_settings("examples", "Example web application"))
   .settings(
-    scalaVersion := "2.13.1",
+    skip in publish := true,
     // Watch non-scala assets.
     watchSources += baseDirectory.value / "examples/src/main/assets"
     ,libraryDependencies ++= Seq(
-      "ru.pavkin" %%% "scala-js-momentjs" % "0.10.0" //"0.10.0-SNAPSHOT"
+      //"ru.pavkin" % "scala-js-momentjs-sjs1.0-RC1_2.13" % "0.10.1" //"0.10.0-SNAPSHOT"
     )
   )
   .dependsOn(
     helmet,
-    fabric,
     `fabric-experiments`,
     `react-redux`,
     `react-dom`,
-    `prop-types`,
     //router,
     forms,
     bootstrap,
@@ -351,10 +345,8 @@ lazy val examples: Project = project
 
 lazy val docs = project
   .in(file("scalajs-reaction-docs"))
+  .settings(std_settings("scalajs-reaction-docs", "docs fake project"))
   .settings(
-    moduleName := "scalajs-reaction-docs"
-    //name := "scalajs-reaction-docs"
-    ,
     skip.in(publish) := true
     //,mdocVariables := Map("VERSION" -> version.value)
     //scalacOptions -= -"Yno-imports",
@@ -364,8 +356,33 @@ lazy val docs = project
     target in (ScalaUnidoc, unidoc) := (baseDirectory in LocalRootProject).value / "website" / "scalajs-reaction" / "static" / "api",
     cleanFiles += (target in (ScalaUnidoc, unidoc)).value
   )
-  .dependsOn(root) // but root does not depend on docs
   .enablePlugins(ScalaJSPlugin, ScalaUnidocPlugin)
+  // keep this list in sync with root, or filter the dependencies directly from root...
+  .dependsOn(
+ helmet,
+    `fabric-experiments`,
+    native,
+    `react-redux`,
+    `react-dom`,
+    `prop-types`,
+    bootstrap,
+    mui,
+    //router,
+    `react-big-calendar`,
+    `react-native-nativebase`,
+    `react-native-elements`,
+    `react-navigation`,
+    `react-native-sideswipe`,
+    jss,
+    apollo,
+    forms,
+    `react-router-dom`,
+    pathtoregexp,
+    dataValidationJS,
+    msal,
+    mssql,
+    express
+)
 
 addCommandAlias("prepare", "headerCreate; fix; fmt")
 addCommandAlias("fmt", "all scalafmtSbt scalafmt")

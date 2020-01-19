@@ -1,27 +1,45 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 package movie
 
-import scala.scalajs.js
-import js.|
-import org.scalajs.dom.experimental._
-import concurrent._
-import js.JSConverters._
-//import js.Thenable.Implicits._
-import concurrent.ExecutionContext.Implicits.global
+//       .fetch(s"$TMDB_API_PATH/movie/${id}?api_key=$TMDB_API_KEY")//   val title: js.UndefOr[String]    = js.native// trait ConfigImages extends js.Object {//   val popularity: Double                 = js.native
+
+//   val images: ConfigImages = js.native// }
+
+//import js.Thenable.Implicits._import org.scalajs.dom.experimental._
 
 // We are not consistent in UndefOr[]/nulls...lazy.
 // @js.native
 // trait Movie extends js.Object {
 //   val id: Int                      = js.native
-//   val title: js.UndefOr[String]    = js.native
+
 //   val overview: js.UndefOr[String] = js.native
 //   /* can be null */
 //   val poster_path: js.UndefOr[String]    = js.native
 //   val backdrop_path: js.UndefOr[String]  = js.native
 //   val original_language: String          = js.native
-//   val popularity: Double                 = js.native
+
 //   val genre_ids: js.Array[Int]           = js.native
 //   val adult: Boolean                     = js.native
 //   val original_title: js.UndefOr[String] = js.native
@@ -34,7 +52,7 @@ import concurrent.ExecutionContext.Implicits.global
 //   * _sizes have w<number>|"original" values.
 //   */
 // @js.native
-// trait ConfigImages extends js.Object {
+
 //   val poster_sizes: js.Array[String]  = js.native
 //   val logo_sizes: js.Array[String]    = js.native
 //   val profile_sizes: js.Array[String] = js.native
@@ -45,12 +63,12 @@ import concurrent.ExecutionContext.Implicits.global
 
 // @js.native
 // trait Config extends js.Object {
-//   val images: ConfigImages = js.native
-// }
+
+
 
 // @js.native
 // trait Movies extends js.Object {
-//   val page: js.UndefOr[Int]                = js.native
+
 //   val total_pages: js.UndefOr[Int]         = js.native
 //   val total_results: js.UndefOr[Int]       = js.native
 //   val results: js.UndefOr[js.Array[Movie]] = js.native
@@ -95,7 +113,7 @@ import concurrent.ExecutionContext.Implicits.global
 
 //   def fetchMovie(id: String) =
 //     Fetch
-//       .fetch(s"$TMDB_API_PATH/movie/${id}?api_key=$TMDB_API_KEY")
+
 //       .toFuture
 //       .flatMap { _.json().toFuture.map(_.asInstanceOf[Movie]) }
 

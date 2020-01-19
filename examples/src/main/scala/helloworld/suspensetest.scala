@@ -1,41 +1,59 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 package helloworld
 
-import concurrent._
-import concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
+
 import js.annotation._
+
 import org.scalajs.dom
-import js.Dynamic.{literal => lit}
-import js.JSConverters._
 
 import react._
-import react_dom._
+
 import implicits._
-import React.{Fragment, Suspense}
 
 import vdom._
+
 import tags._
 
 object SuspenseTest {
 
-  val sfc1 = SFC0{ vdom.tags.div("Text from a SFC") }
+  val sfc1 = SFC0 { vdom.tags.div("Text from a SFC") }
 
-  val sfc2 = SFC0{ 
-    val (v,update) = React.useStateDirect[Int](() => 0)
+  val sfc2 = SFC0 {
+    val (v, update) = useStateDirect[Int](() => 0)
     div(
       p(s"Using hooks useState: You clicked $v times"),
       button(new ButtonProps {
         onClick = js.defined(_ => update(v + 1))
-      })("Click me"),
+      })("Click me")
     )
   }
 
   sealed trait Action
-  case object Increment extends Action
-  case object Decrement extends Action
+  case object Increment        extends Action
+  case object Decrement        extends Action
   case class Reset(value: Int) extends Action
   case class State(count: Int = 0)
 
@@ -45,8 +63,8 @@ object SuspenseTest {
     action match {
       case Increment => State(state.count + 1)
       case Decrement => State(state.count - 1)
-      case Reset(v) => init(v)
-      case _ => state
+      case Reset(v)  => init(v)
+      case _         => state
     }
 
   trait State2 extends js.Object {
@@ -63,13 +81,13 @@ object SuspenseTest {
   case class Foo(count: Int = 0)
   @JSExportTopLevel("ss1")
   val ss1 = Foo()
-  @JSExportTopLevel("ss2")  
+  @JSExportTopLevel("ss2")
   val ss2 = Foo(10)
-  @JSExportTopLevel("ss3")  
+  @JSExportTopLevel("ss3")
   val ss3 = Foo(30)
 
   def widthS(n: ReactNode) =
-    div(new DivProps{
+    div(new DivProps {
       style = new StyleAttr {
         width = 100
       }
@@ -80,10 +98,10 @@ object SuspenseTest {
   }
 
   // test pure SFC with js.Dynamic
-  val sfc3 = SFC1[Props]{ props =>
+  val sfc3 = SFC1[Props] { props =>
     val initialCount: Int = props.initialCount
     val (state, dispatch) =
-      React.useReducer[State, Action, Int](reducer, initialCount, State(_))
+      useReducer[State, Action, Int](reducer, initialCount, State(_))
     Fragment(
       div(s"Use hooks with reducer: Count: ${state.count}"),
       widthS(button(new ButtonProps {
@@ -99,15 +117,15 @@ object SuspenseTest {
   }
 
   def useKeyPress(targetKey: String): Boolean = {
-    val (keyPressed, setKeyPressed) = React.useStateStrictDirect[Boolean](false)
+    val (keyPressed, setKeyPressed) = useStateStrictDirect[Boolean](false)
 
     val downHandler: js.Function1[js.Dynamic, Unit] =
-      p => if(p.key.asString == targetKey) setKeyPressed(true)
+      p => if (p.key.asString == targetKey) setKeyPressed(true)
 
     val upHandler: js.Function1[js.Dynamic, Unit] =
-      p => if(p.key.asString == targetKey) setKeyPressed(false)
+      p => if (p.key.asString == targetKey) setKeyPressed(false)
 
-    React.useEffectMounting(() => {
+    useEffectMounting(() => {
       dom.window.addEventListener("keydown", downHandler)
       dom.window.addEventListener("keyup", upHandler)
       () => {
@@ -120,18 +138,18 @@ object SuspenseTest {
   }
 
   // from useHooks.com
-  val sfc4 = SFC0 { 
+  val sfc4 = SFC0 {
     val happyPress = useKeyPress("h")
-    val sadPress = useKeyPress("s")
+    val sadPress   = useKeyPress("s")
     val robotPress = useKeyPress("r")
-    val foxPress = useKeyPress("f")
+    val foxPress   = useKeyPress("f")
     div(
       s"* h, s, r, f *: ",
       Fragment(
-        if(happyPress) "h" else null,
-        if(sadPress) "s" else null,
-        if(robotPress) "r" else null,
-        if(foxPress) "f" else null
+        if (happyPress) "h" else null,
+        if (sadPress) "s" else null,
+        if (robotPress) "r" else null,
+        if (foxPress) "f" else null
       )
     )
   }
@@ -144,34 +162,34 @@ object SuspenseTest {
     def apply(c: ReactNode) = new Sfc5Props { val child = c }
   }
 
-  val sfc5 = SFC1[Sfc5Props]{ props =>
+  val sfc5 = SFC1[Sfc5Props] { props =>
     //Fragment(
-      //p("scala.js React.Suspense component test, parent is a SFC"),
-      //p("Child is typescript SuspenseChild so we can throw a promise easily and test interop."),
-      React.Suspense(div("Loading (scalajs)..."))(props.child)
-  //)
+    //p("scala.js React.Suspense component test, parent is a SFC"),
+    //p("Child is typescript SuspenseChild so we can throw a promise easily and test interop."),
+    Suspense(div("Loading (scalajs)..."))(props.child)
+    //)
   }
 
   val sfc6 = SFC0 {
     val happyPress = useKeyPress("h")
-    val sadPress = useKeyPress("s")
+    val sadPress   = useKeyPress("s")
     val robotPress = useKeyPress("r")
-    val foxPress = useKeyPress("f")
+    val foxPress   = useKeyPress("f")
     div(
       "Created using a plain js function in scala",
       s"* h, s, r, f *: ",
       Fragment(
-        if(happyPress) "h" else null,
-        if(sadPress) "s" else null,
-        if(robotPress) "r" else null,
-        if(foxPress) "f" else null
+        if (happyPress) "h" else null,
+        if (sadPress) "s" else null,
+        if (robotPress) "r" else null,
+        if (foxPress) "f" else null
       )
-    )    
+    )
   }
 
   val jsc1 = SFC0 { div("hello world") }
 
-  val jscomponent = SFC1[SProps]{ p =>
+  val jscomponent = SFC1[SProps] { p =>
     div(s"End of Tests: ${p.label}")
   }
 
@@ -197,7 +215,7 @@ object SuspenseTest {
   object SuspenseParentNS extends js.Object {
     @JSName("SuspenseParent")
     val SuspenseParentJS: ReactJsComponent = js.native
-    val X: DynamicImportThunk = js.native
+    val X: DynamicImportThunk              = js.native
     @JSName("SuspenseChild") // this has React.lazy
     val SuspenseChildJS: ReactJsComponent = js.native
   }
@@ -208,9 +226,9 @@ object SuspenseTest {
 
   trait SProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined
-    var label: js.UndefOr[String] = js.undefined
-    var doit: js.UndefOr[Boolean] = js.undefined
-    var delay: js.UndefOr[Int] = js.undefined // in ms
+    var label: js.UndefOr[String]     = js.undefined
+    var doit: js.UndefOr[Boolean]     = js.undefined
+    var delay: js.UndefOr[Int]        = js.undefined // in ms
     // cache key
     var ckey: js.UndefOr[String] = js.undefined // needed to handlle fake cache
   }
@@ -223,26 +241,26 @@ object SuspenseTest {
 
   // direct parent import
   def SuspenseParent(props: SProps = null)(children: ReactNode*) =
-    createElement(SuspenseParentNS.SuspenseParentJS, props)(children:_*)
+    createElement(SuspenseParentNS.SuspenseParentJS, props)(children: _*)
 
   // lazy is called in the ts file
   def LazySuspenseChild(props: SProps = null)(children: ReactNode*) =
-    createElement(SuspenseParentNS.SuspenseChildJS, props)(children:_*)
+    createElement(SuspenseParentNS.SuspenseChildJS, props)(children: _*)
 
   // child is imported directly
   def SuspenseChild(props: SProps = null)(children: ReactNode*) =
-    createElement(SuspenseChildJS, props)(children:_*)
+    createElement(SuspenseChildJS, props)(children: _*)
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
-    createElement(React.`lazy`(SuspenseParentNS.X), props)(children:_*)
+    createElement(React.`lazy`(SuspenseParentNS.X), props)(children: _*)
 
-  def blah(): ReactNode = {
+  def blah(): ReactNode =
     Fragment(
       sfc1,
       sfc2,
-      sfc3(new Props{ var initialCount = 10 }),
-       "Keypress listener, press & hold key to display character: ",
+      sfc3(new Props { var initialCount = 10 }),
+      "Keypress listener, press & hold key to display character: ",
       sfc4,
       sfc6,
       div("=====> js/ts suspense demo below, default load time is 7 seconds. SuspenseChild throws Promies in js"),
@@ -258,10 +276,9 @@ object SuspenseTest {
       // // sfc5(componentSucceed(null)),
       // testing some implicit and explicit conversions :-)
       // explicit
-      jscomponent.toEl(new SProps { label = "Almost the end!"}),
+      jscomponent.toEl(new SProps { label = "Almost the end!" }),
       // implicit, tuple of component and args => ReactNode
-      (jscomponent, new SProps { label = "Really!" }),
+      (jscomponent, new SProps { label = "Really!" })
     )
-  }
 
 }

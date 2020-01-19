@@ -6,7 +6,6 @@ import scala.scalajs.js
 import org.scalajs.dom
 import react._
 import react.implicits._
-import vdom._
 
 /** Specification of a specific set of information for routing. This one is
   * mostly based on the DOM but its contents can be generically used in most

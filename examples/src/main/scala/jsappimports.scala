@@ -1,15 +1,38 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+
+import js.Dynamic.{ literal => lit }
 import js.JSConverters._
-import js.Dynamic.{literal => lit}
+import js.annotation._
+import js.|
 
 import react._
+
 import implicits._
+
 import react_redux._
 
 trait LabelAndChildProps extends js.Object {
@@ -28,11 +51,9 @@ object JSAppImports {
     createElement(LabelAndChildNS.LabelAndChild, props)(children: _*)
 }
 
-trait StoreState extends js.Object {
-}
+trait StoreState extends js.Object {}
 
-trait StoreAction extends Action {
-}
+trait StoreAction extends Action {}
 
 @js.native
 @JSImport("JSExamples/store", JSImport.Namespace)
@@ -76,12 +97,10 @@ trait ReactWeatherDisplayProps extends js.Object {
   /** not used anymore ??? */
   var currentTemperature: js.UndefOr[Float] = js.undefined
   var temperature: js.UndefOr[Float]        = js.undefined
-  var currentCondition
-    : js.UndefOr[String] = js.undefined // ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']
-  var condition
-    : js.UndefOr[String]             = js.undefined // ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']
-  var opacity: js.UndefOr[Double]    = js.undefined
-  var isVisible: js.UndefOr[Boolean] = js.undefined
+  var currentCondition: js.UndefOr[String]  = js.undefined // ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']
+  var condition: js.UndefOr[String]         = js.undefined // ['sunny', 'cloudy', 'rainy', 'stormy', 'snowy']
+  var opacity: js.UndefOr[Double]           = js.undefined
+  var isVisible: js.UndefOr[Boolean]        = js.undefined
 }
 
 object ReactWeatherDisplay {
@@ -90,15 +109,13 @@ object ReactWeatherDisplay {
 }
 
 class PrettyJsonOptions(
-    val noColor: js.UndefOr[Boolean] = js.undefined
+  val noColor: js.UndefOr[Boolean] = js.undefined
 ) extends js.Object
 
 @js.native
 @JSImport("prettyjson", JSImport.Namespace)
 object PrettyJson extends js.Object {
-  def render(
-      data: js.Object | js.Dynamic,
-      options: js.UndefOr[PrettyJsonOptions] = js.undefined): String =
+  def render(data: js.Object | js.Dynamic, options: js.UndefOr[PrettyJsonOptions] = js.undefined): String =
     js.native
 }
 
@@ -124,16 +141,16 @@ object ReactContentLoader extends js.Object {
 }
 
 class ReactContentLoaderOptions(
-    val animate: js.UndefOr[Boolean] = js.undefined,
-    val speed: js.UndefOr[Int] = js.undefined,
-    val className: js.UndefOr[String] = js.undefined,
-    val width: js.UndefOr[Double] = js.undefined,
-    val height: js.UndefOr[Double] = js.undefined,
-    val preserveAspectRatio: js.UndefOr[String] = js.undefined,
-    val primaryColor: js.UndefOr[String] = js.undefined,
-    val secondaryColor: js.UndefOr[String] = js.undefined,
-    val style: js.UndefOr[js.Object | js.Dynamic] = js.undefined,
-    val uniquekey: js.UndefOr[String] = js.undefined
+  val animate: js.UndefOr[Boolean] = js.undefined,
+  val speed: js.UndefOr[Int] = js.undefined,
+  val className: js.UndefOr[String] = js.undefined,
+  val width: js.UndefOr[Double] = js.undefined,
+  val height: js.UndefOr[Double] = js.undefined,
+  val preserveAspectRatio: js.UndefOr[String] = js.undefined,
+  val primaryColor: js.UndefOr[String] = js.undefined,
+  val secondaryColor: js.UndefOr[String] = js.undefined,
+  val style: js.UndefOr[js.Object | js.Dynamic] = js.undefined,
+  val uniquekey: js.UndefOr[String] = js.undefined
 ) extends js.Object
 
 object ReactContentLoaderComponents {

@@ -1,24 +1,49 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 package todo
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
-import js.Dynamic.{literal => lit, global => g}
+
+import js.Dynamic.{ literal => lit, global => g }
 import js.JSConverters._
+import js.annotation._
+import js.|
 
 import org.scalajs.dom
-import _root_.react._
-import react_dom._
-import _root_.react.implicits._
+
+import react._
+
+import implicits._
+
+import vdom._
+import vdom.tags._
+
 import fabric._
 import fabric.components._
 import fabric.styling._
 
-import vdom._
-import vdom.tags._
+import react_dom._
 
 case class ToDo(id: Int, name: String, added: js.Date = null, completed: Boolean = false)
 
@@ -28,14 +53,14 @@ object ToDoItem {
   trait Props extends js.Object {
     var todo: ToDo
     var remove: () => Unit
-    var rootClassname: js.UndefOr[String] = js.undefined
+    var rootClassname: js.UndefOr[String]  = js.undefined
     var titleClassname: js.UndefOr[String] = js.undefined
-    var key: js.UndefOr[String] = js.undefined
+    var key: js.UndefOr[String]            = js.undefined
   }
 
   def apply(props: Props) = sfc(props)
 
-  val sfc = SFC1[Props]{ props =>
+  val sfc = SFC1[Props] { props =>
     React.useDebugValue(Name)
     divWithClassname(
       props.rootClassname,
@@ -61,7 +86,7 @@ object ToDoListHeader {
 
   def apply(props: Props) = sfc(props)
 
-  val sfc = SFC1[Props]{ props =>
+  val sfc = SFC1[Props] { props =>
     React.useDebugValue(Name)
     div(Label(s"# To Dos - ${props.length}"))
   }.memo
@@ -74,8 +99,8 @@ object ToDoList {
     var length: Int
     var todos: Seq[ToDo]
     var remove: Int => Unit
-    var listClassname: js.UndefOr[String] = js.undefined
-    var todoClassname: js.UndefOr[String] = js.undefined
+    var listClassname: js.UndefOr[String]  = js.undefined
+    var todoClassname: js.UndefOr[String]  = js.undefined
     var titleClassname: js.UndefOr[String] = js.undefined
   }
 
@@ -85,16 +110,18 @@ object ToDoList {
     React.useDebugValue(Name)
     divWithClassname(
       props.listClassname,
-      ToDoListHeader(new ToDoListHeader.Props{ var length = props.length}),
-      props.todos.map(t =>
-        ToDoItem(new ToDoItem.Props {
-          var todo = t
-          var remove = () => props.remove(t.id)
-          rootClassname = props.todoClassname
-          titleClassname = props.titleClassname
-          key = t.id.toString
-        })
-      ))
+      ToDoListHeader(new ToDoListHeader.Props { var length = props.length }),
+      props.todos.map(
+        t =>
+          ToDoItem(new ToDoItem.Props {
+            var todo   = t
+            var remove = () => props.remove(t.id)
+            rootClassname = props.todoClassname
+            titleClassname = props.titleClassname
+            key = t.id.toString
+          })
+      )
+    )
   }.memo
 }
 
@@ -122,8 +149,8 @@ object ToDos {
   def addit(input: Option[String], dispatch: Dispatch[Action]) =
     input.foreach { i =>
       dispatch(Add(ToDo(mkId(), i)))
-      // this is an effect so it should not go here
-      //focusable.foreach(_.focus())
+    // this is an effect so it should not go here
+    //focusable.foreach(_.focus())
     }
 
   def reducer(state: State, action: Action): State =
@@ -135,28 +162,28 @@ object ToDos {
       case InputChanged(iopt) =>
         state.copy(input = iopt)
     }
-  
+
   trait Props extends js.Object {
     val title: String
     val todos: Seq[ToDo]
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-    var className: js.UndefOr[String] = js.undefined
+    var className: js.UndefOr[String]                                  = js.undefined
   }
 
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
     React.useDebugValue(Name)
-    val ifield = React.useRef[Option[TextField.ITextField]](None)    
-    React.useEffectMounting{() =>
+    val ifield = React.useRef[Option[TextField.ITextField]](None)
+    React.useEffectMounting { () =>
       println("ToDo: subscriptions: called during mount")
       () => println("ToDo: subscriptions: unmounted")
     }
 
     val (state, dispatch) =
-      React.useReducer[State,Action](reducer, State(props.todos, None))
+      React.useReducer[State, Action](reducer, State(props.todos, None))
     // if the input is added as a todo or todo remove, reset focus
-    React.useEffect(state.todos.length){() =>
+    React.useEffect(state.todos.length) { () =>
       ifield.current.foreach(_.focus())
     }
 
@@ -169,38 +196,39 @@ object ToDos {
       div(new DivProps { className = cn.dataEntry })(
         TextField(new TextField.Props {
           placeholder = "enter new todo"
-          componentRef = js.defined{
+          componentRef = js.defined {
             // Option(r) -> None if r is null
-            r => ifield.current = Option(r)
+            r =>
+              ifield.current = Option(r)
           }
-          onChangeInput = js.defined{(_, e: String) =>
+          onChangeInput = js.defined { (_, e: String) =>
             dispatch(InputChanged(Option(e)))
           }
           value = state.input.getOrElse[String]("")
           autoFocus = true
-          onKeyPress = js.defined{
-            e => if (e.which == dom.ext.KeyCode.Enter) addit(state.input, dispatch)
+          onKeyPress = js.defined { e =>
+            if (e.which == dom.ext.KeyCode.Enter) addit(state.input, dispatch)
           }
         })(),
-          Button.Primary(new Button.Props {
-            text = "Add"
-            disabled = state.input.size == 0
-            // demonstrates inline callback
-            // could be:
-            // _ => since we don't use 'e', could
-            // ReactEvent[dom.html.Input] to be more specifci
-            // ReactKeyboardEvent[_] to be more specific
-            // ReactKeyboardEvent[dom.html.Input] to be more specific
-            onClick = js.defined((e: ReactEvent[_]) => addit(state.input, dispatch))
-          })()
-        ),
-        ToDoList(new ToDoList.Props {
-          var length = state.todos.length
-          var todos = state.todos
-          var remove = (id: Int) => dispatch(Remove(id))
-          todoClassname = cn.todo
-          titleClassname = cn.title
-        })
+        Button.Primary(new Button.Props {
+          text = "Add"
+          disabled = state.input.size == 0
+          // demonstrates inline callback
+          // could be:
+          // _ => since we don't use 'e', could
+          // ReactEvent[dom.html.Input] to be more specifci
+          // ReactKeyboardEvent[_] to be more specific
+          // ReactKeyboardEvent[dom.html.Input] to be more specific
+          onClick = js.defined((e: ReactEvent[_]) => addit(state.input, dispatch))
+        })()
+      ),
+      ToDoList(new ToDoList.Props {
+        var length = state.todos.length
+        var todos  = state.todos
+        var remove = (id: Int) => dispatch(Remove(id))
+        todoClassname = cn.todo
+        titleClassname = cn.title
+      })
     )
   }
 }
@@ -234,26 +262,26 @@ object ToDoStyling {
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined
-    var randomArg: js.UndefOr[Int] = js.undefined
+    var randomArg: js.UndefOr[Int]    = js.undefined
   }
 
   val getStyles = stylingFunction[StyleProps, Styles] { props =>
     val randomArg = props.randomArg.getOrElse(300)
     new Styles {
-      val root = stylearray(
-        new IRawStyle {
-          selectors = selectorset(
-            ":global(:root)" -> lit(
-              "--label-width" -> s"${randomArg}px",
-            ))
-        })
+      val root = stylearray(new IRawStyle {
+        selectors = selectorset(
+          ":global(:root)" -> lit(
+            "--label-width" -> s"${randomArg}px"
+          )
+        )
+      })
       val todo = new IRawStyle {
         displayName = "machina"
         display = "flex"
         marginBottom = "10px"
         selectors = selectorset("& $title" -> new IRawStyle {})
       }
-      val title =  new IRawStyle {
+      val title = new IRawStyle {
         width = "var(--label-width)"
         marginRight = "10px"
       }
@@ -270,5 +298,5 @@ object ToDoStyling {
   // example of memoizing, you need a js.Function to use memoizeFunction
   import fabric.merge_styles._
   val getClassNames: GetClassNamesFn[StyleProps, Styles, ClassNames] =
-    (p,s) => mergeStyleSets(concatStyleSetsWithProps(p, getStyles, s))
+    (p, s) => mergeStyleSets(concatStyleSetsWithProps(p, getStyles, s))
 }

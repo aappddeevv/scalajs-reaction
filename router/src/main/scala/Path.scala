@@ -2,9 +2,9 @@
 package router
 package browser
 
-import scala.scalajs.js
-import js.JSConverters._
-import org.scalajs.dom
+// import scala.scalajs.js
+// import js.JSConverters._
+// import org.scalajs.dom
 
 /**
  * URL ops. F-bounded poly.

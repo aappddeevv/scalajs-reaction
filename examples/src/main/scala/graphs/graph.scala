@@ -1,20 +1,45 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 package graphs
 
 import scala.scalajs.js
-import js.Dynamic.{literal => jsobj}
+
+import js.Dynamic.{ literal => jsobj }
+
 import org.scalajs.dom
-import _root_.react._
-import vdom._
-import tags._
+
+import react._
+
 import implicits._
+
+import vdom._
 
 import fabric._
 import fabric.components._
 
 import cytoscape._
+import tags._
 
 // object GraphPage {
 //   val c = statelessComponent("GraphPage")
@@ -31,10 +56,10 @@ import cytoscape._
 // }
 
 /**
-  * Treat the graph and ref as instance vars in State since State in
-  * reason-react is really just instance vars and the component definition is
-  * really a closure around that so you should feel free to mutate it.
-  */
+ * Treat the graph and ref as instance vars in State since State in
+ * reason-react is really just instance vars and the component definition is
+ * really a closure around that so you should feel free to mutate it.
+ */
 object Graph {
 
   Cytoscape.use(Dagre)
@@ -47,14 +72,14 @@ object Graph {
   val coseLayout = jsobj(
     "name"    -> "cose",
     "animate" -> true,
-    "fit"     -> false,
+    "fit"     -> false
   )
 
   val colaLayout = jsobj(
     "name"     -> "cola",
     "animate"  -> true,
     "infinite" -> true,
-    "fit"      -> false,
+    "fit"      -> false
   )
 
   val dagreLayout = jsobj(
@@ -78,12 +103,14 @@ object Graph {
       container = el
       layout = colaLayout
       style = js.Array(
-        jsobj("selector" -> "node",
+        jsobj(
+          "selector" -> "node",
           "css" -> jsobj(
             "content"     -> js.Any.fromFunction1((e: Element) => e.data("id")),
             "text-valign" -> "center",
             "text-halign" -> "center"
-          )),
+          )
+        ),
         jsobj(
           "selector" -> "$node > node",
           "css" -> jsobj(
@@ -112,31 +139,27 @@ object Graph {
       )
       elements = jsobj(
         "nodes" -> js.Array(
-          jsobj("data"     -> jsobj("id" -> "a", "parent" -> "b"),
-            "position" -> jsobj("x"  -> 215, "y" -> 85)),
-          jsobj("data"     -> jsobj("id" -> "b")),
-          jsobj("data"     -> jsobj("id" -> "c", "parent" -> "b"),
-            "position" -> jsobj("x"  -> 300, "y" -> 85)),
-          jsobj("data"     -> jsobj("id" -> "d")),
-          jsobj("data"     -> jsobj("id" -> "e")),
-          jsobj("data"     -> jsobj("id" -> "f", "parent" -> "e"),
-            "position" -> jsobj("x"  -> 300, "y" -> 175)),
+          jsobj("data" -> jsobj("id" -> "a", "parent" -> "b"), "position" -> jsobj("x" -> 215, "y" -> 85)),
+          jsobj("data" -> jsobj("id" -> "b")),
+          jsobj("data" -> jsobj("id" -> "c", "parent" -> "b"), "position" -> jsobj("x" -> 300, "y" -> 85)),
+          jsobj("data" -> jsobj("id" -> "d")),
+          jsobj("data" -> jsobj("id" -> "e")),
+          jsobj("data" -> jsobj("id" -> "f", "parent" -> "e"), "position" -> jsobj("x" -> 300, "y" -> 175))
         ),
         "edges" -> js.Array(
           jsobj("data" -> jsobj("id" -> "ad", "source" -> "a", "target" -> "d")),
-          jsobj("data" -> jsobj("id" -> "eb", "source" -> "e", "target" -> "b")),
+          jsobj("data" -> jsobj("id" -> "eb", "source" -> "e", "target" -> "b"))
         )
       )
     })
 
-  trait Props extends js.Object {
-  }
+  trait Props extends js.Object {}
 
   def apply() = sfc
 
-  val sfc = SFC0{
+  val sfc = SFC0 {
     val refR = React.useRef[Option[dom.html.Div]](None)
-    var cyR = React.useRef[Option[Graph]](None)
+    var cyR  = React.useRef[Option[Graph]](None)
 
     React.useEffectMounting(() => {
       println(s"$Name: didMount, building graph")
@@ -144,7 +167,8 @@ object Graph {
       (() => {
         println(s"$Name: willUnmount")
         cyR.current.foreach(_.destroy())
-      })})
+      })
+    })
 
     // didUpdate = js.defined { onSelf =>
     //   println(s"$Name: didUpdate")

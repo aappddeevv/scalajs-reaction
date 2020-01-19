@@ -1,14 +1,38 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package ttg
 package examples
 package atmoache
 
-import scala.scalajs.js
-import org.scalajs.dom.experimental._
-import concurrent._
 import concurrent.ExecutionContext.Implicits.global
-import util.control.NonFatal
+import concurrent._
+
+import scala.scalajs.js
+
 import js.JSConverters._
+
+import org.scalajs.dom.experimental._
+
+import util.control.NonFatal
 
 @js.native
 trait Main extends js.Object {
@@ -59,13 +83,9 @@ object dao {
   // cache url
   val cache = collection.mutable.HashMap[String, WeatherList]()
 
-  def fetch(
-      cityName: String,
-      ndays: Int = 7,
-      units: Option[String] = Some("imperial")): Future[Result] = {
+  def fetch(cityName: String, ndays: Int = 7, units: Option[String] = Some("imperial")): Future[Result] = {
     val url =
-      s"""https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=${units.getOrElse(
-        "imperial")}&appid=4b80108eceb046e99b71d8018873bb0b"""
+      s"""https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=${units.getOrElse("imperial")}&appid=4b80108eceb046e99b71d8018873bb0b"""
     if (cache.contains(url))
       Future.successful(Right(cache(url)))
     else
@@ -79,7 +99,6 @@ object dao {
         .flatMap { r =>
           js.Dynamic.global.console.log("response", r)
           if (r.status == 200)
-
             r.json()
               .toFuture
               .recover {
@@ -102,8 +121,7 @@ object dao {
                   }
                 cache.put(url, list.toSeq) // add to cache
                 Right(list.toSeq)
-              }
-          else if (r.status == 404)
+              } else if (r.status == 404)
             Future.successful(Left(s"City not found."))
           else
             Future.successful(Left(s"Unexpected return status ${r.status}."))
