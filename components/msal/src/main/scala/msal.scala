@@ -23,6 +23,7 @@ package azure
 package msal
 
 import scala.scalajs.js
+import js.Dynamic.literal
 
 import js.annotation._
 import js.|
@@ -139,6 +140,7 @@ trait CacheOptions extends js.Object {
   var storeAuthStateInCookie: js.UndefOr[Boolean] = js.undefined
 }
 
+/* not in public API?
 trait TelemetryPlatform extends js.Object {
   val sdk: String
   val sdkVersion: String
@@ -151,6 +153,7 @@ trait TelemetryConfig extends js.Object {
   var onlySendFailureTelemetry: js.UndefOr[Boolean] = js.undefined
   val clientId: String
 }
+ */
 
 trait TelemetryOptions extends js.Object {
   var applicationName: js.UndefOr[String]            = js.undefined
@@ -199,11 +202,27 @@ object CacheLocation {
   val localStorage   = "localStorage".asInstanceOf[CacheLocation]
 }
 
-trait Configuration extends js.Object {
-  val auth: AuthOptions
-  var cache: js.UndefOr[CacheOptions]         = js.undefined
-  var system: js.UndefOr[SystemOptions]       = js.undefined
+trait ConfigurationBase extends js.Object {
+  var cache: js.UndefOr[CacheOptions] = js.undefined
+  var system: js.UndefOr[SystemOptions] = js.undefined
   var framework: js.UndefOr[FrameworkOptions] = js.undefined
+}
+
+trait ConfigurationInit extends ConfigurationBase {
+  var auth: js.UndefOr[AuthOptions] = js.undefined
+}
+
+object ConfigurationInit {
+  private implicit class RichInit private[ConfigurationInit] (private val c: ConfigurationInit)
+      extends AnyVal {
+    def withRequired(auth: AuthOptions) =
+      js.Object.assign(literal(), c, literal("auth" -> auth)).asInstanceOf[Configuration]
+    def hasRequired = c.asInstanceOf[Configuration]
+  }
+}
+
+trait Configuration extends ConfigurationBase {
+  val auth: AuthOptions
 }
 
 @js.native
@@ -259,17 +278,9 @@ object TokenUtils extends js.Object {
   def extractIdToken(encodedIdToken: String): js.Any = js.native
 }
 
-trait ConfigurationInit extends js.Object {
-  val auth: AuthOptions
-  val cache: CacheOptions
-  val system: SystemOptions
-  val framework: FrameworkOptions
-}
-
 @js.native
 @JSImport("@azure/msal", "Configuration")
 object Configuration extends js.Object {
-
-  /** Set module defaults. */
+  /** Use module fallback defaults. */
   def buildConfiguration(configuration: ConfigurationInit): Configuration = js.native
 }

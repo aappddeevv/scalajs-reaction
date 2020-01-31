@@ -47,6 +47,7 @@ trait ComponentSyntax {
   implicit def funcChild2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P, ReactNode)): ReactElement =
     ReactJS.createElement(f._1, f._2, f._3)
 
-  /** Evil! Auto type conversion... */
-  implicit def thunkToSFC(f: () => ReactNode): SFC0 = new SFC0(f)
+  /** Evil! Auto type conversion from a no-arg function. */
+  implicit def thunkToSFC(f: () => ReactNode): ReactElement =
+    ReactJS.createElement(js.Any.fromFunction0(f), null)
 }

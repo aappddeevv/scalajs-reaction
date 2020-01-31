@@ -80,7 +80,7 @@ object Nav {
     var groupContent: js.UndefOr[IStyle]  = js.undefined
   }
 
-  trait Props extends ComponentRef[INav] {
+  trait Props extends ComponentRef[INav] with ReactJSProps {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]]                             = js.undefined
     var theme: js.UndefOr[ITheme]                                                                  = js.undefined
     var className: js.UndefOr[String]                                                              = js.undefined

@@ -32,5 +32,6 @@ package object msal {
   type LoggerCallback        = js.Function3[Int, String, Boolean, Unit]
   type StringDict            = js.Dictionary[String]
 
+  /** Emits telemetry event objects. */
   type TelemetryEmitter = js.Function1[js.Array[js.Object], Unit]
 }

@@ -191,12 +191,11 @@ trait ITheme extends IScheme
 
 @js.native
 trait ThemeLike extends js.Object {
-
   /** Reurn the singleton theme object. */
-  def getTheme(depComments: js.UndefOr[Boolean] = false): ITheme          = js.native
+  def getTheme(depComments: Boolean = false): ITheme          = js.native
   def registerOnThemeChangeCallback(cb: js.Function1[ITheme, Unit]): Unit = js.native
   def removeOnThemeChangeCallback(cb: js.Function1[ITheme, Unit]): Unit   = js.native
-  def loadTheme(theme: ITheme): ITheme                                    = js.native
-  def createTheme(partial: ITheme): ITheme                                = js.native
+  def loadTheme(theme: ITheme, depComments: Boolean = false): ITheme                                    = js.native
+  def createTheme(partial: ITheme, depComments: Boolean = false): ITheme                                = js.native
   val ThemeSettingName: js.UndefOr[String]                                = js.native
 }

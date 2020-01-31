@@ -50,7 +50,7 @@ object Sidebar {
     val getCollapsed: js.Function0[Boolean]       = js.native
   }
 
-  trait Props extends HTMLAttributes[dom.html.Div] with Theme with ComponentRef[ISidebar] {
+  trait PropsBase extends HTMLAttributes[dom.html.Div] with ComponentRef[ISidebar] {
     var collapsible: js.UndefOr[Boolean]                  = js.undefined
     var onCallapseChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
     var collapseButtonAriaLabel: js.UndefOr[String]       = js.undefined
@@ -61,6 +61,14 @@ object Sidebar {
     var collapseButtonStyles: js.UndefOr[Button.Styles]   = js.undefined
     var buttonStyles: js.UndefOr[Button.Styles]           = js.undefined
     var defaultButton: js.UndefOr[js.Any]                 = js.undefined
+  }
+
+  trait PropsInit extends PropsBase {
+    var theme: js.UndefOr[ITheme] = js.undefined
+  }
+
+  trait Props extends PropsBase {
+    val theme: ITheme    
   }
 
   @js.native

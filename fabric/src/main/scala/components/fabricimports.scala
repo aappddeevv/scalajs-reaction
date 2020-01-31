@@ -393,7 +393,7 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttribute
   var disabled: js.UndefOr[Boolean] = js.undefined
   var required: js.UndefOr[Boolean] = js.undefined
 
-  var calloutProps: js.UndefOr[ICalloutProps] = js.undefined
+  var calloutProps: js.UndefOr[CalloutProps] = js.undefined
   var panelProps: js.UndefOr[Panel.Props]     = js.undefined
   var errorMessage: js.UndefOr[String]        = js.undefined
   var placeholder: js.UndefOr[String]         = js.undefined
@@ -402,7 +402,7 @@ trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttribute
 @js.native
 trait ICallout extends js.Object {}
 
-trait ICalloutProps extends HTMLAttributes[dom.html.Div] with ComponentRef[ICallout] with Theme {
+trait CalloutProps extends HTMLAttributes[dom.html.Div] with ComponentRef[ICallout] with Theme {
 
   var target: js.UndefOr[dom.html.Element | String | Null] = js.undefined
   var directionalHint: js.UndefOr[DirectionalHint]         = js.undefined

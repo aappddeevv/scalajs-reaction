@@ -240,7 +240,7 @@ package object react extends react.React {
 
   /** Alias for ReactJsComponent. */
   @js.native
-  trait ReactJSComponent extends js.Object
+  trait ReactJSComponent extends ReactJsComponent
 
   /** Components from js land that are functions and imported as such. May or may
    * not make a difference to have this typed separately. You could also import
@@ -367,10 +367,16 @@ package object react extends react.React {
     else Option(t.asInstanceOf[T])
 
   /** Render something or return a null element. Render is by name. */
+  def when(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
+    if (cond.getOrElse(false)) render else nullElement
+
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
     if (cond) render else nullElement
 
   /** Render something if not cond or return a null element. Render is by name. */
+  def whenNot(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
+    if (!cond.getOrElse(false)) render else nullElement
+
   def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
     if (!cond) render else nullElement
 

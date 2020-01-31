@@ -45,7 +45,11 @@ object Label {
   def apply(children: ReactNode*) =
     createElement(JS, null)(children: _*)
 
-  trait Props extends LabelHTMLAttributes[html.Label] with ComponentRef[js.Any] with Disabled with Theme {
+  trait Props extends LabelHTMLAttributes[html.Label]
+      with ComponentRef[js.Any]
+      with Disabled
+      with Theme
+      with ReactJSProps {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var required: js.UndefOr[Boolean]                                  = js.undefined
   }

@@ -62,10 +62,11 @@ private[react] trait ReactJS extends js.Object with Concurrent {
   val Component: js.Dynamic = js.native
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending
-   * React.Component). P is kept very general here an is not even forced to be a
-   * js object.
+   * React.Component). P is kept very general here and public APIs should
+   * customize as needed. Props is js.Any to force public APIs to think about
+   * the props type before casting.
    */
-  def createElement[P](el: ReactType, props: js.UndefOr[P], children: ReactNode*): ReactElement = js.native
+  def createElement(el: ReactType, props: js.Any, children: ReactNode*): ReactElement = js.native
 
   // should not use rally ever...
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
@@ -90,12 +91,12 @@ private[react] trait ReactJS extends js.Object with Concurrent {
 
   /** Takes a function component and optional props comparison func. This returns
    * a function component as this is an HOC. The returned component still needs
-   * to be wrapped properly to use with this facade. `P` is kept very general
-   * here.
+   * to be wrapped properly to use with this facade. `P` is kept general here
+   * but should be customized in the public API.
    */
   def memo[P](
     f: js.Function1[P, ReactNode],
-    compare: js.UndefOr[js.Function2[P, P, Boolean]] = js.undefined
+    compare: js.UndefOr[js.Function2[js.Any, js.Any, Boolean]] = js.undefined
   ): js.Function1[P, ReactElement] = js.native
 
   def isValidElement(obj: js.Object): Boolean = js.native

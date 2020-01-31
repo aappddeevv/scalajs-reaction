@@ -37,6 +37,20 @@ import fabric.styling._
 
 object Details {
 
+  @js.native
+  sealed trait LayoutMode extends js.Any
+  object LayoutMode {
+    val fixedColumns = 0.asInstanceOf[LayoutMode]
+    val justified    = 1.asInstanceOf[LayoutMode]
+  }
+
+  @js.native
+  abstract sealed trait ConstrainMode extends js.Any
+  object ConstrainMode {
+    val unconstrained         = 0.asInstanceOf[ConstrainMode]
+    val horizontalConstrained = 1.asInstanceOf[ConstrainMode]
+  }
+
   trait ICellStyleProps extends js.Object {
     var cellLeftPadding: js.UndefOr[Double]       = js.undefined
     var cellRightPadding: js.UndefOr[Double]      = js.undefined
@@ -122,9 +136,9 @@ object Details {
         extends Theme
         with ClassName
         with ClassAttributes[IDetailsHeader] // is this right? maybe ReactElement?
-        with ComponentRef[IDetailsHeader] {
+        with ComponentRef[IDetailsHeader]  {
       var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]]                            = js.undefined
-      var layoutMode: js.UndefOr[List.LayoutMode]                                                   = js.undefined
+      var layoutMode: js.UndefOr[LayoutMode]                                                   = js.undefined
       var onColumnIsSizingChanged: js.UndefOr[js.Function2[IColumn, Boolean, Unit]]                 = js.undefined
       var onColumnResized: js.UndefOr[js.Function3[IColumn, Double, Int, Unit]]                     = js.undefined
       var onColumnAutoResized: js.UndefOr[js.Function2[IColumn, Int, Unit]]                         = js.undefined
@@ -220,8 +234,8 @@ object Details {
     @JSImport("office-ui-fabric-react/lib/DetailsList", "DetailsList")
     object JS extends ReactJsComponent
 
-    def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+    def apply[T <: js.Object](props: Props[T] = null) =
+      createElement0(JS, props)
 
     @js.native
     trait IDetailsList extends components.List.IList {
@@ -231,20 +245,6 @@ object Details {
         measureItem: js.UndefOr[js.Function1[Int, Int]],
         scrollToMode: js.UndefOr[components.List.ScrollToMode] = js.undefined
       ): Unit = js.native
-    }
-
-    @js.native
-    sealed trait LayoutMode extends js.Any
-    object LayoutMode {
-      val fixedColumns = 0.asInstanceOf[LayoutMode]
-      val justified    = 1.asInstanceOf[LayoutMode]
-    }
-
-    @js.native
-    abstract sealed trait ConstrainMode extends js.Any
-    object ConstrainMode {
-      val unconstrained         = 0.asInstanceOf[ConstrainMode]
-      val horizontalConstrained = 1.asInstanceOf[ConstrainMode]
     }
 
     trait PropsBase[T <: js.Object] extends ComponentRef[IDetailsList] with Attributes with IViewportProps with Theme {
@@ -317,8 +317,8 @@ object Details {
     @JSImport("office-ui-fabric-react/lib/ShimmeredDetailsList", "ShimmeredDetailsList")
     object JS extends ReactJsComponent
 
-    def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+    def apply[T <: js.Object](props: Props[T] = null) =
+      createElement0(JS, props)
 
     trait StyleProps extends js.Object {
       var theme: js.UndefOr[ITheme] = js.undefined
@@ -339,5 +339,7 @@ object Details {
 
     }
   }
+
+  trait SP[T <: js.Object] extends Details.Shimmered.Props[T]
 
 }

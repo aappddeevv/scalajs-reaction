@@ -23,11 +23,15 @@ package react
 
 import scala.scalajs.js
 
+/** The "combine" methods are all shallow merges, this may not be what you want. */
 final case class JsObjectOps[A <: js.Object](o: A) {
   def asDict[B]                                  = o.asInstanceOf[js.Dictionary[B]]
   def asAnyDict                                  = o.asInstanceOf[js.Dictionary[js.Any]]
   def asDyn                                      = o.asInstanceOf[js.Dynamic]
-  def asUndefOr[A]: js.UndefOr[A]                = o.asInstanceOf[js.UndefOr[A]]
+  def asUndefOr: js.UndefOr[A]                = js.defined(o)
+  /** Shallow merge ! If you are merging multiple levels of props, this is not
+   * what you want to use.
+   */
   def combine(that: js.UndefOr[A])               = react.merge[A](o, that)
   def combineDynamic(that: js.Dynamic)           = react.merge[A](o, that.asInstanceOf[A])
   def combineGeneric(that: js.Object)            = react.merge[A](o, that.asInstanceOf[A])

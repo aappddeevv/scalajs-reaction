@@ -62,8 +62,19 @@ object Contexts {
 }
 
 object Main {
-  import Contexts._
 
+    // inject global styles
+  import merge_styles._
+  mergeStyles(new IRawStyle {
+    selectors = selectorset(":global(body), :global(html), :global(#container)" ->
+      new IRawStyle {
+        margin = 0
+        padding = 0
+        height = "100vh"
+      }
+    )})
+
+  import Contexts._
   val container = "container"
 
   /**

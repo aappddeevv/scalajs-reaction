@@ -44,7 +44,7 @@ trait Attributes extends js.Object {
   var key: js.UndefOr[KeyType] = js.undefined
 }
 
-/** Add a ref callback. */
+/** Add a ref callback. ReactJSProps does not carry a type. */
 trait ClassAttributes[E] extends Attributes {
   var ref: js.UndefOr[Ref[E]] = js.undefined
 }
@@ -693,8 +693,10 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-activedescendant'?: string;
         'aria-atomic'?: boolean | 'false' | 'true';
         'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
-        'aria-busy'?: boolean | 'false' | 'true';
-        'aria-checked'?: boolean | 'false' | 'mixed' | 'true';
+   */
+  var `aria-busy`: js.UndefOr[Boolean|String] = js.undefined
+  var `aria-checked`: js.UndefOr[Boolean|String] = js.undefined //?: boolean | 'false' | 'mixed' | 'true';
+  /*
         'aria-colcount'?: number;
         'aria-colindex'?: number;
         'aria-colspan'?: number;
@@ -733,15 +735,15 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
         'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
         'aria-readonly'?: boolean | 'false' | 'true';
         'aria-relevant'?: 'additions' | 'additions text' | 'all' | 'removals' | 'text';
-        'aria-required'?: boolean | 'false' | 'true';
-        'aria-roledescription'?: string;
-        'aria-rowcount'?: number;
-        'aria-rowindex'?: number;
-        'aria-rowspan'?: number;
-        'aria-selected'?: boolean | 'false' | 'true';
-        'aria-setsize'?: number;
-        'aria-sort'?: 'none' | 'ascending' | 'descending' | 'other';
    */
+  var `aria-required`: js.UndefOr[Boolean|String] = js.undefined
+  var `aria-roledescription`: js.UndefOr[String] = js.undefined
+  var `aria-rowcount`: js.UndefOr[Int] = js.undefined
+  var `aria-rowindex`: js.UndefOr[Int] = js.undefined
+  var `aria-rowspan`: js.UndefOr[Int] = js.undefined
+  var `aria-selected`: js.UndefOr[Boolean|String] = js.undefined
+  var `aria-setsize`: js.UndefOr[Boolean|String] = js.undefined
+  var `aria-sort`: js.UndefOr[String] = js.undefined//'?: 'none' | 'ascending' | 'descending' | 'other';
   var `aria-valuemax`: js.UndefOr[Int]     = js.undefined
   var `aria-valuemin`: js.UndefOr[Int]     = js.undefined
   var `aria-valuenow`: js.UndefOr[Int]     = js.undefined

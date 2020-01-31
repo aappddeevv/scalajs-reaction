@@ -38,7 +38,7 @@ object Text {
     createElement(JS, props)(text.asInstanceOf[ReactNode])
 
   // from ReactJsProps
-  trait Props extends js.Object {
+  trait Props extends ReactJSProps {
     var variant: js.UndefOr[Variant] = js.undefined
     var nowrap: js.UndefOr[Boolean]  = js.undefined
     var block: js.UndefOr[Boolean]   = js.undefined

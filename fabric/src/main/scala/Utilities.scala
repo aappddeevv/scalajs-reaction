@@ -28,4 +28,4 @@ import js.annotation._
 /** Import through office-ui-fabric-react/lib/Utilities. */
 @js.native
 @JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
-object Utilities extends uifabric_utilities_module
+object Utilities extends utilities.module_base

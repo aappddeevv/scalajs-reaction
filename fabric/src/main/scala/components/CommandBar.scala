@@ -48,7 +48,7 @@ object CommandBar {
     def remeasure(): Unit = js.native
   }
 
-  trait PropsBase extends HTMLAttributes[dom.html.Div] {
+  trait PropsBase extends HTMLAttributes[dom.html.Div] with ReactJSProps {
     var theme: js.UndefOr[Theme]                                       = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var componentRef: js.UndefOr[ICommandBar => Unit]                  = js.undefined

@@ -20,6 +20,7 @@
  */
 
 package fabric
+package utilities
 
 import scala.scalajs.js
 
@@ -32,7 +33,7 @@ import fabric.styling._
  * office-ui-fabric-react/lib/Utilities == @uifabric/utilities
  */
 @js.native
-trait uifabric_utilities_module extends js.Object {
+trait module_base extends js.Object {
 
   /** This is another tough one to type in scala.js. If you use a scala function
    * to define f, an implicit will convert it to a js function automatically. Or
@@ -85,8 +86,25 @@ trait uifabric_utilities_module extends js.Object {
    * can take a styles (function or object) parameter.
    */
   def classNamesFunction[P <: js.Object, SS <: IStyleSetTag, CN <: IClassNamesTag]()
-    : js.Function2[js.UndefOr[IStyleFunctionOrObject[P, SS]], js.UndefOr[P], CN] = js.native
+      : js.Function2[js.UndefOr[IStyleFunctionOrObject[P, SS]], js.UndefOr[P], CN] = js.native
+
+  def mergeSettigns(oldSettings: Settings, newSettings: Settings|SettingsFunction): Settings = js.native
+  def mergeScopedSettigns(oldeSettings: Settings, newSettings: Settings|SettingsFunction): Settings = js.native
+
+  //def mergeCustomizations:
+
+  def filteredAssign(isAllowed: js.Function1[String,Boolean], target: js.Any, args: js.Any*): js.Any = js.native
+
+  /** Format using {0} type placement specifiers. */
+  def format(s: String, values: js.Any*): String = js.native
+
+  /** Deep merge. */
+  def merge[T <: js.Object](args: T|js.Object|js.Dynamic|Null|Unit*): T = js.native
 }
+
+@js.native
+@JSImport("@uifabric/utilities", JSImport.Namespace)
+object module extends module_base
 
 @js.native
 @JSImport("@uifabric/utilities", "EventGroup")

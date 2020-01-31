@@ -28,11 +28,6 @@ import js.annotation._
 
 import react._
 
-/** Really a dict with (string,js.Any). Extend as needed with your setting keys.
- */
-@js.native
-trait Settings extends js.Object {}
-
 /** What you get if you use: `fields=["styles", "theme"]`.
  */
 @js.native
@@ -49,24 +44,34 @@ trait ICustomizations extends js.Object {
 }
 
 @js.native
-trait ICustomizerContext extends js.Object {
+trait CustomizerContext extends js.Object {
   val customizations: ICustomizations = js.native
 }
 
 /** In js, this is a class with all static methods */
 @js.native
 @JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
+class Customizations() extends js.Object
+
+@js.native
+@JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
 object Customizations extends js.Object {
+  def reset(): Unit = js.native
   // static!, T is based on fields so write your own object
   def getSettings[T <: js.Object](
     fields: js.Array[String],
     scopeName: js.UndefOr[String] = js.undefined,
     localSettings: js.UndefOr[ICustomizations] = js.undefined
   ): T = js.native
-  // static!
+  def applyScopedSettinsg(scopeName: String, settings: Settings): Unit = js.native
+  def applyBatchedUpdates(code: js.Function0[Unit], suppressUpdates: js.UndefOr[Boolean]=js.undefined): Unit = js.native
+  def applySettings(settings: Settings): Unit = js.native
   def observe(cb: js.Function0[Unit]): Unit = js.native
+  def unobserve(cb: js.Function0[Unit]): Unit = js.native
+
+
 }
 
 @js.native
 @JSImport("@uifabric/utilities/lib/customizations/CustomizerContext", "CustomizerContext")
-object CustomizerContext extends ReactContext[ICustomizerContext] {}
+object CustomizerContext extends ReactContext[CustomizerContext]

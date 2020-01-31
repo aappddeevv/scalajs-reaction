@@ -48,7 +48,7 @@ object Button {
       with WithIconProps
       with AllHTMLAttributes[dom.html.Button]
       with Theme
-      with ReactPropsJs {
+      with ReactJSProps {
     // having variance problems
     //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
     //var href: js.UndefOr[String] = js.undefined
@@ -176,8 +176,8 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "IconButton")
     object JS extends ReactJsComponent
 
-    def apply(props: Props = null)(children: ReactNode*) = createElement(JS, props)(children: _*)
-    def only(props: Props = null)                        = createElement0(JS, props)
+    def apply(props: Props)(children: ReactNode*) = createElement(JS, props)(children: _*)
+    def only(props: Props)                        = createElement0(JS, props)
   }
 
   trait Styles extends js.Object {

@@ -273,7 +273,7 @@ trait ApolloNetworkError extends js.Object {
 
 @js.native
 trait ApolloError extends js.Error {
-  //val message: String = js.native
+  //val stack: String = js.native
   //val operation: js.Object = js.native
   //val response: js.Object = js.native
   val graphQLErrors: js.Array[GraphQLError] = js.native

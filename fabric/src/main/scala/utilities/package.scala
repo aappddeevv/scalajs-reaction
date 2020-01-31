@@ -21,7 +21,9 @@
 
 package fabric
 
-package object utilities {
+import scala.scalajs.js
 
+package object utilities {
   type SettingsFunction = Settings => Settings
+  type Settings = js.Dictionary[js.Any]
 }

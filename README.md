@@ -6,7 +6,8 @@
   </a>
 </p>
 
-scalajs-reaction is also powered by react v16.11+, react-native v0.59+, scala 2.13
+scalajs-reaction is also powered by react v16.11+, react-native v0.59+, scala 2.13.
+scalajs-reaction runs on 1.0.0-RC2 and will track scala.js 1.x.
 
 The documentation site is being converted to docusaurus v2. Links to the
 demo do not work yet but you can see the demo by cloning the project and running

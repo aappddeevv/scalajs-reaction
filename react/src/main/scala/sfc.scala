@@ -22,6 +22,7 @@
 package react
 
 import scala.scalajs.js
+import js.|
 
 /**
  * A functional component with zero arguments.  You can export the `.run`
@@ -34,21 +35,18 @@ class SFC0(val run: js.Function0[ReactNode]) {
 }
 
 object SFC0 {
-
   /** Create an SFC0 from a parameterless scala function. */
   def apply(f: => ReactNode) = new SFC0(() => f)
-
-  /** Create a reactjs component directly from this SFC. */
-  implicit def sfc0ToEl(s: SFC0): ReactNode =
-    ReactJS.createElement(s.run, null)
 }
 
 /** A functional component with one arg, the props. You can export the `.run`
- * function for use in reactjs.
+ * function for use in reactjs. If you are defining convenience methods for your
+ * component, you can also call `react.createElement` on `run` directly becauseq it is
+ * considered a function component by reactjs.
  *
  * @tparam P Props type.
  */
-class SFC1[P](val run: js.Function1[P, ReactNode]) {
+class SFC1[P <: js.Object](val run: SFC1.RunArg[P]) {
 
   /** Create a reactjs component given some props. */
   def apply(props: P) = toEl(props)
@@ -57,14 +55,14 @@ class SFC1[P](val run: js.Function1[P, ReactNode]) {
   def apply(props: js.Dynamic) = toEl(props.asInstanceOf[P])
 
   /** Create an reactjs component directly from this SFC. */
-  def toEl(props: P) = ReactJS.createElement(run, props)
+  def toEl(props: P): ReactElement = ReactJS.createElement(run, props)
 }
 
 object SFC1 {
+  /** Type of `run`. This must be usable as a function component in js. */
+  type RunArg[P <: js.Object] = js.Function1[P, ReactNode]
 
-  /** Create a SFC1 from a single parameter scala function taking a js.Object
-   * props type.
-   */
+  /** Create a SFC1 always taking a single props parameter. */
   def apply[P <: js.Object](f: P => ReactNode) = new SFC1[P](f)
 }
 
@@ -75,10 +73,11 @@ object SFC1 {
  *
  * @see https://reactjs.org/docs/hooks-reference.html#useref
  */
-class SFCWithRef[P, R](val run: js.Function2[P, Ref[R], ReactNode]) {
+class SFCWithRef[P <: js.Object, R](val run: js.Function2[P, Ref[R], ReactNode]) {
 
   /** Create an reactjs component directly from this SFC. */
-  def toEl(props: P) = ReactJS.createElement(run.asInstanceOf[ReactJsFunctionComponent], props)
+  def toEl(props: P) =
+    ReactJS.createElement(run.asInstanceOf[ReactJsFunctionComponent], props.asInstanceOf[P|Unit])
 }
 
 object SFCWithRef {

@@ -70,6 +70,8 @@ object QueryResult {
         qr.error.isEmpty &&
         qr.data.isDefined &&
         qr.networkStatus == NetworkStatus.ready
+    def finishedRemoteCall =
+      !qr.loading && qr.networkStatus == NetworkStatus.ready
   }
 }
 

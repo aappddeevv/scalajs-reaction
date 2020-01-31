@@ -56,6 +56,10 @@ object StyleSetArg {
 @JSImport("@uifabric/styling", JSImport.Namespace)
 object Styling extends js.Object with ThemeLike with StylingLike with MergeStyles
 
+@js.native
+@JSImport("@uifabric/styling", JSImport.Namespace)
+object module extends ThemeLike with StylingLike with MergeStyles
+
 /** uifabric/merg-styles. */
 @js.native
 trait MergeStyles extends js.Object {

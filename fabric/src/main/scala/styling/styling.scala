@@ -22,7 +22,7 @@
 package fabric
 
 import scala.scalajs.js
-
+import js.JSConverters._
 import js.|
 
 import react.vdom._
@@ -38,25 +38,47 @@ package object styling {
 
   type IRawStyleBase = RawStyleBase
 
-  type ISelectorSet = js.Dictionary[IStyle]
+  //type ISelectorSet = js.Dictionary[IStyle]
+  /** Selector sets typically have styles but you could be defining a :global css
+   * var which may only have a value e.g. a string color or number.
+   */
+  type ISelectorSet = js.Dictionary[js.Any]
 
   trait IRawStyle extends IRawStyleBase {
     var displayName: js.UndefOr[String]     = js.undefined
     var selectors: js.UndefOr[ISelectorSet] = js.undefined
   }
 
-  /** Helper to create entries for the selectors propert on IRawStyle. */
-  object selectorset {
-    def apply(selects: (String, IStyle)*): ISelectorSet = js.Dictionary[IStyle](selects: _*)
+  private [styling] trait MakeSelectors {
+    /** Create a selector set of styles. */
+    def apply(selects: (String, IStyle)*): ISelectorSet =
+      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String,js.Any)]]: _*)
+
+    /** Create a selector set out of any values. Experts only! */
+    def any(selects: (String, js.Any)*): ISelectorSet =
+      js.Dictionary[js.Any](selects: _*)
+
+    /** Create an undefined selector set. */
+    def apply(): js.UndefOr[ISelectorSet] = js.undefined
+
+    /** Create an empty selector set. You can add or remove from it. */
+    def empty: ISelectorSet = js.Dictionary.empty[js.Any]
   }
+
+  /** Helper to create entries for the selectors propert on IRawStyle. */
+  object selectorset extends MakeSelectors
 
   trait IRawStyleArray extends js.Array[IStyle]
 
-  /** Create an array of styles. This should really have IStyleBase as input. */
-  object stylearray {
+  private[styling] trait MakeStyles {
     def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
     def apply(): IStyle                = js.Array[IStyle]().asInstanceOf[IStyle]
   }
+  /** Create an array of styles. This should really have IStyleBase as input. */
+  object stylearray extends MakeStyles
+
+  /** Create an array of styles. This should really have IStyleBase as input. Same as stylearray. */
+  object styles extends MakeStyles
 
   /**
    * Added js.Dynamic so you can add anything dynamically, which is not

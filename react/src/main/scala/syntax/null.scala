@@ -45,11 +45,11 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal {
 
   /** Convert an A|Null to a well formed Option. Should we check or undefined? */
   def toNonNullOption: Option[A] =
-    Option(a.asInstanceOf[A])
+    Option(forceGet)
 
   /** Like .toNonNullOption */
   def toOption: Option[A] =
-    Option(a.asInstanceOf[A])
+    Option(forceGet)
 
   /** If Null, then false, else true. */
   def toTruthy: Boolean =
@@ -58,16 +58,20 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal {
 
   /** null => undefined, otherwise A. */
   def toUndefOr: js.UndefOr[A] =
-    if (!isDefined) js.undefined
-    else js.defined(a.asInstanceOf[A])
+    if (!isDefined || a == null) js.undefined
+    else forceGet
 
   /** Avoid calling toUndefOr */
-  def getOrElse[B >: A](b: B): B = toUndefOr.getOrElse(b)
+  def getOrElse[B >: A](b: B): B =
+    if(a == null) b else forceGet
 
   def toTruthyUndefOr: js.UndefOr[A] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
-      js.defined(a.asInstanceOf[A])
+      js.defined(forceGet)
     else js.undefined
+
+  def fold[B](ifNull: => B)(ifTrue: A => B) =
+    if(a == null) ifNull else ifTrue(forceGet)
 
   /** Collapse A|Null => A but the value may be null! You are on your own */
   @inline def merge: A = forceGet

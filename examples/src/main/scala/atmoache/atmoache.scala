@@ -26,21 +26,14 @@ package atmoache
 // A copy of the app at: http//github.com/gladimdim/atmoache although greatly
 // changed in almost every way :-)
 
-import concurrent.ExecutionContext.Implicits.global
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
-
 import js.JSConverters._
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import implicits._
-
 import vdom._
-
 import fabric._
 import fabric.components._
 
@@ -129,7 +122,27 @@ object DailyWeatherSummary {
   def apply(props: Props)        = sfc(props)
   def apply(s: Daily, k: String) = sfc(new Props { var summary = s; var key = k })
 
-  val sfc = SFC1[Props] { argx =>
+  /*
+  val sfc = SFC1[Props] { arg =>
+    val cond = arg.summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
+    val props = new ReactWeatherDisplayProps {
+      temperature = arg.summary.temp
+      currentTemperature = arg.summary.temp
+      width = 150
+      height = 150
+      condition = cond
+      currentCondition = cond
+    }
+    div(new DivProps {
+      className = "daily"
+      style = layout
+    })(
+      Label(labelProps)(arg.summary.dateStr),
+      ReactWeatherDisplay(props)
+    )
+  }
+*/
+    val sfc = SFC1[Props] { argx =>
     val cond = argx.summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
     val props = new ReactWeatherDisplayProps {
       temperature = argx.summary.temp
@@ -146,7 +159,7 @@ object DailyWeatherSummary {
       Label(labelProps)(argx.summary.dateStr),
       ReactWeatherDisplay(props)
     )
-  }
+    }
 }
 
 object app {
