@@ -253,7 +253,7 @@ object SuspenseTest {
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
-    createElement(React.`lazy`(SuspenseParentNS.X), props)(children: _*)
+    createElement(`lazy`(SuspenseParentNS.X), props)(children: _*)
 
   def blah(): ReactNode =
     Fragment(

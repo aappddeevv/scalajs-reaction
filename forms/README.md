@@ -1,3 +1,14 @@
+# Forms
+
+Forms are tough things to do well and keep flexible. There are many
+different forms libraries, especially for react, e.g., https://github.com/jaredpalmer/formik
+or https://github.com/final-form/react-final-form#-react-final-form which uses
+https://final-form.org/ for form state management.
+
+There are also dynamic generators that generate forms from metadata e.g. https://uniforms.tools/.
+
+Oh my!
+
 # Example
 
 Here's a *not* very good example using this library. It will get refactored as I

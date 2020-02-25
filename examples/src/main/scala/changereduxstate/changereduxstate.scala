@@ -58,7 +58,7 @@ object ChangeReduxState {
    * redux-react docs.
    */
   val sfc = SFC0 {
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     val label_   = useSelector[GlobalAppState, String](_.view.label.flatMap(_.toUndefOr).getOrElse("no redux label"))
     val dispatch = useDispatch[GlobalAppAction]()
 

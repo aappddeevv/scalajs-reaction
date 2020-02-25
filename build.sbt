@@ -23,9 +23,9 @@ val commonScalacOptions = Seq(
   "-feature",
   "-language:_",
   "-unchecked",
-  "-Ywarn-numeric-widen",
-  "-Ywarn-value-discard",
-  "-Ywarn-unused:imports,locals",
+  //"-Ywarn-numeric-widen",
+  //"-Ywarn-value-discard",
+  //"-Ywarn-unused:imports,locals",
   "-Xlint:infer-any",
   "-Yrangepos"
 )
@@ -35,7 +35,7 @@ lazy val jsSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.9.8"
+    "org.scala-js" %%% "scalajs-dom" % "1.0.0"
   )
 )
 
@@ -54,7 +54,7 @@ lazy val compilerSettings = Seq(
   autoCompilerPlugins := true
 )
 
-val catsVersion = "2.1.0"
+val catsVersion = "2.1.1"
 
 lazy val fpsettings = Seq(
   libraryDependencies ++= Seq(
@@ -67,7 +67,7 @@ def std_settings(p: String, d: String) =
     name := p,
     description := d,
     libraryDependencies ++= Seq(
-      "org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
+      //"org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
     )
   ) ++ resolverSettings ++ compilerSettings ++ bintraySettings ++ jsSettings
 
@@ -336,7 +336,7 @@ lazy val examples = project
     mui,
     `react-big-calendar`,
     `react-router-dom`
-//     ,dataValidationJS
+     ,dataValidationJS
   )
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .settings(buildinfo_settings("ttg.examples"))

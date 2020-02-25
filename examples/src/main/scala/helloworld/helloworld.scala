@@ -58,7 +58,7 @@ object HelloWorld {
 
   /** No props data structure, just parameters. */
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     div("hello world " + props.name.map(": " + _).getOrElse(""))
   }
 
@@ -70,7 +70,7 @@ object HelloWorld {
     sfcWithMount(new Props2 { val name = name_ })
 
   val sfcWithMount = SFC1[Props2] { props =>
-    React.useEffectMounting { () =>
+    useEffectMounting { () =>
       println("HelloWorld.makeWithMount: didMount was called!")
     }
     div("hello world " + props.name.map(": " + _).getOrElse(""))
@@ -94,7 +94,7 @@ object HelloWorld {
   def make3(c: String)     = sfc3(new Props3 { val content = c })
 
   val sfc3 = SFC1[Props3] { props =>
-    val hwref = React.useRef[dom.html.Div](null)
+    val hwref = useRef[dom.html.Div](null)
     div(new DivProps {
       ref = hwref
     })(props.content)

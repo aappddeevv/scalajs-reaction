@@ -76,8 +76,8 @@ object AddressList {import IColumn.toCol
       getKey = getAddressKey
       //initialFocusedIndex = 2 //ifx.orUndefined
       selection = props.sel
-      layoutMode = Details.List.LayoutMode.fixedColumns
-      constrainMode = Details.List.ConstrainMode.unconstrained
+      layoutMode = Details.LayoutMode.fixedColumns
+      constrainMode = Details.ConstrainMode.unconstrained
       // onRenderDetailsHeader = js.defined { (props, defaultRender) =>
       //   Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
       // }
@@ -88,7 +88,7 @@ object AddressList {import IColumn.toCol
     div.merge(lit("data-is-scrollable" -> true))(new DivProps {
       className = amstyles.master.asString
     })(
-      ScrollablePane()(Details.Shimmered[Address](listopts)())
+      ScrollablePane()(Details.Shimmered[Address](listopts))
     )
   }
 }

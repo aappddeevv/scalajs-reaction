@@ -158,10 +158,10 @@ object Graph {
   def apply() = sfc
 
   val sfc = SFC0 {
-    val refR = React.useRef[Option[dom.html.Div]](None)
-    var cyR  = React.useRef[Option[Graph]](None)
+    val refR = useRef[Option[dom.html.Div]](None)
+    var cyR  = useRef[Option[Graph]](None)
 
-    React.useEffectMounting(() => {
+    useEffectMounting(() => {
       println(s"$Name: didMount, building graph")
       cyR.current = refR.current.flatMap(g => Option(mkGraph(g)))
       (() => {

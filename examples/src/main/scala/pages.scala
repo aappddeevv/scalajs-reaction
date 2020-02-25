@@ -47,7 +47,7 @@ import cats.implicits._
 import mui._
 import react_big_calendar._
 import react_redux._
-import styles._
+//import fabric.styles._
 
 object Pages {
 

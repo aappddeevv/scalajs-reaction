@@ -90,7 +90,7 @@ object Nav {
   val sfc = SFC1[Props] { props =>
     Sidebar(new Sidebar.Props {
       className = props.rootClassName
-      theme = Styling.getTheme() // needed else exception!
+      val theme = Styling.getTheme() // needed else exception!
       items = itemRoutes.map(p => makeItem(p._1, p._2, p._3, props.goto)).toJSArray
     })
   }

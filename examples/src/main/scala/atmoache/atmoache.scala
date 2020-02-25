@@ -75,8 +75,8 @@ object Controls {
     })
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue("Controls")
-    val (state, setState) = React.useStateStrictDirect[State](None)
+    useDebugValue("Controls")
+    val (state, setState) = useStateStrictDirect[State](None)
     div(new DivProps {
       className = styles.controls.asString
     })(
@@ -207,8 +207,8 @@ object app {
   def apply() = sfc
 
   val sfc = SFC0 {
-    React.useDebugValue(Name)
-    val (state, dispatch) = React.useReducer[State, Action](
+    useDebugValue(Name)
+    val (state, dispatch) = useReducer[State, Action](
       (s, a) =>
         a match {
           case UpdateCity(cityNameOpt) =>

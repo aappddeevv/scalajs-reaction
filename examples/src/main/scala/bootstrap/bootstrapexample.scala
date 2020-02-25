@@ -101,7 +101,7 @@ object FormExample {
   def apply() = sfc
 
   val sfc = SFC0 {
-    val (state, update) = React.useReducer[State, Action](
+    val (state, update) = useReducer[State, Action](
       (s, a) =>
         a match {
           case Change(vopt) => s.copy(value = vopt)

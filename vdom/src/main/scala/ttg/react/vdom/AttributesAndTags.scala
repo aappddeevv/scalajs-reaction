@@ -140,10 +140,10 @@ trait tags {
 
   trait DataListProps extends HTMLAttributes[dom.html.DataList] with ClassAttributes[dom.html.DataList]
   final lazy val datalist = tagt[DataListProps]("datalist")
-
+/*
   trait DDProps extends HTMLAttributes[dom.html.DD] with ClassAttributes[dom.html.DD]
   final lazy val dd = tagt[DDProps]("dd")
-
+*/
   // should be dom.html.Del, and DelHTMLAttributes
   type DelProps = ElementAttributesOnly
   final lazy val del = tagt[DelProps]("del")
@@ -418,7 +418,7 @@ trait tags {
   trait TbodyProps extends HTMLAttributes[dom.html.TableSection] with ClassAttributes[dom.html.TableSection]
   final lazy val tbody = tagt[TbodyProps]("tbody")
 
-  trait TdProps extends HTMLAttributes[dom.html.TableDataCell] with ClassAttributes[dom.html.TableDataCell]
+  trait TdProps extends HTMLAttributes[dom.html.TableCell] with ClassAttributes[dom.html.TableCell]
   final lazy val td = tagt[TdProps]("td")
 
   trait TextareaProps extends TextAreaHTMLAttributes[dom.html.TextArea] with ClassAttributes[dom.html.TextArea]
@@ -427,7 +427,7 @@ trait tags {
   trait TfootProps extends HTMLAttributes[dom.html.TableSection] with ClassAttributes[dom.html.TableSection]
   final lazy val tfoot = tagt[TfootProps]("tfoot")
 
-  trait ThProps extends ThHTMLAttributes[dom.html.TableHeaderCell] with ClassAttributes[dom.html.TableHeaderCell]
+  trait ThProps extends ThHTMLAttributes[dom.html.TableCell] with ClassAttributes[dom.html.TableCell]
   final lazy val th = tagt[ThProps]("th")
 
   trait TheadProps extends HTMLAttributes[dom.html.TableSection] with ClassAttributes[dom.html.TableSection]

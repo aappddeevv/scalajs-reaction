@@ -55,7 +55,7 @@ object AppBody {
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     val cn = getClassNames(new StyleProps {
       className = props.rootClassName
     }, props.styles)

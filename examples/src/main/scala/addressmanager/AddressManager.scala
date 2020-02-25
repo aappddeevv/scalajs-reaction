@@ -117,8 +117,8 @@ object AddressManager {
   // hook to fetch data, todo convert to using components.fetch.Fetcher
   val useFetch: js.Function2[AddressDAO, AddressList => Unit, (FetchState, () => Unit)] = (dao, cb) => {
     // track # of requests and drive refresh
-    val (request, setRequest) = React.useStateStrictDirect[Int](0)
-    val (state, setState)     = React.useStateStrictDirect[FetchState](FetchState())
+    val (request, setRequest) = useStateStrictDirect[Int](0)
+    val (state, setState)     = useStateStrictDirect[FetchState](FetchState())
 
     useEffect(request) { () =>
       println("Fetching address data...")
@@ -191,7 +191,7 @@ object AddressManager {
     // see https://github.com/OfficeDev/office-ui-fabric-react/issues/9882
     // we solve it via a lazy val
     lazy val selection: ISelection[Address] =
-      React.useMemo[ISelection[Address]](deps(setActive))(
+      useMemo[ISelection[Address]](deps(setActive))(
         () =>
           createSelection { () =>
             dom.console.log(
@@ -210,7 +210,7 @@ object AddressManager {
       )
     val (fetchState, doFetch) = useFetch(props.dao, selection.setItems(_, true))
     dom.console.log(s"$Name: loading", fetchState.loading)
-    React.useEffectMounting { () =>
+    useEffectMounting { () =>
       doFetch()
       (() => setActive(null, null))
     }

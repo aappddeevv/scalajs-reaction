@@ -57,7 +57,7 @@ object Header {
     })
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     div(new DivProps {
       className = props.rootClassName
       style = hstyle

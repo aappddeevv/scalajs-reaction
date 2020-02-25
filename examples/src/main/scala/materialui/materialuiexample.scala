@@ -36,7 +36,6 @@ import vdom._
 import vdom.styling._
 import vdom.tags._
 
-import React.Fragment
 import components._
 import jss._
 import mui._

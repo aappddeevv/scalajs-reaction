@@ -52,7 +52,7 @@ object TagTest {
     sfc(new Props { rootClassName = rcn })
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue("TagTest")
+    useDebugValue("TagTest")
     js.Dynamic.global.console.log("rootClassName", props.rootClassName)
     div(new DivProps {
       // null here is giving a weird error in reactjs!

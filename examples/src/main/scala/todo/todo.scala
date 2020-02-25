@@ -61,7 +61,7 @@ object ToDoItem {
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     divWithClassname(
       props.rootClassname,
       Label(new Label.Props {
@@ -87,7 +87,7 @@ object ToDoListHeader {
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     div(Label(s"# To Dos - ${props.length}"))
   }.memo
 }
@@ -107,7 +107,7 @@ object ToDoList {
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
+    useDebugValue(Name)
     divWithClassname(
       props.listClassname,
       ToDoListHeader(new ToDoListHeader.Props { var length = props.length }),
@@ -173,17 +173,17 @@ object ToDos {
   def apply(props: Props) = sfc(props)
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
-    val ifield = React.useRef[Option[TextField.ITextField]](None)
-    React.useEffectMounting { () =>
+    useDebugValue(Name)
+    val ifield = useRef[Option[TextField.ITextField]](None)
+    useEffectMounting { () =>
       println("ToDo: subscriptions: called during mount")
       () => println("ToDo: subscriptions: unmounted")
     }
 
     val (state, dispatch) =
-      React.useReducer[State, Action](reducer, State(props.todos, None))
+      useReducer[State, Action](reducer, State(props.todos, None))
     // if the input is added as a todo or todo remove, reset focus
-    React.useEffect(state.todos.length) { () =>
+    useEffect(state.todos.length) { () =>
       ifield.current.foreach(_.focus())
     }
 
