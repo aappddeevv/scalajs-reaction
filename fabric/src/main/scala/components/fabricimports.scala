@@ -146,10 +146,11 @@ trait IColumnBase extends js.Object {
   var isFiltered: js.UndefOr[Boolean]                = js.undefined
   // adjust so we can delayr item's type vs js.Any
   //def onRender[T <: js.Object]: js.UndefOr[js.Function3[T, Int, IColumn, js.Any]] = js.undefined
-  var maxwidth: js.UndefOr[Double]                                                               = js.undefined
-  var onRender: js.UndefOr[OnRender]                                                             = js.undefined
-  var sortAscendingAriaLabel: js.UndefOr[String]                                                 = js.undefined
-  var styles: js.UndefOr[IStyleFunctionOrObject[IDetailsColumnStyleProps, IDetailsColumnStyles]] = js.undefined
+  var maxwidth: js.UndefOr[Double]               = js.undefined
+  var onRender: js.UndefOr[OnRender]             = js.undefined
+  var sortAscendingAriaLabel: js.UndefOr[String] = js.undefined
+  var styles: js.UndefOr[IStyleFunctionOrObject[IDetailsColumnStyleProps, IDetailsColumnStyles]] =
+    js.undefined
   // onRenderDivider
   // onColumnClick
   // onColumnContextMenu
@@ -309,12 +310,7 @@ object IconType {
   val image   = 1.asInstanceOf[IconType]
 }
 
-// export interface IIconStyles {
-//   root?: IStyle;
-//   rootHasPlaceHolder?: IStyle;
-//   imageContainer?: IStyle;
-// }
-
+@deprecated("Use Icon.Props")
 trait IIconProps extends HTMLAttributes[dom.html.Element] {
   var iconName: js.UndefOr[String] = js.undefined
   //var styles?: IIconStyles;
@@ -372,31 +368,35 @@ trait IBasePickerSuggestionsProps extends js.Object {
   var showRemoveButtons: js.UndefOr[Boolean]         = js.undefined
 }
 
-trait ISelectableDroppableTextProps[T <: dom.html.Element] extends HTMLAttributes[T] with ComponentRef[T] {
+trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Element]
+    extends HTMLAttributes[T]
+    with ComponentRef[T] {
   var label: js.UndefOr[String] = js.undefined
   // these are in HTMLAttributes I think
   // ariaLabel?: string;
   // id?: string;
   // className?: string;
 
-  var defaultSelectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int]] = js.undefined
-  // does this make it controlled?
-  var selectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int] | Null] = js.undefined
+  var defaultSelectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]] = js.undefined
+  var defaultSelectedKey: js.UndefOr[String | Int]                      = js.undefined
 
   /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
-  var options: js.UndefOr[ISelectableOption | js.Any] = js.undefined
+  val options: js.Array[I] | js.Array[_ <: js.Dynamic]
+  //@JSName("options")
+  //var unsafeOptions: js.UndefOr[js.Array[js.Dynamic]] = js.undefined
   // onChanged?: (option: ISelectableOption, index?: number) => void;
   // onRenderContainer?: IRenderFunction<ISelectableDroppableTextProps<T>>;
-  var onRenderList: js.UndefOr[IRenderFunction[ISelectableDroppableTextProps[T]]] = js.undefined
+  var onRenderList: js.UndefOr[IRenderFunction[ISelectableDroppableTextProps[I, T]]] = js.undefined
   // onRenderItem?: IRenderFunction<ISelectableOption>;
   // onRenderOption?: IRenderFunction<ISelectableOption>;
   var disabled: js.UndefOr[Boolean] = js.undefined
   var required: js.UndefOr[Boolean] = js.undefined
 
-  var calloutProps: js.UndefOr[CalloutProps] = js.undefined
-  var panelProps: js.UndefOr[Panel.Props]     = js.undefined
-  var errorMessage: js.UndefOr[String]        = js.undefined
-  var placeholder: js.UndefOr[String]         = js.undefined
+  var calloutProps: js.UndefOr[CalloutProps]                            = js.undefined
+  var panelProps: js.UndefOr[Panel.Props]                               = js.undefined
+  var errorMessage: js.UndefOr[String]                                  = js.undefined
+  var placeholder: js.UndefOr[String]                                   = js.undefined
+  var selectedKeys: js.UndefOr[js.Array[String] | js.Array[Int] | Null] = js.undefined
 }
 
 @js.native
@@ -453,14 +453,46 @@ trait IRectangle extends js.Object {}
 // move to Layer component
 trait LayerProps extends js.Object {}
 
-trait ISelectableOption extends js.Object {
-  var key: String | Int
-  var text: String
+/** Trait with key/title in it. */
+trait FabricOption extends js.Object {}
+
+trait ISelectableOptionBase extends js.Object {
+  var id: js.UndefOr[String]   = js.undefined
+  var data: js.UndefOr[js.Any] = js.undefined
+//  val key: String | Int
+//  val text: String
+  var hidden: js.UndefOr[Boolean]                        = js.undefined
   var itemType: js.UndefOr[SelectableOptionMenuItemType] = js.undefined
   var index: js.UndefOr[Int]                             = js.undefined
   var ariaLabel: js.UndefOr[String]                      = js.undefined
   var selected: js.UndefOr[Boolean]                      = js.undefined
   var disabled: js.UndefOr[Boolean]                      = js.undefined
+}
+
+trait ISelectableOptionInit extends ISelectableOptionBase {
+  var key: js.UndefOr[String | Int]                = js.undefined
+  @JSName("key") var keyString: js.UndefOr[String] = js.undefined
+  @JSName("key") var keyInt: js.UndefOr[Int]       = js.undefined
+  var text: js.UndefOr[String]                     = js.undefined
+}
+
+object ISelectableOptionInit {
+  private implicit class Rich(private val i: ISelectableOptionInit) extends AnyVal {
+    def required(key: String | Int, text: String) =
+      js.Object
+        .assign(
+          js.Dynamic
+            .literal("key" -> key.asInstanceOf[js.Any], "text" -> text.asInstanceOf[js.Any]),
+          i
+        )
+        .asInstanceOf[ISelectableOption]
+    def hasRequired = i.asInstanceOf[ISelectableOption]
+  }
+}
+
+trait ISelectableOption extends ISelectableOptionBase {
+  val key: String | Int
+  val text: String
 }
 
 @js.native
@@ -471,10 +503,29 @@ object SelectableOptionMenuItemType {
   val Header  = 2.asInstanceOf[SelectableOptionMenuItemType]
 }
 
-trait IDropdownOption extends ISelectableOption {
-  var data: js.UndefOr[js.Any]        = js.undefined
-  var isSelected: js.UndefOr[Boolean] = js.undefined
+trait IDropdownOptionBase extends ISelectableOptionBase
+
+trait IDropdownOptionInit extends ISelectableOptionInit
+
+object IDropdownOptionInit {
+  private implicit class Rich(private val i: IDropdownOptionInit) extends AnyVal {
+    def required(key: String | Int, text: String) =
+      js.Object
+        .assign(
+          js.Dynamic
+            .literal("key" -> key.asInstanceOf[js.Any], "text" -> text.asInstanceOf[js.Any]),
+          i
+        )
+        .asInstanceOf[IDropdownOption]
+    def hasRequired = i.asInstanceOf[IDropdownOption]
+    def combine(that: IDropdownOptionInit | IDropdownOption) =
+      js.Object
+        .assign(js.Dynamic.literal(), i, that.asInstanceOf[IDropdownOptionInit])
+        .asInstanceOf[IDropdownOptionInit]
+  }
 }
+
+trait IDropdownOption extends ISelectableOption
 
 trait IKeytipProps extends js.Object {
   val content: String

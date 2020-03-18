@@ -35,6 +35,8 @@ dist/*
 
 .emacs.desktop
 .metals/
+project/metals.sbt
 .bloop/
 package-lock.json
 project/secret
+*.swp

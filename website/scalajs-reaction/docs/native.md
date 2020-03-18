@@ -25,13 +25,14 @@ Include the core libraries:
 ```scala
 scalajsReactVersion = ...
 libraryDependencies ++= Seq(
-    "ttg" %%% "scalajs-reaction-core" % scalajsReactVersion,
-    "ttg" %%% "scalajs-reaction-native" % scalajsReactVersion
+    "ttg" %%% "react" % scalajsReactVersion,
+    "ttg" %%% "native" % scalajsReactVersion
 )
 ```
 
 in your library dependencies. Create your build.sbt build file as you would for
-any scala project including scala flags, etc. You can copy portions of the build.sbt file at [scala.js react template](https://github.com/aappddeevv/scalajs-react-app.g8).
+any scala project including scala flags, etc. You can copy portions of the 
+build.sbt file at [scala.js react template](https://github.com/aappddeevv/scalajs-react-app.g8).
 
 Alter the index.js in the top level directory to either contain the "exported to
 js" component *or* you can call `AppRegistry.registerComponent` inside of

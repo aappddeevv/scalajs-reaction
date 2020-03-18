@@ -51,16 +51,18 @@ object StyleSetArg {
 
 /** uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
  * also exports most of @uifabic/merge-styles.
+ *
+ * You should really use `fabric.styling.module`.
  */
 @js.native
 @JSImport("@uifabric/styling", JSImport.Namespace)
 object Styling extends js.Object with ThemeLike with StylingLike with MergeStyles
 
-@js.native
-@JSImport("@uifabric/styling", JSImport.Namespace)
-object module extends ThemeLike with StylingLike with MergeStyles
+//@js.native
+//@JSImport("@uifabric/styling", JSImport.Namespace)
+//object module extends ThemeLike with StylingLike with MergeStyles
 
-/** uifabric/merg-styles. */
+/** uifabric/merge-styles. */
 @js.native
 trait MergeStyles extends js.Object {
 

@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Panel {

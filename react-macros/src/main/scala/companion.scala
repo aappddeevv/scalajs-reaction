@@ -1,16 +1,49 @@
-
-package ttg
 package react
+package macros
 
 import scala.annotation.compileTimeOnly
 import scala.collection.immutable.Seq
-import scala.meta._
-import scala.reflect.runtime.{universe => ru}
+import scala.language.experimental.macros
+import scala.reflect.macros.whitebox._
 
+private[macros] trait ImplTransformers {
+  val c: Context
+  import c.universe._
+  import Flag._
+
+  def fail(msg: String) = c.abort(c.enclosingPosition, msg)
+}
+
+private[macros] class WithsMacro(val c: Context) extends ImplTransformers {
+  import c.universe._
+
+  private val debug = sys.env
+    .get("REACT_MACROS_DEBUG")
+    .map(_.toBoolean)
+    .getOrElse(java.lang.Boolean.getBoolean("react.macros.debug"))
+
+  def impl(annottees: Tree*): Tree = {
+    val params = c.prefix.tree match {
+      case q"new withs()"           => Nil
+      case q"new withs(..$params0)" => params0
+    }
+    println(s"parameters $params")
+    println(s"ANNOTTEES: ${showRaw(annottees)}")
+    ???
+  }
+}
+
+@compileTimeOnly("enable macros -Ymacro-annotation (2.13+) to expand macro annotation")
+class withs() extends scala.annotation.StaticAnnotation {
+  def macroTransform(annottees: Any*): Any = macro WithsMacro.impl
+}
+
+
+/*
 /**
  * This works for simple non-native js traits that do not have type definitions
  * inside the trait.
- * 
+ *
  */
 private[ttg] object SimpleCreateImpl {
   case class Params(name: String)
@@ -135,3 +168,29 @@ class simplecreate(makeName: String = "apply") extends scala.annotation.StaticAn
     }
   }
 }
+*/
+
+// https://docs.scala-lang.org/overviews/macros/annotations.html
+// object ReactMacro {
+//   def impl(c: whitebox.Context)(annottees: c.Expr[Any]*): c.Expr[Any] = {
+//     import c.universe._
+//     val inputs = annottees.map(_.tree).toList
+//     val (annottee, expandees) = inputs match {
+//       case (param: TypeDef) :: (rest @ (_ :: _)) => (param, rest)
+//       case _ => (EmptyTree, inputs)
+//       case someDef =>
+//         c.abort(
+//           c.enclosingPosition,
+//             """@react must annotate a def
+//         """.stripMargin
+//           )
+//     }
+//     val outputs = expandees
+//     c.Expr[Any](Block(outputs, Literal(Constant(()))))
+//   }
+// }
+
+// @compileTimeOnly("enable macros -Ymacro-annotation (2.13+) to expand macro annotation")
+// class react() extends scala.annotation.StaticAnnotation {
+//   def macroTransform(annottees: Any*): Any = macro ReactMacro.impl
+// }

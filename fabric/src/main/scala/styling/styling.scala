@@ -49,10 +49,11 @@ package object styling {
     var selectors: js.UndefOr[ISelectorSet] = js.undefined
   }
 
-  private [styling] trait MakeSelectors {
+  private[styling] trait MakeSelectors {
+
     /** Create a selector set of styles. */
     def apply(selects: (String, IStyle)*): ISelectorSet =
-      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String,js.Any)]]: _*)
+      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String, js.Any)]]: _*)
 
     /** Create a selector set out of any values. Experts only! */
     def any(selects: (String, js.Any)*): ISelectorSet =
@@ -74,6 +75,7 @@ package object styling {
     def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
     def apply(): IStyle                = js.Array[IStyle]().asInstanceOf[IStyle]
   }
+
   /** Create an array of styles. This should really have IStyleBase as input. */
   object stylearray extends MakeStyles
 

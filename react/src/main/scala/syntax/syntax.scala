@@ -61,6 +61,7 @@ trait AllSyntax
     with JSPromiseSyntax
     with ContextSyntax
     with CallbackSyntax
+    with OrSyntax
 
 object syntax {
   object all         extends AllSyntax
@@ -78,4 +79,5 @@ object syntax {
   object jspromise   extends JSPromiseSyntax
   object context     extends ContextSyntax
   object callback    extends CallbackSyntax
+  object or extends OrSyntax
 }

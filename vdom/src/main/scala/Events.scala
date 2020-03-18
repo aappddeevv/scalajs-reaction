@@ -24,8 +24,6 @@ package vdom
 
 // needed because I could not figure out the proper variance model
 import org.scalajs.dom
-
-import dom.html
 import scalajs.js
 
 /*
@@ -48,9 +46,9 @@ trait Events {
   type ReactClipboardEvent[+T <: dom.EventTarget] = SyntheticClipboardEvent[T]
   // ...a few more...
 
-  type ReactEventI         = SyntheticEvent[html.Input]
-  type ReactKeyboardEventI = SyntheticKeyboardEvent[html.Input]
-  type ReactMouseEventI    = SyntheticMouseEvent[html.Input]
+  type ReactEventI         = SyntheticEvent[dom.html.Input]
+  type ReactKeyboardEventI = SyntheticKeyboardEvent[dom.html.Input]
+  type ReactMouseEventI    = SyntheticMouseEvent[dom.html.Input]
 
   /**
    * @tparam T node type typically dom.EventTarget but should be the

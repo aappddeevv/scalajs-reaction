@@ -20,6 +20,7 @@
  */
 
 package fabric
+package components
 package utilities
 
 import scala.scalajs.js
@@ -30,7 +31,7 @@ import js.annotation._
 // but office-ui-fabric-react/utilities
 
 @js.native
-@JSImport("office-ui-fabric-react/utilities/dateMath", JSImport.Namespace)
+@JSImport("office-ui-fabric-react/lib/utilities/dateMath", JSImport.Namespace)
 object dateMath extends js.Object {
   def addDays(d: js.Date, days: Double): js.Date      = js.native
   def addWeeks(d: js.Date, weeks: Double): js.Date    = js.native
@@ -50,7 +51,7 @@ object dateMath extends js.Object {
   def getDatePart(d: js.Date): js.Date = js.native
 }
 @js.native
-@JSImport("office-ui-fabric-react/utilities/colors", JSImport.Namespace)
+@JSImport("office-ui-fabric-react/lib/utilities/colors", JSImport.Namespace)
 object colors extends js.Object {
   //def cssColor
   //def rgb2hex

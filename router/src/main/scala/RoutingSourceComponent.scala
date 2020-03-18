@@ -46,10 +46,10 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
   })
 
   val sfc = SFC1[Props] { props =>
-    React.useDebugValue(Name)
-    val (state, setState) = React.useStateStrictDirect[State](None)
+    useDebugValue(Name)
+    val (state, setState) = useStateStrictDirect[State](None)
     // subscribe to routing source on mount
-    React.useEffectMounting{() =>
+    useEffectMounting{() =>
       val unsubscribe = routing.subscribe{ info => setState(Option(info))}
       // prime the pump
       routing.run(info => setState(Option(info)))
@@ -95,7 +95,7 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
 
     val sfc = SFC1[Props]{ props =>
       import props._
-      React.useDebugValue(Name)
+      useDebugValue(Name)
       RouterContext.consume(routerInfo => {
         if(cond(routerInfo))
           RouterContext.provide(modify(routerInfo)) {

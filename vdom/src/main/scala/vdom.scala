@@ -19,13 +19,23 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package fabric
+// This entire package was copied from: https://github.com/eldis/scalajs-react and that Copyright applies.
 
-import scala.scalajs.js
+package react
 
-import js.annotation._
+import scalajs.js
 
-/** Import through office-ui-fabric-react/lib/Utilities. */
-@js.native
-@JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
-object Utilities extends utilities.module_base
+/**
+ * Simple vdom. There are two styles, one with list of attributes like many
+ * other scalajs react bindings.  The preferred approach is using typed traits
+ * (subclasses of js.Objects) so that properties presence/absence can be
+ * checked.
+ */
+package object vdom extends react.vdom.Events with react.vdom.tags {
+
+  /** Create tag. */
+  @inline def tag(name: String): Tag = new Tag(name)
+
+  /** Create a tag that takes a typed js.Object. */
+  @inline def tagt[P <: js.Object](name: String): TagT[P] = new TagT[P](name)
+}

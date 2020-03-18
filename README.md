@@ -2,12 +2,14 @@
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
 <p align="center">
   <a href="https://www.scala-js.org">
-   <img src="https://www.scala-js.org/assets/badges/scalajs-0.6.29.svg"/>
+   <img src="https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg"/>
   </a>
 </p>
 
-scalajs-reaction is also powered by react v16.11+, react-native v0.59+, scala 2.13.
-scalajs-reaction runs on 1.0.0-RC2 and will track scala.js 1.x.
+![Bintray](https://img.shields.io/bintray/v/aappddeevv/maven/react)
+![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.scala-lang/scala-compiler/2.13.1?label=scala)
+
+You need to use a react version 16.8+ to make sure that hooks are included. Use the latest react-native.
 
 The documentation site is being converted to docusaurus v2. Links to the
 demo do not work yet but you can see the demo by cloning the project and running

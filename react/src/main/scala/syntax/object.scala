@@ -22,6 +22,7 @@
 package react
 
 import scala.scalajs.js
+import js.|
 
 /** The "combine" methods are all shallow merges, this may not be what you want. */
 final case class JsObjectOps[A <: js.Object](o: A) {
@@ -33,9 +34,14 @@ final case class JsObjectOps[A <: js.Object](o: A) {
    * what you want to use.
    */
   def combine(that: js.UndefOr[A])               = react.merge[A](o, that)
+  /** Combine with a js.Dynamic explicitly. */
   def combineDynamic(that: js.Dynamic)           = react.merge[A](o, that.asInstanceOf[A])
-  def combineGeneric(that: js.Object)            = react.merge[A](o, that.asInstanceOf[A])
-  def combineTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]
+  /** Combine with a generic js object or undefined. */
+  def combineGeneric(that: js.UndefOr[js.Object])            = react.merge[A](o, that.asInstanceOf[A])
+  /** Combine with something! Client takes ownership to make sure `that` is suitable to be combined. */
+  def unsafeCombine(that: js.Any) = react.merge[A](o, that.asInstanceOf[A])
+  /** Combine with a generic js object and cast. */
+  def combineGenericTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]
 }
 
 /** These should be picked by `<: js.Object` but don't seem to be. */

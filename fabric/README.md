@@ -6,7 +6,6 @@ Pure WIP but highy usable. fabric is changing rapidly still but starting to gel.
 
 To use this, ensure you include the js library in your bundling process.
 
-
 # Styling
 
 To integrate with fabric's `merge-styles` we need to define the appropriate
@@ -20,7 +19,7 @@ current scala compiler. Dotty should help with this but that's a future.
 
 ```typescript
 export interface IRawStyleBase {
-  backgroundColor: string
+  backgroundColor: string;
   // ...100 more CSS styling properties...
 }
 
@@ -32,10 +31,13 @@ export interface IRawStyle extends IRawStyleBase {
 }
 
 export type IStyleBase = IRawStyle | string | false | null | undefined;
-export interface IStyleBaseArray extends Array<IStyle> { }
+export interface IStyleBaseArray extends Array<IStyle> {}
 export type IStyle = IStyleBase | IStyleBaseArray;
 ```
 
-* Can we express that in pure scala.js js data structures while remaining typed?
-* If not, what's the minimal that we need? Abstract data types, fixed point types.
+- Can we express that in pure scala.js js data structures while remaining typed?
+- If not, what's the minimal that we need? Abstract data types, fixed point types.
 
+# Generator
+
+The generator generates some large constant objects...to save me typing.

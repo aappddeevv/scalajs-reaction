@@ -69,12 +69,10 @@ private[react_dom] trait ReactDOMJS extends js.Object with Concurrent {
 
   def findDOMNode(componentOrElement: js.Any): dom.Element = js.native
 
-  val version: String = js.native
-
   def hydrate(element: dom.html.Element, container: dom.html.Element, callback: () => Unit): Unit = js.native
 }
 
 /** react-dom scala.js import. */
 @js.native
 @JSImport("react-dom", JSImport.Namespace)
-object ReactDOMJS extends ReactDOMJS
+private[react_dom] object ReactDOMJS extends ReactDOMJS

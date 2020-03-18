@@ -80,8 +80,8 @@ trait ValueConverters {
   implicit def _stringToUndefOrNode(n: String) =
     js.defined(n).asInstanceOf[js.UndefOr[ReactNode]]
 
-  /** Total controversial as well. */
-  implicit def _undefOrObjectToNull(n: js.UndefOr[Object]) = n.getOrElse(null).asInstanceOf[ReactNode]
+  /** Totally controversial as well. */
+  //implicit def _undefOrObjectToNull(n: js.UndefOr[Object]) = n.getOrElse(null).asInstanceOf[ReactNode]
 
   // controversial but highly useful for classname-like arguments.
   implicit def _optionStringToUndefOrString(n: Option[String]): js.UndefOr[String] = n.orUndefined

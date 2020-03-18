@@ -40,13 +40,16 @@ class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
 
 /**
  * Create a tag that takes type non-native JS traits. This is a "factory" for
- * the standard html tags, which are typically lowercase. You can find
- * shortcuts for all the standard html tags in `vdom.tags`.
+ * the standard html tags, which are typically lowercase.
  */
 class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) { self =>
 
   /** Properties and and maybe children. */
   def apply(attrs: P)(children: ReactNode*): ReactDOMElement =
+    react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
+
+  /** Create an element by explicitly indicating the props. */
+  def withProps(attrs: P)(children: ReactNode*): ReactDOMElement =
     react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
 
   /** Only children, no props. */

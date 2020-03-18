@@ -3,5 +3,5 @@
 -Xmx8G
 -Dsun.reflect.inflationThreshold=50
 -XX:+UnlockExperimentalVMOptions
--XX:+EnableJVMCI
--XX:+UseJVMCINativeLibrary
+#-XX:+EnableJVMCI
+#-XX:+UseJVMCINativeLibrary

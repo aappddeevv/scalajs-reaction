@@ -121,6 +121,7 @@ lazy val root = project
     express,
     //examples,
     //docs,
+	//`react-macros`
   )
 
 lazy val `react` = project
@@ -230,17 +231,13 @@ lazy val dataValidationJS = project
 //lazy val dataValidationJS = dataValidation.js
 //lazy val dataValidationJVM = dataValidation.jvm
 
-// lazy val `react-macros` = project
-//   .settings(libsettings)
-//   .settings(publishSettings)
-//   .enablePlugins(ScalaJSPlugin)
-//   .settings(macroSettings)
-//   .settings(
-//     description := "Helpful macros.",
-//     libraryDependencies ++= Seq(
-//       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
-//       "org.scalameta" %% "scalameta" % "1.8.0" // old version required
-//     ))
+lazy val `react-macros` = project
+   .enablePlugins(ScalaJSPlugin)
+   .settings(
+     description := "Small but helpful macros.",
+     libraryDependencies ++= Seq(
+       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+     ))
 
 lazy val `prop-types` = project
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -405,4 +402,10 @@ val npmRunDemo = taskKey[Unit]("fastOptJS then run webpack server")
 npmRunDemo := {
   (fastOptJS in (examples, Compile)).value
   "npm run examples:dev:start" !
+}
+
+val dump = taskKey[Unit]("dump classpath that I need")
+dump := {
+  val cp = (examples / Compile / dependencyClasspath).value
+  println(s"""${cp.map(_.data).mkString(" ")}""")
 }

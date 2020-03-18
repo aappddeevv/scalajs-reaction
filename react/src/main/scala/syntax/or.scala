@@ -19,23 +19,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-// This entire package was copied from: https://github.com/eldis/scalajs-react and that Copyright applies.
-
 package react
 
-import scalajs.js
+import scala.scalajs.js
+import js.|
 
-/**
- * Simple vdom. There are two styles, one with list of attributes like many
- * other scalajs react bindings.  The preferred approach is using typed traits
- * (subclasses of js.Objects) so that properties presence/absence can be
- * checked.
- */
-package object vdom extends vdom.Events {
+/** The "combine" methods are all shallow merges, this may not be what you want. */
+final case class JsOrOps[A,B](o: A|B) {
+  def pickLeft                                  = o.asInstanceOf[A]
+  def pickRight = o.asInstanceOf[B]
+}
 
-  /** Create tag that takes a list of attributes. */
-  @inline def tag(name: String): Tag = new Tag(name)
-
-  /** Create a tag that takes a typed js.Object. */
-  @inline def tagt[P <: js.Object](name: String): TagT[P] = new TagT[P](name)
+trait OrSyntax {
+  implicit def jsOrSyntax[A,B](a: A|B)    = new JsOrOps(a)
 }

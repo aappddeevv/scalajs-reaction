@@ -464,8 +464,6 @@ trait tags {
 
 }
 
-object tags extends tags
-
 /**
  * Mostly handlers for DOM nodes.
  */

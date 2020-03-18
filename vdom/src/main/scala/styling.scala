@@ -95,6 +95,34 @@ trait FontFace extends RawFontStyle {
   var fontFeatureSetting: js.UndefOr[String] = js.undefined
 }
 
+@js.native
+abstract trait BoxSizing extends js.Any
+object BoxSizing { 
+   val borderBox = "border-box".asInstanceOf[BoxSizing]
+   val contentBox = "content-box".asInstanceOf[BoxSizing]
+}
+
+/** No safe/unsafe. */
+@js.native
+abstract trait JustifyContent extends js.Any 
+object JustifyContent {
+  val flexStart = "flex-start".asInstanceOf[JustifyContent]
+  val flexEnd = "flex-end".asInstanceOf[JustifyContent]
+  val center = "center".asInstanceOf[JustifyContent]
+  val spaceBetween = "space-between".asInstanceOf[JustifyContent]
+  val spaceAround = "space-around".asInstanceOf[JustifyContent]
+  val spaceEvenly = "space-evenly".asInstanceOf[JustifyContent]
+  val start = "start".asInstanceOf[JustifyContent]
+  val end = "end".asInstanceOf[JustifyContent]
+  val left = "left".asInstanceOf[JustifyContent]
+  val right = "right".asInstanceOf[JustifyContent]
+}
+
+@js.native
+abstract trait AlignItems extends js.Any
+object AlignItems {
+}
+
 /**
  * Use to create a mildly useful style object. It won't typecheck the values themselves but
  * it will check the field themselves to ensure they are valid.
@@ -272,7 +300,7 @@ trait RawStyleBase extends RawFontStyle {
 
   /* Flexible Box Layout - CR */
   var alignContent: js.UndefOr[String]     = js.undefined
-  var alignItems: js.UndefOr[String]       = js.undefined
+  var alignItems: js.UndefOr[String|AlignItems]       = js.undefined
   var alignSelf: js.UndefOr[String]        = js.undefined
   var flex: js.UndefOr[String]             = js.undefined
   var flexBasis: js.UndefOr[String]        = js.undefined
@@ -281,7 +309,7 @@ trait RawStyleBase extends RawFontStyle {
   var flexGrow: js.UndefOr[String | Int]   = js.undefined
   var flexShrink: js.UndefOr[String | Int] = js.undefined
   var flexWrap: js.UndefOr[String]         = js.undefined
-  var justifyContent: js.UndefOr[String]   = js.undefined
+  var justifyContent: js.UndefOr[String|JustifyContent]   = js.undefined
   var order: js.UndefOr[String]            = js.undefined
 
   /* Text Decoration Level 3 - CR */
@@ -350,7 +378,7 @@ trait RawStyleBase extends RawFontStyle {
   /* breakBefore - already defined by Multi-column Layout */
   /* breakInside - already defined by Multi-column Layout */
   /* Basic User Interface Level 3 - CR */
-  var boxSizing: js.UndefOr[String]     = js.undefined
+  var boxSizing: js.UndefOr[String|BoxSizing]     = js.undefined
   var caretColor: js.UndefOr[String]    = js.undefined
   var navDown: js.UndefOr[String]       = js.undefined
   var navLeft: js.UndefOr[String]       = js.undefined

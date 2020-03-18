@@ -27,7 +27,10 @@ import org.scalajs.dom
 
 import react._
 
-/** scala.js entry point of react-dom but using reason-react API. */
+/** scala.js entry point of react-dom. There may be functions here that are only present
+ *  on experimental builds of react. The functions `renderToElementWithId`,
+ *  `createPortalInElementWithId`, and `render` should always be available.
+ */
 package object react_dom {
 
   /** Render into the DOM given an element id. */
@@ -39,9 +42,7 @@ package object react_dom {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[Throwable, Unit]](
       Left(new Exception(s"No element with id $id found in the HTML."))
-    )(
-      htmlel => Right(ReactDOMJS.render(el, htmlel, cb.orUndefined.map(js.Any.fromFunction0(_))))
-    )
+    )(htmlel => Right(ReactDOMJS.render(el, htmlel, cb.orUndefined.map(js.Any.fromFunction0(_)))))
   }
 
   /** Render the DOM given an element id using react's portal. */
@@ -53,25 +54,34 @@ package object react_dom {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[Throwable, ReactPortal]](
       Left(new Exception(s"No element with id $id found in the HTML."))
-    )(
-      htmlel => Right(ReactDOMJS.createPortal(node, htmlel, key.orUndefined))
-    )
+    )(htmlel => Right(ReactDOMJS.createPortal(node, htmlel, key.orUndefined)))
   }
 
-  /** Render using concurrent mode. */
+  /** Render using concurrent mode. Left is an error message and right is a render function. */
   def createRoot(id: String): Either[String, ReactNode => Unit] = {
     val target = Option(dom.document.getElementById(id))
-    target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(
-      htmlel => Right(ReactDOMJS.createRoot(htmlel).render(_))
+    target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(htmlel =>
+      Right(ReactDOMJS.createRoot(htmlel).render(_))
     )
   }
 
-  /** Not sure what this is. */
   def createSyncRoot(id: String): Either[String, ReactNode => Unit] = {
     val target = Option(dom.document.getElementById(id))
-    target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(
-      htmlel => Right(ReactDOMJS.createSyncRoot(htmlel).render(_))
+    target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(htmlel =>
+      Right(ReactDOMJS.createSyncRoot(htmlel).render(_))
     )
   }
+
+  def render(node: ReactNode, target: dom.Element) = ReactDOMJS.render(node, target)
+
+  def renderCB(node: ReactNode, target: dom.Element, cb: js.Function0[Unit]) =
+    ReactDOMJS.render(node, target, cb)
+
+  def hydrate(element: dom.html.Element, container: dom.html.Element, done: js.Function0[Unit]) =
+    ReactDOMJS.hydrate(element, container, done)
+
+  def unmountComponentAtNode(el: dom.Element): Boolean = ReactDOMJS.unmountComponentAtNode(el)
+
+  def findDOMNode(componentOrElement: js.Any): dom.Element = ReactDOMJS.findDOMNode(componentOrElement)
 
 }
