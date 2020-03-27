@@ -38,7 +38,7 @@ import fabric.styling._
 object Icon {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Icon", "Icon")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   trait IIcon extends js.Object {}
 
@@ -68,7 +68,7 @@ object Icon {
   object Image {
     @js.native
     @JSImport("office-ui-fabric-react/lib/Icon", "ImageIcon")
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     trait Props extends HTMLAttributes[dom.html.Element] {
       var iconName: js.UndefOr[String] = js.undefined
@@ -80,7 +80,7 @@ object Icon {
   object Font {
     @js.native
     @JSImport("office-ui-fabric-react/lib/Icon", "FontIcon")
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     trait Props extends HTMLAttributes[dom.html.Element] {
       var imageProps: Image.Props

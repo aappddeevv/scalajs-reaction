@@ -35,7 +35,7 @@ import vdom._
 object MarqueeSelection {
   @js.native
   @JSImport("office-ui-fabric-react/lib/MarqueeeSelection", "MarqueeSelection")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
     createElement(JS, props)(children: _*)

@@ -38,7 +38,7 @@ import fabric.styling._
 object Persona {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Persona", "Persona")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 
@@ -196,7 +196,7 @@ object Persona {
   object Coin {
     @js.native
     @JSImport("office-ui-fabric-react/lib/Persona", "PersonaCoin")
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     def apply(props: Props = null) = createElement0(JS, props)
 

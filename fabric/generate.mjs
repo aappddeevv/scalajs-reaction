@@ -4,6 +4,7 @@ import { default as styling } from "@uifabric/styling";
 import { default as fs } from "fs"
 //import { ResponsiveMode } from "office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode"
 //import { ResponsiveMode } from "office-ui-fabric-react/lib/utilities/decorators/withResponsiveMode"
+//import { IconNames } from "@uifabric/icons"
 
 export const log = (str) => console.log(str)
 
@@ -12,6 +13,10 @@ export const native_trait = str =>
 
 export const with_trait = (str, thunk) => {
   return native_trait(str) + "\n" + thunk() + "\n}\n\n";
+};
+
+export const with_module = (str, thunk) => {
+  return `object ${str} {\n` + thunk() + "\n}\n\n";
 };
 
 export function write(f, thunk) {
@@ -144,6 +149,14 @@ export const responsive = () => {
   })
 }
 
+// IconNames was deprecated
+// export const iconnames = () => {
+//   return with_module("IconNames", () => {
+//     return Object.entries(IconNames).map(s => {
+//       return `val ${s[0]}: String = "${s[1]}"`
+//     }).join("\n")
+//   })
+// }
 
 // run everything
 const styles1 = "src/main/scala/styling/styling_styles.scala"
@@ -180,6 +193,13 @@ fs.closeSync(out3)
 // write(out4, () => `package fabric\npackage components\nimport scala.scalajs.js\n`)
 // write(out4, responsive)
 // fs.closeSync(out4)
+
+// const styles5 = "src/main/scala/icons/icons_generated.scala"
+// const out5 = fs.openSync(styles5, "w")
+// write(out5, () => `package fabric\npackage icons\nimport scala.scalajs.js\n`)
+// write(out5, iconnames)
+// fs.closeSync(out5)
+
 
 
 

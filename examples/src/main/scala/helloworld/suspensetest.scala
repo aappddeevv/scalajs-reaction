@@ -214,15 +214,15 @@ object SuspenseTest {
   @JSImport("Assets/SuspenseParent", JSImport.Namespace)
   object SuspenseParentNS extends js.Object {
     @JSName("SuspenseParent")
-    val SuspenseParentJS: ReactJsComponent = js.native
+    val SuspenseParentJS: ReactJSComponent = js.native
     val X: DynamicImportThunk              = js.native
     @JSName("SuspenseChild") // this has React.lazy
-    val SuspenseChildJS: ReactJsComponent = js.native
+    val SuspenseChildJS: ReactJSComponent = js.native
   }
 
   @js.native
   @JSImport("Assets/SuspenseChild", JSImport.Default)
-  object SuspenseChildJS extends ReactJsComponent
+  object SuspenseChildJS extends ReactJSComponent
 
   trait SProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined

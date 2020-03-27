@@ -34,7 +34,7 @@ object Dropdown {
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/Dropdown", "Dropdown")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

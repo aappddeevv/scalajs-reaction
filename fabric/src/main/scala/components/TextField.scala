@@ -38,7 +38,7 @@ object TextField {
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/TextField", "TextField")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElement(JS, props)(children: _*)

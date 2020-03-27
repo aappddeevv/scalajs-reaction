@@ -39,7 +39,7 @@ object Sidebar {
 
   @js.native
   @JSImport("@uifabric/experiments/lib/Sidebar", "Sidebar")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

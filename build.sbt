@@ -28,6 +28,7 @@ val commonScalacOptions = Seq(
   //"-Ywarn-unused:imports,locals",
   "-Xlint:infer-any",
   "-Yrangepos"
+,"-Ymacro-annotations"
 )
 
 lazy val jsSettings = Seq(
@@ -137,7 +138,7 @@ lazy val native = project
 
 lazy val msal = project
   .in(file("components/msal"))
-  .settings(std_settings("msal", "Microsoft Authentication Library msal"))
+  .settings(std_settings("azure.msal", "Microsoft Authentication Library msal"))
   .settings(buildinfo_settings("msal"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
@@ -208,6 +209,17 @@ lazy val `react-native-elements` = project
   .dependsOn(react, native)
   .enablePlugins(ScalaJSPlugin)
 
+lazy val loglevel = project.in(file("components/loglevel"))
+.settings(std_settings("loglevel", "loglevel library"))
+.settings(buildinfo_settings("loglevel"))
+.enablePlugins(ScalaJSPlugin)
+
+lazy val whydidyourender = project.in(file("components/whydidyourender"))
+.settings(std_settings("whydidirender", "Why Did I Render library"))
+.settings(buildinfo_settings("whydidirender"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
 // jvm and js based project
 // lazy val dataValidation =
 //   crossProject(JSPlatform, JVMPlatform)
@@ -232,8 +244,9 @@ lazy val dataValidationJS = project
 //lazy val dataValidationJVM = dataValidation.jvm
 
 lazy val `react-macros` = project
-   .enablePlugins(ScalaJSPlugin)
+   //.enablePlugins(ScalaJSPlugin)
    .settings(
+     scalacOptions ++= Seq("-Ymacro-annotations","-language:experimental.macros"),
      description := "Small but helpful macros.",
      libraryDependencies ++= Seq(
        "org.scala-lang" % "scala-reflect" % scalaVersion.value,
@@ -263,7 +276,7 @@ lazy val `react-redux` = project
   .settings(std_settings("react-redux", "redux via react-redux."))
   .settings(buildinfo_settings("react_redux"))
 
-lazy val helmet = project
+lazy val helmet = project.in(file("components/helmet"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom)
   .settings(std_settings("helmet", "react-helmet"))
@@ -277,7 +290,9 @@ lazy val apollo = project
 
 lazy val fabric = project
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom)
+  .dependsOn(react, vdom, 
+	`react-macros`
+  )
   .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
   .settings(buildinfo_settings("fabric"))
 
@@ -364,6 +379,7 @@ lazy val docs = project
     `prop-types`,
     bootstrap,
     mui,
+    `react-macros`,
     //router,
     `react-big-calendar`,
     `react-native-nativebase`,
@@ -378,7 +394,9 @@ lazy val docs = project
     dataValidationJS,
     msal,
     mssql,
-    express
+    express,
+    loglevel,
+    whydidyourender
 )
 
 addCommandAlias("prepare", "headerCreate; fix; fmt")

@@ -46,7 +46,7 @@ trait DeferredValueConfig extends js.Object {
 }
 
 @js.native
-private[react] trait Concurrent extends js.Object {
+trait Concurrent extends js.Object {
   def useTransition(config: TransitionConfig): js.Tuple2[js.Any, js.Any]   = js.native
   def useDeferredValue(value: js.Any, config: DeferredValueConfig): js.Any = js.native
   val SuspenseList: ReactJsComponent                                       = js.native
@@ -54,7 +54,7 @@ private[react] trait Concurrent extends js.Object {
 }
 
 @js.native
-private[react] trait ReactJS extends js.Object with Concurrent {
+trait ReactJS extends js.Object with Concurrent {
 
   val Children: Children = js.native
 
@@ -141,7 +141,7 @@ object EffectArg {
 }
 
 @js.native
-private[react] trait Hooks extends js.Object {
+trait Hooks extends js.Object {
 
   // expose imperative code on ref.current
   def useImperativeHandle[T, R <: js.Object](
@@ -183,7 +183,19 @@ private[react] trait Hooks extends js.Object {
   def useLayoutEffect(didUpdate: js.Any, dependencies: Dependencies | Unit): Unit = js.native
 }
 
-/** Public access to react API. */
 @js.native
 @JSImport("react", JSImport.Namespace)
 private[react] object ReactJS extends ReactJS with Hooks
+
+/** The module "object" that you import when you use react. */
+@js.native
+trait ReactModule extends js.Object 
+
+/** A publically accessible react namespace import for those
+ *  interop scenarios where you need this. There are no
+ *  scala visible methods, etc.
+ */
+@js.native
+@JSImport("react", JSImport.Namespace)
+object ReactPublic extends ReactModule 
+

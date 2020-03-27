@@ -90,7 +90,7 @@ object Main {
     Stylesheet.getInstance.setConfig(new IStylesheetConfig {
       injectionMode = InjectionMode.appendChild
     })
-    uifabric_icons.initializeIcons()
+    fabric.icons.initializeIcons()
     val myjss = jss.create(jss.jssPreset())
 
     // init message for store, although it does not do anything :-)

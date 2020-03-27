@@ -33,7 +33,7 @@ import fabric.styling._
 object Spinner {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Spinner", "Spinner")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

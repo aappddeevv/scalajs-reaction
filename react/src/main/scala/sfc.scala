@@ -25,8 +25,7 @@ import scala.scalajs.js
 import js.|
 
 /**
- * A functional component with zero arguments.  You can export the `.run`
- * function for use in reactjs.
+ * A functional component with zero arguments.  
  */
 class SFC0(val run: js.Function0[ReactNode]) {
 
@@ -44,6 +43,10 @@ object SFC0 {
  * component, you can also call `react.createElement` on `run` directly becauseq it is
  * considered a function component by reactjs.
  *
+ * If you want to modify the instance prior to props being applied, you can
+ * use scala 2.13's tap method (for example): 
+ * `def apply[T](..) = sfc[T].tap{c => ...}.apply(props)`.
+ *
  * @tparam P Props type.
  */
 class SFC1[P <: js.Object](val run: SFC1.RunArg[P]) {
@@ -52,7 +55,7 @@ class SFC1[P <: js.Object](val run: SFC1.RunArg[P]) {
   def apply(props: P) = toEl(props)
 
   /** Create a reactjs component given some dynamic props. Experts only! */
-  def apply(props: js.Dynamic) = toEl(props.asInstanceOf[P])
+  def unsafeApply(props: js.Dynamic) = toEl(props.asInstanceOf[P])
 
   /** Create an reactjs component directly from this SFC. */
   def toEl(props: P): ReactElement = ReactJS.createElement(run, props)
@@ -86,4 +89,26 @@ object SFCWithRef {
    * `createRef`.
    */
   def apply[P <: js.Object, R](f: (P, Ref[R]) => ReactElement) = new SFCWithRef[P, R](f)
+}
+
+/** Simple boilerplate helper. Saves you 3 LOC but enforces a pattern
+  * when defining react components as modules. If your component takes
+  * a type parameter just write out the component as you normally would.
+  */
+trait FC1 { self =>
+  val NAME = self.getClass.getName
+  type Props <: js.Object
+  def render(props: Props): ReactNode
+  def apply(props: Props) = sfc(props)
+  val sfc                 = SFC1[Props]{ props => useDebugValue(NAME); render(props)}
+}
+
+/** Simple boilerplace helper. Saves you 3 LOC but enforces a pattern
+ *  when defining react components as modules.
+ */
+trait FC0 { self =>
+  val NAME = self.getClass.getName
+  def render(): ReactNode
+  def apply() = sfc
+  val sfc = SFC0 { useDebugValue(NAME); render() }
 }

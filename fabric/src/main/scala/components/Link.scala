@@ -37,7 +37,7 @@ import fabric.styling._
 object Link {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Link", "Link")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElement(JS, props)(children: _*)

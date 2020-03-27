@@ -27,17 +27,17 @@ trait AnyOps[T] {
   def a: T
 
   /** If T is js.Any, this may be redundent. */
-  def asJsAny: js.Any           = a.asInstanceOf[js.Any]
-  def asJsObj: js.Object        = a.asInstanceOf[js.Object]
-  def asDyn: js.Dynamic         = a.asInstanceOf[js.Dynamic]
-  def asString: String          = a.asInstanceOf[String]
-  def asNumber: Number          = a.asInstanceOf[Number]
-  def asInt: Int                = a.asInstanceOf[Int]
-  def asDouble: Double          = a.asInstanceOf[Double]
-  def asBoolean: Boolean        = a.asInstanceOf[Boolean]
+  def asJsAny: js.Any = a.asInstanceOf[js.Any]
+  def asJsObj: js.Object = a.asInstanceOf[js.Object]
+  def asDyn: js.Dynamic = a.asInstanceOf[js.Dynamic]
+  def asString: String = a.asInstanceOf[String]
+  def asNumber: Number = a.asInstanceOf[Number]
+  def asInt: Int = a.asInstanceOf[Int]
+  def asDouble: Double = a.asInstanceOf[Double]
+  def asBoolean: Boolean = a.asInstanceOf[Boolean]
   def asJsArray[A]: js.Array[A] = a.asInstanceOf[js.Array[A]]
-  def asJson: String            = js.JSON.stringify(a.asInstanceOf[js.Object])
-  def toStringJs                = a.asInstanceOf[js.Any].toString()
+  def asJson: String = js.JSON.stringify(a.asInstanceOf[js.Object])
+  def toStringJs = a.asInstanceOf[js.Any].toString()
 
   /** Internal null values become undefined. */
   def filterNull = toNonNullUndefOr
@@ -57,16 +57,16 @@ trait AnyOps[T] {
   def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
 
   /**
-   * Wow, a mouthful! If its a javascript truthy=true, its defined, otherwise
-   * undef. Takes into account 0, "" and [] javascript idioms i.e. takes into account
-   * the FP zero.
-   * @example {{{
-   *  val s = "" // s.toTruthyUndefOr[String] => js.undefined
-   *  val s = "blah" // s.toTurthyUndefOr[String] => defined "blah"
-   *  val n = 0  // n.toTruthyUndefOr[Int] => js.undefined
-   *  val n1 = 1 // n1.toTruthyUndefOr[Int] => defined 1
-   * }}}
-   */
+    * Wow, a mouthful! If its a javascript truthy=true, its defined, otherwise
+    * undef. Takes into account 0, "" and [] javascript idioms i.e. takes into account
+    * the FP zero.
+    * @example {{{
+    *  val s = "" // s.toTruthyUndefOr[String] => js.undefined
+    *  val s = "blah" // s.toTurthyUndefOr[String] => defined "blah"
+    *  val n = 0  // n.toTruthyUndefOr[Int] => js.undefined
+    *  val n1 = 1 // n1.toTruthyUndefOr[Int] => defined 1
+    * }}}
+    */
   def toTruthyUndefOr: js.UndefOr[T] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
     else js.undefined
@@ -80,12 +80,13 @@ trait JsAnySyntax {
 }
 
 /**
- * Intended for directly mapped scala types, not scala.Any in general. Know what
- * you are doing!!! Very dangerous!
- */
+  * Intended for directly mapped scala types, not scala.Any in general. Know what
+  * you are doing!!! Very dangerous!
+  */
 final class ScalaMappedOps[T <: scala.Any](val a: T) extends AnyOps[T] {
   ///** Very dangerous! You should know what you are doing. */
-  //@inline def asJsAny: js.Any = a.asInstanceOf[js.Any]
+  @inline def unsafeAsJsAny = a.asInstanceOf[js.Any]
+  @inline def unsafeAsJsObject = a.asInstanceOf[js.Object]
 }
 
 trait ScalaMappedSyntax {

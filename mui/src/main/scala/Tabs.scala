@@ -63,7 +63,7 @@ object Tabs {
     var component: js.UndefOr[String]                                         = js.undefined
     var fullWidth: js.UndefOr[Boolean]                                        = js.undefined
     var indicatorColor: js.UndefOr[IndicatorColor]                            = js.undefined
-    var onChange: js.UndefOr[js.Function2[ReactEvent[html.Input], Int, Unit]] = js.undefined
+    var onChange: js.UndefOr[js.Function2[ReactEvent[org.scalajs.dom.html.Input], Int, Unit]] = js.undefined
     var scrollable: js.UndefOr[Boolean]                                       = js.undefined
     var scrollButtons: js.UndefOr[ScrollButtons]                              = js.undefined
     var textColor: js.UndefOr[Tab.TextColor]                                  = js.undefined

@@ -334,7 +334,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
   }
 
   def apply(props: Props)(c: FormProps => ReactNode): ReactElement =
-    sfc(props.combineDynamic(jsobj("children" -> c)).asDyn)
+    sfc.unsafeApply(props.combineDynamic(jsobj("children" -> c)).asDyn)
 
   val sfc = SFC1[PropsWithChildren] { props =>
     useDebugValue(Name)

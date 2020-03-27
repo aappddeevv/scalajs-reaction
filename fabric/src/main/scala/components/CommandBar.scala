@@ -39,7 +39,7 @@ object CommandBar {
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/CommandBar", "CommandBar")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props) = createElement0(JS, props)
 

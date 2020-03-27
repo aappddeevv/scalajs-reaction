@@ -157,13 +157,15 @@ package object react extends react.React {
     def ref[E]: UndefOr[RefCb[E]] = js.undefined
   }
 
-  /** Use this instead of ReactPropsJs. */
+  /** Use this instead of ReactPropsJs. But! you should probably should be 
+ *  using `MaybeHasStrKey`
+ */
   trait ReactJSProps extends js.Object {
     var key: UndefOr[KeyType]     = js.undefined
     def ref[E]: UndefOr[RefCb[E]] = js.undefined
   }
 
-  /** Option key, which must be a string. */
+  /** Optional key but no ref. Key must be a string. */
   trait MaybeHasStrKey extends js.Object {
     var key: js.UndefOr[String] = js.undefined
   }

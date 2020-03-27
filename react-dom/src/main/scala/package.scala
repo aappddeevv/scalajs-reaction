@@ -41,8 +41,16 @@ package object react_dom {
   ): Either[Throwable, Unit] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[Throwable, Unit]](
-      Left(new Exception(s"No element with id $id found in the HTML."))
+      Left(new Exception(s"Element with id $id not found."))
     )(htmlel => Right(ReactDOMJS.render(el, htmlel, cb.orUndefined.map(js.Any.fromFunction0(_)))))
+  }
+
+  /* Render into an elemen given by its id. Prefer this over `renderToElementWithId`. */
+  def renderToElement(id: String, cb: Option[() => Unit]=None): Either[String, ReactNode => Unit] = {
+    Option(dom.document.getElementById(id))
+      .fold[Either[String, ReactNode => Unit]](
+       Left(s"Element with id $id not found.")
+    )(htmlel => Right(node => ReactDOMJS.render(node, htmlel, cb.map(js.Any.fromFunction0(_)).orUndefined)))
   }
 
   /** Render the DOM given an element id using react's portal. */
@@ -53,7 +61,7 @@ package object react_dom {
   ): Either[Throwable, ReactPortal] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[Throwable, ReactPortal]](
-      Left(new Exception(s"No element with id $id found in the HTML."))
+      Left(new Exception(s"Element with id $id not found."))
     )(htmlel => Right(ReactDOMJS.createPortal(node, htmlel, key.orUndefined)))
   }
 

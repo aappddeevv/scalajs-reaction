@@ -32,7 +32,7 @@ object Text {
 
   @js.native
   @JSImport("office-ui-fabric-react", "lib/Text")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props)(text: js.UndefOr[String] = js.undefined) =
     createElement(JS, props)(text.asInstanceOf[ReactNode])

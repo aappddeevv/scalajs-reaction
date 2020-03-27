@@ -31,7 +31,7 @@ import react._
 object Sticky {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Sticky", "Sticky")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElement(JS, props)(children: _*)

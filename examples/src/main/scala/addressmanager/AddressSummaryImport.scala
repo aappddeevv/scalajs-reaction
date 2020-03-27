@@ -34,7 +34,7 @@ import _root_.react._
 @js.native
 @JSImport("JSExamples/AddressSummary", JSImport.Namespace)
 private object AddressSummaryNS extends js.Object {
-  val AddressSummary: ReactJsComponent = js.native
+  val AddressSummary: ReactJSComponent = js.native
 }
 
 object AddressSummary {

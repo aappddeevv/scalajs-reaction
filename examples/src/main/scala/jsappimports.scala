@@ -43,7 +43,7 @@ trait LabelAndChildProps extends js.Object {
 @js.native
 @JSImport("JSExamples/LabelAndChild", JSImport.Namespace)
 object LabelAndChildNS extends js.Object {
-  val LabelAndChild: ReactJsComponent = js.native
+  val LabelAndChild: ReactJSComponent = js.native
 }
 
 object JSAppImports {
@@ -74,7 +74,7 @@ object ActionsNS extends js.Object {
 }
 @js.native
 @JSImport("react-markdown", JSImport.Default)
-object ReactMarkdown extends ReactJsComponent
+object ReactMarkdown extends ReactJSComponent
 
 trait ReactMarkdownProps extends js.Object {
   var source: js.UndefOr[String]    = js.undefined
@@ -88,7 +88,7 @@ object ReactMarkdownC {
 
 @js.native
 @JSImport("react-weather-display", JSImport.Default)
-object ReactWeatherDisplayJS extends ReactJsComponent
+object ReactWeatherDisplayJS extends ReactJSComponent
 
 trait ReactWeatherDisplayProps extends js.Object {
   var width: js.UndefOr[String | Int]  = js.undefined
@@ -133,11 +133,11 @@ object cx extends js.Object {
 @js.native
 @JSImport("react-content-loader", JSImport.Namespace)
 object ReactContentLoader extends js.Object {
-  val BulletList: ReactJsComponent = js.native
-  val List: ReactJsComponent       = js.native
-  val Code: ReactJsComponent       = js.native
-  val Instagram: ReactJsComponent  = js.native
-  val Facebook: ReactJsComponent   = js.native
+  val BulletList: ReactJSComponent = js.native
+  val List: ReactJSComponent       = js.native
+  val Code: ReactJSComponent       = js.native
+  val Instagram: ReactJSComponent  = js.native
+  val Facebook: ReactJSComponent   = js.native
 }
 
 class ReactContentLoaderOptions(

@@ -16,7 +16,7 @@ Here's the API. This is all you need to do:
 object MyComponent {
   trait Props extends js.Object { ... }
   def apply(props: Props) = ...
-  lazy val sfc = SFC1[Props] { props => ... }
+  val sfc = SFC1[Props] { props => ... }
   
   @JSExportTopLevel("MyComponent") // or whatever name you want
   val exported = sfc.run
@@ -27,6 +27,19 @@ initialization order issue with the exported declaration.
 
 The export can be placed anywhere in the code but it was included in the
 Component object for convenience.
+
+If your `Props` takes type parameters, you have to lock the type down
+to create a stable value before exporting:
+
+```scala
+  trait Props[T <: js.Object] ...
+  def apply[T <: js.Object](props: Props[T]) = sfc(props)
+  def sfc[T <: js.Object] = SFC1[Props[T]{ props => ... }
+
+  // Use T type since js does not care
+  @JSExportTopLevel("MyComponent")
+  val exportableJSFuncComponentWithPropsParam = sfc[js.Object].run
+```
 
 ## Exporting from scala.js and javascript bundling
 

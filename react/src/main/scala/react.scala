@@ -190,8 +190,7 @@ trait React {
       else dependencies.toJSArray
     )
 
-  /** Memoize a lazy value. Set on mounting. */
-  def useMemoMounting[T](value: () => T): T = ReactJS.useMemo[T](value, ())
+  def useMemoMounting[T](value: () => T): T = ReactJS.useMemo[T](value, emptyDependencies)
 
   def useDebugValue[T](value: T): Unit =
     ReactJS.useDebugValue[T](value, js.undefined)
@@ -199,8 +198,8 @@ trait React {
   def useDebugValue[T](value: T, format: T => String): Unit =
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
-  def useCallback[T](callback: js.Function0[T]): js.Function0[T] =
-    ReactJS.useCallback(callback, undefinedDependencies).asInstanceOf[js.Function0[T]]
+  def useCallbackMounting[T](callback: js.Function0[T]): js.Function0[T] =
+    ReactJS.useCallback(callback, emptyDependencies).asInstanceOf[js.Function0[T]]
 
   def useCallback[T](dependencies: Dependencies | Unit)(callback: js.Function0[T]): js.Function0[T] =
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
@@ -214,8 +213,8 @@ trait React {
       )
       .asInstanceOf[js.Function0[T]]
 
-  def useCallback[A1, T](callback: A1 => T): js.Function1[A1, T] =
-    ReactJS.useCallback(callback, undefinedDependencies).asInstanceOf[js.Function1[A1, T]]
+  def useCallbackMounting[A1, T](callback: A1 => T): js.Function1[A1, T] =
+    ReactJS.useCallback(callback, emptyDependencies).asInstanceOf[js.Function1[A1, T]]
 
   def useCallback[A1, T](dependencies: Dependencies)(callback: js.Function1[A1, T]): js.Function1[A1, T] =
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function1[A1, T]]
@@ -225,9 +224,9 @@ trait React {
       if(dependencies.length==0) undefinedDependencies
       else dependencies.toJSArray).asInstanceOf[js.Function1[A1, T]]
 
-  def useCallback[A1, A2, T](callback: (A1, A2) => T): js.Function2[A1, A2, T] =
+  def useCallbackMounting[A1, A2, T](callback: (A1, A2) => T): js.Function2[A1, A2, T] =
     ReactJS
-      .useCallback(js.Any.fromFunction2[A1, A2, T](callback), undefinedDependencies)
+      .useCallback(js.Any.fromFunction2[A1, A2, T](callback), emptyDependencies)
       .asInstanceOf[js.Function2[A1, A2, T]]
 
   def useCallback[A1, A2, T](dependencies: AllType*)(callback: js.Function2[A1, A2, T]): js.Function2[A1, A2, T] =
@@ -240,9 +239,9 @@ trait React {
   def useCallback[A1, A2, T](dependencies: Dependencies)(callback: js.Function2[A1, A2, T]): js.Function2[A1, A2, T] =
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function2[A1, A2, T]]
 
-  def useCallback[A1, A2, A3, T](callback: (A1, A2, A3) => T): js.Function3[A1, A2, A3, T] =
+  def useCallbackMounting[A1, A2, A3, T](callback: (A1, A2, A3) => T): js.Function3[A1, A2, A3, T] =
     ReactJS
-      .useCallback(js.Any.fromFunction3[A1, A2, A3, T](callback), undefinedDependencies)
+      .useCallback(js.Any.fromFunction3[A1, A2, A3, T](callback), emptyDependencies)
       .asInstanceOf[js.Function3[A1, A2, A3, T]]
 
   def useCallback[A1, A2, A3, T](dependencies: Dependencies)(callback: (A1, A2, A3) => T): js.Function3[A1, A2, A3, T] =
@@ -259,9 +258,9 @@ trait React {
       )
       .asInstanceOf[js.Function3[A1, A2, A3, T]]
 
-  def useCallback[A1, A2, A3, A4, T](callback: (A1, A2, A3, A4) => T): js.Function4[A1, A2, A3, A4, T] =
+  def useCallbackMounting[A1, A2, A3, A4, T](callback: (A1, A2, A3, A4) => T): js.Function4[A1, A2, A3, A4, T] =
     ReactJS
-      .useCallback(js.Any.fromFunction4[A1, A2, A3, A4, T](callback), undefinedDependencies)
+      .useCallback(js.Any.fromFunction4[A1, A2, A3, A4, T](callback), emptyDependencies)
       .asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
 
   def useCallback[A1, A2, A3, A4, T](
@@ -282,9 +281,9 @@ trait React {
       )
       .asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
 
-  def useCallback[A1, A2, A3, A4, A5, T](callback: (A1, A2, A3, A4, A5) => T): js.Function5[A1, A2, A3, A4, A5, T] =
+  def useCallbackMounting[A1, A2, A3, A4, A5, T](callback: (A1, A2, A3, A4, A5) => T): js.Function5[A1, A2, A3, A4, A5, T] =
     ReactJS
-      .useCallback(js.Any.fromFunction5[A1, A2, A3, A4, A5, T](callback), undefinedDependencies)
+      .useCallback(js.Any.fromFunction5[A1, A2, A3, A4, A5, T](callback), emptyDependencies)
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
   def useCallback[A1, A2, A3, A4, A5, T](
@@ -331,7 +330,7 @@ trait React {
   def useDeferredValue[T](value: T, config: DeferredValueConfig): T =
     ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
 
-  val Children = ReactJS.Children
+  //val Children = ReactJS.Children
 
   /** Create a React.fragment element. */
   object Fragment {

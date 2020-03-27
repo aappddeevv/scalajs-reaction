@@ -62,7 +62,7 @@ object Radio {
     var inputProps: js.UndefOr[js.Object]                                         = js.undefined
     var inputRef: js.UndefOr[js.Any]                                              = js.undefined
     var key: js.UndefOr[String]                                                   = js.undefined
-    var onChange: js.UndefOr[js.Function2[ReactEvent[html.Input], Boolean, Unit]] = js.undefined
+    var onChange: js.UndefOr[js.Function2[ReactEvent[org.scalajs.dom.html.Input], Boolean, Unit]] = js.undefined
     var style: js.UndefOr[js.Object]                                              = js.undefined
     var `type`: js.UndefOr[String]                                                = js.undefined
     var value: js.UndefOr[js.Any]                                                 = js.undefined

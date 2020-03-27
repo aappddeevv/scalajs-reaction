@@ -26,10 +26,10 @@ import scala.scalajs.js
 import js._
 
 /**
- * A data type commonly found when working with dropdown/labels.
- */
+  * A data type commonly found when working with dropdown/labels.
+  */
 final case class StringIntMiscOrSyntax(a: String | Int) {
-  @inline def asInt: Int       = a.asInstanceOf[Int]
+  @inline def asInt: Int = a.asInstanceOf[Int]
   @inline def asString: String = a.asInstanceOf[String]
 }
 
@@ -64,20 +64,20 @@ trait AllSyntax
     with OrSyntax
 
 object syntax {
-  object all         extends AllSyntax
-  object component   extends ComponentSyntax
-  object value       extends ValueSyntax
-  object jsdynamic   extends JsDynamicSyntax
-  object jsundefor   extends JsUndefOrSyntax
-  object jsobject    extends JsObjectSyntax
-  object jsany       extends JsAnySyntax
-  object scalamapped extends ScalaMappedSyntax
-  object ornull      extends OrNullSyntax
-  object option      extends OptionSyntax
-  object miscor      extends MiscOrSyntax
-  object jsref       extends JsRefSyntax
-  object jspromise   extends JSPromiseSyntax
-  object context     extends ContextSyntax
-  object callback    extends CallbackSyntax
+  object all extends AllSyntax
+  object component extends ComponentSyntax
+  object value extends ValueSyntax
+  object jsdynamic extends JsDynamicSyntax
+  object jsundefor extends JsUndefOrSyntax
+  object jsobject extends JsObjectSyntax
+  object jsany extends JsAnySyntax
+  object scalaany extends ScalaMappedSyntax
+  object ornull extends OrNullSyntax
+  object option extends OptionSyntax
+  object miscor extends MiscOrSyntax
+  object jsref extends JsRefSyntax
+  object jspromise extends JSPromiseSyntax
+  object context extends ContextSyntax
+  object callback extends CallbackSyntax
   object or extends OrSyntax
 }

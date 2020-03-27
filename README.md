@@ -14,6 +14,7 @@ You need to use a react version 16.8+ to make sure that hooks are included. Use 
 The documentation site is being converted to docusaurus v2. Links to the
 demo do not work yet but you can see the demo by cloning the project and running
 `npm i; npm run demo`. API documentation will be added back soon.
+The demo example may not build at the moment but I will fix it shortly.
 
 # Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
@@ -153,34 +154,36 @@ so you may want to use the latest experimental release.
 
 There are many modules available as most of the focus has been on bindings. All of these libraries use the group name `ttg`:
 
-* react 
-* vdom
-* react-dom
+* apollo
+* bootstrap
+* data-validation
+* express
 * fabric
 * fabric-experiments
-* react-redux
-* prop-types
-* native
+* forms: Advanced, all-scala.js forms package.
+* helmet
+* jss
+* loglevel
+* msal
+* mssql
 * mui
-* bootstrap
+* native
+* pathtoregexp
+* prop-types
+* react
+* react-dom
 * react-big-calendar
 * react-native-nativebase
 * react-native-elements
 * react-navigation
 * react-native-sideswipe
-* jss
-* forms: Advanced, all-scala.js forms package.
-* data-validation
+* react-redux
 * react-helmet
-* express
-* apollo 
-* helmet
 * react-flexbox-grid
 * react-router-dom
 * router: Homegrown router. Just use react-router-dom.
-* msal
-* mssql
-* pathtoregexp
+* vdom
+* whydidyourender
 
 Some of the external libs have just enough scala.js to write an app with but
 they are not fully fleshed out. In most cases, there are enhancements
@@ -196,6 +199,9 @@ collisions.
 In many cases, the full package label has been dramatically shortened
 to make it easier to import the content you need. The package names
 closely mirror the javascript libraries themselves.
+
+You will most likely also need DOM bindings. Here's a link to the api
+for org.scala-js scalajs-dom bindings: [![javadoc](https://javadoc.io/badge2/org.scala-js/scalajs-dom_sjs1_2.13/javadoc.svg)](https://javadoc.io/doc/org.scala-js/scalajs-dom_sjs1_2.13).
 
 # Documentation
 

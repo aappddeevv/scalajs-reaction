@@ -26,7 +26,7 @@ import scala.scalajs.js
 
 import js.annotation._
 
-/** Import through office-ui-fabric-react/lib/Utilities => @uifabric/utilities crazy !. */
+/** Import through office-ui-fabric-react/lib/Utilities => @uifabric/utilities crazy! . */
 @js.native
 @JSImport("office-ui-fabric-react/lib/Utilities", JSImport.Namespace)
 object Utilities extends fabric.utilities.module_base

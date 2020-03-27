@@ -5,3 +5,6 @@
 -XX:+UnlockExperimentalVMOptions
 #-XX:+EnableJVMCI
 #-XX:+UseJVMCINativeLibrary
+-XX:+UseZGC
+-XX:-ZUncommit
+

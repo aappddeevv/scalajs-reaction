@@ -37,7 +37,7 @@ import fabric.styling._
 object Toggle {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Toggle", "Toggle")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

@@ -52,7 +52,7 @@ object FocusTrapZone {
 
   @js.native
   @JSImport("office-ui-fabric-react", "lib/FocusTrapZone")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
     createElement(JS, props)(children: _*)

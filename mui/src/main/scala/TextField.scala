@@ -80,9 +80,9 @@ object TextField {
     var margin: js.UndefOr[Margin]                                   = js.undefined
     var multiline: js.UndefOr[Boolean]                               = js.undefined
     var name: js.UndefOr[String]                                     = js.undefined
-    var onBlur: js.UndefOr[FocusEventHandler[html.Input]]            = js.undefined
+    var onBlur: js.UndefOr[FocusEventHandler[org.scalajs.dom.html.Input]]            = js.undefined
     var onChange: js.UndefOr[scalajs.js.Function1[js.Dynamic, Unit]] = js.undefined
-    var onFocus: js.UndefOr[FocusEventHandler[html.Input]]           = js.undefined
+    var onFocus: js.UndefOr[FocusEventHandler[org.scalajs.dom.html.Input]]           = js.undefined
     var placeholder: js.UndefOr[String]                              = js.undefined
     var required: js.UndefOr[Boolean]                                = js.undefined
     var rows: js.UndefOr[js.Any]                                     = js.undefined

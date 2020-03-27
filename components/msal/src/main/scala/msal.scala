@@ -59,19 +59,60 @@ object AuthorityType {
 }
 
 @js.native
-trait AuthError extends js.Error {
-  val errorCode: String    = js.native
-  val errorMessage: String = js.native
+@JSImport("@azure/msal", "AuthError")
+class AuthError(val code: String, val errorMessage: js.UndefOr[String] = js.undefined)
+    extends js.Error(errorMessage.getOrElse("<no message>"))
+
+@js.native
+@JSImport("@azure/msal", "AuthError")
+object AuthError extends js.Object {
+  def createUnexpectedError(desc: String): AuthError     = js.native
+  def createNoWindowObjectError(desc: String): AuthError = js.native
 }
 
 @js.native
-trait ClientAuthError extends AuthError
+@JSImport("@azure/msal", "ClientAuthError")
+class ClientAuthError(code: String, message: js.UndefOr[String] = js.undefined)
+    extends AuthError(code, message)
+
 @js.native
-trait ClientConfigurationError extends ClientAuthError
+@JSImport("@azure/msal", "ClientAuthError")
+object ClientAuthError extends js.Object {
+  // add static create functions...
+}
+
 @js.native
-trait ServerError extends AuthError
+@JSImport("@azure/msal", "ClientConfigurationError")
+class ClientConfigurationError(code: String, message: js.UndefOr[String] = js.undefined)
+    extends ClientAuthError(code, message)
+
 @js.native
-trait InteractionRequiredAuthError extends ServerError
+@JSImport("@azure/msal", "ClientConfigurationError")
+object ClientConfigurationError extends js.Object {
+  // static creators...
+}
+
+@js.native
+@JSImport("@azure/msal", "ServerError")
+class ServerError(code: String, message: js.UndefOr[String] = js.undefined)
+    extends AuthError(code, message)
+
+@js.native
+@JSImport("@azure/msal", "ServerError")
+object ServerError extends js.Object {
+  // static creators...
+}
+
+@js.native
+@JSImport("@azure/msal", "InteractionRequiredAuthError")
+class InteractionRequiredAuthError(code: String, message: js.UndefOr[String] = js.undefined)
+    extends ServerError(code, message)
+
+@js.native
+@JSImport("@azure/msal", "InteractionRequiredAuthError")
+object InteractionRequiredAuthError extends js.Object {
+  // static creators...
+}
 
 /** This is really a class, but I do not need to create one so make it a struct. */
 @js.native
@@ -169,9 +210,10 @@ trait SystemOptions extends js.Object {
 }
 
 trait FrameworkOptions extends js.Object {
-  var isAngular: js.UndefOr[Boolean]                                                             = js.undefined
-  var unprotectedResources: js.UndefOr[js.Array[String]]                                         = js.undefined
-  var protectedResourceMap: js.UndefOr[js.Dictionary[js.Array[String]] | js.Dynamic | js.Object] = js.undefined
+  var isAngular: js.UndefOr[Boolean]                     = js.undefined
+  var unprotectedResources: js.UndefOr[js.Array[String]] = js.undefined
+  var protectedResourceMap: js.UndefOr[js.Dictionary[js.Array[String]] | js.Dynamic | js.Object] =
+    js.undefined
 }
 
 trait LoggerOptions extends js.Object {
@@ -191,7 +233,8 @@ object LoggerLevel {
 
 @js.native
 @JSImport("@azure/msal", "Logger")
-class Logger(cb: LoggerCallback, options: js.UndefOr[LoggerOptions] = js.undefined) extends js.Object {
+class Logger(cb: LoggerCallback, options: js.UndefOr[LoggerOptions] = js.undefined)
+    extends js.Object {
   val isPiiLoggingEnabled: Boolean = js.native
 }
 
@@ -203,8 +246,8 @@ object CacheLocation {
 }
 
 trait ConfigurationBase extends js.Object {
-  var cache: js.UndefOr[CacheOptions] = js.undefined
-  var system: js.UndefOr[SystemOptions] = js.undefined
+  var cache: js.UndefOr[CacheOptions]         = js.undefined
+  var system: js.UndefOr[SystemOptions]       = js.undefined
   var framework: js.UndefOr[FrameworkOptions] = js.undefined
 }
 
@@ -232,15 +275,18 @@ class UserAgentApplication(configuration: Configuration) extends js.Object {
   val authority: String                 = js.native
   def getAuthorityInstance(): Authority = js.native
 
-  def loginPopup(request: js.UndefOr[AuthenticationParameters] = js.undefined): js.Promise[AuthResponse] = js.native
-  def loginRedirect(request: js.UndefOr[AuthenticationParameters] = js.undefined): Unit                  = js.native
+  def loginPopup(
+      request: js.UndefOr[AuthenticationParameters] = js.undefined
+  ): js.Promise[AuthResponse]                                                           = js.native
+  def loginRedirect(request: js.UndefOr[AuthenticationParameters] = js.undefined): Unit = js.native
 
   def acquireTokenRedirect(request: AuthenticationParameters): Unit                   = js.native
   def acquireTokenPopup(request: AuthenticationParameters): js.Promise[AuthResponse]  = js.native
   def acquireTokenSilent(request: AuthenticationParameters): js.Promise[AuthResponse] = js.native
 
-  def handleRedirectCallback(tcb: TokenReceivedCallback, ecb: ErrorReceivedCallback): Unit = js.native
-  def handleRedirectCallback(acb: AuthResponseCallback): Unit                              = js.native
+  def handleRedirectCallback(tcb: TokenReceivedCallback, ecb: ErrorReceivedCallback): Unit =
+    js.native
+  def handleRedirectCallback(acb: AuthResponseCallback): Unit = js.native
 
   def logout(): Unit                                             = js.native
   def getAccount(): Account                                      = js.native
@@ -281,6 +327,7 @@ object TokenUtils extends js.Object {
 @js.native
 @JSImport("@azure/msal", "Configuration")
 object Configuration extends js.Object {
+
   /** Use module fallback defaults. */
   def buildConfiguration(configuration: ConfigurationInit): Configuration = js.native
 }

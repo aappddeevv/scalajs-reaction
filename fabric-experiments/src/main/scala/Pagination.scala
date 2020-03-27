@@ -13,7 +13,7 @@ object Pagination {
 
   @js.native
   @JSImport("@uifabric/experiments/lib/Pagination", "Pagination")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 
@@ -21,10 +21,10 @@ object Pagination {
     var itemsPerPage: js.UndefOr[Int] = js.undefined
     var totalItemCount: js.UndefOr[Int] = js.undefined
     var selectedPageIndex: js.UndefOr[Int] = js.undefined
-    var firstPageIconProps: js.UndefOr[IIconProps] = js.undefined
-    var previousPageIconProps: js.UndefOr[IIconProps] = js.undefined
-    var nextPageIconProps: js.UndefOr[IIconProps] = js.undefined
-    var lastPageIconProps: js.UndefOr[IIconProps] = js.undefined
+    var firstPageIconProps: js.UndefOr[Icon.Props] = js.undefined
+    var previousPageIconProps: js.UndefOr[Icon.Props] = js.undefined
+    var nextPageIconProps: js.UndefOr[Icon.Props] = js.undefined
+    var lastPageIconProps: js.UndefOr[Icon.Props] = js.undefined
     var firstPageAriaLabel: js.UndefOr[String] = js.undefined
     var lastPageAriaLabel: js.UndefOr[String] = js.undefined
     var pageAriaLabel: js.UndefOr[String] = js.undefined
@@ -74,12 +74,11 @@ object Pagination {
   }
 }
 
-
 object PageNumber {
 
   @js.native
   @JSImport("@uifabric/experiments/lib/Pagination/PageNumber", "PageNumber")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

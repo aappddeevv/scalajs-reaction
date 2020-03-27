@@ -125,7 +125,7 @@ class Fetcher2[F[_], P, E, T](Name: String, runner: F[P] => (Either[E, T] => Uni
     children: (FetchState, FetchCallback) => ReactNode,
     initialValue: Option[F[P]] = None
   ) =
-    sfc(
+    sfc.unsafeApply(
       js.Dynamic.literal(
         "children"     -> children.asJsAny,
         "run"          -> runner.asJsAny,
