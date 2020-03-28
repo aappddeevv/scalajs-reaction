@@ -66,7 +66,7 @@ For SFC1, you can use `Component2(arg)` to convert the
 SFC to a react node. An implicit conversion takes a SFC0/SFC1
 and calls "createElement" for you. 
 
-You can also
+An implicit conversion is provided so you can also
 automatically convert a tuple of the component and props:
 
 ```scala
@@ -76,6 +76,25 @@ automatically convert a tuple of the component and props:
 A nice benefit of using SFC and this approach is that you can easly export them 
 for use in the
 js/ts side of your application assuming the parameter is js friendly.
+
+Here's a completely different way to define your component using the tuple
+concept above. 
+
+```scala
+object Components { 
+  trait Props extends js.Object { val name: String }
+  def render(props: Props): ReactNode = props => div(s"hello ${name}")
+  def HelloWorld(props: Props): ReactElementTuple[Props] = (render, props)
+```
+
+You can define your own protocol for creating a component as long as:
+
+* Your component is a js function.
+* You separate out the "component" and the props in a way that allows
+`react.createElement` to be called on the two datums separately.
+
+This facade provides a few implicit conversions to improve type inference
+and calling `createElement` at the right time.
 
 ## Stateful Components
 
@@ -176,12 +195,10 @@ object Component {
  
   // ergonomic API 
   def apply(props: Props)(children: ReactNode*) = 
-    sfc(props.combine(js.Dynamic.literal("children" -> children)))
-    // or you could do a new Props {} but literal is easier here.
+    sfc.unsafeApply(props.combine(js.Dynamic.literal("children" -> children)))
   
   val sfc = SFC1[Props] { props =>
     // ...
   }
-  
 }
 ```

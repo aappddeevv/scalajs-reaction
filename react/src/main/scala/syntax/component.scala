@@ -25,11 +25,15 @@ import scala.scalajs.js
 
 trait ComponentSyntax {
 
-  /** Memoize SFC1[P]. You should not need to do this as
-   * SFCs should be declared with vals.
+  /** Memoize SFC1.
    */
   implicit class MemoSFC[P <: js.Object](private val sfc: SFC1[P]) {
     def memo = react.memo(sfc)
+  }
+
+  /** Memoize SFC. */ 
+  implicit class MemoSFC1[P <: js.Object](private val sfc: SFC1[P]) { 
+   def memo = react.memo(sfc)
   }
 
   implicit def sfc0ToEl(sfc: SFC0): ReactElement =
@@ -39,15 +43,33 @@ trait ComponentSyntax {
   implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P], P)): ReactElement =
     ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
 
-  /** Given a function component and an arg, convert to ReactElement. */
+  /** Given a function component and an arg, expressed as tuple, convert to ReactElement. */
   implicit def func2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P)): ReactElement =
     ReactJS.createElement(f._1, f._2)
 
-  /** Given a function component and an arg with children, convert to ReactElement. */
+  /** Given a function component and an arg with children, expressed as a tuple, convert to ReactElement. */
   implicit def funcChild2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P, ReactNode)): ReactElement =
     ReactJS.createElement(f._1, f._2, f._3)
 
   /** Evil! Auto type conversion from a no-arg function. */
   implicit def thunkToSFC(f: () => ReactNode): ReactElement =
     ReactJS.createElement(js.Any.fromFunction0(f), null)
+
+  /** Convert a plain js function to an element using some syntax. */
+  implicit class RichJSFunction0(private val f: js.Function0[ReactNode]) {
+    def toEl = ReactJS.createElement(f, null)
+  }
+
+  /** Convert a plain js function with 1 props argument to an element using some syntax. */
+  implicit class RichJSFunction1[P](private val f: js.Function1[P, ReactNode]) {
+    def elementWith(props: P) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+    def toEl(props: P) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+  }
+
+  /** Convert standard scala function with 1 props arguments to an element using some syntax. */
+  implicit class RichScalaFunction[P <: js.Object](private val f: P => ReactNode) { 
+    def elementWith(props: P) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
+    def toEl(props: P) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
+  }
+
 }

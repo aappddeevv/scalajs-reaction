@@ -29,7 +29,7 @@ import js.|
  */
 class SFC0(val run: js.Function0[ReactNode]) {
 
-  /** Convert this SFC to a reactjs element. */
+  /** Manually convert this SFC to a reactjs element. */
   def toEl = ReactJS.createElement(run, null)
 }
 
@@ -40,11 +40,11 @@ object SFC0 {
 
 /** A functional component with one arg, the props. You can export the `.run`
  * function for use in reactjs. If you are defining convenience methods for your
- * component, you can also call `react.createElement` on `run` directly becauseq it is
+ * component, you can also call `react.createElement` on `run` directly because it is
  * considered a function component by reactjs.
  *
- * If you want to modify the instance prior to props being applied, you can
- * use scala 2.13's tap method (for example): 
+ * If you want to modify the instance/constructor prior to props being applied, you can
+ * use scala 2.13's `tap` (`import scala.util.chaining._`)  method. For example: 
  * `def apply[T](..) = sfc[T].tap{c => ...}.apply(props)`.
  *
  * @tparam P Props type.
@@ -57,7 +57,7 @@ class SFC1[P <: js.Object](val run: SFC1.RunArg[P]) {
   /** Create a reactjs component given some dynamic props. Experts only! */
   def unsafeApply(props: js.Dynamic) = toEl(props.asInstanceOf[P])
 
-  /** Create an reactjs component directly from this SFC. */
+  /** Manually create an reactjs component directly from this SFC. */
   def toEl(props: P): ReactElement = ReactJS.createElement(run, props)
 }
 
@@ -92,8 +92,9 @@ object SFCWithRef {
 }
 
 /** Simple boilerplate helper. Saves you 3 LOC but enforces a pattern
-  * when defining react components as modules. If your component takes
-  * a type parameter just write out the component as you normally would.
+  * when defining react components as modules. If your props take
+  * a type parameter just write out the component as you normally would
+  * and skip this trait. Debug value is set to the class name.
   */
 trait FC1 { self =>
   val NAME = self.getClass.getName
@@ -104,7 +105,8 @@ trait FC1 { self =>
 }
 
 /** Simple boilerplace helper. Saves you 3 LOC but enforces a pattern
- *  when defining react components as modules.
+ *  when defining react components as modules. Debug value is set to the 
+ *  class name.
  */
 trait FC0 { self =>
   val NAME = self.getClass.getName

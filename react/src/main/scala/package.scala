@@ -413,4 +413,7 @@ package object react extends react.React {
         a == b
     }
 
+
+  /** A type for declaring an element using a tuple and an implicit conversion. */
+  type ReactElementTuple[P <: js.Object] = (js.Function1[P, ReactNode], P)
 }

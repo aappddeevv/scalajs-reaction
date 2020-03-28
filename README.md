@@ -16,71 +16,108 @@ demo do not work yet but you can see the demo by cloning the project and running
 `npm i; npm run demo`. API documentation will be added back soon.
 The demo example may not build at the moment but I will fix it shortly.
 
-# Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
+Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
 # What is scalajs-reaction?
 
 A react library for scala written in the spirit of ReasonReact, a react library
-for an OCaml dialect known as reason (sponsored by facebook). [ReasonReact
+for an OCaml dialect known as reason sponsored by facebook. [ReasonReact
 documentation](https://reasonml.github.io/reason-react) provides a good description of how this library works since this facade was designed to mimic that facade. While more advanced scala functionality could have been used, the
 scala.js implementation is kept intentionally similar to ReasonReact so that its
-documentation applies to this project.
+documentation applies to this project. However, you skip the ReasonReact documentation because this library uses simple scala/scala.js friendly constructs to create your user interface. Read on...
 
 This library is small and focuses on hooks. Hooks are described on the
 [react](https://reactjs.org/docs/hooks-reference.html) page.
 
-scalajs-reaction emphasizes "easy to learn", integration into an existing
-project by making it easy to import/export components, and easy to fit into
-existing application including those using global state-managed solutions such
-as redux. At the same time, it allows you to build your entire interface in
-scalajs-reaction. As long as your front-end solution can manage the model of
-scala.js's output (one large module for all scala.js code, not
-file-by-file/module-by-module), you should consider scalajs-react for your
-solution. By providing a thin veneer over hooks, it eschews abstractions and avoids getting in your way.
+scalajs-reaction emphasizes:
+
+- Easy to learn/use.
+
+- Integration into an existing
+  project by making it easy to import/export components
+
+- Easy to fit into
+  existing application including those using global state-managed solutions such
+  as redux.
+
+At the same time, it allows you to build your entire interface in scalajs-reaction. As long as your front-end solution can manage the model of
+  scala.js's output (one large module for all scala.js code, not file-by-file/module-by-module), you should consider scalajs-react for your solution. By providing a thin veneer over hooks, it eschews abstractions and avoids getting in your way.
 
 * [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco): Uses the old API but still helpful.
 
 The library supports fragments, the new context provider and hooks. The facade's
-API roughly mimics ReasonReact's new approach based on hooks. This facade also
+API roughly mimics ReasonReact's approach based on hooks. This facade also
 supports react-native. The react-native use-case for scala.js is actually more
 compelling than for web applications due to scala.js bundling issues.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-reaction-app.g8` to
 create a new project.
 
+# Creating Components
+
 It's easy to create a component and render it:
 
 ```scala
 val HelloWorld = SFC0 { div("hello world") }
-reactdom.createAndRenderWithId(HelloWorld, "container")
+// ...
+react_dom.createAndRenderWithId(HelloWorld, "container")
 ```
 
 SFC0 does not do much other than ensure that the scala function on the right
-becomes a js function--which is all that is needed to use react hooks.
+becomes a js function--which is all that is needed to use react. You
+could have just declared it directly: `val HelloWorld: js.Function0[ReactNode]  = div("hello world")`
+and it would nearly the same thing as using SFC0 except the calling pattern 
+would be different when you use it inside another component.
 
-If you need to pass in an argument, just remember that react hooks requires you
-to use a single js object parameter so do the following standard scala.js
-approach:
+If you need to pass in an argument, just remember that react function components requires only a single js object parameter, so do the following:
 
 ```scala
-trait Props extends js.Object {
-    val name: String
+object MyComponent {
+    trait Props extends js.Object {
+        val name: String
+    }
+    val sfc = SFC1[Props] { props =>
+      div("hello " + props.name)
+    }
+    def apply(props: Props) = sfc(props)
 }
-
-val sfc = SFC1[Props] { props =>
-  div("hello " + props.name)
-}
-
-def apply(props: Props) = sfc(props)
 ```
 SFC1 says that the function component HelloWorld takes a single parameter, of
-type Props.
+type Props. You do not need to use `SFC1`, you could just use standard
+scala: 
+
+```scala
+object MyComponent { 
+    trait Props ...
+    val sfc: js.Function1[Props, ReactNode] = props => div(s"hello ${props.name}")
+    def apply(props: Props) = createElement(sfc, props)
+}
+```
+
+or
+
+```scala
+object MyComponent {
+  trait Props ...
+  // use any name you want, render is descriptive
+  def render(props: Props): ReactNode = div(s"hello ${props.name}")
+
+  def apply(props: Props): ReactElementTuple = (render, props)
+  // or
+  def apply(props: Props) = render(_).elementWith(props)
+}
+````
+
+SFC1 or some explicit types save you 0 lines of code but it improves ergonomics when declaring your components. That's how simple this facade is. A few macros provide additional support creating and using `Props` more like case classes if that's important to you.
+
+When you use SFC1, it provides an `apply` method that calls react's `createElement` for you. Remember, react needs to control when the props are applied to the rendering function, not you. A react "element" is really just a data structure that is a description of the element's rendering logic and props. The actual rendered element is created under react's control, not yours. There are other component specification patterns you can use as well or you can easily create your own like the above. See the docs.
 
 If you want to ensure your component only renders when the props change, use
-`React.memo()` to create your component. React.memo uses Object.is for equality
+`React.memo()` to create your component. React.memo uses `Object.is` for equality
 checking--which means it checks for exactly the same object. A pimp is available
-for memo.
+for memo. You need to take into account js's notion of equality when using
+function components and hooks.
 
 ```scala
 val sfc = SFC1[Props] { props =>
@@ -88,20 +125,21 @@ val sfc = SFC1[Props] { props =>
 }.memo
 ```
 
-Add state and other effects using hooks.
+Add state and other effects using react hooks just like you normally would.
 
 The hooks implementation in scala.js is only about 50 lines of code and is
-easily maintained. Various implicits are provided to make hooks easier to use.
+easily maintained. Various conversion and extension methods are provided to make hooks easier to use.
 
-You have choices to create your components and they are all
+You have choices on how to create your components and they are all
 straightforward. Depending on the component library you use, having choices
 helps you find the easiest way to access the components in your application.
-This library does not force many conventions on your code and the core is quite
-small now that it is based on hooks.
+This library does not force many conventions on your code.
 
-This facade requires more scala.js code near interactions with UI
-toolkits. Higher level components, e.g. composition of smaller components, can
-use more idiomatic scala constructs.
+This facade uses standard scala.js concepts. Higher level components, 
+e.g. composition of smaller components, can
+use more idiomatic scala constructs. This library does
+not fight scala or scala.js to make it more like js. It uses
+the tools provided by scala and scala.js to make it easier to write react applications and control react rendering optimizations.
 
 # Usage
 
@@ -109,7 +147,7 @@ Include the library in your build:
 
 ```scala
 resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
-val scalaJsReactVersion = "latest.version" // or 0.1.0-M7
+val scalaJsReactVersion = "latest.version" // see the badge above 
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
