@@ -26,15 +26,15 @@ documentation](https://reasonml.github.io/reason-react) provides a good descript
 scala.js implementation is kept intentionally similar to ReasonReact so that its
 documentation applies to this project. However, you skip the ReasonReact documentation because this library uses simple scala/scala.js friendly constructs to create your user interface. Read on...
 
-This library is small and focuses on hooks. Hooks are described on the
+This library is small and focuses on simple js functions that use hooks. Hooks are described on the
 [react](https://reactjs.org/docs/hooks-reference.html) page.
 
 scalajs-reaction emphasizes:
 
-- Easy to learn/use.
+- Easy to learn/use. Your component is just a standard scala.js js function.
 
 - Integration into an existing
-  project by making it easy to import/export components
+  project by making it easy to import/export components. You just export the function.
 
 - Easy to fit into
   existing application including those using global state-managed solutions such
@@ -101,11 +101,11 @@ or
 object MyComponent {
   trait Props ...
   // use any name you want, render is descriptive
-  def render(props: Props): ReactNode = div(s"hello ${props.name}")
+  val render: Props => ReactNode = props => div(s"hello ${props.name}")
 
   def apply(props: Props): ReactElementTuple = (render, props)
   // or
-  def apply(props: Props) = render(_).elementWith(props)
+  def apply(props: Props) = render.elementWith(props)
 }
 ````
 
@@ -125,10 +125,10 @@ val sfc = SFC1[Props] { props =>
 }.memo
 ```
 
-Add state and other effects using react hooks just like you normally would.
+Add state and other effects to your component  using react hooks just like you normally would.
 
-The hooks implementation in scala.js is only about 50 lines of code and is
-easily maintained. Various conversion and extension methods are provided to make hooks easier to use.
+The facade implementation in scala.js is only about 50 lines of code and is
+easily maintained. Various conversion and extension methods are provided to make it easier to use.
 
 You have choices on how to create your components and they are all
 straightforward. Depending on the component library you use, having choices
@@ -254,7 +254,8 @@ if you need documents it is probably best to generate them
 locally. You can generate docs for each project separately
 using sbt's `react/doc` task or `doc` for each project
 to generate their documents. Or you can generate integrated documents 
-using unidoc with the sbt command `docs/unidoc`.
+using unidoc with the sbt command `docs/unidoc`. Then 
+`xdg-open website/scalajs-reaction/static/api/index.html`.
 
 # Demo
 

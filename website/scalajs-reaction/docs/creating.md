@@ -83,8 +83,26 @@ concept above.
 ```scala
 object Components { 
   trait Props extends js.Object { val name: String }
-  def render(props: Props): ReactNode = props => div(s"hello ${name}")
+  // important to have  this signature
+  val render: Props => ReactNode = props => div(s"hello ${name}")
+
+  // Call like Components.HelloWorld(...)
   def HelloWorld(props: Props): ReactElementTuple[Props] = (render, props)
+```
+
+You could also use:
+
+```scala
+  // use any name you want as long it makes you happy!
+
+  // Call like Components(theProps)
+  def apply(props: Props) = render.elementWith(props)
+
+  // Call like Components.make(theProps)
+  def make(props: Props) = render.elementWith(props)
+
+  // Call like Components.doit(props)
+  def doit(props: Props) = render.toEl(props) 
 ```
 
 You can define your own protocol for creating a component as long as:
@@ -94,7 +112,8 @@ You can define your own protocol for creating a component as long as:
 `react.createElement` to be called on the two datums separately.
 
 This facade provides a few implicit conversions to improve type inference
-and calling `createElement` at the right time.
+and calling `createElement` at the right time. That's pretty much all
+this facade does.
 
 ## Stateful Components
 
