@@ -60,8 +60,8 @@ private[react] class JSEnrichMacros(val c: Context) extends ImplTransformers {
               val withDefIdent = TermName(s"with$fn")
               val quotedName = Literal(Constant(rawName)) //q"${rawName}"
               q"""def $withDefIdent(${name}: ${tpt})
-                        = _root_.scala.scalajs.js.Object.assign(new js.Object, item, 
-                            _root_.scala.scalajs.js.Dynamic.literal($quotedName -> $name.asInstanceOf[js.Any])).asInstanceOf[$tpname]"""
+                        = _root_.scala.scalajs.js.Object.assign(new _root_.scala.scalajs.js.Object, item, 
+                            _root_.scala.scalajs.js.Dynamic.literal($quotedName -> $name.asInstanceOf[_root_.scala.scalajs.js.Any])).asInstanceOf[$tpname]"""
           }
 
           val parent_setters = parentProperties.map { p =>
@@ -79,15 +79,18 @@ private[react] class JSEnrichMacros(val c: Context) extends ImplTransformers {
             val withDefIdent = TermName(s"with$fn")
             val quotedName = Literal(Constant(name.toString))
             q"""def $withDefIdent($name: ${argSymbol.info}) 
-                        = _root_.scala.scalajs.js.Object.assign(new js.Object, item,
-                            _root_.scala.scalajs.js.Dynamic.literal($quotedName -> $name.asInstanceOf[js.Any])).asInstanceOf[$tpname]"""
+                        = _root_.scala.scalajs.js.Object.assign(new _root_.scala.scalajs.js.Object, item,
+                            _root_.scala.scalajs.js.Dynamic.literal($quotedName -> $name.asInstanceOf[_root_.scala.scalajs.js.Any])).asInstanceOf[$tpname]"""
           }
 
           val combine = q"""def combineWith(that: $tpname) = 
-            _root_.scala.scalajs.js.Object.assign(new js.Object, item, that).asInstanceOf[$tpname]"""
+            _root_.scala.scalajs.js.Object.assign(new _root_.scala.scalajs.js.Object, item, that).asInstanceOf[$tpname]"""
+
+          val combine2 = q"""def unsafeCombine[P <: js.Object](that: _root_.scala.scalajs.js.|[P, js.Dynamic]) = 
+            _root_.scala.scalajs.js.Object.assign(new _root_.scala.scalajs.js.Object, item, that.asInstanceOf[js.Object]).asInstanceOf[$tpname]"""
 
           val duplicate = q"""def duplicate = 
-            _root_.scala.scalajs.js.Object.assign(new js.Object, item).asInstanceOf[$tpname]"""
+            _root_.scala.scalajs.js.Object.assign(new _root_.scala.scalajs.js.Object, item).asInstanceOf[$tpname]"""
 
           val mods = Modifiers(Flag.IMPLICIT)
           val implicitSetters = q"""
@@ -95,6 +98,7 @@ private[react] class JSEnrichMacros(val c: Context) extends ImplTransformers {
            ..$setters
            ..$parent_setters
            $combine
+           $combine2
            $duplicate
           }"""
 

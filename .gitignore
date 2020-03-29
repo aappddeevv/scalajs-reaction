@@ -40,3 +40,4 @@ project/metals.sbt
 package-lock.json
 project/secret
 *.swp
+scalajs-reaction-docs

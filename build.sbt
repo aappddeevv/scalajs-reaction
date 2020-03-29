@@ -123,6 +123,7 @@ lazy val root = project
     //examples,
     //docs,
 	//`react-macros`
+    luxon,dataloader,
   )
 
 lazy val `react` = project
@@ -215,10 +216,24 @@ lazy val loglevel = project.in(file("components/loglevel"))
 .enablePlugins(ScalaJSPlugin)
 
 lazy val whydidyourender = project.in(file("components/whydidyourender"))
-.settings(std_settings("whydidirender", "Why Did I Render library"))
-.settings(buildinfo_settings("whydidirender"))
+.settings(std_settings("whydidyourender", "Why Did You Render library"))
+.settings(buildinfo_settings("whydidyourender"))
 .dependsOn(react, `react-macros`)
 .enablePlugins(ScalaJSPlugin)
+
+lazy val luxon = project.in(file("components/luxon"))
+.settings(std_settings("luxon", "Luxon date time."))
+.settings(buildinfo_settings("luxon"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
+lazy val dataloader = project.in(file("components/dataloader"))
+.settings(std_settings("dataloader", "FB dataloader"))
+.settings(buildinfo_settings("dataloader"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
+
 
 // jvm and js based project
 // lazy val dataValidation =
@@ -282,13 +297,13 @@ lazy val helmet = project.in(file("components/helmet"))
   .settings(std_settings("helmet", "react-helmet"))
   .settings(buildinfo_settings("helmet"))
 
-lazy val apollo = project
+lazy val apollo = project.in(file("components/apollo"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom)
   .settings(std_settings("apollo", "Combination of apollo-boost, graphql, react-apollo"))
   .settings(buildinfo_settings("apollo"))
 
-lazy val fabric = project
+lazy val fabric = project.in(file("components/fabric"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom, 
 	`react-macros`
@@ -296,19 +311,19 @@ lazy val fabric = project
   .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
   .settings(buildinfo_settings("fabric"))
 
-lazy val `fabric-experiments` = project
+lazy val `fabric-experiments` = project.in(file("components/fabric-experiments"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom, fabric)
   .settings(std_settings("fabric-experiments", "microsoft @uifbaric experiments."))
   .settings(buildinfo_settings("fabric.experiments"))
 
-lazy val bootstrap = project
+lazy val bootstrap = project.in(file("components/bootstrap"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom)
   .settings(std_settings("bootstrap", "bootstrap facade."))
   .settings(buildinfo_settings("bootstrap"))
 
-lazy val mui = project
+lazy val mui = project.in(file("components/mui"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom, jss)
   .settings(std_settings("mui", "material ui facade."))
@@ -320,7 +335,7 @@ lazy val router = project
   .settings(std_settings("router", "scalajs-reaction browser js oriented router"))
   .settings(buildinfo_settings("router"))
 
-lazy val forms = project
+lazy val forms = project.in(file("components/forms"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .dependsOn(react, vdom)
   .settings(std_settings("forms", "scalajs-reaction forms library."))
@@ -396,7 +411,9 @@ lazy val docs = project
     mssql,
     express,
     loglevel,
-    whydidyourender
+    whydidyourender,
+    luxon,
+    dataloader
 )
 
 addCommandAlias("prepare", "headerCreate; fix; fmt")

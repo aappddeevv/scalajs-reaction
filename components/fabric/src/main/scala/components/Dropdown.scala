@@ -67,6 +67,9 @@ object Dropdown {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var theme: js.UndefOr[ITheme]                                      = js.undefined
   }
+ 
+  def OnChange(f: (ReactFormEvent[dom.html.Div], IDropdownOption, Int) => Unit): js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] =
+  js.defined((e,o,i) => f(e,o,i))
 
   trait Styles extends IStyleSetTag {
     var root: js.UndefOr[IStyle] = js.undefined

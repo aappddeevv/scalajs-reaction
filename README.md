@@ -106,6 +106,8 @@ object MyComponent {
   def apply(props: Props): ReactElementTuple = (render, props)
   // or
   def apply(props: Props) = render.elementWith(props)
+  // or
+  // make up your own approach
 }
 ````
 

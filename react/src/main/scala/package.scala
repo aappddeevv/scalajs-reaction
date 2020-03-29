@@ -272,6 +272,9 @@ package object react extends react.React {
   /** Return a "render nothing" element. React ignores nulls during rendering. */
   val nullElement = null.asInstanceOf[ReactElement]
 
+  /** null element, which does not render, cast to ReactNode. */
+  val nullNode = null.asInstanceOf[ReactNode]
+
   /** Convenience. Use implicits for syntax-based conversion. */
   def arrayToElement[T <: ReactNode](arr: js.Array[T]) = arr.asInstanceOf[ReactNode]
 

@@ -36,23 +36,23 @@ trait ComponentSyntax {
    def memo = react.memo(sfc)
   }
 
-  implicit def sfc0ToEl(sfc: SFC0): ReactElement =
+  implicit def sfc0ToEl(sfc: SFC0): ReactNode =
     ReactJS.createElement(sfc.run, null)
 
   /** Convert a SFC and its argument, expressed as a tuple, to an element. */
-  implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P], P)): ReactElement =
+  implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P], P)): ReactNode = 
     ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
 
   /** Given a function component and an arg, expressed as tuple, convert to ReactElement. */
-  implicit def func2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P)): ReactElement =
+  implicit def func2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P)): ReactNode =
     ReactJS.createElement(f._1, f._2)
 
   /** Given a function component and an arg with children, expressed as a tuple, convert to ReactElement. */
-  implicit def funcChild2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P, ReactNode)): ReactElement =
+  implicit def funcChild2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P, ReactNode)): ReactNode =
     ReactJS.createElement(f._1, f._2, f._3)
 
   /** Evil! Auto type conversion from a no-arg function. */
-  implicit def thunkToSFC(f: () => ReactNode): ReactElement =
+  implicit def thunkToSFC(f: () => ReactNode): ReactNode =
     ReactJS.createElement(js.Any.fromFunction0(f), null)
 
   /** Convert a plain js function to an element using some syntax. */
