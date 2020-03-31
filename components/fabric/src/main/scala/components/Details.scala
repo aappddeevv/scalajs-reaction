@@ -107,7 +107,7 @@ object Details {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
 
     @js.native
     trait IDetailsRow extends js.Object
@@ -171,7 +171,7 @@ object Details {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
 
     @js.native
     trait IDetailsHeader extends Focusable2

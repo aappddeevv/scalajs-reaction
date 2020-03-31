@@ -37,7 +37,7 @@ object Tooltip {
   object JS extends ReactJSComponent
  
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props)(children:_*)
+    createElementN(JS, props)(children:_*)
 
   @js.native
   trait ITooltip extends js.Object
@@ -117,7 +117,7 @@ object Tooltip {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props)(children:_*)
+      createElementN(JS, props)(children:_*)
 
     trait StyleProps extends js.Object {
       var theme: js.UndefOr[ITheme] = js.undefined

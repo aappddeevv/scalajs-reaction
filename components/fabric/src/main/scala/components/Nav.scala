@@ -41,7 +41,7 @@ object Nav {
   object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   def apply(props: Props) = createElement0(JS, props)
 

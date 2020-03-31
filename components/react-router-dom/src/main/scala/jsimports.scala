@@ -139,31 +139,31 @@ object Route {
   @JSImport("react-router-dom", "Route")
   object JS extends ReactJsComponent
 
-  def always(children: ReactNode) = createElement(JS, null)(children)
+  def always(children: ReactNode) = createElementN(JS, null)(children)
 
   def always[S, P](children: js.Function1[RouteComponentProps[S, P], ReactNode]) =
-    createElement(JS, null)(children.asInstanceOf[ReactNode])
+    createElementN(JS, null)(children.asInstanceOf[ReactNode])
 
   def apply[S, P](props: Props[S, P], child: ReactNode) =
-    createElement(JS, props)(child)
+    createElementN(JS, props)(child)
 
   /** Uses children prop. */
   def apply[S, P](props: Props[S, P])(children: js.Function1[RouteComponentProps[S, P], ReactNode]) =
-    createElement(JS, props)(children.asInstanceOf[ReactNode])
+    createElementN(JS, props)(children.asInstanceOf[ReactNode])
 
   def withPath(p: String, child: ReactNode) =
-    createElement(JS, new Props[Nothing, Nothing] { path = p })(child)
+    createElementN(JS, new Props[Nothing, Nothing] { path = p })(child)
 
   /** Uses children prop. */
   def withPath[S, P](p: String)(children: js.Function1[RouteComponentProps[S, P], ReactNode]) =
-    createElement(JS, new Props[S, P] { path = p })(children.asInstanceOf[ReactNode])
+    createElementN(JS, new Props[S, P] { path = p })(children.asInstanceOf[ReactNode])
 
   /** Uses render prop. */
   def withPathRender[S, P](p: String)(thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
     createElement0(JS, new Props[S, P] { path = p; render = thunk })
 
   def withExactPath(p: String, child: ReactNode) =
-    createElement(JS, new Props[Nothing, Nothing] { exact = true; path = p })(child)
+    createElementN(JS, new Props[Nothing, Nothing] { exact = true; path = p })(child)
 
   /** Uses render prop. */
   def withExactPathRender[S, P](p: String)(thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
@@ -201,10 +201,10 @@ object HashRouter {
   object JS extends ReactJsComponent
 
   def apply(child: ReactNode) =
-    createElement(JS, null)(child)
+    createElementN(JS, null)(child)
 
   def apply(props: Props)(child: ReactNode) =
-    createElement(JS, props)(child)
+    createElementN(JS, props)(child)
 
   def withBasename(bn: String, child: ReactNode) =
     apply(new Props { basename = bn })(child)
@@ -223,7 +223,7 @@ object BrowserRouter {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode) =
-    createElement(JS, props)(children)
+    createElementN(JS, props)(children)
 
   trait Props extends js.Object {
     var basename: js.UndefOr[String]                                                             = js.undefined
@@ -239,10 +239,10 @@ object Switch {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   def apply(children: ReactNode*) =
-    createElement(JS, null)(children: _*)
+    createElementN(JS, null)(children: _*)
 
   trait Props extends js.Object {
     var location: js.UndefOr[Location[_]] = js.undefined

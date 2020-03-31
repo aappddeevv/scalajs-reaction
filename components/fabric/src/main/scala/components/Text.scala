@@ -35,7 +35,7 @@ object Text {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(text: js.UndefOr[String] = js.undefined) =
-    createElement(JS, props)(text.asInstanceOf[ReactNode])
+    createElementN(JS, props)(text.asInstanceOf[ReactNode])
 
   // from ReactJsProps
   trait Props extends ReactJSProps {

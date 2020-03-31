@@ -38,7 +38,7 @@ object MarqueeSelection {
   object JS extends ReactJSComponent
 
   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   @js.native
   trait IMarqueeSelection extends js.Object

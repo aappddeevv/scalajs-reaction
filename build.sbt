@@ -48,6 +48,7 @@ def buildinfo_settings(pkg: String) =
   )
 
 lazy val compilerSettings = Seq(
+    scalacOptions in (Compile,doc) ++= Seq("-groups"),
   scalacOptions ++= commonScalacOptions,
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
   addCompilerPlugin(scalafixSemanticdb),

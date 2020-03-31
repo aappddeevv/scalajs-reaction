@@ -38,7 +38,7 @@ object PivotItem {
   object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   trait Props extends HTMLAttributes[dom.html.Div] {
     var headerText: js.UndefOr[String]                       = js.undefined

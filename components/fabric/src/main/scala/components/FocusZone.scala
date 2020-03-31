@@ -39,7 +39,7 @@ object FocusZone {
   object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   @js.native
   trait IFocusZone extends js.Object {

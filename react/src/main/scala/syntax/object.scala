@@ -42,6 +42,8 @@ final case class JsObjectOps[A <: js.Object](o: A) {
   def unsafeCombine(that: js.Any) = react.merge[A](o, that.asInstanceOf[A])
   /** Combine with a generic js object and cast. */
   def combineGenericTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]
+  /** `.asInstanceOf[T]` but shorter. Very dangerous! */
+  def as[T <: js.Object] = o.asInstanceOf[T]
 }
 
 /** These should be picked by `<: js.Object` but don't seem to be. */

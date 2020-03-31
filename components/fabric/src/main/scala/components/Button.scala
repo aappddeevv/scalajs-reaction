@@ -114,7 +114,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object Primary {
@@ -123,7 +123,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object Action {
@@ -132,7 +132,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object CommandBar {
@@ -141,7 +141,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object Command {
@@ -150,7 +150,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object Compound {
@@ -159,7 +159,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object MessageBar {
@@ -168,7 +168,7 @@ object Button {
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
-      createElement(JS, props)(children: _*)
+      createElementN(JS, props)(children: _*)
   }
 
   object Icon {
@@ -176,7 +176,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "IconButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props)(children: ReactNode*) = createElement(JS, props)(children: _*)
+    def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
   }
 

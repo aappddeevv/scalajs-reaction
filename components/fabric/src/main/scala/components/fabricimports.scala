@@ -368,8 +368,10 @@ trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Elemen
   // id?: string;
   // className?: string;
 
-  var defaultSelectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]] = js.undefined
-  var defaultSelectedKey: js.UndefOr[String | Int] = js.undefined
+  var defaultSelectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int] | Null] = js.undefined
+  var selectedKey: js.UndefOr[String | Int | js.Array[String] | js.Array[Int] | Null] = js.undefined
+
+  var multiSelect: js.UndefOr[Boolean] = js.undefined
 
   /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
   val options: js.Array[I] | js.Array[_ <: js.Dynamic]
@@ -378,8 +380,8 @@ trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Elemen
   // onChanged?: (option: ISelectableOption, index?: number) => void;
   // onRenderContainer?: IRenderFunction<ISelectableDroppableTextProps<T>>;
   var onRenderList: js.UndefOr[IRenderFunction[ISelectableDroppableTextProps[I, T]]] = js.undefined
-  // onRenderItem?: IRenderFunction<ISelectableOption>;
-  // onRenderOption?: IRenderFunction<ISelectableOption>;
+  var onRenderItem: js.UndefOr[IRenderFunction[ISelectableOption]] = js.undefined
+  var onRenderOption: js.UndefOr[IRenderFunction[ISelectableOption]] = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
   var required: js.UndefOr[Boolean] = js.undefined
 

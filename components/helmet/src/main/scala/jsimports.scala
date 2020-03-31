@@ -39,9 +39,9 @@ object Helmet {
   object JS extends ReactJsComponent
 
   def apply(props: Props, children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
   def apply(props: Props)         = createElement0(JS, props)
-  def apply(children: ReactNode*) = createElement(JS, null)(children: _*)
+  def apply(children: ReactNode*) = createElementN(JS, null)(children: _*)
   def withTitle(wtitle: String) =
     apply(new Props {
       title = wtitle

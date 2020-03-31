@@ -29,13 +29,13 @@ import js.Dynamic.literal
 final class ReactContextOps2[T](private val ctx: ReactContext[T]) extends AnyVal {
 
   def provide(value: T)(children: ReactNode*) =
-    createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]))(children: _*)
+    ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), children: _*)
 
   def consume(f: T => ReactNode, key: String) =
-    createElement(ctx.Consumer, literal("key" -> key))(js.Any.toFunction1(f).asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, literal("key" -> key), js.Any.toFunction1(f).asInstanceOf[ReactNode])
 
   def consume(f: T => ReactNode) =
-    createElement(ctx.Consumer, null)(js.Any.toFunction1(f).asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, null, js.Any.toFunction1(f).asInstanceOf[ReactNode])
 }
 
 trait ContextSyntax {

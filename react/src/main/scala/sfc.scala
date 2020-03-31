@@ -25,8 +25,9 @@ import scala.scalajs.js
 import js.|
 
 /**
- * A functional component with zero arguments.  
- */
+  * A functional component with zero arguments.
+  * @deprecated
+  */
 class SFC0(val run: js.Function0[ReactNode]) {
 
   /** Manually convert this SFC to a reactjs element. */
@@ -34,25 +35,35 @@ class SFC0(val run: js.Function0[ReactNode]) {
 }
 
 object SFC0 {
+
   /** Create an SFC0 from a parameterless scala function. */
   def apply(f: => ReactNode) = new SFC0(() => f)
 }
 
 /** A functional component with one arg, the props. You can export the `.run`
- * function for use in reactjs. If you are defining convenience methods for your
- * component, you can also call `react.createElement` on `run` directly because it is
- * considered a function component by reactjs.
- *
- * If you want to modify the instance/constructor prior to props being applied, you can
- * use scala 2.13's `tap` (`import scala.util.chaining._`)  method. For example: 
- * `def apply[T](..) = sfc[T].tap{c => ...}.apply(props)`.
- *
- * @tparam P Props type.
- */
+  * function for use in reactjs. If you are defining convenience methods for your
+  * component, you can also call `react.createElement` on `run` directly because it is
+  * considered a function component by reactjs.
+  *
+  * If you want to modify the instance/constructor prior to props being applied, you can
+  * use scala 2.13's `tap` (`import scala.util.chaining._`)  method. For example:
+  * `def apply[T](..) = sfc[T].tap{c => ...}.apply(props)`.
+  *
+  * @tparam P Props type.
+  *
+  * @deprecated
+  */
 class SFC1[P <: js.Object](val run: SFC1.RunArg[P]) {
 
   /** Create a reactjs component given some props. */
   def apply(props: P) = toEl(props)
+
+  /** Memo with the default shallow comparator. */
+  def memo = react.memo(this)
+
+  /** Memo with a comparator. */
+  def memoWith(compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]) =
+    react.memo(this, compare)
 
   /** Create a reactjs component given some dynamic props. Experts only! */
   def unsafeApply(props: js.Dynamic) = toEl(props.asInstanceOf[P])
@@ -62,6 +73,7 @@ class SFC1[P <: js.Object](val run: SFC1.RunArg[P]) {
 }
 
 object SFC1 {
+
   /** Type of `run`. This must be usable as a function component in js. */
   type RunArg[P <: js.Object] = js.Function1[P, ReactNode]
 
@@ -70,47 +82,25 @@ object SFC1 {
 }
 
 /** A stateless functional component with two args, the props and something
- * else. You would use SFC2 to create a SFC that takes a second argument, like a
- * `Ref`, for use in `React.forwardRef`. You can export the `.run` function for
- * use in reactjs.
- *
- * @see https://reactjs.org/docs/hooks-reference.html#useref
- */
+  * else. You would use SFC2 to create a SFC that takes a second argument, like a
+  * `Ref`, for use in `React.forwardRef`. You can export the `.run` function for
+  * use in reactjs.
+  *
+  * @see https://reactjs.org/docs/hooks-reference.html#useref
+  *
+  * @deprecated
+  */
 class SFCWithRef[P <: js.Object, R](val run: js.Function2[P, Ref[R], ReactNode]) {
 
   /** Create an reactjs component directly from this SFC. */
   def toEl(props: P) =
-    ReactJS.createElement(run.asInstanceOf[ReactJsFunctionComponent], props.asInstanceOf[P|Unit])
+    ReactJS.createElement(run.asInstanceOf[ReactJsFunctionComponent], props.asInstanceOf[P | Unit])
 }
 
 object SFCWithRef {
 
   /** Create a SFC2 from 2 parameters, the 2nd being a react ref created via
-   * `createRef`.
-   */
+    * `createRef`.
+    */
   def apply[P <: js.Object, R](f: (P, Ref[R]) => ReactElement) = new SFCWithRef[P, R](f)
-}
-
-/** Simple boilerplate helper. Saves you 3 LOC but enforces a pattern
-  * when defining react components as modules. If your props take
-  * a type parameter just write out the component as you normally would
-  * and skip this trait. Debug value is set to the class name.
-  */
-trait FC1 { self =>
-  val NAME = self.getClass.getName
-  type Props <: js.Object
-  def render(props: Props): ReactNode
-  def apply(props: Props) = sfc(props)
-  val sfc                 = SFC1[Props]{ props => useDebugValue(NAME); render(props)}
-}
-
-/** Simple boilerplace helper. Saves you 3 LOC but enforces a pattern
- *  when defining react components as modules. Debug value is set to the 
- *  class name.
- */
-trait FC0 { self =>
-  val NAME = self.getClass.getName
-  def render(): ReactNode
-  def apply() = sfc
-  val sfc = SFC0 { useDebugValue(NAME); render() }
 }

@@ -135,14 +135,13 @@ trait DateTime extends js.Object {
   val offsetNameShort: String = js.native
   val ordinal: Int = js.native
   val outputCalendar: String = js.native
-  @JSName("plus")
-  def plusParts(dur: DurationInit): DateTime = js.native
-  def plus(dur: Duration): DateTime = js.native
+  def plus(dur: Duration|DurationInit): DateTime = js.native
   def startOf(part: String): DateTime = js.native
   def endOf(part: String): DateTime = js.native
   def set(parts: DateTimeInit): DateTime = js.native
   def get(unit: String): Int = js.native
   def hasSame(that: DateTime, unit: String): Boolean = js.native
+  def diff(other: DateTime, unit: js.UndefOr[String|js.Array[String]]=js.undefined, options: js.UndefOr[DurationOptions]=js.undefined): Duration = js.native
   def diffNow(): Duration = js.native
   def setLocale(loc: String): DateTime = js.native
   def setZone(zone: String): DateTime = js.native

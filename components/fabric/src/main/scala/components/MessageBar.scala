@@ -40,7 +40,7 @@ object MessageBar {
   object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   trait IMessageBar extends js.Object
 

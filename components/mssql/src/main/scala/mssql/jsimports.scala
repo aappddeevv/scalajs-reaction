@@ -192,6 +192,7 @@ trait IMap extends js.Array[js.Any] {
 @JSImport("mssql", JSImport.Namespace)
 object module extends js.Object {
   val map: IMap = js.native
+  val MAX: Int = js.native
   def VarChar(length: Int): SQLType = js.native
   @JSName("VarChar")
   val VarCharAny: SQLType = js.native

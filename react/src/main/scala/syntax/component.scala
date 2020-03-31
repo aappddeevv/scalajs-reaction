@@ -25,22 +25,17 @@ import scala.scalajs.js
 
 trait ComponentSyntax {
 
-  /** Memoize SFC1.
-   */
-  implicit class MemoSFC[P <: js.Object](private val sfc: SFC1[P]) {
+  /** Memoize SFC1. */
+  implicit class MemoSFC1[P <: js.Object](private val sfc: SFC1[P]) {
     def memo = react.memo(sfc)
-  }
-
-  /** Memoize SFC. */ 
-  implicit class MemoSFC1[P <: js.Object](private val sfc: SFC1[P]) { 
-   def memo = react.memo(sfc)
+    def memoWith(compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]) = react.memo(sfc, compare)
   }
 
   implicit def sfc0ToEl(sfc: SFC0): ReactNode =
     ReactJS.createElement(sfc.run, null)
 
   /** Convert a SFC and its argument, expressed as a tuple, to an element. */
-  implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P], P)): ReactNode = 
+  implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P], P)): ReactNode =
     ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
 
   /** Given a function component and an arg, expressed as tuple, convert to ReactElement. */
@@ -57,19 +52,19 @@ trait ComponentSyntax {
 
   /** Convert a plain js function to an element using some syntax. */
   implicit class RichJSFunction0(private val f: js.Function0[ReactNode]) {
+    def element = ReactJS.createElement(f, null)
     def toEl = ReactJS.createElement(f, null)
   }
 
   /** Convert a plain js function with 1 props argument to an element using some syntax. */
-  implicit class RichJSFunction1[P](private val f: js.Function1[P, ReactNode]) {
+  implicit class RichJSFunction1[P <: js.Object](private val f: js.Function1[P, ReactNode]) {
     def elementWith(props: P) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
     def toEl(props: P) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
   }
 
   /** Convert standard scala function with 1 props arguments to an element using some syntax. */
-  implicit class RichScalaFunction[P <: js.Object](private val f: P => ReactNode) { 
+  implicit class RichScalaFunction[P <: js.Object](private val f: P => ReactNode) {
     def elementWith(props: P) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
     def toEl(props: P) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
   }
-
 }

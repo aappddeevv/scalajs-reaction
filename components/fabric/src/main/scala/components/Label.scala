@@ -40,10 +40,10 @@ object Label {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   def apply(children: ReactNode*) =
-    createElement(JS, null)(children: _*)
+    createElementN(JS, null)(children: _*)
 
   trait Props extends LabelHTMLAttributes[html.Label]
       with ComponentRef[js.Any]

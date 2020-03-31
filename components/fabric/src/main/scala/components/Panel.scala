@@ -35,7 +35,7 @@ object Panel {
   object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   @js.native
   trait IPanel extends js.Object {

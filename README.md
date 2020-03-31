@@ -59,39 +59,40 @@ create a new project.
 It's easy to create a component and render it:
 
 ```scala
-val HelloWorld = SFC0 { div("hello world") }
+val HelloWorld: ReactFC0 = () => { div("hello world") }
 // ...
 react_dom.createAndRenderWithId(HelloWorld, "container")
 ```
 
-SFC0 does not do much other than ensure that the scala function on the right
+ReactFC0 does not do much other than ensure that the scala function on the right
 becomes a js function--which is all that is needed to use react. You
-could have just declared it directly: `val HelloWorld: js.Function0[ReactNode]  = div("hello world")`
-and it would nearly the same thing as using SFC0 except the calling pattern 
-would be different when you use it inside another component.
+could have just declared it directly: `val HelloWorld: js.Function0[ReactNode] = props => div("hello world")`.
 
-If you need to pass in an argument, just remember that react function components requires only a single js object parameter, so do the following:
+If you need to pass in an argument, remember that react function components requires only a single js object parameter, so do the following:
 
 ```scala
 object MyComponent {
     trait Props extends js.Object {
         val name: String
     }
-    val sfc = SFC1[Props] { props =>
+    val render: ReactFC[Props] = props =>
       div("hello " + props.name)
     }
-    def apply(props: Props) = sfc(props)
+    def apply(props: Props) = createElement(render, props)
 }
 ```
-SFC1 says that the function component HelloWorld takes a single parameter, of
-type Props. You do not need to use `SFC1`, you could just use standard
+
+ReactFC says that the function component HelloWorld takes a single parameter, of
+type Props. You do not need to use `ReactFC`, you could just use standard
 scala: 
 
 ```scala
 object MyComponent { 
     trait Props ...
-    val sfc: js.Function1[Props, ReactNode] = props => div(s"hello ${props.name}")
-    def apply(props: Props) = createElement(sfc, props)
+
+    val render: js.Function1[Props, ReactNode] = props => div(s"hello ${props.name}")
+
+    def apply(props: Props) = createElement(render, props)
 }
 ```
 
@@ -100,34 +101,30 @@ or
 ```scala
 object MyComponent {
   trait Props ...
-  // use any name you want, render is descriptive
+
+  // a standard scala function 
   val render: Props => ReactNode = props => div(s"hello ${props.name}")
 
+  // ReactElementTuple causes scala=>js function conversion
   def apply(props: Props): ReactElementTuple = (render, props)
-  // or
+
+  // or convert using `.elementWith` which reads quite nicely
   def apply(props: Props) = render.elementWith(props)
-  // or
-  // make up your own approach
 }
 ````
 
-SFC1 or some explicit types save you 0 lines of code but it improves ergonomics when declaring your components. That's how simple this facade is. A few macros provide additional support creating and using `Props` more like case classes if that's important to you.
+That's how simple this facade is. A few macros provide additional support creating and using `Props` more like case classes if that's important to you.
 
-When you use SFC1, it provides an `apply` method that calls react's `createElement` for you. Remember, react needs to control when the props are applied to the rendering function, not you. A react "element" is really just a data structure that is a description of the element's rendering logic and props. The actual rendered element is created under react's control, not yours. There are other component specification patterns you can use as well or you can easily create your own like the above. See the docs.
+Remember, react needs to control when the props are applied to the rendering function, not you. A react "element" is really just a data structure that is a description of the element's rendering logic and props. The actual rendered element is created under react's control, not yours. There are other component specification patterns you can use as well or you can easily create your own like the above. See the docs.
 
 If you want to ensure your component only renders when the props change, use
-`React.memo()` to create your component. React.memo uses `Object.is` for equality
-checking--which means it checks for exactly the same object. A pimp is available
-for memo. You need to take into account js's notion of equality when using
-function components and hooks.
+`memo()`. `memo` uses shallow compare
+checking to see if the props have changed. A pimp is available
+for memo to apply it as syntax. You need to take into account js's notion of equality when using
+function components and hooks or provider your comparator, something useful when you have
+scala objects in your props.
 
-```scala
-val sfc = SFC1[Props] { props =>
-    div("hello " + props.name)
-}.memo
-```
-
-Add state and other effects to your component  using react hooks just like you normally would.
+Add state and other effects to your component using react hooks just like you normally would.
 
 The facade implementation in scala.js is only about 50 lines of code and is
 easily maintained. Various conversion and extension methods are provided to make it easier to use.
@@ -196,6 +193,7 @@ There are many modules available as most of the focus has been on bindings. All 
 
 * apollo
 * bootstrap
+* dataloader
 * data-validation
 * express
 * fabric
@@ -358,7 +356,7 @@ react based, but reactive.
 
 # License
 
-MIT license. See the LICENSE file.
+MIT license. [![GitHub license](https://img.shields.io/badge/license-MIT-lightgrey.svg?maxAge=2592000)](https://raw.githubusercontent.com/aappddeevv/scalajs-reaction/master/LICENSE)
 
 Copyright 2018 The Trapelo Group LLC.
 

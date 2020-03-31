@@ -4,8 +4,7 @@ title: React Native
 ---
 
 React native support works fine but this section has not been updated with the most
-recent API. Also, some sbt plugins have been published to help copy and manage
-the scala.js artifacts without defining your plugins like shown below.
+recent API. Also, some sbt plugins have been published to help copy and 
 
 You can easily create react native applications using this library. react native
 uses a "runner" application (unlike flutter) to host the javascript execution

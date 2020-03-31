@@ -180,10 +180,10 @@ object ApolloProvider {
   trait Props extends ApolloContextValue
 
   def apply(props: Props)(children: ReactNode*) =
-    react.createElement(JS, props)(children: _*)
+    react.createElementN(JS, props)(children: _*)
 
   def apply(c: apollo_client.ApolloClient)(children: ReactNode*) =
-    react.createElement(JS, new Props { client = c })(children: _*)
+    react.createElementN(JS, new Props { client = c })(children: _*)
 }
 
 // @apollo/react-common

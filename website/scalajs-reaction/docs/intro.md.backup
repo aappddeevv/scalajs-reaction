@@ -16,7 +16,7 @@ to any part of the component hierarchy.
 
 A scalajs-reaction component is just a javascript function and you can easily 
 create that using standard scala.js code. Nothing new is invented in this
-facade.
+facade. It is considered a "thin" facade.
 
 The library is designed to create components that can be used and consumed by
 other react components in javascript and scala seamlessly.

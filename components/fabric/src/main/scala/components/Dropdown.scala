@@ -49,27 +49,29 @@ object Dropdown {
     //var onChanged: js.UndefOr[js.Function1[IDropdownOption, Unit] | js.Function2[IDropdownOption, Int, Unit]] = js.undefined
     var onChange: js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] = js.undefined
     //var onChanged: js.UndefOr[js.Function2[IDropdownOption, js.UndefOr[Int], Unit]] = js.undefined
-    var onDismiss: js.UndefOr[js.Function0[Unit]]               = js.undefined
+    var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onRenderPlaceholder: js.UndefOr[IRenderFunction[Props]] = js.undefined
     var onRenderTitle: js.UndefOr[IRenderFunction[IDropdownOption] | IRenderFunction[js.Array[IDropdownOption]]] =
       js.undefined
     var onRenderCaretDown: js.UndefOr[IRenderFunction[IDropdownOption]] = js.undefined
-    var dropdownWidth: js.UndefOr[Int]                                  = js.undefined
+    var dropdownWidth: js.UndefOr[Int] = js.undefined
 
     /** Responsive mode */
-    var responsiveMode: js.UndefOr[ResponsiveMode]                        = js.undefined
-    var multiselect: js.UndefOr[Boolean]                                  = js.undefined
+    var responsiveMode: js.UndefOr[ResponsiveMode] = js.undefined
+    //var multiselect: js.UndefOr[Boolean]                                  = js.undefined
     //var defaultSelectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]] = js.undefined
     //var selectedKeys: js.UndefOr[js.Array[String] | js.Array[Int]]        = js.undefined
-    var multiSelectDelimiter: js.UndefOr[String]                          = js.undefined
+    var multiSelectDelimiter: js.UndefOr[String] = js.undefined
     //var isDisabled: js.UndefOr[Boolean]                                   = js.undefined
 
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-    var theme: js.UndefOr[ITheme]                                      = js.undefined
+    var theme: js.UndefOr[ITheme] = js.undefined
   }
- 
-  def OnChange(f: (ReactFormEvent[dom.html.Div], IDropdownOption, Int) => Unit): js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] =
-  js.defined((e,o,i) => f(e,o,i))
+
+  def OnChange(
+      f: (ReactFormEvent[dom.html.Div], IDropdownOption, Int) => Unit
+    ): js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] =
+    js.defined((e, o, i) => f(e, o, i))
 
   trait Styles extends IStyleSetTag {
     var root: js.UndefOr[IStyle] = js.undefined
@@ -96,18 +98,18 @@ object Dropdown {
   trait Subs extends IStyleSetTag {
     var panel: js.UndefOr[IStyleFunctionOrObject[Panel.StyleProps, Panel.Styles]] = js.undefined
     var label: js.UndefOr[IStyleFunctionOrObject[Label.StyleProps, Label.Styles]] = js.undefined
-   var multiSelectItem: js.UndefOr[IStyleFunctionOrObject[Checkbox.StyleProps, Checkbox.Styles]] = js.undefined
+    var multiSelectItem: js.UndefOr[IStyleFunctionOrObject[Checkbox.StyleProps, Checkbox.Styles]] = js.undefined
 
-}
+  }
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined
-  var hasError: js.UndefOr[Boolean] = js.undefined
-  var hasLabel: js.UndefOr[Boolean] = js.undefined
-  var isRenderingPlaceholder: js.UndefOr[Boolean] = js.undefined
-  var panelClassName: js.UndefOr[String] = js.undefined
-  var calloutClassName: js.UndefOr[String] = js.undefined
-  //var calloutRenderEdge: js.UndefOr[RectangleEdge] = js.undefined
+    var hasError: js.UndefOr[Boolean] = js.undefined
+    var hasLabel: js.UndefOr[Boolean] = js.undefined
+    var isRenderingPlaceholder: js.UndefOr[Boolean] = js.undefined
+    var panelClassName: js.UndefOr[String] = js.undefined
+    var calloutClassName: js.UndefOr[String] = js.undefined
+    //var calloutRenderEdge: js.UndefOr[RectangleEdge] = js.undefined
   }
 
 }
