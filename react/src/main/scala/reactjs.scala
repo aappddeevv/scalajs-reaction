@@ -112,31 +112,46 @@ trait DynamicImport extends js.Object {
 }
 
 /** Magnet pattern to create a friendly arg converter for effect hooks. As much
-  * as possible these need to be casts vs creating new functions.
+  * as possible these need to be casts vs allocations.
   */
 @js.native
 trait EffectArg extends js.Object
 
+/** Implicit conversions that are very careful on the return value. */
 object EffectArg {
 
-  @inline implicit def fromThunkJS(f: js.Function0[Unit]): EffectArg =
-    f.asInstanceOf[EffectArg]
+  /** Convert a scala EffectCallbackArg to js using a proxy approach.
+    * Use a general return of A vs unit to be more friendly. Requires
+    * 2 scala => js function conversions.
+    */
+  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () =>
+    {
+      //val callback: js.Function0[A] = arg()
+      //
+      { () => arg(); () }: js.Function0[Unit]
+    }
+  }: js.Function0[js.Function0[Unit]]
 
-  @inline implicit def fromThunk(f: () => Unit): EffectArg =
-    js.Any.fromFunction0[Unit](f).asInstanceOf[EffectArg]
+  //
+  @inline implicit def fromThunkJS[U](f: js.Function0[U]): EffectArg =
+    js.Any.fromFunction0[Unit](() => { f(); () }).asInstanceOf[EffectArg]
+
+  @inline implicit def fromThunk[U](f: () => U): EffectArg =
+    js.Any.fromFunction0[Unit](() => { f(); () }).asInstanceOf[EffectArg]
 
   // this caused too many errors/warinings from reactjs about a bad return value
   //@inline implicit def fromAny[A](f: () => A): EffectArg =
   //  js.Any.fromFunction0[A](f).asInstanceOf[EffectArg]
 
-  @inline implicit def fromThunkCb(f: () => (() => Unit)): EffectArg =
-    convertEffectCallbackArg(f).asInstanceOf[EffectArg]
+  // @inline implicit def fromThunkCb(f: () => (() => Unit)): EffectArg =
+  //   convertEffectCallbackArg(f).asInstanceOf[EffectArg]
 
   @inline implicit def fromThunkCbA[A](f: () => (() => A)): EffectArg =
     convertEffectCallbackArg(f).asInstanceOf[EffectArg]
 
   @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
-    ({ () => f() }: js.Function0[js.Function0[A]]).asInstanceOf[EffectArg]
+    ({ () => { () => f(); () }: js.Function0[Unit] }: js.Function0[js.Function0[Unit]])
+      .asInstanceOf[EffectArg]
 }
 
 @js.native

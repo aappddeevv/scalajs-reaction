@@ -46,9 +46,7 @@ object Dropdown {
 
   trait Props extends ISelectableDroppableTextProps[IDropdownOption, dom.html.Div] with ReactJSProps {
     //var placeholder: js.UndefOr[String] = js.undefined
-    //var onChanged: js.UndefOr[js.Function1[IDropdownOption, Unit] | js.Function2[IDropdownOption, Int, Unit]] = js.undefined
-    var onChange: js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] = js.undefined
-    //var onChanged: js.UndefOr[js.Function2[IDropdownOption, js.UndefOr[Int], Unit]] = js.undefined
+    var onChange: js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], js.UndefOr[IDropdownOption], js.UndefOr[Int], Unit]] = js.undefined
     var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onRenderPlaceholder: js.UndefOr[IRenderFunction[Props]] = js.undefined
     var onRenderTitle: js.UndefOr[IRenderFunction[IDropdownOption] | IRenderFunction[js.Array[IDropdownOption]]] =
@@ -69,8 +67,8 @@ object Dropdown {
   }
 
   def OnChange(
-      f: (ReactFormEvent[dom.html.Div], IDropdownOption, Int) => Unit
-    ): js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], IDropdownOption, Int, Unit]] =
+      f: (ReactFormEvent[dom.html.Div], js.UndefOr[IDropdownOption], js.UndefOr[Int]) => Unit
+    ): js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], js.UndefOr[IDropdownOption], js.UndefOr[Int], Unit]] =
     js.defined((e, o, i) => f(e, o, i))
 
   trait Styles extends IStyleSetTag {

@@ -384,28 +384,28 @@ trait RawStyleBase extends RawFontStyle {
   var navLeft: js.UndefOr[String]       = js.undefined
   var navRight: js.UndefOr[String]      = js.undefined
   var navUp: js.UndefOr[String]         = js.undefined
-  var outlineOffset: js.UndefOr[String] = js.undefined
+  var outlineOffset: js.UndefOr[Int|String] = js.undefined
   var resize: js.UndefOr[String]        = js.undefined
   var textOverflow: js.UndefOr[String]  = js.undefined
   /* Grid Layout Level 1 - CR */
   var grid: js.UndefOr[String]                = js.undefined
   var gridArea: js.UndefOr[String]            = js.undefined
-  var gridAutoColumns: js.UndefOr[String]     = js.undefined
-  var gridAutoFlow: js.UndefOr[String]        = js.undefined
-  var gridAutoRows: js.UndefOr[String]        = js.undefined
-  var gridColumn: js.UndefOr[String]          = js.undefined
-  var gridColumnEnd: js.UndefOr[String]       = js.undefined
-  var gridColumnGap: js.UndefOr[String]       = js.undefined
-  var gridColumnStart: js.UndefOr[String]     = js.undefined
-  var gridGap: js.UndefOr[String]             = js.undefined
-  var gridRow: js.UndefOr[String]             = js.undefined
-  var gridRowEnd: js.UndefOr[String]          = js.undefined
-  var gridRowGap: js.UndefOr[String]          = js.undefined
-  var gridRowStart: js.UndefOr[String]        = js.undefined
+  var gridAutoColumns: js.UndefOr[Int|String]     = js.undefined
+  var gridAutoFlow: js.UndefOr[Int|String]        = js.undefined
+  var gridAutoRows: js.UndefOr[Int|String]        = js.undefined
+  var gridColumn: js.UndefOr[Int|String]          = js.undefined
+  var gridColumnEnd: js.UndefOr[Int|String]       = js.undefined
+  var gridColumnGap: js.UndefOr[Int|String]       = js.undefined
+  var gridColumnStart: js.UndefOr[Int|String]     = js.undefined
+  var gridGap: js.UndefOr[Int|String]             = js.undefined
+  var gridRow: js.UndefOr[Int|String]             = js.undefined
+  var gridRowEnd: js.UndefOr[Int|String]          = js.undefined
+  var gridRowGap: js.UndefOr[Int|String]          = js.undefined
+  var gridRowStart: js.UndefOr[Int|String]        = js.undefined
   var gridTemplate: js.UndefOr[String]        = js.undefined
   var gridTemplateAreas: js.UndefOr[String]   = js.undefined
-  var gridTemplateColumns: js.UndefOr[String] = js.undefined
-  var gridTemplateRows: js.UndefOr[String]    = js.undefined
+  var gridTemplateColumns: js.UndefOr[Int|String] = js.undefined
+  var gridTemplateRows: js.UndefOr[Int|String]    = js.undefined
   /* Will Change Level 1 - CR */
   var willChange: js.UndefOr[String] = js.undefined
   /* Text Level 3 - LC */

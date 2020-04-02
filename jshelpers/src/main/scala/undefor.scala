@@ -19,10 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+package jshelpers
 
 import scala.scalajs.js
-
 import js._
 
 /** Handle js.UndefOr. Note that js.Undef.orNull exists in scala.js 1.0 */
@@ -73,51 +72,54 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
   def filterEmpty = a.filter(str => str != "" && str != null)
 }
 
-// final case class JsUndefOrAOrNullOps[A](val a: UndefOr[A|Null])
-//     extends UndefOrCommon[A|Null] {
-
-//   /** Push null into UndefOr as undefined if its null, otherwise A. */
-//   def flatten: js.UndefOr[A] = a.flatMap(_.asInstanceOf[js.Any] match {
-//     // could not use the other implicit in OrNullOps :-(
-//     case null => js.undefined
-//     case x => js.defined(x.asInstanceOf[A])
-//   })
-// }
-
 final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
-  def orTrue: Boolean  = a.getOrElse(true)
+  def orTrue: Boolean = a.getOrElse(true)
   def orFalse: Boolean = a.getOrElse(false)
 
   /** Flip the boolean if defined. */
   def flip: UndefOr[Boolean] = a.map(!_)
 }
 
-/** Handled js.UndefOr[T|Null] directly vs needing to flatmap into it. */
+/** Handled js.UndefOr[T|Null] directly vs needing to flatmap into it. Don't forget that
+  * scala.js has `anUndefOr.orNull` to convert to the value or null but that's an access
+  * value method versus finangle types.
+  */
 final class JsUndefOrNullOps[T](val a: UndefOr[T | Null]) extends AnyVal {
 
   /** Treat null as undefined and change type from T|Null to T. */
-  def absorbNull: js.UndefOr[T] = a.flatMap { value =>
+  @inline def absorbNull: js.UndefOr[T] = a.flatMap { value =>
     if (value == null) js.undefined
     else value.asInstanceOf[js.UndefOr[T]]
   }
 
+  /** Flatten the UndefOr and Null to UndefOr only. */
+  @inline def flatten = absorbNull
+
   /** Absorb the null so that js.UndefOr[T|Null] => js.UndefOr[T] */
-  def ?? = absorbNull
+  @inline def ?? = absorbNull
 
   /** T|Null may still have T not being truthy, so absorb null and non-truthiness => js.undefined. */
-  def absorbNullKeepTruthy: js.UndefOr[T] = a flatMap { value =>
+  @inline def absorbNullKeepTruthy: js.UndefOr[T] = a flatMap { value =>
     if (value == null) js.undefined
     else new JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
   }
+
+  /** Absorb the `js.UndefOr` leaving Null. */
+  @inline def absorbUndef: T | Null =
+    if (a.isEmpty) null.asInstanceOf[T | Null] else a.asInstanceOf[T | Null]
+
+  /** `flatten` but leave the UndefOr */
+  @inline def flattenUndefOr = absorbUndef
+
 }
 
 /** Note that js.UndefOr and js.| already have a `.orNull` method. */
 final class JsUndefOrOps[A](val a: UndefOr[A]) extends UndefOrCommon[A] {}
 
 trait JsUndefOrSyntax {
-  @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A])   = new JsUndefOrOps(a)
+  @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A]) = new JsUndefOrOps(a)
   @inline implicit def jsUndefOrStringOps(a: js.UndefOr[String]) = new JsUndefOrStringOps(a)
 //  implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
   @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]) = new JsUndefOrNullOps[A](a)
-  @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean])  = new JsUndefOrBooleanOps(a)
+  @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]) = new JsUndefOrBooleanOps(a)
 }

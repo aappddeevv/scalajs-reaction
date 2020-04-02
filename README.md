@@ -189,12 +189,13 @@ npm i --save react-dom
 React 16.8+, the one with hooks, is required. Some experimental APIs are supported
 so you may want to use the latest experimental release.
 
-There are many modules available as most of the focus has been on bindings. All of these libraries use the group name `ttg`:
+There are many modules available as most of the focus has been on hand-crafted bindings in order
+to improve ergonomics. All of these libraries use the group name `ttg`:
 
 * apollo
 * bootstrap
 * dataloader
-* data-validation
+* data-validation (applicative data validation)
 * express
 * fabric
 * fabric-experiments
@@ -209,6 +210,7 @@ There are many modules available as most of the focus has been on bindings. All 
 * pathtoregexp
 * prop-types
 * react
+* react-content-loader
 * react-dom
 * react-big-calendar
 * react-native-nativebase
@@ -219,9 +221,8 @@ There are many modules available as most of the focus has been on bindings. All 
 * react-helmet
 * react-flexbox-grid
 * react-router-dom
-* router: Homegrown router. Just use react-router-dom.
 * vdom
-* whydidyourender
+* whydidyourender (use include/exclude regexs)
 
 Some of the external libs have just enough scala.js to write an app with but
 they are not fully fleshed out. In most cases, there are enhancements
@@ -250,12 +251,16 @@ Integrated API documentation:
 * [all basic modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
 
 Sometimes the documentation generation process does not work so
-if you need documents it is probably best to generate them
-locally. You can generate docs for each project separately
-using sbt's `react/doc` task or `doc` for each project
-to generate their documents. Or you can generate integrated documents 
-using unidoc with the sbt command `docs/unidoc`. Then 
-`xdg-open website/scalajs-reaction/static/api/index.html`.
+if you need docs it is probably best to generate them
+locally. 
+
+Generate integrated documents using unidoc then open the toplevel page: 
+
+```sh
+get clone https://github.com/aappdddeevv/scalajs-reaction
+sbt "docs/unidoc"
+xdg-open website/scalajs-reaction/static/api/index.html
+```
 
 # Demo
 

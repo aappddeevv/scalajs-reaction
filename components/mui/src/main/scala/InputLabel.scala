@@ -34,7 +34,7 @@ object InputLabel {
   object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   @js.native
   sealed trait Margin extends js.Any

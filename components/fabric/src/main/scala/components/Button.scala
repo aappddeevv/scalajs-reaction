@@ -113,8 +113,9 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "DefaultButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+    def apply(props: Props = null)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
+
   }
 
   object Primary {
@@ -124,6 +125,8 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
+
   }
 
   object Action {
@@ -133,6 +136,8 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
+
   }
 
   object CommandBar {
@@ -142,6 +147,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
   }
 
   object Command {
@@ -151,6 +157,8 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
+
   }
 
   object Compound {
@@ -160,6 +168,8 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
+
   }
 
   object MessageBar {
@@ -169,6 +179,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
+    def only(props: Props) = createElement0(JS,props)
   }
 
   object Icon {

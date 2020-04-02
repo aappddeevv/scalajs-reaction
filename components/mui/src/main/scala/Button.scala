@@ -36,10 +36,10 @@ object Button {
 
   @js.native
   @JSImport("@material-ui/core/Button", JSImport.Default)
-  object ButtonJS extends ReactJsComponent
+  object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(ButtonJS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   @js.native
   sealed trait Color extends js.Any

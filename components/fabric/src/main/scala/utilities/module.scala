@@ -89,15 +89,28 @@ trait module_base extends js.Object {
   def classNamesFunction[P <: js.Object, SS <: IStyleSetTag, CN <: IClassNamesTag](
     ): js.Function2[js.UndefOr[IStyleFunctionOrObject[P, SS]], js.UndefOr[P], CN] = js.native
 
-  def mergeSettings(oldSettings: Settings, newSettings: Settings | SettingsFunction): Settings = js.native
-  def mergeScopedSettings(oldeSettings: Settings, newSettings: Settings | SettingsFunction): Settings = js.native
+  def mergeSettings(
+      oldSettings: Settings,
+      newSettings: Settings | SettingsFunction
+    ): Settings = js.native
+  def mergeScopedSettings(
+      oldeSettings: Settings,
+      newSettings: Settings | SettingsFunction
+    ): Settings = js.native
 
   //def mergeCustomizations:
 
-  def filteredAssign(isAllowed: js.Function1[String, Boolean], target: js.Any, args: js.Any*): js.Any = js.native
+  def filteredAssign(
+      isAllowed: js.Function1[String, Boolean],
+      target: js.Any,
+      args: js.Any*
+    ): js.Any = js.native
 
   /** Format using {0} type placement specifiers. */
-  def format(s: String, values: js.Any*): String = js.native
+  def format(
+      s: String,
+      values: js.Any*
+    ): String = js.native
 
   /** Deep merge. */
   def merge[T <: js.Object](args: T | js.Object | js.Dynamic | Null | Unit*): T = js.native
@@ -105,7 +118,7 @@ trait module_base extends js.Object {
 
 @js.native
 @JSImport("@uifabric/utilities", JSImport.Namespace)
-object module extends module_base
+object module extends module_base with customizer_base
 
 //@deriveForwardingTrait(module)
 //trait module_exports

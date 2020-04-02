@@ -36,10 +36,10 @@ import vdom._
 object TextField {
   @JSImport("@material-ui/core/TextField", JSImport.Default)
   @js.native
-  object TextFieldJS extends ReactJsComponent
+  object JS extends ReactJsComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
-    createElement(TextFieldJS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 
   @js.native
   sealed trait Margin extends js.Any

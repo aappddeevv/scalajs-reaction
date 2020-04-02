@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+package jshelpers 
 
 import scala.scalajs.js
 import js.|
@@ -33,15 +33,15 @@ final case class JsObjectOps[A <: js.Object](o: A) {
   /** Shallow merge ! If you are merging multiple levels of props, this is not
    * what you want to use.
    */
-  def combine(that: js.UndefOr[A])               = react.merge[A](o, that)
+  def combine(that: js.UndefOr[A])               = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
   /** Combine with a js.Dynamic explicitly. */
-  def combineDynamic(that: js.Dynamic)           = react.merge[A](o, that.asInstanceOf[A])
+  def combineDynamic(that: js.Dynamic)           = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
   /** Combine with a generic js object or undefined. */
-  def combineGeneric(that: js.UndefOr[js.Object])            = react.merge[A](o, that.asInstanceOf[A])
+  def combineGeneric(that: js.UndefOr[js.Object])            = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
   /** Combine with something! Client takes ownership to make sure `that` is suitable to be combined. */
-  def unsafeCombine(that: js.Any) = react.merge[A](o, that.asInstanceOf[A])
+  def unsafeCombine(that: js.Any) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
   /** Combine with a generic js object and cast. */
-  def combineGenericTo[B <: js.Object](that: js.Object) = react.merge[js.Object](o, that).asInstanceOf[B]
+  def combineGenericTo[B <: js.Object](that: js.Object) = js.Object.assign(o, that).asInstanceOf[B]
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
   def as[T <: js.Object] = o.asInstanceOf[T]
 }

@@ -19,29 +19,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+package jshelpers 
 
-import scala.scalajs.js
+trait AllInstances
 
-/** If you want js.UndefOr, use JSConverters `.toOption`and `.orUndefined`. */
-final class OptionOps[T](private val a: Option[T]) extends AnyVal {
-
-  /** If Some and value is truthy according to JS, then keep it, otherwise become a None. */
-  def filterTruthy: Option[T] =
-    a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
-
-  /** Filter nulls out in case it *might* be null.
-   * @deprecated USe [[filterNull]].
-   */
-  def toNonNullOption = a.filter(_ != null)
-
-  /** Filter nulls out in case it *might* be null. */
-  def filterNull = a.filter(_ != null)
-
-  /** If Some, keep the value, else set the value to null. */
-  def orElseNull = a orElse Some(null.asInstanceOf[T])
-}
-
-trait OptionSyntax {
-  @inline implicit def optionSyntax[T](a: Option[T]): OptionOps[T] = new OptionOps(a)
+/** Instances is the wrong concept here as these are not typeclass
+ * instances--but close enough as they are not syntax extensions "'element'
+ * converters" would be better similiar to `JSConverters` in scala.js.
+ */
+object instances {
+  object all   extends AllInstances
 }

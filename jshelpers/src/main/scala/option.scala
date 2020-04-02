@@ -19,34 +19,29 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
-package native
+package jshelpers 
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
 
-object KeyboardAvoidingView {
+/** If you want js.UndefOr, use JSConverters `.toOption`and `.orUndefined`. */
+final class OptionOps[T](private val a: Option[T]) extends AnyVal {
 
-  @js.native
-  @JSImport("react-native", "KeyboardAvoidingView")
-  object JS extends ReactJsComponent
+  /** If Some and value is truthy according to JS, then keep it, otherwise become a None. */
+  def filterTruthy: Option[T] =
+    a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  /** Filter nulls out in case it *might* be null.
+   * @deprecated USe [[filterNull]].
+   */
+  def toNonNullOption = a.filter(_ != null)
 
-  trait Props extends View.Props {
-    var keyboardVerticalOffset: js.UndefOr[Double]   = js.undefined
-    var behavior: js.UndefOr[Behavior]               = js.undefined
-    var contentContainerStyle: js.UndefOr[ViewStyle] = js.undefined
-    var enabled: js.UndefOr[Boolean]                 = js.undefined
-  }
+  /** Filter nulls out in case it *might* be null. */
+  def filterNull = a.filter(_ != null)
 
+  /** If Some, keep the value, else set the value to null. */
+  def orElseNull = a orElse Some(null.asInstanceOf[T])
 }
 
-@js.native
-sealed trait Behavior extends js.Any
-object Behavior {
-  val height   = "height".asInstanceOf[Behavior]
-  val position = "position".asInstanceOf[Behavior]
-  val padding  = "padding".asInstanceOf[Behavior]
+trait OptionSyntax {
+  @inline implicit def optionSyntax[T](a: Option[T]): OptionOps[T] = new OptionOps(a)
 }

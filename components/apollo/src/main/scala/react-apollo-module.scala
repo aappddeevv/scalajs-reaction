@@ -50,6 +50,9 @@ trait ObservableQueryFields[T <: js.Any, TVars <: js.Object] extends js.Object {
   def startPolling(pollInterval: Int): Unit                               = js.native
 }
 
+/** Is data undefined or null when there is no data?
+ *  @see https://github.com/apollographql/react-apollo/pull/3388
+ */
 // @apollo/react-common
 @js.native
 trait QueryResult[T <: js.Any, TVars <: js.Object] extends ObservableQueryFields[T, TVars] {
@@ -57,6 +60,7 @@ trait QueryResult[T <: js.Any, TVars <: js.Object] extends ObservableQueryFields
   // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
   // ts defs say T | undefined but not null !?!?
   val data: js.UndefOr[T]            = js.native
+  //val data: T | Null = js.native
   val error: js.UndefOr[ApolloError] = js.native
   val loading: Boolean               = js.native
   val networkStatus: NetworkStatus   = js.native
@@ -69,10 +73,22 @@ object QueryResult {
       !qr.loading &&
         qr.error.isEmpty &&
         qr.data.isDefined &&
+        //qr.data != null &&
         qr.networkStatus == NetworkStatus.ready
     def finishedRemoteCall =
       !qr.loading && qr.networkStatus == NetworkStatus.ready
   }
+}
+
+/** Because there are some duplicative types in these sigs
+ *  a helper class helps you do things with less type noise.
+ */
+case class UseQuery[T <: js.Any, TVars <: js.Object]() {
+  def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T,TVars]|js.Dynamic]=js.undefined) =
+     module.useQuery[T,TVars](query, options)
+  def makeVars(vars: js.UndefOr[TVars|js.Dynamic]=js.undefined) = new QueryHookOptions[T,TVars] { 
+    variables = vars    
+  } 
 }
 
 @js.native

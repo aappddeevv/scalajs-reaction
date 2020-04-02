@@ -32,5 +32,5 @@ object ImageBackground {
   object JS extends ReactJsComponent
 
   def apply(props: Image.Props = null)(children: ReactNode*) =
-    createElement(JS, props)(children: _*)
+    createElementN(JS, props)(children: _*)
 }

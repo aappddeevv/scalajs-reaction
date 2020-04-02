@@ -23,35 +23,34 @@ package fabric
 package utilities
 
 import scala.scalajs.js
-
+import js.|
 import js.annotation._
 
 import react._
 
 /** What you get if you use: `fields=["styles", "theme"]`.
- */
+  */
 @js.native
 trait StandardSettings extends js.Object {
   val styles: js.Object = js.native
-  val theme: ITheme     = js.native
+  val theme: ITheme = js.native
 }
 
 @js.native
 trait ICustomizations extends js.Object {
-  def settings[T <: Settings]: T               = js.native
+  val settings: Settings = js.native
   val scopedSettings: js.Dictionary[js.Object] = js.native
-  var inCustomizerContext: js.UndefOr[Boolean] = js.native
+  val inCustomizerContext: js.UndefOr[Boolean] = js.native
 }
 
-@js.native
 trait CustomizerContext extends js.Object {
-  val customizations: ICustomizations = js.native
+  val customizations: ICustomizations
 }
 
 /** In js, this is a class with all static methods */
-@js.native
-@JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
-class Customizations() extends js.Object
+// @js.native
+// @JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
+// class Customizations() extends js.Object
 
 @js.native
 @JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
@@ -59,19 +58,54 @@ object Customizations extends js.Object {
   def reset(): Unit = js.native
   // static!, T is based on fields so write your own object
   def getSettings[T <: js.Object](
-    fields: js.Array[String],
-    scopeName: js.UndefOr[String] = js.undefined,
-    localSettings: js.UndefOr[ICustomizations] = js.undefined
-  ): T = js.native
-  def applyScopedSettinsg(scopeName: String, settings: Settings): Unit = js.native
-  def applyBatchedUpdates(code: js.Function0[Unit], suppressUpdates: js.UndefOr[Boolean]=js.undefined): Unit = js.native
+      fields: js.Array[String],
+      scopeName: js.UndefOr[String] = js.undefined,
+      localSettings: js.UndefOr[ICustomizations] = js.undefined
+    ): T = js.native
+  def applyScopedSettinsg(
+      scopeName: String,
+      settings: Settings
+    ): Unit = js.native
+  def applyBatchedUpdates(
+      code: js.Function0[Unit],
+      suppressUpdates: js.UndefOr[Boolean] = js.undefined
+    ): Unit = js.native
   def applySettings(settings: Settings): Unit = js.native
   def observe(cb: js.Function0[Unit]): Unit = js.native
   def unobserve(cb: js.Function0[Unit]): Unit = js.native
-
 
 }
 
 @js.native
 @JSImport("@uifabric/utilities/lib/customizations/CustomizerContext", "CustomizerContext")
 object CustomizerContext extends ReactContext[CustomizerContext]
+
+object Customizer {
+  @js.native
+  @JSImport("@uifabric/utilities/lib/customizations/Customizer", "Customizer")
+  object JS extends ReactJSComponent
+
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+
+  trait Props extends js.Object {
+    var settings: js.UndefOr[Settings | SettingsFunction] = js.undefined
+    var scopedSettings: js.UndefOr[Settings | SettingsFunction] = js.undefined
+    var contextTransform: js.UndefOr[js.Function1[CustomizerContext, CustomizerContext]] = js.undefined
+  }
+}
+
+@js.native
+trait customizer_base extends js.Object {
+  def mergeSettings(
+      old: Settings | SettingsFunction,
+      more: js.UndefOr[Settings | SettingsFunction] = js.native
+    ): Settings = js.native
+  def mergeScopedSettings(
+      old: Settings | SettingsFunction,
+      more: js.UndefOr[Settings | SettingsFunction] = js.native
+    ): Settings = js.native
+  def mergeCustomizations(
+      old: ICustomizations,
+      parent: CustomizerContext
+    ): CustomizerContext = js.native
+}

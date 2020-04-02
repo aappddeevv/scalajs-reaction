@@ -23,15 +23,10 @@ package fabric
 package experiments
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
-import vdom._
-
+import react.vdom._
 import fabric.components._
 import fabric.styling._
 

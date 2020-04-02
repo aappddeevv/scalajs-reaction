@@ -8,7 +8,7 @@ You need to add in the API and demo files into the static directory prior to run
 
 In the toplevel project directory:
 
-* copy in api files: `sbt copyAPI`
+* copy in api files: `sbt "docs/unidoc"`
 * copy in demo: `npm run examples`
 
 ### Deployment

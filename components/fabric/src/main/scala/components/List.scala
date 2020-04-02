@@ -81,18 +81,18 @@ object List {
     var renderCount: js.UndefOr[Int] = js.undefined
   }
 
-  def onItemInvoked[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => Unit): OII[T] =
-    js.Any.fromFunction3(f)
+  def OnItemInvoked[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => Unit): js.UndefOr[OII[T]] =
+    js.defined(js.Any.fromFunction3(f))
 
   type OII[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
 
-  def onActiveItemChanged[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => Unit): OAIC[T] =
-    js.Any.fromFunction3(f)
+  def OnActiveItemChanged[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => Unit): js.UndefOr[OAIC[T]] =
+    js.defined(js.Any.fromFunction3(f))
 
   type OAIC[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
 
-  def onColumnHeaderClick[T <: js.Object](f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit): OCHC[T] =
-    js.Any.fromFunction2(f)
+  def OnColumnHeaderClick[T <: js.Object](f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit): js.UndefOr[OCHC[T]] =
+    js.defined(js.Any.fromFunction2(f))
 
   type OCHC[T <: js.Object] =
     js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]

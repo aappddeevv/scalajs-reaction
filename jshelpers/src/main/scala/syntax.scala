@@ -19,34 +19,34 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
-package native
+package jshelpers 
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
+import js._
 
-object KeyboardAvoidingView {
+// order matters here based on implicit search through hierarchy
+trait AllSyntax
+    extends JsDynamicSyntax
+    with JsObjectSyntax
+    with JsAnySyntax
+    with OrNullSyntax
+    with ScalaMappedSyntax
+    with OptionSyntax
+    with JsUndefOrSyntax
+    with MiscOrSyntax
+    with JSPromiseSyntax
+    with OrSyntax
 
-  @js.native
-  @JSImport("react-native", "KeyboardAvoidingView")
-  object JS extends ReactJsComponent
-
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
-
-  trait Props extends View.Props {
-    var keyboardVerticalOffset: js.UndefOr[Double]   = js.undefined
-    var behavior: js.UndefOr[Behavior]               = js.undefined
-    var contentContainerStyle: js.UndefOr[ViewStyle] = js.undefined
-    var enabled: js.UndefOr[Boolean]                 = js.undefined
-  }
-
-}
-
-@js.native
-sealed trait Behavior extends js.Any
-object Behavior {
-  val height   = "height".asInstanceOf[Behavior]
-  val position = "position".asInstanceOf[Behavior]
-  val padding  = "padding".asInstanceOf[Behavior]
+object syntax {
+  object all extends AllSyntax
+  object jsdynamic extends JsDynamicSyntax
+  object jsundefor extends JsUndefOrSyntax
+  object jsobject extends JsObjectSyntax
+  object jsany extends JsAnySyntax
+  object scalaany extends ScalaMappedSyntax
+  object ornull extends OrNullSyntax
+  object option extends OptionSyntax
+  object miscor extends MiscOrSyntax
+  object jspromise extends JSPromiseSyntax
+  object or extends OrSyntax
 }

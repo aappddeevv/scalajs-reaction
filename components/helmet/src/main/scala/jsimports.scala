@@ -47,7 +47,7 @@ object Helmet {
       title = wtitle
     })
 
-  trait Props extends js.Object {
+  @jsenrich trait Props extends js.Object {
     var async: js.UndefOr[Boolean]                   = js.undefined
     var base: js.UndefOr[js.Any]                     = js.undefined
     var defaultTitle: js.UndefOr[String]             = js.undefined

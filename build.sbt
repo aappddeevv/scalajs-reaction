@@ -123,14 +123,17 @@ lazy val root = project
     express,
     //examples,
     //docs,
-	//`react-macros`
+	`react-macros`,
     luxon,dataloader,
+    jshelpers,
+    `react-content-loader`
   )
 
 lazy val `react` = project
   .settings(std_settings("react", "reactjs package"))
   .settings(buildinfo_settings("react"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(jshelpers)
 
 lazy val native = project
   .settings(std_settings("native", "reactjs native package"))
@@ -228,6 +231,12 @@ lazy val luxon = project.in(file("components/luxon"))
 .dependsOn(react, `react-macros`)
 .enablePlugins(ScalaJSPlugin)
 
+lazy val `react-content-loader` = project.in(file("components/react-content-loader"))
+.settings(std_settings("react-content-loader", "Placeholders"))
+.settings(buildinfo_settings("react_content_loader"))
+.dependsOn(react, `react-macros`,vdom)
+.enablePlugins(ScalaJSPlugin)
+
 lazy val dataloader = project.in(file("components/dataloader"))
 .settings(std_settings("dataloader", "FB dataloader"))
 .settings(buildinfo_settings("dataloader"))
@@ -294,7 +303,7 @@ lazy val `react-redux` = project
 
 lazy val helmet = project.in(file("components/helmet"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom)
+  .dependsOn(react, vdom, `react-macros`)
   .settings(std_settings("helmet", "react-helmet"))
   .settings(buildinfo_settings("helmet"))
 
@@ -329,6 +338,11 @@ lazy val mui = project.in(file("components/mui"))
   .dependsOn(react, vdom, jss)
   .settings(std_settings("mui", "material ui facade."))
   .settings(buildinfo_settings("mui"))
+
+lazy val jshelpers = project.in(file("jshelpers"))
+	.enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+	.settings(std_settings("jshelpers", "js data casting and conversion helpers"))
+	.settings(buildinfo_settings("jshelpers"))
 
 lazy val router = project
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -387,6 +401,7 @@ lazy val docs = project
   .enablePlugins(ScalaJSPlugin, ScalaUnidocPlugin)
   // keep this list in sync with root, or filter the dependencies directly from root...
   .dependsOn(
+	jshelpers,
  helmet,
     `fabric-experiments`,
     native,
@@ -415,6 +430,7 @@ lazy val docs = project
     whydidyourender,
     luxon,
     dataloader
+    ,`react-content-loader`
 )
 
 addCommandAlias("prepare", "headerCreate; fix; fmt")

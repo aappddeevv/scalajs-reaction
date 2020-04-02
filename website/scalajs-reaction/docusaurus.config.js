@@ -15,7 +15,7 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'aappddeevv', // Usually your GitHub org/user name.
   projectName: 'scalajs-reaction', // Usually your repo name.
-  customDocsPath: "scalajs-reaction-docs/target/mdoc",
+  //customDocsPath: "scalajs-reaction-docs/target/mdoc",
   themeConfig: {
     navbar: {
       title: 'scalajs-reaction',

@@ -55,21 +55,11 @@ package object react extends react.React {
     * dependencies. Use this inference helper to remind you to think about the
     * types and scala-js interop.
     */
-  def unsafe_deps(values: scala.Any*): Dependencies =
+  def unsafeDeps(values: scala.Any*): Dependencies =
     values.toJSArray.asInstanceOf[Dependencies]
 
   /** Noop for effect callback. */
   val noCleanUp = () => ()
-
-  /** Convert a scala EffectCallbackArg to js using a proxy approach.
-    * Use a general return of A vs unit to be more friendly.
-    */
-  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () =>
-    {
-      val callback: js.Function0[A] = arg()
-      callback
-    }
-  }: js.Function0[js.Function0[A]]
 
   /**
     * Object returned from `createRef()`. It's typically either js component or a
@@ -381,8 +371,13 @@ package object react extends react.React {
 
   /** Render something or return a null element. Render is by name. */
   def when(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
-    if (cond.getOrElse(false)) render else nullElement
+    if (cond.getOrElse(false)) render else nullNode
 
+  /** Render something or return a null element. Render is by name. */
+  def when(cond: Option[Boolean])(render: => ReactNode): ReactNode =
+    if (cond.getOrElse(false)) render else nullNode
+
+  /** Render something or return a null element. Render is by name. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
     if (cond) render else nullElement
 
@@ -390,11 +385,15 @@ package object react extends react.React {
   def whenNot(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
     if (!cond.getOrElse(false)) render else nullElement
 
+  /** Render something if not cond or return a null element. Render is by name. */
+  def whenNot(cond: Option[Boolean])(render: => ReactNode): ReactNode =
+    if (!cond.getOrElse(false)) render else nullElement
+
   def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
     if (!cond) render else nullElement
 
   /** Shorted version of `js.defined(blah)` */
-  @inline def jsd(o: scala.Any) = js.defined(o)
+  @inline def jsdef[A](a: A) = js.defined(a)
 
   /** Test equaliy with two js objects. Standard == in scala.js on 2 js objects
     * (e.g. non-native traits) will not test in the same way that standard scala

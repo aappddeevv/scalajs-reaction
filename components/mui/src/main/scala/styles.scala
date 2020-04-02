@@ -64,5 +64,5 @@ object StylesProvider {
 
   // not being null causes an error, why?
   def apply(props: Props = null)(child: ReactNode) =
-    createElement(styles.StylesProvider, props)(child)
+    createElementN(styles.StylesProvider, props)(child)
 }

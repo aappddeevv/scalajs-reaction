@@ -19,17 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+package jshelpers 
 
-import scala.scalajs.js
-import js.|
-
-/** The "combine" methods are all shallow merges, this may not be what you want. */
-final case class JsOrOps[A,B](o: A|B) {
-  def pickLeft                                  = o.asInstanceOf[A]
-  def pickRight = o.asInstanceOf[B]
-}
-
-trait OrSyntax {
-  implicit def jsOrSyntax[A,B](a: A|B)    = new JsOrOps(a)
-}
+/* Include these to get automatic type conversions. They are optional but
+ * exceptionally helpful.  These can be included ala carte.
+ */
+object implicits extends AllSyntax with AllInstances

@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+package jshelpers 
 
 import scala.scalajs.js
 
@@ -50,7 +50,7 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
   def toNonNullOption[T <: js.Object]: Option[T] =
     Option(jsdyn.asInstanceOf[T])
   //JsUndefOrOps(asUndefOr).toNonNullOption
-  def combine(that: js.Dynamic) = mergeJSObjects(jsdyn, that)
+  def combine(that: js.Dynamic) = js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
   def toTruthy: Boolean         = js.DynamicImplicits.truthValue(jsdyn)
 }
 

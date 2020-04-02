@@ -72,7 +72,7 @@ object ThemeProvider {
 
   // will children be pickeup in props correctly anyway? not sure...
   val sfc = SFC1[Props] { props =>
-    createElement(theming.ThemeProvider, props)(props.children)
+    createElementN(theming.ThemeProvider, props)(props.children)
   }
 }
 

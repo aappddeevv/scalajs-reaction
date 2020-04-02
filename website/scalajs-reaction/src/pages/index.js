@@ -99,7 +99,7 @@ function Home() {
           <p>It is easy to create a component. The code below creates a functional component that takes zero args.</p>
           <p>
           <CodeBlock className="scala">{`
-          val HelloWorld = SFC0 { div("hello world") }
+          val HelloWorld: ReactFC0 = () => div("hello world")
 `}
       </CodeBlock>
           </p>
@@ -109,10 +109,11 @@ object MyComponent {
   trait Props extends js.Object {
      val name: String
   }
-  val sfc = SFC1[Props] { props =>
-    div("hello " + props.name)
-  }
-  def apply(props: Props) = sfc(props)
+
+  // you could also use the type ReactFC[Props]
+  val render: Props => ReactNode = props => div("hello " + props.name)
+  
+  def apply(props: Props) = render.elementWith(props)
 }
 `}
       </CodeBlock>
