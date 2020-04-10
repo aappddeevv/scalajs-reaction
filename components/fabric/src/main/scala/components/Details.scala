@@ -398,7 +398,9 @@ object Details {
         js.undefined
       var shimmerLines: js.UndefOr[Int] = js.undefined
     }
-    trait PropsInit[T <: js.Object] extends PropsBase[T]
+    trait PropsInit[T <: js.Object] extends PropsBase[T] {
+      var items: js.UndefOr[js.Array[T]] = js.undefined
+  }
 
     object PropsInit {
       private implicit class RichPropsInit[T <: js.Object](private val item: PropsInit[T]) extends AnyVal {
@@ -414,7 +416,9 @@ object Details {
       }
     }
 
-    trait Props[T <: js.Object] extends PropsBase[T]
+    trait Props[T <: js.Object] extends PropsBase[T] {
+      val items: js.Array[T]
+  }
 
   }
 

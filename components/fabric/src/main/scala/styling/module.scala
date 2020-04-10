@@ -22,6 +22,7 @@
 package fabric
 package styling
 
+import react._
 import scala.scalajs.js
 import js.annotation._
 
@@ -42,7 +43,7 @@ trait styles_CommonStyles extends js.Object {
   val ScreenWidthMaxXLarge: Int                       = js.native
   val ScreenWidthMaxXXLarge: Int                      = js.native
   val ScreenWidthMinUhfMobile: Int                    = js.native
-  def greenScreenSelector(min: Int, max: Int): String = js.native
+  def getScreenSelector(min: Int, max: Int): String = js.native
 }
 
 @js.native

@@ -31,7 +31,7 @@ import scalajs.js
  * (subclasses of js.Objects) so that properties presence/absence can be
  * checked.
  */
-package object vdom extends react.vdom.Events with react.vdom.tags {
+package object vdom extends Events with HTMLTagsX {
 
   /** Create tag. */
   @inline def tag(name: String): Tag = new Tag(name)

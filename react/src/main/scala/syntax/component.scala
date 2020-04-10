@@ -58,12 +58,14 @@ trait ComponentSyntax {
 
   /** Convert a plain js function with 1 props argument to an element using some syntax. */
   implicit class RichJSFunction1[P <: js.Object](private val f: js.Function1[P, ReactNode]) {
+    def unsafeElementWith(props: js.Dynamic) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
     def elementWith(props: P) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
     def toEl(props: P) = ReactJS.createElement(f, props.asInstanceOf[js.Any])
   }
 
   /** Convert standard scala function with 1 props arguments to an element using some syntax. */
   implicit class RichScalaFunction[P <: js.Object](private val f: P => ReactNode) {
+    def unsafeElementWith(props: js.Dynamic) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
     def elementWith(props: P) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
     def toEl(props: P) = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
   }

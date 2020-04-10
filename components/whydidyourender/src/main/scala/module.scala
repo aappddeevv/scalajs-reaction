@@ -47,3 +47,12 @@ trait ComponentOptions extends js.Object {
   var logOnDifferentValues: js.UndefOr[Boolean] = js.undefined
   var customName: js.UndefOr[String] = js.undefined
 }
+
+object ComponentOptions {
+  def apply(name: js.UndefOr[String] = js.undefined,
+    log: js.UndefOr[Boolean] = js.undefined) = 
+   new ComponentOptions { 
+     logOnDifferentValues = log
+     customName = name
+   }
+}

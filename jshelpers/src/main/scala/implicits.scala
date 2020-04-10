@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 /* Include these to get automatic type conversions. They are optional but
  * exceptionally helpful.  These can be included ala carte.

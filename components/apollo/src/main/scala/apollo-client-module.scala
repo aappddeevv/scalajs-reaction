@@ -51,13 +51,38 @@ trait MutationBaseOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
   var awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined
   var update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined
   var errorPolicy: js.UndefOr[ErrorPolicy]     = js.undefined
-  var variables: js.UndefOr[TVars]             = js.undefined
+  var variables: js.UndefOr[TVars|js.Dynamic]             = js.undefined
 }
 
 trait MutationOptions[T <: js.Any, TVars <: js.Object] extends MutationBaseOptions[T, TVars] {
   var mutation: js.UndefOr[DocumentNode]   = js.undefined
   var context: js.UndefOr[js.Object]       = js.undefined
   var fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
+}
+
+object MutationOptions {
+  def apply[T <: js.Any, TVars<:js.Object](
+    mutation: DocumentNode,
+    context: js.UndefOr[js.Object] = js.undefined,
+    fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    variables: js.UndefOr[TVars|js.Dynamic] = js.undefined,
+    update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
+    awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
+    updateQueries: js.UndefOr[MutationQueryReducersMap[T, js.Object]] = js.undefined,
+    optimisticResponse: js.UndefOr[T | js.Function1[TVars, T]] = js.undefined,
+  ) = 
+  js.Dynamic.literal(
+    "mutation" -> mutation,
+    "context" -> context,
+    "fetchPolicy" ->fetchPolicy,
+    "errorPolicy" -> errorPolicy,
+    "variables" -> variables.asInstanceOf[js.Any],
+    "update" -> update,
+    "awaitRefetchQueries" -> awaitRefetchQueries,
+    "updateQueries" -> updateQueries,
+    "optimisticResponse" -> optimisticResponse.asInstanceOf[js.Any],
+  ).asInstanceOf[MutationOptions[T,TVars]]
 }
 
 // the actual TVars and T can vary by query so use _
@@ -97,6 +122,7 @@ class ApolloClient(options: js.UndefOr[ApolloClientOptions] = js.undefined) exte
   def stop(): Unit = js.native
 
   def query[T <: js.Any, TVars <: js.Object](options: QueryOptions[TVars]): js.Promise[ApolloQueryResult[T]] = js.native
+  
   def mutate[T <: js.Any, TVars <: js.Object](options: MutationOptions[T, TVars]): js.Promise[FetchResult[T]] =
     js.native
 
@@ -104,10 +130,12 @@ class ApolloClient(options: js.UndefOr[ApolloClientOptions] = js.undefined) exte
     options: Query[TVars],
     optimistic: js.UndefOr[Boolean] = js.undefined
   ): QueryType | Null = js.native
+  
   def readFragment[TVars <: js.Object, FragmentType <: js.Object](
     options: Fragment[TVars],
     optimistic: js.UndefOr[Boolean] = js.undefined
   ): FragmentType | Null                                                                            = js.native
+  
   def writeQuery[T <: js.Any, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit       = js.native
   def writeFragment[T <: js.Any, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit = js.native
   def writeData[T <: js.Any](options: WriteDataOptions[T]): Unit                                    = js.native
@@ -169,6 +197,25 @@ trait QueryBaseOptions[TVars <: js.Object] extends js.Object {
 
 trait QueryOptions[TVars <: js.Object] extends QueryBaseOptions[TVars] {
   var fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
+}
+
+object QueryOptions {
+  def apply[TVars <: js.Object](query: DocumentNode, 
+    fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    variables: js.UndefOr[TVars|js.Dynamic] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    fetchResults: js.UndefOr[Boolean] = js.undefined,
+    metadata: js.UndefOr[js.Object] = js.undefined) = 
+    js.Dynamic.literal(
+        "query" -> query,
+        "fetchPolicy" -> fetchPolicy,
+        "errorPolicy" -> errorPolicy,
+        "variables" -> variables.asInstanceOf[js.Any],
+        "context" -> context,
+        "fetchResults" -> fetchResults,
+        "metadata" -> metadata
+    ).asInstanceOf[QueryOptions[TVars]]
 }
 
 trait ModifiableWatchQueryOptions[TVars <: js.Object] extends QueryOptions[TVars] {

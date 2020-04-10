@@ -3,7 +3,9 @@ some really good macros.
 
 For scala 2:
 
-
+- response to how to find default values for superclasses that are not in the AST scope (defined elsewhere)
+  - https://stackoverflow.com/questions/60806283/scala-macro-how-to-convert-a-methodsymbol-to-defdef-with-parameter-default-value
+  - https://stackoverflow.com/questions/13767582/creating-a-method-definition-tree-from-a-method-symbol-and-a-body/13768595#13768595
 - scala compiler that handles JSExport annotations, well made code
   - https://github.com/scala-js/scala-js/blob/a176fefe6a5570928480c1c8159972b6cba804d5/compiler/src/main/scala/org/scalajs/core/compiler/GenJSExports.scala#L47
 - http://caryrobbins.com/dev/scala-macros-intro/

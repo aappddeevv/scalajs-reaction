@@ -102,7 +102,7 @@ class Fetcher[F[_], P, E, T](Name: String) {
     useDebugValue(Name)
     val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
-    val makeRequest = useCallback[F[P], Unit](unsafeDeps(fstate)) { f =>
+    val makeRequest = useCallback1[F[P], Unit](unsafeDeps(fstate)) { f =>
       if (fstate != Fetching) {
         setFState(Fetching)
         props.run(f) {
@@ -119,9 +119,14 @@ class Fetcher[F[_], P, E, T](Name: String) {
 }
 
 /** A Fetcher that keeps the runner at the class level. */
-class Fetcher2[F[_], P, E, T](Name: String, runner: F[P] => (Either[E, T] => Unit) => Unit)
+class Fetcher2[F[_], P, E, T](
+    Name: String,
+    runner: F[P] => (Either[E, T] => Unit) => Unit)
     extends Fetcher[F, P, E, T](Name) {
-  def apply(children: (FetchState, FetchCallback) => ReactNode, initialValue: Option[F[P]] = None) =
+  def apply(
+      children: (FetchState, FetchCallback) => ReactNode,
+      initialValue: Option[F[P]] = None
+    ) =
     sfc.unsafeApply(
       js.Dynamic.literal(
         "children" -> children.asJsAny,
@@ -131,7 +136,9 @@ class Fetcher2[F[_], P, E, T](Name: String, runner: F[P] => (Either[E, T] => Uni
     )
 }
 
-class FetcherHook[F[_], P, E](Name: String, runner: F[P] => (Either[E, P] => Unit) => Unit) {
+class FetcherHook[F[_], P, E](
+    Name: String,
+    runner: F[P] => (Either[E, P] => Unit) => Unit) {
 
   /** Load state passed to a child. */
   sealed trait FetchState
@@ -155,7 +162,7 @@ class FetcherHook[F[_], P, E](Name: String, runner: F[P] => (Either[E, P] => Uni
     useDebugValue(Name)
     val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
-    val makeRequest = useCallback[F[P], Unit](unsafeDeps(fstate)) { f =>
+    val makeRequest = useCallback1[F[P], Unit](unsafeDeps(fstate)) { f =>
       if (fstate != Fetching) {
         setFState(Fetching)
         runner(f) {

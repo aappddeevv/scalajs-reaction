@@ -183,7 +183,7 @@ lazy val `react-router-dom` = project
   .in(file("components/react-router-dom"))
   .settings(std_settings("react-router-dom", "scalajs reaction react-router-dom bindings (hook)"))
   .settings(buildinfo_settings("react_router.dom"))
-  .dependsOn(react, vdom)
+  .dependsOn(react, vdom, `react-macros`)
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-navigation` = project

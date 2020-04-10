@@ -19,12 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 import scala.scalajs.js
 import js._
 
-// order matters here based on implicit search through hierarchy
 trait AllSyntax
     extends JsDynamicSyntax
     with JsObjectSyntax

@@ -33,7 +33,6 @@ trait JsRefSyntax {
   implicit def refToJsRefOps[T](v: ReactRef[T]) = JsRefOps(v)
 }
 
-// order matters here based on implicit search through hierarchy
 trait AllSyntax
     extends ComponentSyntax
     with ValueSyntax

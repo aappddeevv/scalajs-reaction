@@ -22,6 +22,7 @@
 package react
 
 import scala.scalajs.js
+import js.annotation._
 
 import js.Dynamic.literal
 
@@ -31,14 +32,17 @@ final class ReactContextOps2[T](private val ctx: ReactContext[T]) extends AnyVal
   def provide(value: T)(children: ReactNode*) =
     ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), children: _*)
 
+  def provide1(value: T, child: ReactNode) =
+    ReactJS.createElement(ctx.Provider, literal("value"->value.asInstanceOf[js.Any]), child)
+    
   def consume(f: T => ReactNode, key: String) =
     ReactJS.createElement(ctx.Consumer, literal("key" -> key), js.Any.toFunction1(f).asInstanceOf[ReactNode])
 
   def consume(f: T => ReactNode) =
-    ReactJS.createElement(ctx.Consumer, null, js.Any.toFunction1(f).asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, literal(), js.Any.toFunction1(f).asInstanceOf[ReactNode])
 }
 
 trait ContextSyntax {
-  @inline implicit def contextToRichContext[T](ctx: ReactContext[T]) =
+  implicit def contextToRichContext[T](ctx: ReactContext[T]) =
     new ReactContextOps2[T](ctx)
 }

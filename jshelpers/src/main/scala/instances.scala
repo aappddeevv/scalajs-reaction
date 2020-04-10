@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 trait AllInstances
 
@@ -28,5 +28,5 @@ trait AllInstances
  * converters" would be better similiar to `JSConverters` in scala.js.
  */
 object instances {
-  object all   extends AllInstances
+  object all extends AllInstances
 }

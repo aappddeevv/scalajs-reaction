@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 import scala.scalajs.js
 
@@ -37,6 +37,13 @@ trait AnyOps[T] {
   def asBoolean: Boolean = a.asInstanceOf[Boolean]
   def asJsArray[A]: js.Array[A] = a.asInstanceOf[js.Array[A]]
   def asJson: String = js.JSON.stringify(a.asInstanceOf[js.Object])
+
+  /** `.asInstanceOf[T]` but shorter. Very dangerous! */
+  def as[T] = a.asInstanceOf[T]
+
+  /** Call the toString method after casting to js.Any. Not sure
+   *  casting makes any difference though.
+   */
   def toStringJs = a.asInstanceOf[js.Any].toString()
 
   /** Internal null values become undefined. */
@@ -57,16 +64,16 @@ trait AnyOps[T] {
   def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
 
   /**
-    * Wow, a mouthful! If its a javascript truthy=true, its defined, otherwise
-    * undef. Takes into account 0, "" and [] javascript idioms i.e. takes into account
-    * the FP zero.
-    * @example {{{
-    *  val s = "" // s.toTruthyUndefOr[String] => js.undefined
-    *  val s = "blah" // s.toTurthyUndefOr[String] => defined "blah"
-    *  val n = 0  // n.toTruthyUndefOr[Int] => js.undefined
-    *  val n1 = 1 // n1.toTruthyUndefOr[Int] => defined 1
-    * }}}
-    */
+   * Wow, a mouthful! If its a javascript truthy=true, its defined, otherwise
+   * undef. Takes into account 0, "" and [] javascript idioms i.e. takes into account
+   * the FP zero.
+   * @example {{{
+   *  val s = "" // s.toTruthyUndefOr[String] => js.undefined
+   *  val s = "blah" // s.toTurthyUndefOr[String] => defined "blah"
+   *  val n = 0  // n.toTruthyUndefOr[Int] => js.undefined
+   *  val n1 = 1 // n1.toTruthyUndefOr[Int] => defined 1
+   * }}}
+   */
   def toTruthyUndefOr: js.UndefOr[T] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
     else js.undefined
@@ -80,9 +87,9 @@ trait JsAnySyntax {
 }
 
 /**
-  * Intended for directly mapped scala types, not scala.Any in general. Know what
-  * you are doing!!! Very dangerous!
-  */
+ * Intended for directly mapped scala types, not scala.Any in general. Know what
+ * you are doing!!! Very dangerous!
+ */
 final class ScalaMappedOps[T <: scala.Any](val a: T) extends AnyOps[T] {
   ///** Very dangerous! You should know what you are doing. */
   @inline def unsafeAsJsAny = a.asInstanceOf[js.Any]

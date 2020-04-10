@@ -23,27 +23,29 @@ package fabric
 package components
 
 import scala.scalajs.js
-
+import org.scalajs.dom
 import js.annotation._
 
 import react._
+import react.vdom._
 
 object Text {
 
   @js.native
-  @JSImport("office-ui-fabric-react", "lib/Text")
+  @JSImport("office-ui-fabric-react/lib/Text", "Text")
   object JS extends ReactJSComponent
 
   def apply(props: Props)(text: js.UndefOr[String] = js.undefined) =
     createElementN(JS, props)(text.asInstanceOf[ReactNode])
 
   // from ReactJsProps
-  trait Props extends ReactJSProps {
+  trait Props extends ReactJSProps with HTMLAttributes[dom.html.Element]{
     var variant: js.UndefOr[Variant] = js.undefined
     var nowrap: js.UndefOr[Boolean]  = js.undefined
     var block: js.UndefOr[Boolean]   = js.undefined
   }
 
+  /** These need to match IFontStyles. */
   @js.native
   abstract trait Variant extends js.Any
   object Variant {

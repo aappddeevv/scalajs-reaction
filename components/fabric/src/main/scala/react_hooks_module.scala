@@ -27,14 +27,24 @@ import scala.scalajs.js
 import js.annotation._
 
 @js.native
+trait BooleanCallbacks extends js.Object {
+  def setTrue(): Unit = js.native
+  def setFalse(): Unit = js.native
+  def toggle(): Unit = js.native
+}
+
+@js.native
 @JSImport("@uifabric/react-hooks", JSImport.Namespace)
 private object module extends js.Object {
+  def useBoolean(initialState: Boolean): js.Tuple2[Boolean, BooleanCallbacks] = js.native
   def useConst(initialValue: scala.Any): js.Any               = js.native
   def useConstCallback(cb: js.Any): js.Any                    = js.native
-  def useId(prefx: js.UndefOr[String] = js.undefined): String = js.native
+  def useId(prefix: js.UndefOr[String] = js.undefined): String = js.native
 }
 
 trait api {
+  def useBoolean(initialValue: Boolean) = module.useBoolean(initialValue)
+  
   def useConstStrict[T](initialValue: T) = module.useConst(initialValue)
 
   def useConst[T](initialValue: js.Function0[T]) = module.useConst(initialValue)

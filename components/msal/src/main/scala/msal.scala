@@ -218,17 +218,17 @@ trait FrameworkOptions extends js.Object {
 
 trait LoggerOptions extends js.Object {
   var correlationId: js.UndefOr[String]      = js.undefined
-  var level: js.UndefOr[LoggerLevel]         = js.undefined
+  var level: js.UndefOr[LogLevel]         = js.undefined
   var piiLoggingEnabled: js.UndefOr[Boolean] = js.undefined
 }
 
 @js.native
-sealed trait LoggerLevel extends js.Any
-object LoggerLevel {
-  val Error   = 0.asInstanceOf[LoggerLevel]
-  val Warning = 1.asInstanceOf[LoggerLevel]
-  val Info    = 2.asInstanceOf[LoggerLevel]
-  val Verbose = 3.asInstanceOf[LoggerLevel]
+sealed trait LogLevel extends js.Any
+object LogLevel {
+  val Error   = 0.asInstanceOf[LogLevel]
+  val Warning = 1.asInstanceOf[LogLevel]
+  val Info    = 2.asInstanceOf[LogLevel]
+  val Verbose = 3.asInstanceOf[LogLevel]
 }
 
 @js.native

@@ -171,16 +171,25 @@ package object styling {
   //type IStyleFunction[SP <: js.Any, SS <: StyleSetType] = js.Function1[SP, SS]
   type IStyleFunction[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
+  /** @deprecated("Use IStyleFunction") */
   type IStyleFn[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
-  /** Shortcut to define a IStyleFunction as a val. */
+  /** Smart constructor with better type inference to define a IStyleFunction as a val. 
+   * Use this whene you need to keep the type as a function.
+   */
   def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] = f
 
-  /** Same as stylingFunction but better type inference. */
+  /** Smart constructor with better type inference to define a IStyleFunctionOrObject as a val.
+   * Use this when you need to pass your styling function to fabric's functions but don't need
+   * to call it yourself.
+   */
   def stylingFunctionOr[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunctionOrObject[SP, SS] =
     stylingFunction[SP, SS](f)
 
-  /** Type for a logical `getClassNames` function declared as a val.
+  /** Type for a logical `getClassNames` function declared as a val. Use this if you need
+   * to memoize the function and use js memoization. If all you do is call `getClassNames`
+   * inside a `useMemo` hook, then you can define your component's `getClassNames` as a standard
+   * scala function.
    *
    * @tparam SP Style props
    * @tparam S Styles js object, derived from IStyleSetTag
@@ -208,6 +217,14 @@ package object styling {
   type IStyleFunctionOrObject[SP <: js.Any, SS <: IStyleSetTag] =
     IStyleFunction[SP, SS] | SS
 
+    
+  /** Combine IStyleFunction, IStyleFunctionOrObject into a single array of type StyleSetArg
+    * needed for the args in concatStyleSets or concatStyleSetsWithProps. Helps with type inference
+    * and composing args for varargs.
+    */
+  def toStyleSetArgs[StyleProps <: js.Object, Styles <: IStyleSetTag](
+    args: Seq[js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]]]) = args.asInstanceOf[Seq[StyleSetArg]]
+    
   /**
    * Given some props and a list of IStyleFunctionOrObjects, resolve to a single
    * (string->IStyle) by either calling the style function with the props or

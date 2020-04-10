@@ -19,17 +19,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 import scala.scalajs.js
 import js.|
 
-/** The "combine" methods are all shallow merges, this may not be what you want. */
-final case class JsOrOps[A,B](o: A|B) {
-  def pickLeft                                  = o.asInstanceOf[A]
+/** Hmm...we could really tighten this up by doing |.merge and typing the picks. */
+final case class JsOrOps[A, B](o: A | B) {
+  def pickLeft = o.asInstanceOf[A]
   def pickRight = o.asInstanceOf[B]
+  
+//   def as[A](implicit ev: A <:< |[A,B]) = (o.merge: scala.Any) match {
+//     case a: A if o.instanceOf[A] => Left(a)
+//     case b: B if o.instanceOf[B] => Right(b)
+//   }
 }
 
 trait OrSyntax {
-  implicit def jsOrSyntax[A,B](a: A|B)    = new JsOrOps(a)
+  implicit def jsOrSyntax[A, B](a: A | B) = new JsOrOps(a)
 }

@@ -27,8 +27,9 @@ import js.annotation._
 
 import org.scalajs.dom
 
+/** Yet another "utilities" module... Different than Utilities and @uifabric/utilities :-) */
 @js.native
-@JSImport("office-ui-fabric-react", "lib/utilities")
+@JSImport("office-ui-fabric-react/lib", "utilities")
 object module extends js.Object {
   def setResponsiveMode(m: js.UndefOr[ResponsiveMode] = js.undefined): Unit = js.native
   def initializeResponsiveMode(element: js.UndefOr[dom.html.Element] = js.undefined): Unit = js.native

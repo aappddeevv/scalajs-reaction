@@ -46,8 +46,8 @@ trait ObservableQueryFields[T <: js.Any, TVars <: js.Object] extends js.Object {
   def refetch(variables: TVars): js.Promise[ApolloQueryResult[T]] = js.native
   // subscribeToMore
   def updateQuery(f: js.Function2[T, UpdateQueryOptions[TVars], T]): Unit = js.native
-  def stopPolling(): Unit                                                 = js.native
-  def startPolling(pollInterval: Int): Unit                               = js.native
+  def stopPolling(): Unit = js.native
+  def startPolling(pollInterval: Int): Unit = js.native
 }
 
 /** Is data undefined or null when there is no data?
@@ -59,12 +59,12 @@ trait QueryResult[T <: js.Any, TVars <: js.Object] extends ObservableQueryFields
   val client: apollo_client.ApolloClient = js.native
   // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
   // ts defs say T | undefined but not null !?!?
-  val data: js.UndefOr[T]            = js.native
+  val data: js.UndefOr[T] = js.native
   //val data: T | Null = js.native
   val error: js.UndefOr[ApolloError] = js.native
-  val loading: Boolean               = js.native
-  val networkStatus: NetworkStatus   = js.native
-  val called: Boolean                = js.native
+  val loading: Boolean = js.native
+  val networkStatus: NetworkStatus = js.native
+  val called: Boolean = js.native
 }
 
 object QueryResult {
@@ -80,15 +80,75 @@ object QueryResult {
   }
 }
 
-/** Because there are some duplicative types in these sigs
- *  a helper class helps you do things with less type noise.
+/** Because there are some duplicative types in the signatures
+ * which become burdensome, this helper class reduces type noise.
+ * Instantiate the object then use values and methods in it without
+ * need to always specify the types.
  */
 case class UseQuery[T <: js.Any, TVars <: js.Object]() {
-  def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T,TVars]|js.Dynamic]=js.undefined) =
-     module.useQuery[T,TVars](query, options)
-  def makeVars(vars: js.UndefOr[TVars|js.Dynamic]=js.undefined) = new QueryHookOptions[T,TVars] { 
-    variables = vars    
-  } 
+  def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
+    module.useQuery[T, TVars](query, options)
+
+  /** Make QueryHookOptions */
+  def makeOptions(
+    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+    query: js.UndefOr[DocumentNode] = js.undefined,
+    displayName: js.UndefOr[String] = js.undefined,
+    onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined,
+    onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined,
+    ssr: js.UndefOr[Boolean] = js.undefined,
+    fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    pollInterval: js.UndefOr[Int] = js.undefined,
+    client: js.UndefOr[ApolloClient] = js.undefined,
+    notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    partialRefetch: js.UndefOr[Boolean] = js.undefined,
+    returnPartialData: js.UndefOr[Boolean] = js.undefined,
+  ) =
+    js.Dynamic
+      .literal(
+        "query" -> query,
+        "variables" -> variables.asInstanceOf[js.Any],
+        "displayName" -> displayName,
+        "onCompleted" -> onCompleted,
+        "onError" -> onError,
+        "ssr" -> ssr,
+        "fetchPolicy" -> fetchPolicy,
+        "errorPolicy" -> errorPolicy,
+        "pollInterval" -> pollInterval,
+        "client" -> client,
+        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
+        "context" -> context,
+        "partialRefetch" -> partialRefetch,
+        "returnPartialData" -> returnPartialData
+      )
+      .asInstanceOf[QueryHookOptions[T, TVars]]
+
+  /** Make apollo_client.QueyrOptions for the ApolloClient returned from `useQuery` which are slightly different than
+   * `QueryHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
+   * to the suspense mechanism.
+   */
+  def makeClientOptions(
+    query: DocumentNode,
+    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    fetchResults: js.UndefOr[Boolean] = js.undefined,
+    metadata: js.UndefOr[js.Object] = js.undefined,
+    fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
+  ) =
+    js.Dynamic
+      .literal(
+      "variables" -> variables.asInstanceOf[js.Any],
+        "query" -> query,
+        "errorPolicy" -> errorPolicy,
+        "context" -> context,
+        "fetchResult" -> fetchResults,
+        "metadata" -> metadata,
+        "fetchPolicy" -> fetchPolicy
+      )
+      .asInstanceOf[apollo_client.QueryOptions[TVars]]
 }
 
 @js.native
@@ -132,21 +192,21 @@ private[react_apollo] object module extends js.Object {
 
 // @apollo/react-common
 trait ApolloContextValue extends js.Object {
-  var client: js.UndefOr[ApolloClient]      = js.undefined
+  var client: js.UndefOr[ApolloClient] = js.undefined
   var renderPromises: js.UndefOr[js.Object] = js.undefined
 }
 
 trait BaseQueryOptions[TVars <: js.Object] extends js.Object {
-  var ssr: js.UndefOr[Boolean]                         = js.undefined
-  var variables: js.UndefOr[TVars | js.Dynamic]        = js.undefined
-  var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy]   = js.undefined
-  var errorPolicy: js.UndefOr[ErrorPolicy]             = js.undefined
-  var pollInterval: js.UndefOr[Int]                    = js.undefined
-  var client: js.UndefOr[ApolloClient]                 = js.undefined
+  var ssr: js.UndefOr[Boolean] = js.undefined
+  var variables: js.UndefOr[TVars | js.Dynamic] = js.undefined
+  var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
+  var errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined
+  var pollInterval: js.UndefOr[Int] = js.undefined
+  var client: js.UndefOr[ApolloClient] = js.undefined
   var notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined
-  var context: js.UndefOr[js.Object]                   = js.undefined
-  var partialRefetch: js.UndefOr[Boolean]              = js.undefined
-  var returnPartialData: js.UndefOr[Boolean]           = js.undefined
+  var context: js.UndefOr[js.Object] = js.undefined
+  var partialRefetch: js.UndefOr[Boolean] = js.undefined
+  var returnPartialData: js.UndefOr[Boolean] = js.undefined
 }
 
 // @apollo/react-common
@@ -156,8 +216,8 @@ trait Skip extends js.Object {
 
 // @apollo/react-common
 trait QueryFunctionOptions[T <: js.Any, TVars <: js.Object] extends BaseQueryOptions[TVars] {
-  var displayName: js.UndefOr[String]                      = js.undefined
-  var onCompleted: js.UndefOr[js.Function1[T, Unit]]       = js.undefined
+  var displayName: js.UndefOr[String] = js.undefined
+  var onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined
   var onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined
 }
 
@@ -211,16 +271,16 @@ trait BaseMutationOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
   // this is not quite right, how to do varargs js funciton decl?
   @JSName("refetchQueries")
   var refetchQueriesBy: js.UndefOr[js.Function1[js.Array[js.Any], js.Array[String]]] = js.undefined
-  var awaitRefetchQueries: js.UndefOr[Boolean]                                       = js.undefined
-  var errorPolicy: js.UndefOr[ErrorPolicy]                                           = js.undefined
-  var update: js.UndefOr[MutationUpdaterFn[T]]                                       = js.undefined
-  var client: js.UndefOr[ApolloClient]                                               = js.undefined
-  var notifyOnNetowrkStatusChange: js.UndefOr[Boolean]                               = js.undefined
-  var context: js.UndefOr[js.Object]                                                 = js.undefined
-  var onCompleted: js.UndefOr[js.Function1[T, Unit]]                                 = js.undefined
-  var onError: js.UndefOr[js.Function1[ApolloError, Unit]]                           = js.undefined
-  var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy]                                 = js.undefined
-  var ignoreResults: js.UndefOr[Boolean]                                             = js.undefined
+  var awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined
+  var errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined
+  var update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined
+  var client: js.UndefOr[ApolloClient] = js.undefined
+  var notifyOnNetowrkStatusChange: js.UndefOr[Boolean] = js.undefined
+  var context: js.UndefOr[js.Object] = js.undefined
+  var onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+  var onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined
+  var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
+  var ignoreResults: js.UndefOr[Boolean] = js.undefined
 }
 
 // @apollo/react-common
@@ -232,9 +292,9 @@ trait MutationFunctionOptions[T <: js.Any, TVars <: js.Object] extends js.Object
   var optimisticResponse: js.UndefOr[js.Function1[TVars, T]] = js.undefined
   @JSName("refetchQueries")
   var refetchQueriesByName: js.UndefOr[js.Array[String]] = js.undefined
-  var awaitRefetchQueries: js.UndefOr[Boolean]           = js.undefined
-  var context: js.UndefOr[js.Object]                     = js.undefined
-  var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy]     = js.undefined
+  var awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined
+  var context: js.UndefOr[js.Object] = js.undefined
+  var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
 }
 
 object MutationFunctionOptions {
@@ -252,18 +312,18 @@ trait MutationHookOptions[T <: js.Any, TVars <: js.Object] extends BaseMutationO
 // @apollo/react-common
 @js.native
 trait MutationResult[T <: js.Any] extends js.Object {
-  val loading: Boolean                 = js.native
-  val called: Boolean                  = js.native
+  val loading: Boolean = js.native
+  val called: Boolean = js.native
   val client: js.UndefOr[ApolloClient] = js.native
 
-  val data: js.UndefOr[T]            = js.native
+  val data: js.UndefOr[T] = js.native
   val error: js.UndefOr[ApolloError] = js.native
 }
 
 object MutationResult {
   implicit final class RichMutationResult[T <: js.Any] private[MutationResult] (private val mr: MutationResult[T])
       extends AnyVal {
-    def successful    = !mr.loading && mr.called && mr.error.isEmpty
+    def successful = !mr.loading && mr.called && mr.error.isEmpty
     def notSuccessful = !successful
   }
 }
@@ -271,8 +331,8 @@ object MutationResult {
 // @apollo/react-common
 @js.native
 trait SubscriptionResult[T <: js.Any] extends js.Object {
-  val loading: Boolean               = js.native
-  val data: js.UndefOr[T]            = js.native
+  val loading: Boolean = js.native
+  val data: js.UndefOr[T] = js.native
   val error: js.UndefOr[ApolloError] = js.native
 }
 
@@ -290,15 +350,15 @@ trait OnSubscriptionDataOptions[T <: js.Any] extends js.Object {
 
 // @apollo/react-common
 trait BaseSubscriptionOptions[T <: js.Any, TVars <: js.Object] {
-  var variables: js.UndefOr[TVars]                   = js.undefined
+  var variables: js.UndefOr[TVars] = js.undefined
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
   @JSName("shouldResubscribe")
-  var shouldResubscribeStrict: js.UndefOr[Boolean]                                            = js.undefined
+  var shouldResubscribeStrict: js.UndefOr[Boolean] = js.undefined
   var shouldResubscribe: js.UndefOr[js.Function1[BaseSubscriptionOptions[T, TVars], Boolean]] = js.undefined
-  var client: js.UndefOr[ApolloClient]                                                        = js.undefined
-  var skip: js.UndefOr[Boolean]                                                               = js.undefined
-  var onSubscriptionData: js.UndefOr[js.Function1[OnSubscriptionDataOptions[T], js.Any]]      = js.undefined
-  var onSubscriptionComplete: js.UndefOr[js.Function0[Unit]]                                  = js.undefined
+  var client: js.UndefOr[ApolloClient] = js.undefined
+  var skip: js.UndefOr[Boolean] = js.undefined
+  var onSubscriptionData: js.UndefOr[js.Function1[OnSubscriptionDataOptions[T], js.Any]] = js.undefined
+  var onSubscriptionComplete: js.UndefOr[js.Function0[Unit]] = js.undefined
 }
 
 // @apollo/react-hooks
@@ -312,6 +372,6 @@ trait SubscriptionHookOptions[T <: js.Any, TVars <: js.Object] extends BaseSubsc
 @JSImport("@apollo/react-hooks", "RenderPromises")
 class RenderPromises() extends js.Object {
   // add "registration" functions ...
-  def hasPromises(): Boolean                                  = js.native
+  def hasPromises(): Boolean = js.native
   def consumeAndAwaitPromises(): js.Promise[js.Array[js.Any]] = js.native
 }

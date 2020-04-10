@@ -135,13 +135,16 @@ trait DateTime extends js.Object {
   val offsetNameShort: String = js.native
   val ordinal: Int = js.native
   val outputCalendar: String = js.native
-  def plus(dur: Duration|DurationInit): DateTime = js.native
+  def plus(dur: Duration | DurationInit): DateTime = js.native
   def startOf(part: String): DateTime = js.native
   def endOf(part: String): DateTime = js.native
   def set(parts: DateTimeInit): DateTime = js.native
   def get(unit: String): Int = js.native
   def hasSame(that: DateTime, unit: String): Boolean = js.native
-  def diff(other: DateTime, unit: js.UndefOr[String|js.Array[String]]=js.undefined, options: js.UndefOr[DurationOptions]=js.undefined): Duration = js.native
+  def diff(
+    other: DateTime,
+    unit: js.UndefOr[String | js.Array[String]] = js.undefined,
+    options: js.UndefOr[DurationOptions] = js.undefined): Duration = js.native
   def diffNow(): Duration = js.native
   def setLocale(loc: String): DateTime = js.native
   def setZone(zone: String): DateTime = js.native
@@ -191,14 +194,14 @@ trait DateTime extends js.Object {
 object DateTime extends js.Object {
   def local(): DateTime = js.native
   def local(
-      year: js.UndefOr[Int] = js.undefined,
-      month: js.UndefOr[Int] = js.undefined,
-      day: js.UndefOr[Int] = js.undefined,
-      hour: js.UndefOr[Int] = js.undefined,
-      min: js.UndefOr[Int] = js.undefined,
-      second: js.UndefOr[Int] = js.undefined,
-      millisecond: js.UndefOr[Int] = js.undefined
-    ): DateTime = js.native
+    year: js.UndefOr[Int] = js.undefined,
+    month: js.UndefOr[Int] = js.undefined,
+    day: js.UndefOr[Int] = js.undefined,
+    hour: js.UndefOr[Int] = js.undefined,
+    min: js.UndefOr[Int] = js.undefined,
+    second: js.UndefOr[Int] = js.undefined,
+    millisecond: js.UndefOr[Int] = js.undefined
+  ): DateTime = js.native
   def fromObject(dt: DateTimeInit): DateTime = js.native
   def fromRFC2822(text: String, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
   def fromSQL(text: String, options: js.UndefOr[SQLOptions] = js.undefined): DateTime = js.native
@@ -207,14 +210,14 @@ object DateTime extends js.Object {
   def utc(): DateTime = js.native
   @JSName("utc")
   def utcFrom(
-      year: js.UndefOr[Int] = js.undefined,
-      month: js.UndefOr[Int] = js.undefined,
-      day: js.UndefOr[Int] = js.undefined,
-      hour: js.UndefOr[Int] = js.undefined,
-      minute: js.UndefOr[Int] = js.undefined,
-      second: js.UndefOr[Int] = js.undefined,
-      millisecond: js.UndefOr[Int] = js.undefined
-    ): DateTime = js.native
+    year: js.UndefOr[Int] = js.undefined,
+    month: js.UndefOr[Int] = js.undefined,
+    day: js.UndefOr[Int] = js.undefined,
+    hour: js.UndefOr[Int] = js.undefined,
+    minute: js.UndefOr[Int] = js.undefined,
+    second: js.UndefOr[Int] = js.undefined,
+    millisecond: js.UndefOr[Int] = js.undefined
+  ): DateTime = js.native
   def fromHTTP(arg: String): DateTime = js.native
   def fromMillis(arg: Double): DateTime = js.native
   def fromInvalid(reason: String, explanation: String): DateTime = js.native
@@ -351,17 +354,17 @@ object Info extends js.Object {
   def isValidIANAZone(zone: String): Boolean = js.native
   //def meridiems()
   def months(
-      length: js.UndefOr[Indicator | String] = js.undefined,
-      options: js.UndefOr[InfoOptions] = js.undefined
-    ): js.Array[String] = js.native
+    length: js.UndefOr[Indicator | String] = js.undefined,
+    options: js.UndefOr[InfoOptions] = js.undefined
+  ): js.Array[String] = js.native
   //def normalizeZone
   def weekdays(
-      length: js.UndefOr[Indicator | String] = js.undefined,
-      options: js.UndefOr[InfoOptions] = js.undefined
-    ): js.Array[String] = js.native
+    length: js.UndefOr[Indicator | String] = js.undefined,
+    options: js.UndefOr[InfoOptions] = js.undefined
+  ): js.Array[String] = js.native
   def weekdaysFormat(
-      length: js.UndefOr[Indicator | String] = js.undefined,
-      options: js.UndefOr[InfoOptions] = js.undefined
-    ): js.Array[String] = js.native
+    length: js.UndefOr[Indicator | String] = js.undefined,
+    options: js.UndefOr[InfoOptions] = js.undefined
+  ): js.Array[String] = js.native
 
 }

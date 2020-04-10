@@ -19,39 +19,57 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 import scala.scalajs.js
+import js.|
 
 final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
-  def asJsAny: js.Any         = jsdyn.asInstanceOf[js.Any]
-  def asString: String        = jsdyn.asInstanceOf[String]
-  def asInt: Int              = jsdyn.asInstanceOf[Int]
+  def asJsAny: js.Any = jsdyn.asInstanceOf[js.Any]
+  def asString: String = jsdyn.asInstanceOf[String]
+  def asInt: Int = jsdyn.asInstanceOf[Int]
   def asArray[A]: js.Array[A] = jsdyn.asInstanceOf[js.Array[A]]
-  def asBoolean: Boolean      = jsdyn.asInstanceOf[Boolean]
-  def as[T <: js.Object]      = jsdyn.asInstanceOf[T]
+  def asBoolean: Boolean = jsdyn.asInstanceOf[Boolean]
+  def asJSDate: js.Date = jsdyn.asInstanceOf[js.Date]
 
-  ///** @deprecated use asJsObj */
-  //@inline def asJSObj: js.Object = jsdyn.asInstanceOf[js.Object]
-  // was just asJsObj does the cast help? can we remove asJsObjSub
-  def asJsObj: js.Object          = jsdyn.asInstanceOf[js.Object]
+  /** This value could be T or null. This does not check if its undefined. */
+  def asOrNull[T <: scala.Any] = jsdyn.asInstanceOf[T|Null]
+  
+  /** As potentially T, null or undefined. The safest cast. */
+  def asUndefOrNull[T <: scala.Any] =
+    jsdyn.asInstanceOf[js.UndefOr[T|Null]]
+  
+  /** Short version of `.asInstanceOf`. */
+  def as[T <: js.Object] = jsdyn.asInstanceOf[T]
+
+  def asJsObj: js.Object = jsdyn.asInstanceOf[js.Object]
+  
   def asDict[A]: js.Dictionary[A] = jsdyn.asInstanceOf[js.Dictionary[A]]
-  // variance annotation needed?
-  def asUndefOr[A]: js.UndefOr[A] = jsdyn.asInstanceOf[js.UndefOr[A]]
-  def asJsObjSub[A <: js.Object]  = jsdyn.asInstanceOf[A] // assumes its there!
-  def asJsArray[A <: js.Object]   = jsdyn.asInstanceOf[js.Array[A]]
+  
+  def asJsObjSub[A <: js.Object] = jsdyn.asInstanceOf[A] // assumes its there!
+  
+  def asJsArray[A <: js.Object] = jsdyn.asInstanceOf[js.Array[A]]
 
-  /** Uses truthiness to determine None */
+  /** Uses truthiness to determine None, you may not want this. */
   def toOption[T <: js.Object]: Option[T] =
     if (js.DynamicImplicits.truthValue(jsdyn)) Some(jsdyn.asInstanceOf[T])
     else None
 
-  /** Not sure this works... */
+  /** Null and undefined => None, otherwise Some. The safest conversion. */
   def toNonNullOption[T <: js.Object]: Option[T] =
-    Option(jsdyn.asInstanceOf[T])
-  //JsUndefOrOps(asUndefOr).toNonNullOption
-  def combine(that: js.Dynamic) = js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
-  def toTruthy: Boolean         = js.DynamicImplicits.truthValue(jsdyn)
+    if(jsdyn == null || jsdyn.asInstanceOf[js.UndefOr[T]].isEmpty) None
+    else Option(jsdyn.asInstanceOf[T])
+  
+  /** Shallow combine. */
+  def combine(that: js.Dynamic) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+   
+  /** Determine if truthy. Very tricky! */ 
+  def toTruthy: Boolean = js.DynamicImplicits.truthValue(jsdyn)
+  
+  /** Duplicate using `js.Object.assign` */
+  def duplicate = js.Object.assign(new js.Object, jsdyn.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+
 }
 
 trait JsDynamicSyntax {

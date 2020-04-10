@@ -25,16 +25,27 @@ package utilities
 import scala.scalajs.js
 import js.|
 import js.annotation._
-
 import react._
+import fabric.styling.{IStyleSetTag, IStyleFunctionOrObject}
 
 /** What you get if you use: `fields=["styles", "theme"]`.
+ * This should extend `Settings` but is more specific. You can
+ * extend it to include other items you expect back from `getSettings`.
+ * You must ensure you ask for styles and theme to make this trait valid.
   */
 @js.native
-trait StandardSettings extends js.Object {
-  val styles: js.Object = js.native
+trait StandardSettings[SP <: js.Object, S <: IStyleSetTag] extends js.Object {
+  def styles: js.UndefOr[IStyleFunctionOrObject[SP, S]] = js.native
+  val theme: js.UndefOr[ITheme] = js.native
+}
+
+/** StandardSettings but theme is known to be returned and not undefined. */
+@js.native
+trait StandardSettingsWithTheme[SP <: js.Object, S <: IStyleSetTag] extends js.Object {
+  def styles: js.UndefOr[IStyleFunctionOrObject[SP, S]] = js.native
   val theme: ITheme = js.native
 }
+
 
 @js.native
 trait ICustomizations extends js.Object {
@@ -43,6 +54,7 @@ trait ICustomizations extends js.Object {
   val inCustomizerContext: js.UndefOr[Boolean] = js.native
 }
 
+@js.native
 trait CustomizerContext extends js.Object {
   val customizations: ICustomizations
 }
@@ -56,7 +68,7 @@ trait CustomizerContext extends js.Object {
 @JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
 object Customizations extends js.Object {
   def reset(): Unit = js.native
-  // static!, T is based on fields so write your own object
+  /** T is something like `StandardSettings` */
   def getSettings[T <: js.Object](
       fields: js.Array[String],
       scopeName: js.UndefOr[String] = js.undefined,
@@ -75,10 +87,6 @@ object Customizations extends js.Object {
   def unobserve(cb: js.Function0[Unit]): Unit = js.native
 
 }
-
-@js.native
-@JSImport("@uifabric/utilities/lib/customizations/CustomizerContext", "CustomizerContext")
-object CustomizerContext extends ReactContext[CustomizerContext]
 
 object Customizer {
   @js.native
@@ -108,4 +116,5 @@ trait customizer_base extends js.Object {
       old: ICustomizations,
       parent: CustomizerContext
     ): CustomizerContext = js.native
+  val CustomizerContext: ReactContext[CustomizerContext] = js.native
 }

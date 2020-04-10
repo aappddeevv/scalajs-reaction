@@ -110,7 +110,7 @@ trait IColumnBase extends ClassName {
   var isResizable: js.UndefOr[Boolean] = js.undefined
   var isPadded: js.UndefOr[Boolean] = js.undefined
   var isFiltered: js.UndefOr[Boolean] = js.undefined
-  var maxwidth: js.UndefOr[Double] = js.undefined
+  var maxWidth: js.UndefOr[Double] = js.undefined
   var onColumnClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] = js.undefined
   var onColumnContextMenu: js.UndefOr[js.Function2[js.Any, js.Any, Unit]] = js.undefined
   var onColumnResize: js.UndefOr[js.Function1[Int, Unit]] = js.undefined

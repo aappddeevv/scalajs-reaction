@@ -59,7 +59,7 @@ trait ElementAttributesOnly extends HTMLAttributes[dom.html.Element] with ClassA
  * represented in lowercase while the props object is the uppercase tag name
  * followed by Props. So the div tag has DivProps for the props type.
  */
-trait tags {
+trait HTMLTagsX {
 
   trait AProps extends AnchorHTMLAttributes[dom.html.Anchor] with ClassAttributes[dom.html.Anchor]
   final lazy val a = tagt[AProps]("a")

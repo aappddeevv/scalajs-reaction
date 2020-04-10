@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers 
+package jshelpers
 
 import scala.scalajs.js
 
@@ -40,6 +40,12 @@ final class OptionOps[T](private val a: Option[T]) extends AnyVal {
 
   /** If Some, keep the value, else set the value to null. */
   def orElseNull = a orElse Some(null.asInstanceOf[T])
+  
+  def ???[B >: T](other: Option[B]): Option[B] = 
+    if(a.isEmpty) other else a
+    
+  def ??[B >: T](default: => B): B = a.getOrElse(default)
+  
 }
 
 trait OptionSyntax {

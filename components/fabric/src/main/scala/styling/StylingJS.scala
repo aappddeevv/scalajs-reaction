@@ -51,9 +51,11 @@ object StyleSetArg {
 
 /** uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
  * also exports most of @uifabic/merge-styles.
+ * This should really be the module.
  *
- * You should really use `fabric.styling.module`.
+ * 
  */
+@deprecated("Use fabric.styling.module")
 @js.native
 @JSImport("@uifabric/styling", JSImport.Namespace)
 object Styling extends js.Object with ThemeLike with StylingLike with MergeStyles
@@ -105,7 +107,10 @@ trait MergeStyles extends js.Object {
    * @tparam S Style props.
    */
   def concatStyleSetsWithProps[SP <: js.Any](props: SP, styleSets: StyleSetArg*): IStyleSet = js.native
-
+  
+  @JSName("concatStyleSetsWithProps")
+  def unsafeConcatStyleSetsWithProps[SP <: js.Any](props: SP, styleSets: scala.Any*): IStyleSet = js.native
+  
   /** Register a font face. */
   def fontFace(font: FontFace): Unit = js.native
 

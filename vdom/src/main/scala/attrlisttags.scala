@@ -19,7 +19,8 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react.vdom
+package react
+package vdom
 
 /**
  * Inherit from this trait to bring HTML tags into scope.

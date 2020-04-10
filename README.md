@@ -113,7 +113,7 @@ object MyComponent {
 }
 ````
 
-That's how simple this facade is. A few macros provide additional support creating and using `Props` more like case classes if that's important to you.
+That's how simple this facade is. A few, very limited macros provide additional support creating and using `Props` more like case classes if that's important to you. Once scala3 is out, the macros will become industrial strength.
 
 Remember, react needs to control when the props are applied to the rendering function, not you. A react "element" is really just a data structure that is a description of the element's rendering logic and props. The actual rendered element is created under react's control, not yours. There are other component specification patterns you can use as well or you can easily create your own like the above. See the docs.
 
@@ -172,6 +172,11 @@ libraryDependencies ++= Seq(
  
     // if you need react-native
     "ttg" %%% "native" % scalaJsReactversion)
+//
+// Add import scala.language.implicitConversions to each file or
+// add scalacOptions += Seq("-language:_") to your settings 
+// to enable implicit conversions and all other language features
+//
 ```
 
 Do not forget to include the react libraries in your execution environment. For
@@ -190,14 +195,15 @@ React 16.8+, the one with hooks, is required. Some experimental APIs are support
 so you may want to use the latest experimental release.
 
 There are many modules available as most of the focus has been on hand-crafted bindings in order
-to improve ergonomics. All of these libraries use the group name `ttg`:
+to improve ergonomics. We'll work with ScalablyType to improve the availability of bindings, however,
+they are quite simple to write using scalajs-reaction. All of these libraries use the group name `ttg`:
 
 * apollo
 * bootstrap
 * dataloader
 * data-validation (applicative data validation)
 * express
-* fabric
+* fabric (office-ui-fabric-react): Custom and ergonomic facade.
 * fabric-experiments
 * forms: Advanced, all-scala.js forms package.
 * helmet
