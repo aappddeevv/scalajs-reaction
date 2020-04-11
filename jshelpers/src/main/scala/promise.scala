@@ -34,104 +34,141 @@ import js.|
  */
 final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
 
-  type RESOLVE[A, B] = js.Function1[A, B | js.Thenable[B]]
-  type REJECTED[A] = js.Function1[scala.Any, A | js.Thenable[A]]
   type RVAL[A] = A | js.Thenable[A]
+  type RESOLVE[A, B] = js.Function1[A, RVAL[B]]
+  type REJECTED[A] = js.Function1[scala.Any, RVAL[A]]
 
   /** map */
-  def jsThen[B](f: A => B): js.Thenable[B] = {
+  @inline def jsThen[B](f: A => B): js.Thenable[B] = {
     val onf = js.Any.fromFunction1(f).asInstanceOf[RESOLVE[A, B]]
     self.`then`[B](onf, js.undefined)
   }
-  
+
   /** map */
-  def map[B](f: A => B): js.Thenable[B] = jsThen[B](f)
+  @inline def map[B](f: A => B): js.Thenable[B] = jsThen[B](f)
 
   /** flatMap */
-  def jsThenF[B](f: A => js.Thenable[B]) = {
+  @inline def jsThenF[B](f: A => js.Thenable[B]) = {
     val onf = js.Any.fromFunction1(f).asInstanceOf[RESOLVE[A, B]]
     self.`then`[B](onf, js.undefined)
   }
-  
+
   /** flatMap */
-  def flatMap[B](f: A => js.Thenable[B]): js.Thenable[B] = jsThenF[B](f)
+  @inline def flatMap[B](f: A => js.Thenable[B]): js.Thenable[B] = {
+    val onf = js.Any.fromFunction1(f).asInstanceOf[RESOLVE[A, B]]
+    self.`then`[B](onf, js.undefined)
+  }
 
   /** co-map */
-  def jsThen[B >: A](onFulfilled: A => B, onRejected: scala.Any => B) = {
+  @inline def jsThen[B >: A](onFulfilled: A => B, onRejected: scala.Any => B) = {
     val onf = js.Any.fromFunction1(onFulfilled).asInstanceOf[RESOLVE[A, B]]
     val onr = js.Any.fromFunction1(onRejected).asInstanceOf[REJECTED[B]]
     self.`then`[B](onf, onr)
   }
 
   /** co-flatMap */
-  def jsThenF[B](onFulfilled: A => js.Thenable[B], onRejected: scala.Any => js.Thenable[B]) =
-    self.`then`[B](js.Any.fromFunction1(onFulfilled)(_): B | js.Thenable[B], js.defined { (any: scala.Any) =>
-      onRejected(any): B | js.Thenable[B]
-    })
-
-  def jsCatch(f: scala.Any => A): js.Thenable[A] =
-    self.`then`[A](().asInstanceOf[RESOLVE[A, A]], js.defined((any: scala.Any) => f(any).asInstanceOf[RVAL[A]]))
-
-  def jsCatchF[B](f: scala.Any => js.Thenable[B]): js.Thenable[B] =
-    self.`then`[B](().asInstanceOf[RESOLVE[A, B]], js.defined((any: scala.Any) => f(any).asInstanceOf[RVAL[B]]))
-
-  /** Return this value if successful, else that's value or error. */
-  def orElse[B >: A](that: => js.Thenable[B]) = {
-    val onf: RESOLVE[A, B] = a => a.asInstanceOf[B | js.Thenable[B]]
-    self.`then`[B](
-      onf,
-      js.defined((_: scala.Any) => that.asInstanceOf[B | js.Thenable[B]])
-    )
+  @inline def jsThenF[B](onFulfilled: A => js.Thenable[B], onRejected: scala.Any => js.Thenable[B]) = {
+    val onf = js.Any.fromFunction1(onFulfilled).asInstanceOf[RESOLVE[A, B]]
+    val onr = js.Any.fromFunction1(onRejected).asInstanceOf[REJECTED[B]]
+    self.`then`[B](onf, js.defined(onr))
   }
 
-  /** Tap into the result. NOT TESTED! */
-  def tap(f: A => Unit) =
-    self.`then`[A]((a: A) => { f(a); a.asInstanceOf[A | js.Thenable[A]] }, js.undefined)
+  /** Transform the rejected value to another value which is also rejected. */
+  @inline def jsCatch(f: scala.Any => scala.Any): js.Thenable[A] = {
+    val onr = js.Any.fromFunction1((e: Any) => js.Promise.reject(f(e)))
+    self.`then`[A]((), onr)
+  }
 
-  /** Tap into the result. NOT TESTED! */
-  def tapF(f: A => js.Thenable[_]) =
-    self.`then`[A]((a: A) => f(a).`then`[A](_ => a, js.undefined).asInstanceOf[RVAL[A]], js.undefined)
+  /** Transform the rejected value to a Thenable, which may be rejected or resolved. */
+  @inline def jsCatchF[B](f: scala.Any => js.Thenable[B]): js.Thenable[B] = {
+    val onr = js.Any.fromFunction1(f).asInstanceOf[REJECTED[B]]
+    self.`then`[B](().asInstanceOf[RESOLVE[A, B]], onr)
+  }
 
-  /** Tap into the error. NOT TESTED! */
-  def tapError(f: js.UndefOr[scala.Any] => Unit) =
-    self.`then`[A](
-      (a: A) => a.asInstanceOf[A | js.Thenable[A]],
-      js.defined { (err: scala.Any) => f(err); js.Promise.reject(err).asInstanceOf[RVAL[A]] }
-    )
-    
-  /** Complete the promise but then return a unit if this was successful. Otherwise
-  * the error falls through, essentially a flatMap to Unit.
-  */
-  def unit = self.`then`[Unit](
-    js.Any.fromFunction1[A,Unit|js.Thenable[Unit]]((_:A) => ()),
-    js.undefined
-    )
-    
+  /** Return this value if successful, else that's value. */
+  @inline def orElse[B >: A](that: => js.Thenable[B]) = {
+    val onf = js.Any.fromFunction1((a: A) => a.asInstanceOf[B]).asInstanceOf[RESOLVE[A, B]]
+    val onr = js.Any.fromFunction1((e: Any) => that).asInstanceOf[REJECTED[B]]
+    self.`then`[B](onf, onr)
+
+  }
+
+  /** Tap into the result. */
+  @inline def tapValue(f: A => Unit) = {
+    val onf = js.Any.fromFunction1 { (a: A) => f(a); a }.asInstanceOf[RESOLVE[A, A]]
+    self.`then`[A](onf, js.undefined)
+  }
+
+  /** Tap into the result. */
+  @inline def tapValueF(f: A => js.Thenable[A]) = {
+    val onf =
+      js.Any.fromFunction1((a: A) => f(a).`then`((_ => a): RESOLVE[A, A], js.undefined)).asInstanceOf[RESOLVE[A, A]]
+    self.`then`[A](onf, js.undefined)
+  }
+
+  /** Tap into the error. */
+  @inline def tapError(f: scala.Any => Unit) = {
+    val onr = js.Any.fromFunction1 { (e: Any) => f(e); js.Promise.reject(e) }.asInstanceOf[REJECTED[A]]
+    self.`then`[A]((), onr)
+  }
+
+  @inline def tapErrorF(f: scala.Any => js.Thenable[Unit]) = {
+    val onr = js.Any.fromFunction1((e: Any) => f(e).`then`[Unit]((), js.defined((_: Any) => js.Promise.reject(e))))
+      .asInstanceOf[REJECTED[A]]
+    self.`then`[A]((), onr)
+  }
+
+  /** Map the resolved value to unit. Otherwise the error falls through. */
+  @inline def unit = {
+    val onf = js.Any.fromFunction1((_: A) => ()).asInstanceOf[RESOLVE[A, Unit]]
+    self.`then`[Unit](onf, js.undefined)
+  }
+
   /** Filter on the value. Return failed Thenable with
-  * NoSuchElementException if p => false.
-  */
+   * NoSuchElementException if p => false.
+   */
   @inline def filter(p: A => Boolean): js.Thenable[A] = {
-    val onf = js.Any.fromFunction1((a:A) => {
-        val result = p(a)
-        if(result) JSPromise[A](a)
-        else JSPromise.fail(new NoSuchElementException())
-    }).asInstanceOf[RESOLVE[A, A]]
+    val onf = js.Any.fromFunction1 { (a: A) =>
+      val result = p(a)
+      if (result) JSPromise[A](a)
+      else JSPromise.fail(new NoSuchElementException())
+    }.asInstanceOf[RESOLVE[A, A]]
     self.`then`[A](onf, js.undefined)
   }
 
   /** for-comprehension support. */
   @inline def withFilter(p: A => Boolean) = filter(p)
-  
-//   @inline def recover[U >: A](pf: PartialFunction[scala.Any, U]): js.Thenable[U] =
-//     self.`then`[U](().asInstanceOf[RVAL[U]], js.defined((any: Any) => pf.applyOrElse(any, any.asInstanceOf[U]).asInstanceOf[RVAL[U]]))
-//     
-//   @inline def transform[S](s: A => S, f: scala.Any => scala.Any): js.Thenable[S] = 
-//     self.map[S](s).jsCatch(f)
-  
-  //@inline def flatten[S](implicit ev: A <:< js.Thenable[S]): js.Thenable[S] = 
-  //  flatMap(identity)
-}
 
+  /** Recover from the error using a partial function. If the partial function is
+   * defined at the value, then the function is applied and its resolved. Otherwise the original
+   * value or error remains.
+   */
+  @inline def recover[U >: A](pf: PartialFunction[scala.Any, U]): js.Thenable[U] = {
+    val onf = ().asInstanceOf[RESOLVE[A, U]]
+    val onr = js.Any.fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
+      .asInstanceOf[REJECTED[U]]
+    self.`then`[U](onf, onr)
+  }
+
+  @inline def recoverWith[U >: A](pf: PartialFunction[scala.Any, js.Thenable[U]]): js.Thenable[U] = {
+    val onf = ().asInstanceOf[RESOLVE[A, U]]
+    val onr = js.Any.fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
+      .asInstanceOf[REJECTED[U]]
+    self.`then`[U](onf, onr)
+  }
+
+  /** Map over the resolved value or the error. */
+  @inline def transform[U](s: A => U, f: scala.Any => scala.Any): js.Thenable[U] = {
+    val onf = js.Any.fromFunction1(s).asInstanceOf[RESOLVE[A, U]]
+    val onr = js.Any.fromFunction1((e: Any) => js.Promise.reject(f(e))).asInstanceOf[REJECTED[U]]
+    self.`then`[U](onf, onr)
+  }
+
+  @inline def flatten[S](implicit ev: A <:< js.Thenable[S]): js.Thenable[S] = {
+    val onf = js.Any.fromFunction1(ev).asInstanceOf[RESOLVE[A, S]]
+    self.`then`(onf, js.undefined)
+  }
+}
 
 /** Ergonomic syntax for Promise.resolve and Promise.reject. Or, use like
  * `PromiseValue(true).resolve`. `a` is a strict value.
@@ -153,7 +190,7 @@ trait JSPromiseSyntax {
   @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
 }
 
-/** Helpers for creating a `js.Promise`. These are all strict of course.
+/** Helpers for creating a `js.Promise`. These are mostly strict except call-by-name.
  * If you want anything more complicated you should use a scala effect such as
  * zio, monix or cats-effect.
  */

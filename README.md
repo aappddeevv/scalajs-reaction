@@ -66,7 +66,11 @@ react_dom.createAndRenderWithId(HelloWorld, "container")
 
 ReactFC0 does not do much other than ensure that the scala function on the right
 becomes a js function--which is all that is needed to use react. You
-could have just declared it directly: `val HelloWorld: js.Function0[ReactNode] = props => div("hello world")`.
+could have just declared it directly: 
+
+```
+val HelloWorld: js.Function0[ReactNode] = props => div("hello world")
+```
 
 If you need to pass in an argument, remember that react function components requires only a single js object parameter, so do the following:
 
@@ -84,7 +88,7 @@ object MyComponent {
 
 ReactFC says that the function component HelloWorld takes a single parameter, of
 type Props. You do not need to use `ReactFC`, you could just use standard
-scala: 
+scala and standard react:
 
 ```scala
 object MyComponent { 
@@ -96,7 +100,7 @@ object MyComponent {
 }
 ```
 
-or
+or with types and extension methods:
 
 ```scala
 object MyComponent {
@@ -105,21 +109,23 @@ object MyComponent {
   // a standard scala function 
   val render: Props => ReactNode = props => div(s"hello ${props.name}")
 
-  // ReactElementTuple causes scala=>js function conversion
+  // ReactElementTuple causes scala=>js function conversion using standard scala methods
   def apply(props: Props): ReactElementTuple = (render, props)
 
-  // or convert using `.elementWith` which reads quite nicely
+  // or convert using the `.elementWith` extension method which reads nicely
   def apply(props: Props) = render.elementWith(props)
 }
 ````
 
-That's how simple this facade is. A few, very limited macros provide additional support creating and using `Props` more like case classes if that's important to you. Once scala3 is out, the macros will become industrial strength.
+That's how simple this facade is. You use the easy parts of scala.
 
-Remember, react needs to control when the props are applied to the rendering function, not you. A react "element" is really just a data structure that is a description of the element's rendering logic and props. The actual rendered element is created under react's control, not yours. There are other component specification patterns you can use as well or you can easily create your own like the above. See the docs.
+A few, very limited macros provide additional support creating and using `Props` more like case classes if that's important to you. Once scala3 is out, the macros will become industrial strength.
+
+React needs to control when the props are applied to the rendering function, not you. A react "element" is really just a data structure that is a description of the element's rendering logic and props. The actual rendered element is created under react's control, not yours. There are other component specification patterns you can use as well or you can easily create your own like the above. See the docs.
 
 If you want to ensure your component only renders when the props change, use
 `memo()`. `memo` uses shallow compare
-checking to see if the props have changed. A pimp is available
+checking to see if the props have changed. An extension method is available
 for memo to apply it as syntax. You need to take into account js's notion of equality when using
 function components and hooks or provider your comparator, something useful when you have
 scala objects in your props.
@@ -207,6 +213,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * fabric-experiments
 * forms: Advanced, all-scala.js forms package.
 * helmet
+* jshelpers: Helpers for working with js data. Includes full js.Promise extension methods to avoid Future.
 * jss
 * loglevel
 * msal

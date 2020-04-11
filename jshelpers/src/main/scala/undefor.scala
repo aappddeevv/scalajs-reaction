@@ -68,6 +68,14 @@ trait UndefOrCommon[A] {
     * `js.UndefOr[A|Null]` because the docs were wrong :-).
     */
   @inline def toUndefOrNull: js.UndefOr[A|Null] = a.asInstanceOf[js.UndefOr[A|Null]]
+  
+  /** Factor out the null along they way of the flatMap. */
+//   @inline def flatMapAbsorb[B](f: A => js.UndefOr[B|Null]): js.UndefOr[B] =
+//     a.flatMap{ v =>
+//        val x = f(v)
+//        if(x == null) js.undefined
+//        else x.asInstanceOf[js.UndefOr[B]]
+//     }
 }
 
 final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommon[String] {
@@ -94,7 +102,7 @@ final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[B
  * scala.js has `anUndefOr.orNull` to extract the value or return null which is *not*
  * what the methods below do.
  */
-final class JsUndefOrNullOps[T](val a: UndefOr[T | Null]) extends AnyVal {
+final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
   @inline private def forceGet: T = a.asInstanceOf[T]
 
   /** Treat null as undefined and change type from T|Null to T. */
@@ -103,6 +111,10 @@ final class JsUndefOrNullOps[T](val a: UndefOr[T | Null]) extends AnyVal {
     else value.asInstanceOf[js.UndefOr[T]]
   }
 
+//   /** Not a true flatMap because the Null is factored out along the way. */
+//   @inline def flatMapAbsorb[B](f: T => js.UndefOr[B|Null]): js.UndefOr[B] =
+//     if(a.isDefined && a != null) f(forceGet) else js.undefined
+  
   /** Flatten the UndefOr and Null to UndefOr only. */
   @inline def flatten = absorbNull
 
