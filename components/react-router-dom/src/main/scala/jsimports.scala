@@ -128,7 +128,13 @@ trait RouterContext extends js.Object {
   var router: js.Dynamic = js.native
 }
 
-/*** Route, most commonly used router component. Type parameter `S` stands for
+/** Route, most commonly used router component. Watch out for which apply
+ * method you use as rendering with path, children or exact=true does 
+ * different thnigs. Rendering with a "component" specified as the prop
+ * is not supported. Rendering with children means that the child is
+ * always rendered regardless of whether there is a match or not.
+ *
+ * Type parameter `S` stands for
  * "state" which is state you can add to the history stack per push. `P` is a js
  * object for query parameters, hence, each property should have a string value.
  * Using the children props always renders regardless of path match. Typically,
@@ -137,7 +143,7 @@ trait RouterContext extends js.Object {
 object Route {
   @js.native
   @JSImport("react-router-dom", "Route")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def always(children: ReactNode) = createElementN(JS, null)(children)
 
@@ -162,6 +168,7 @@ object Route {
   def withPathRender[S, P](p: String)(thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
     createElement0(JS, new Props[S, P] { path = p; render = thunk })
 
+  /** With exact = true */
   def withExactPath(p: String, child: ReactNode) =
     createElementN(JS, new Props[Nothing, Nothing] { exact = true; path = p })(child)
 
@@ -198,7 +205,7 @@ trait RouteComponentProps[S, P] extends js.Object {
 object HashRouter {
   @js.native
   @JSImport("react-router-dom", "HashRouter")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(child: ReactNode) =
     createElementN(JS, null)(child)
@@ -220,7 +227,7 @@ object HashRouter {
 object BrowserRouter {
   @js.native
   @JSImport("react-router-dom", "BrowserRouter")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode) =
     createElementN(JS, props)(children)
@@ -236,7 +243,7 @@ object BrowserRouter {
 object Switch {
   @js.native
   @JSImport("react-router-dom", "Switch")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -252,7 +259,7 @@ object Switch {
 object Redirect {
   @js.native
   @JSImport("react-router-dom", "Redirect")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def to(t: String)                        = createElement0(JS, new Props { to = t         })
   def toLocation(t: LocationDescriptor[_]) = createElement0(JS, new Props { toLocation = t })
@@ -276,7 +283,7 @@ object Redirect {
 object Prompt {
   @js.native
   @JSImport("react-router-dom", "Prompt")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) =
     createElement0(JS, props)

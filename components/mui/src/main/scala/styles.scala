@@ -46,8 +46,8 @@ object StylesContext extends ReactContext[StylesProvider.Props]
 @js.native
 @JSImport("@material-ui/styles", JSImport.Namespace)
 object styles extends js.Object {
-  val StylesProvider: ReactJsComponent = js.native
-  val ThemeProvider: ReactJsComponent  = js.native
+  val StylesProvider: ReactJSComponent = js.native
+  val ThemeProvider: ReactJSComponent  = js.native
   def jssPreset(): JssOptions          = js.native
   // more...
 }

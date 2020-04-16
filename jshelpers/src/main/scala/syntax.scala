@@ -35,6 +35,7 @@ trait AllSyntax
     with MiscOrSyntax
     with JSPromiseSyntax
     with OrSyntax
+    with JSArraySyntax
 
 object syntax {
   object all extends AllSyntax
@@ -48,4 +49,5 @@ object syntax {
   object miscor extends MiscOrSyntax
   object jspromise extends JSPromiseSyntax
   object or extends OrSyntax
+  object jsarray extends JSArraySyntax
 }

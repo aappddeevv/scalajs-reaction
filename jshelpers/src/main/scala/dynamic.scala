@@ -33,21 +33,21 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
   def asJSDate: js.Date = jsdyn.asInstanceOf[js.Date]
 
   /** This value could be T or null. This does not check if its undefined. */
-  def asOrNull[T <: scala.Any] = jsdyn.asInstanceOf[T|Null]
-  
+  def asOrNull[T <: scala.Any] = jsdyn.asInstanceOf[T | Null]
+
   /** As potentially T, null or undefined. The safest cast. */
   def asUndefOrNull[T <: scala.Any] =
-    jsdyn.asInstanceOf[js.UndefOr[T|Null]]
-  
+    jsdyn.asInstanceOf[js.UndefOr[T | Null]]
+
   /** Short version of `.asInstanceOf`. */
   def as[T <: js.Object] = jsdyn.asInstanceOf[T]
 
   def asJsObj: js.Object = jsdyn.asInstanceOf[js.Object]
-  
+
   def asDict[A]: js.Dictionary[A] = jsdyn.asInstanceOf[js.Dictionary[A]]
-  
+
   def asJsObjSub[A <: js.Object] = jsdyn.asInstanceOf[A] // assumes its there!
-  
+
   def asJsArray[A <: js.Object] = jsdyn.asInstanceOf[js.Array[A]]
 
   /** Uses truthiness to determine None, you may not want this. */
@@ -57,16 +57,16 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
 
   /** Null and undefined => None, otherwise Some. The safest conversion. */
   def toNonNullOption[T <: js.Object]: Option[T] =
-    if(jsdyn == null || jsdyn.asInstanceOf[js.UndefOr[T]].isEmpty) None
+    if (jsdyn == null || jsdyn.asInstanceOf[js.UndefOr[T]].isEmpty) None
     else Option(jsdyn.asInstanceOf[T])
-  
+
   /** Shallow combine. */
   def combine(that: js.Dynamic) =
     js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
-   
-  /** Determine if truthy. Very tricky! */ 
+
+  /** Determine if truthy. Very tricky! */
   def toTruthy: Boolean = js.DynamicImplicits.truthValue(jsdyn)
-  
+
   /** Duplicate using `js.Object.assign` */
   def duplicate = js.Object.assign(new js.Object, jsdyn.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
 

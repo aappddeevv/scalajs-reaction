@@ -114,6 +114,7 @@ lazy val root = project
     `react-native-sideswipe`,
     jss,
     apollo,
+    `apollo-server`,
     forms,
     `react-router-dom`,
     pathtoregexp,
@@ -127,6 +128,12 @@ lazy val root = project
     luxon,dataloader,
     jshelpers,
     `react-content-loader`
+    ,`use-query-params`
+    ,`use-error-boundary`
+    ,`react-teleporter`,
+    plotlyjs,
+	`react-plotlyjs`
+  
   )
 
 lazy val `react` = project
@@ -243,6 +250,29 @@ lazy val dataloader = project.in(file("components/dataloader"))
 .dependsOn(react, `react-macros`)
 .enablePlugins(ScalaJSPlugin)
 
+lazy val `use-query-params` = project.in(file("components/use-query-params"))
+.settings(std_settings("use-query-params", "use-query-params"))
+.settings(buildinfo_settings("use_query_params"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
+lazy val `use-error-boundary` = project.in(file("components/use-error-boundary"))
+.settings(std_settings("use-error-boundary", "use-error-boundary"))
+.settings(buildinfo_settings("use_error_boundary"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
+lazy val `react-teleporter` = project.in(file("components/react-teleporter"))
+.settings(std_settings("react-teleporter", "react-teleporter"))
+.settings(buildinfo_settings("react_teleporter"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
+lazy val `apollo-server` = project.in(file("components/apollo-server"))
+.settings(std_settings("apollo-server", "apollo-server"))
+.settings(buildinfo_settings("apollo_server"))
+.dependsOn(react, apollo, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
 
 
 // jvm and js based project
@@ -356,6 +386,19 @@ lazy val forms = project.in(file("components/forms"))
   .settings(std_settings("forms", "scalajs-reaction forms library."))
   .settings(buildinfo_settings("forms"))
 
+lazy val plotlyjs = project.in(file("components/plotlyjs"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom, `react-macros`)
+  .settings(std_settings("plotlyjs", "plotly.js"))
+  .settings(buildinfo_settings("plotlyjs"))
+
+lazy val `react-plotlyjs` = project.in(file("components/react-plotlyjs"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(plotlyjs,react, vdom, `react-macros`)
+  .settings(std_settings("react-plotlyjs", "react-plotly.js"))
+  .settings(buildinfo_settings("react_plotlyjs"))
+
+
 lazy val examples = project
   .settings(fpsettings)
   .settings(std_settings("examples", "Example web application"))
@@ -419,6 +462,7 @@ lazy val docs = project
     `react-native-sideswipe`,
     jss,
     apollo,
+    `apollo-server`,
     forms,
     `react-router-dom`,
     pathtoregexp,
@@ -429,8 +473,14 @@ lazy val docs = project
     loglevel,
     whydidyourender,
     luxon,
-    dataloader
-    ,`react-content-loader`
+    dataloader,
+    `react-content-loader`,
+    jshelpers,
+    `use-query-params`,
+    `use-error-boundary`,
+    `react-teleporter`,
+    plotlyjs,
+	`react-plotlyjs`
 )
 
 addCommandAlias("prepare", "headerCreate; fix; fmt")

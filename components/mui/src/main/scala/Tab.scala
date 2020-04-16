@@ -36,7 +36,7 @@ object Tab {
 
   @js.native
   @JSImport("@material-ui/core/Tab", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) =
     createElement0(JS, props)

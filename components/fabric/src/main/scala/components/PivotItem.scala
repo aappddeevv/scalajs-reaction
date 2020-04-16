@@ -33,11 +33,17 @@ import react._
 import vdom._
 
 object PivotItem {
+
+  @js.native
+  trait PivotItemLike extends js.Object {
+     val props: Props
+  }
+
   @js.native
   @JSImport("office-ui-fabric-react/lib/Pivot", "PivotItem")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends HTMLAttributes[dom.html.Div] {

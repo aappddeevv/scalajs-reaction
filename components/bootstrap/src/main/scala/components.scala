@@ -30,20 +30,20 @@ import js.|
 @js.native
 @JSImport("react-bootstrap", JSImport.Namespace)
 object BootstrapNS extends js.Object {
-  val Button: ReactJsComponent            = js.native
-  val ButtonToolbar: ReactJsComponent     = js.native
-  val ButtonGroup: ReactJsComponent       = js.native
-  val ToggleButtonGroup: ReactJsComponent = js.native
-  val ToggleButton: ReactJsComponent      = js.native
+  val Button: ReactJSComponent            = js.native
+  val ButtonToolbar: ReactJSComponent     = js.native
+  val ButtonGroup: ReactJSComponent       = js.native
+  val ToggleButtonGroup: ReactJSComponent = js.native
+  val ToggleButton: ReactJSComponent      = js.native
 
-  val FormControl: ReactJsComponent = js.native
-  val FormLabel: ReactJsComponent   = js.native
-  val FormGroup: ReactJsComponent   = js.native
+  val FormControl: ReactJSComponent = js.native
+  val FormLabel: ReactJSComponent   = js.native
+  val FormGroup: ReactJSComponent   = js.native
 
-  val Checkbox: ReactJsComponent = js.native
-  val Radio: ReactJsComponent    = js.native
-  //val FormControl.Static: ReactJsComponent = js.native
-  //val HelpBlock: ReactJsComponent = js.native
+  val Checkbox: ReactJSComponent = js.native
+  val Radio: ReactJSComponent    = js.native
+  //val FormControl.Static: ReactJSComponent = js.native
+  //val HelpBlock: ReactJSComponent = js.native
 }
 
 object components {
@@ -191,7 +191,7 @@ trait IFormControlProps extends js.Object {
   var placeholder: js.UndefOr[String]                  = js.undefined
   var value: js.UndefOr[scala.Any]                     = js.undefined
   var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
-  var as: js.UndefOr[As | ReactJsComponent | String]   = js.undefined
+  var as: js.UndefOr[As | ReactJSComponent | String]   = js.undefined
 
   var isValid: js.UndefOr[Boolean]   = js.undefined
   var isInvalid: js.UndefOr[Boolean] = js.undefined

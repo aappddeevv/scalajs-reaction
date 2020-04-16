@@ -36,7 +36,7 @@ trait AppConfig extends js.Object {
 @JSImport("react-native", "AppRegistry")
 object AppRegistry extends js.Object {
   def registerConfig(config: js.Array[AppConfig]): Unit                                = js.native
-  def registerComponent(appKey: String, thunk: js.Function0[ReactJsComponent]): String = js.native
+  def registerComponent(appKey: String, thunk: js.Function0[ReactJSComponent]): String = js.native
   def registerRunnable(appKey: String, func: Runnable): String                         = js.native
   def registerKeys(): js.Array[String]                                                 = js.native
   def unmountAplicationComponentAtRootTag(rootTag: Int): Unit                          = js.native

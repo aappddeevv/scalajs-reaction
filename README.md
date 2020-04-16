@@ -26,7 +26,7 @@ documentation](https://reasonml.github.io/reason-react) provides a good descript
 scala.js implementation is kept intentionally similar to ReasonReact so that its
 documentation applies to this project. However, you skip the ReasonReact documentation because this library uses simple scala/scala.js friendly constructs to create your user interface. Read on...
 
-This library is small and focuses on simple js functions that use hooks. Hooks are described on the
+This library is small and focuses on simple js function components and hooks. Hooks are described on the
 [react](https://reactjs.org/docs/hooks-reference.html) page.
 
 scalajs-reaction emphasizes:
@@ -41,7 +41,7 @@ scalajs-reaction emphasizes:
   as redux.
 
 At the same time, it allows you to build your entire interface in scalajs-reaction. As long as your front-end solution can manage the model of
-  scala.js's output (one large module for all scala.js code, not file-by-file/module-by-module), you should consider scalajs-react for your solution. By providing a thin veneer over hooks, it eschews abstractions and avoids getting in your way.
+  scala.js's output (one large module for all scala.js code, not file-by-file/module-by-module), you should consider scalajs-reaction for your solution. By providing a thin veneer over standard scala functions and hooks, it eschews abstractions and avoids getting in your way.
 
 * [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
 * [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco): Uses the old API but still helpful.
@@ -50,6 +50,7 @@ The library supports fragments, the new context provider and hooks. The facade's
 API roughly mimics ReasonReact's approach based on hooks. This facade also
 supports react-native. The react-native use-case for scala.js is actually more
 compelling than for web applications due to scala.js bundling issues.
+There is also API support for experimental APIs.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-reaction-app.g8` to
 create a new project.
@@ -59,7 +60,7 @@ create a new project.
 It's easy to create a component and render it:
 
 ```scala
-val HelloWorld: ReactFC0 = () => { div("hello world") }
+val HelloWorld: ReactFC0 = () => div("hello world")
 // ...
 react_dom.createAndRenderWithId(HelloWorld, "container")
 ```
@@ -118,6 +119,15 @@ object MyComponent {
 ````
 
 That's how simple this facade is. You use the easy parts of scala.
+
+To create a higher-order component or a "container/pure renderer" design, use function composition:
+
+```scala
+def withPageLogging[P <: js.Object](component: ReactFC[P]): ReactFC[P] = props => {
+  useEffectMounting(() => println("LOG PAGE!"))
+  createElement(component, props) // or component.elementWith(props)
+}
+```
 
 A few, very limited macros provide additional support creating and using `Props` more like case classes if that's important to you. Once scala3 is out, the macros will become industrial strength.
 
@@ -221,6 +231,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * mui
 * native
 * pathtoregexp
+* plotlyjs
 * prop-types
 * react
 * react-content-loader
@@ -230,12 +241,14 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * react-native-elements
 * react-navigation
 * react-native-sideswipe
+* react-plotlyjs
 * react-redux
 * react-helmet
 * react-flexbox-grid
 * react-router-dom
+* use-query-params
 * vdom
-* whydidyourender (use include/exclude regexs)
+* whydidyourender (use include/exclude regexs, see the readme in that directory)
 
 Some of the external libs have just enough scala.js to write an app with but
 they are not fully fleshed out. In most cases, there are enhancements
@@ -272,6 +285,7 @@ Generate integrated documents using unidoc then open the toplevel page:
 ```sh
 get clone https://github.com/aappdddeevv/scalajs-reaction
 sbt "docs/unidoc"
+# linux has xdg-open to open a file from the command line
 xdg-open website/scalajs-reaction/static/api/index.html
 ```
 

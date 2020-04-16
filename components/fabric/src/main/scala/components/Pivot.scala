@@ -48,6 +48,10 @@ object Pivot {
 
   trait StyleProps extends Theme {
     var className: js.UndefOr[String] = js.undefined
+    //var theme: js.UndefOr[ITheme] = js.undefined
+    var rootIsLarge: js.UndefOr[Boolean] = js.undefined
+    var rootIsTabs: js.UndefOr[Boolean] = js.undefined
+    var linkIsSelected: js.UndefOr[Boolean] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {
@@ -65,21 +69,36 @@ object Pivot {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var className: js.UndefOr[String]                                  = js.undefined
 
-    var initialSelectedKey: js.UndefOr[String] = js.undefined
-    var initialSelectedIndex: js.UndefOr[Int]  = js.undefined
+    var defaultSelectedKey: js.UndefOr[String] = js.undefined
+    var defaultSelectedIndex: js.UndefOr[Int]  = js.undefined
     var selectedKey: js.UndefOr[String]        = js.undefined
-    var onLinkClick: js.UndefOr[((js.Object, js.UndefOr[ReactMouseEvent[dom.html.Element]]) => Unit) |(() => Unit)] =
-      js.undefined
+    var selectedIndex: js.UndefOr[Int] = js.undefined
+    var onLinkClick: js.UndefOr[LinkClickHandler] = js.undefined
     var linkSize: js.UndefOr[LinkSize]                            = js.undefined
+    var linkFormat: js.UndefOr[LinkFormat] = js.undefined
     var headersOnly: js.UndefOr[Boolean]                          = js.undefined
-    var getTableId: js.UndefOr[js.Function2[String, Int, String]] = js.undefined
+    var getTabId: js.UndefOr[js.Function2[String, Int, String]] = js.undefined
   }
-
+  
+  type LinkClickHandler = js.Function2[js.UndefOr[PivotItem.PivotItemLike],js.UndefOr[ReactMouseEvent[dom.html.Element]], Unit]
+  
+  def OnLinkClick(f: (js.UndefOr[PivotItem.PivotItemLike], js.UndefOr[ReactMouseEvent[dom.html.Element]]) => Unit) =
+    js.Any.fromFunction2(f).asInstanceOf[LinkClickHandler]
+  
+  def OnLinkClickHandlerNoArg(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[LinkClickHandler]
+  
   @js.native
   sealed trait LinkSize extends js.Any
   object LinkSize {
-    var normal = 0.asInstanceOf[LinkSize]
+    val normal = 0.asInstanceOf[LinkSize]
     val large  = 1.asInstanceOf[LinkSize]
   }
 
+  @js.native
+  abstract trait LinkFormat extends js.Any
+  object LinkFormat {
+    val link = 0.asInstanceOf[LinkFormat]
+    val tabs = 1.asInstanceOf[LinkFormat]
+  }
+  
 }

@@ -28,7 +28,7 @@ package object native {
   type Runnable          = js.Function1[js.Any, Unit]
   type Task              = js.Function1[js.Any, js.Promise[Unit]]
   type TaskProvider      = () => Task
-  type ComponentProvider = () => react.ReactJsComponent
+  type ComponentProvider = () => react.ReactJSComponent
   type NodeHandle        = Int
 
   /** For use in Platform.select */

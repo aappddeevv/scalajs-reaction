@@ -34,7 +34,7 @@ object navigation extends NavigationJS
 object NavigatorIOS {
   @js.native
   @JSImport("react-navigation", "NavigatorIOS")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply[T](props: Props = null) =
     createElement0(JS, props)

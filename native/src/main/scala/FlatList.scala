@@ -29,7 +29,7 @@ object FlatList {
 
   @js.native
   @JSImport("react-native", "FlatList")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply[T](props: Props[T] = null) =
     createElement0(JS, props)
@@ -54,7 +54,7 @@ trait ViewabilityConfig extends js.Object {
 trait Separators extends js.Object {
   var highlight: () => Unit
   var unhighlight: () => Unit
-  var updateProps: (String, js.Object) => ReactJsComponent
+  var updateProps: (String, js.Object) => ReactJSComponent
 }
 
 trait ItemLayout extends js.Object {

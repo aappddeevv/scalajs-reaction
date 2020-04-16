@@ -59,10 +59,10 @@ trait ReactReduxContextValue[S, A <: Action] extends js.Object {
 @JSImport("react-redux", JSImport.Namespace)
 private[react_redux] object module extends js.Object {
 
-  def createProvider(storeKey: String): ReactJsComponent = js.native
+  def createProvider(storeKey: String): ReactJSComponent = js.native
 
   /** Default Provider component whose store's name is "store". */
-  val Provider: ReactJsComponent = js.native
+  val Provider: ReactJSComponent = js.native
 
   //def RactReduxContext[S, A <: Action]: ReactContext[ReactReduxContextValue[S,A]] = js.native
 

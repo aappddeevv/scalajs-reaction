@@ -81,6 +81,9 @@ trait HTMLTagsX {
   // should be dom.html.Aside
   type AsideProps = ElementAttributesOnly
   final lazy val aside = tagt[AsideProps]("aside")
+  
+  def asideWithClass(cn: String)(children: ReactNode*) =
+    aside(new AsideProps { className = cn})(children:_*)
 
   trait AudioProps extends AudioHTMLAttributes[dom.html.Audio] with ClassAttributes[dom.html.Audio]
   final lazy val audio = tagt[AudioProps]("audio")
@@ -165,6 +168,11 @@ trait HTMLTagsX {
 
   /** A common scenario to wrap a div just to add the classname. */
   def divWithClassname(
+    cn: js.UndefOr[String],
+    children: ReactNode*
+  ) = div(new DivProps { className = cn })(children: _*)
+  
+  def divWithClass(
     cn: js.UndefOr[String],
     children: ReactNode*
   ) = div(new DivProps { className = cn })(children: _*)
@@ -300,6 +308,10 @@ trait HTMLTagsX {
   type MainProps = ElementAttributesOnly
   final lazy val main = tagt[MainProps]("main")
 
+  /** Common scenario to have a main method with no attributes. */
+  def mainWith(children: ReactNode*) = 
+    main(new MainProps { })(children: _*)
+  
   trait MapProps extends MapHTMLAttributes[dom.html.Map] with ClassAttributes[dom.html.Map]
   final lazy val map = tagt[MapProps]("map")
 

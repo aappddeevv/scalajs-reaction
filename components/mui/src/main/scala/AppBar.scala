@@ -32,7 +32,7 @@ object AppBar {
 
   @js.native
   @JSImport("@material-ui/core/AppBar", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

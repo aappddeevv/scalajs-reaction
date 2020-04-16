@@ -33,6 +33,7 @@ package object react extends react.React {
   /** A js dispatch function for side effects. Used in useState. */
   type Dispatch[A] = js.Function1[A, Unit]
 
+  /** General purpose type that grabs AnyVal and some js types. */
   type AllType =
     Boolean | Byte | Short | Float | String | Double | Int | js.Object | js.Dictionary[_] | js.Symbol | js.Array[scala.Any] | Null | Unit
 
@@ -200,7 +201,7 @@ package object react extends react.React {
   /**
    * A js-object that is returned from create-react-class. In reactjs a react
    * class is a js object created using the "class" construct. This should
-   * really be ReactJsComponent but we keep this slightly different for those
+   * really be ReactJSComponent but we keep this slightly different for those
    * who care about such things.
    */
   @js.native
@@ -224,7 +225,17 @@ package object react extends react.React {
    * this type to represent it.
    */
   type ReactType =
-    ReactClass | String | ReactJsComponent | ReactJSComponent | ReactJsFunctionComponent | ReactJsLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+
+  /**
+   * This type is used only as a target for imported javascript authored components to
+   * "tag" a component type or created via other js-interop mechanisms such as
+   * redux integration. By using a separate type, you must use then
+   * scalajs-react's API to create an element. You can use this to annotate a
+   * js function react component as well e.g. () => ReactNode.
+   */
+  //@js.native
+  //trait ReactJSComponent extends js.Object
 
   /**
    * This type is used only as a target for imported javascript authored components to
@@ -234,28 +245,24 @@ package object react extends react.React {
    * js function react component as well e.g. () => ReactNode.
    */
   @js.native
-  trait ReactJsComponent extends js.Object
-
-  /** Alias for ReactJsComponent. Use this one. */
-  @js.native
-  trait ReactJSComponent extends ReactJsComponent
+  trait ReactJSComponent extends js.Object
 
   /** Import type target from js land that are functions and imported as such. May or may
    * not make a difference to have this typed separately. You could also import
    * it as a jsFunctionN object.
    */
   @js.native
-  trait ReactJsFunctionComponent extends js.Object
+  trait ReactJSFunctionComponent extends js.Object
 
   /** Not sure why I still have this. Probably should avoid. */
   @js.native
-  trait ReactJsLazyComponent extends ReactJsComponent
+  trait ReactJSLazyComponent extends ReactJSComponent
 
   /** All the types of components that can be imported from JS. These must be
    * processed to be allowed to be used as Components in this facade. Keep in
    * sync with `ReactType`.
    */
-  type ImportedJsComponent = ReactJSComponent | ReactJsFunctionComponent | ReactJsLazyComponent
+  type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent
 
   /** The type of `() => import("somecomponent")` which is used exclusively for
    * the argument to React.lazy.
@@ -469,4 +476,7 @@ package object react extends react.React {
   
   /** Type inference helper. */
   val nullJSObject = null.asInstanceOf[js.Object]
+  
+  /** Empty array. Freshly allocated! */
+  def emptyArray[T] = js.Array[T]()
 }

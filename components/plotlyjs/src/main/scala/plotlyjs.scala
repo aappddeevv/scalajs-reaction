@@ -19,12 +19,22 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+import scala.scalajs.js
+import js.|
+import org.scalajs.dom
+import js.JSConverters._
 
-class CallbackOps[A, B](cb: Callback[A, B]) {}
+package object plotlyjs {
+  type Color = String | Int
+  type ColorScaleItem = js.Tuple2[Double, String] // e.g. String => js.Array(0.2, "rgb(245,195,157)")
+  type Root = String | dom.html.Element
+  type Datum = Double | Int | String | js.Date | Null
 
-object CallbackOps {}
+  /** List of Datums */
+  type DatumArray = js.Array[Datum]
 
-trait CallbackSyntax {
-  implicit def callbackSyntax[A, B](cb: Callback[A, B]) = new CallbackOps(cb)
+  val emptyDatumArray: DatumArray = js.Array()
+
+  /** Helper to create traces array. */
+  def traces(traces: Trace*) = traces.toJSArray
 }

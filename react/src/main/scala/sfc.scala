@@ -94,7 +94,7 @@ class SFCWithRef[P <: js.Object, R](val run: js.Function2[P, Ref[R], ReactNode])
 
   /** Create an reactjs component directly from this SFC. */
   def toEl(props: P) =
-    ReactJS.createElement(run.asInstanceOf[ReactJsFunctionComponent], props.asInstanceOf[P | Unit])
+    ReactJS.createElement(run.asInstanceOf[ReactJSFunctionComponent], props.asInstanceOf[P | Unit])
 }
 
 object SFCWithRef {

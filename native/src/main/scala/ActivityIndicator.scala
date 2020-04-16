@@ -31,7 +31,7 @@ object ActivityIndicator {
 
   @js.native
   @JSImport("react-native", "ActivityIndicator")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

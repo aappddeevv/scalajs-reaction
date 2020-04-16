@@ -28,7 +28,7 @@ import js.|
 final case class JsOrOps[A, B](o: A | B) {
   def pickLeft = o.asInstanceOf[A]
   def pickRight = o.asInstanceOf[B]
-  
+
 //   def as[A](implicit ev: A <:< |[A,B]) = (o.merge: scala.Any) match {
 //     case a: A if o.instanceOf[A] => Left(a)
 //     case b: B if o.instanceOf[B] => Right(b)

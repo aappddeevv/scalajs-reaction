@@ -29,7 +29,7 @@ object VirtualizedList {
 
   @js.native
   @JSImport("react-native", "VirtualizedList")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply[T](props: Props[T] = null) =
     createElement0(JS, props)

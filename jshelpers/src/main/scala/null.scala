@@ -61,10 +61,10 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
     else false
 
   /** Uh-oh, thought it was `A|Null` but you need to say its a
-    * `js.UndefOr[A|Null]` because the docs were wrong :-).
-    */
-  @inline def toUndefOrNull: js.UndefOr[A|Null] = js.defined(a)
-    
+   * `js.UndefOr[A|Null]` because the docs were wrong :-).
+   */
+  @inline def toUndefOrNull: js.UndefOr[A | Null] = js.defined(a)
+
   /** null => undefined, otherwise A. */
   @inline def toUndefOr: js.UndefOr[A] =
     if (a == null) js.undefined
@@ -81,31 +81,31 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
     else None
 
   /** Absorb the null and change A|Null => A. Value could still be null but
-   * it will no longer by typed that way. 
+   * it will no longer by typed that way.
    */
   @inline def absorbNull: A = forceGet
 
   /** Just get the value, may be null! This will not throw an error. */
-  @inline def get = if(a==null) throw new NoSuchElementException("get T|Null") else forceGet
+  @inline def get = if (a == null) throw new NoSuchElementException("get T|Null") else forceGet
 
   /** Same as get and absorbNull. */
   //@inline def ? = forceGet
-  
+
   /** getOrElse but less typing. */
-  @inline def ??[B >: A](default: => B): B = 
-    if(isEmpty) default else forceGet
+  @inline def ??[B >: A](default: => B): B =
+    if (isEmpty) default else forceGet
 
   /** getOrElse but less typing. */
   @inline def !?[B >: A](default: => B) = getOrElse[B](default)
-    
-    /** Experimental */
+
+  /** Experimental */
   @inline def ???[B >: A](other: B | Null): B | Null =
     if (a == null) other else a
 
-    /** Experimental */
-  @inline def ????[B >: A](next: A => B|Null): B|Null =
+  /** Experimental */
+  @inline def ????[B >: A](next: A => B | Null): B | Null =
     if (a != null) next(forceGet) else a
-    
+
   @inline def orElse[B >: A](other: B | Null): B | Null =
     if (a == null) other else a
 
@@ -232,15 +232,14 @@ final class OrUndefOrNullOps[A](private val a: js.UndefOr[A] | Null) extends Any
     else a.asInstanceOf[js.UndefOr[A | Null]]
 }
 
-class OrNullStringOps(private val a: String|Null) extends AnyVal {
+class OrNullStringOps(private val a: String | Null) extends AnyVal {
 
   /** Return string's "zero" which is an empty string. */
-  @inline def orEmpty: String = if(a==null) "" else a.asInstanceOf[String]
+  @inline def orEmpty: String = if (a == null) "" else a.asInstanceOf[String]
 }
 
-
 trait OrNullSyntax extends NullLowerOrderImplicits {
-  @inline implicit def orNullStringOps(a: String|Null) = new OrNullStringOps(a)
+  @inline implicit def orNullStringOps(a: String | Null) = new OrNullStringOps(a)
   @inline implicit def orNullSyntax[A](a: A | Null) = new OrNullOps[A](a)
   @inline implicit def orUndefOrNullSyntax[A](a: js.UndefOr[A] | Null) = new JsUndefOrNullOps[A](a)
 }

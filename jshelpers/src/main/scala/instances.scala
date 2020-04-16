@@ -21,7 +21,7 @@
 
 package jshelpers
 
-trait AllInstances
+trait AllInstances extends JSPromiseInstances
 
 /** Instances is the wrong concept here as these are not typeclass
  * instances--but close enough as they are not syntax extensions "'element'
@@ -29,4 +29,5 @@ trait AllInstances
  */
 object instances {
   object all extends AllInstances
+  object jspromise extends JSPromiseInstances
 }

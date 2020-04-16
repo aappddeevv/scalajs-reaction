@@ -34,7 +34,7 @@ object SideSwipe {
 
   @js.native
   @JSImport("react-native-sideswipe", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply[T](props: Props[T] = null) = createElement0(JS, props)
 

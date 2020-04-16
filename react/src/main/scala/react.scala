@@ -113,6 +113,10 @@ trait React {
     ) =
     ReactJS.createElement(component, props)
 
+  /** Create an element using the standard var args signature. */
+  def createElement[P <: js.Object](component: ReactType, props: P, children: ReactNode*): ReactElement =
+    ReactJS.createElement(component, props, children:_*)
+    
   /** Create a react fragment. Fragments are created as an "element" with a
     * specific tag (symbol or number if target does not support symbol) vs say,
     * the string "div".
@@ -389,7 +393,7 @@ trait React {
     ): Unit =
     ReactJS.useImperativeHandle[T, R](ref, thunk, dependencies)
 
-  def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent =
+  def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent =
     ReactJS.`lazy`(lazyComponent)
 
   def useTransition(config: TransitionConfig) = {
@@ -404,6 +408,15 @@ trait React {
     ): T =
     ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
 
+  def createMutableSource[S](source: scala.Any, getVersion: js.Function0[scala.Any]) = 
+        ReactJS.createMutableSource[S](source, getVersion)
+        
+  /** subscribe 2nd arg is to be called whenever the value changes and is stable. Last is an unsubscribe for unmounting. */
+  def useMutableSource[S,A](source: MutableSource[S], 
+    getSnapshot: js.Function1[S, A], 
+    subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A =
+        ReactJS.useMutableSource[S,A](source, getSnapshot, subscribe)
+    
   //val Children = ReactJS.Children
 
   /** Create a React.fragment element. */
@@ -470,4 +483,17 @@ trait ReactContext[T] extends js.Object {
 
   /** Not public API. */
   //val defaultValue: T = js.native
+}
+
+/** Instantiate this to sync types needed for both funcs. */
+case class UseMutableSource[S,A]() {
+
+  def create(source: scala.Any, getVersion: js.Function0[scala.Any]) = 
+        ReactJS.createMutableSource[S](source, getVersion)
+        
+  /** subscribe 2nd arg is to be called whenever the value changes and is stable. Last is an unsubscribe for unmounting. */
+  def use(source: MutableSource[S], 
+    getSnapshot: js.Function1[S, A], 
+    subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A =
+        ReactJS.useMutableSource[S,A](source, getSnapshot, subscribe)
 }

@@ -31,7 +31,7 @@ object View {
 
   @js.native
   @JSImport("react-native", "View")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

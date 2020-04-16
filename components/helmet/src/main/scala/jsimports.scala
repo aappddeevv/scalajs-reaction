@@ -22,21 +22,17 @@
 package react_helmet
 
 import scala.scalajs.js
-
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
 
 object Helmet {
 
   @js.native
   @JSImport("react-helmet", "Helmet")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props, children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -88,7 +84,7 @@ object module extends js.Object {
 
 @js.native
 trait HelmetDatum extends js.Object {
-  def toComponent(): ReactJsComponent = js.native
+  def toComponent(): ReactJSComponent = js.native
 }
 
 @js.native

@@ -47,8 +47,8 @@ trait AllSyntax
     with JsRefSyntax
     with JSPromiseSyntax
     with ContextSyntax
-    with CallbackSyntax
     with OrSyntax
+    with JSArraySyntax
 
 object syntax {
   object all extends AllSyntax
@@ -65,6 +65,6 @@ object syntax {
   object jsref extends JsRefSyntax
   object jspromise extends JSPromiseSyntax
   object context extends ContextSyntax
-  object callback extends CallbackSyntax
   object or extends OrSyntax
+  object jsarray extends JSArraySyntax
 }

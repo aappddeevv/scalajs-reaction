@@ -140,7 +140,7 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
   ) =
     js.Dynamic
       .literal(
-      "variables" -> variables.asInstanceOf[js.Any],
+        "variables" -> variables.asInstanceOf[js.Any],
         "query" -> query,
         "errorPolicy" -> errorPolicy,
         "context" -> context,
@@ -168,7 +168,7 @@ private[react_apollo] object module extends js.Object {
   // Need Ext for ExecutionResult...
   def useMutation[T <: js.Any, TVars <: js.Object](
     mutation: DocumentNode,
-    options: js.UndefOr[MutationHookOptions[T, TVars]] = js.undefined
+    options: js.UndefOr[MutationHookOptions[T, TVars]|js.Dynamic] = js.undefined
   ): js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]] =
     js.native
 
@@ -251,12 +251,12 @@ trait LazyQueryHookOptions[T <: js.Any, TVars <: js.Object] extends QueryFunctio
 object ApolloProvider {
   @js.native
   @JSImport("react-apollo", "ApolloProvider")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   trait Props extends ApolloContextValue
 
   def apply(props: Props)(children: ReactNode*) =
-    react.createElementN(JS, props)(children: _*)
+    react.createElementN(JS, props)(children:_*)
 
   def apply(c: apollo_client.ApolloClient)(children: ReactNode*) =
     react.createElementN(JS, new Props { client = c })(children: _*)
@@ -275,7 +275,7 @@ trait BaseMutationOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
   var errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined
   var update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined
   var client: js.UndefOr[ApolloClient] = js.undefined
-  var notifyOnNetowrkStatusChange: js.UndefOr[Boolean] = js.undefined
+  var notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined
   var context: js.UndefOr[js.Object] = js.undefined
   var onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined
   var onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined
@@ -307,6 +307,78 @@ object MutationFunctionOptions {
 // @apollo/react-hooks
 trait MutationHookOptions[T <: js.Any, TVars <: js.Object] extends BaseMutationOptions[T, TVars] {
   var mutation: js.UndefOr[DocumentNode] = js.undefined
+}
+
+/** Because there are some duplicative types in the signatures
+ * which become burdensome, this helper class reduces type noise.
+ * Instantiate the object then use values and methods in it without
+ * need to always specify the types.
+ */
+case class UseMutation[T <: js.Any, TVars <: js.Object]() {
+  def useMutation(mutation: DocumentNode, options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
+    module.useMutation[T, TVars](mutation, options)
+
+  /** Make MutationHookOptions */
+  def makeOptions(
+    // refetchQueries ???
+    awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
+    client: js.UndefOr[ApolloClient] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
+    ignoreResults: js.UndefOr[Boolean] = js.undefined,
+    mutation: js.UndefOr[DocumentNode] = js.undefined,
+    notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined,
+    onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined,
+    onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined,
+    update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
+    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+  ) =
+    js.Dynamic
+      .literal(
+        "awaitRefetchQueries" -> awaitRefetchQueries,
+        "client" -> client,
+        "context" -> context,
+        "errorPolicy" -> errorPolicy,
+        "fetchPolicy" -> fetchPolicy,
+        "igoreResults" -> ignoreResults,
+        "mutation" -> mutation,
+        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
+        "onCompleted" -> onCompleted,
+        "onError" -> onError,
+        "update" -> update,
+        "variables" -> variables.asInstanceOf[js.Any]
+      )
+      .asInstanceOf[MutationHookOptions[T, TVars]]
+
+  /** Make apollo_client.QueryOptions for the ApolloClient returned from `useMutation` which are slightly different than
+   * `MutationHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
+   * to the suspense mechanism.
+   */
+  def makeClientOptions(
+    mutation: DocumentNode,
+    context: js.UndefOr[js.Object] = js.undefined,
+    fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+    update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
+    awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
+    updateQueries: js.UndefOr[MutationQueryReducersMap[T, js.Object]] = js.undefined,
+    optimisticResponse: js.UndefOr[T | js.Function1[TVars, T]] = js.undefined,
+  ) =
+    js.Dynamic
+      .literal(
+        "mutation" -> mutation,
+        "context" -> context,
+        "fetchPolicy" -> fetchPolicy,
+        "errorPolicy" -> errorPolicy,
+        "variables" -> variables.asInstanceOf[js.Any],
+        "update" -> update,
+        "awaitRefetchQueries" -> awaitRefetchQueries,
+        "updateQueries" -> updateQueries,
+        "optimisticResponse" -> optimisticResponse.asInstanceOf[js.Any],
+      )
+      .asInstanceOf[apollo_client.MutationOptions[T, TVars]]
 }
 
 // @apollo/react-common

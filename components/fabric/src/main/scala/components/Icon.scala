@@ -35,7 +35,7 @@ import vdom._
 
 import fabric.styling._
 
-object Icon {
+object Icon { self =>
   @js.native
   @JSImport("office-ui-fabric-react/lib/Icon", "Icon")
   object JS extends ReactJSComponent
@@ -70,8 +70,8 @@ object Icon {
     @JSImport("office-ui-fabric-react/lib/Icon", "ImageIcon")
     object JS extends ReactJSComponent
 
-    trait Props extends HTMLAttributes[dom.html.Element] {
-      var iconName: js.UndefOr[String] = js.undefined
+    trait Props extends self.Props {
+      //var iconName: js.UndefOr[String] = js.undefined
     }
     def apply(props: Props = null) =
       createElement0(JS, props)
@@ -82,11 +82,10 @@ object Icon {
     @JSImport("office-ui-fabric-react/lib/Icon", "FontIcon")
     object JS extends ReactJSComponent
 
-    trait Props extends HTMLAttributes[dom.html.Element] {
-      var imageProps: Image.Props
+    trait Props extends self.Props {
+      //var imageProps: Image.Props
     }
-    def apply(props: Props = null) =
-      createElement0(JS, props)
+    def apply(props: Props) = createElement0(JS, props)
 
   }
 

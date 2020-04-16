@@ -90,7 +90,6 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
     val onf = js.Any.fromFunction1((a: A) => a.asInstanceOf[B]).asInstanceOf[RESOLVE[A, B]]
     val onr = js.Any.fromFunction1((e: Any) => that).asInstanceOf[REJECTED[B]]
     self.`then`[B](onf, onr)
-
   }
 
   /** Tap into the result. */
@@ -113,7 +112,8 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   }
 
   @inline def tapErrorF(f: scala.Any => js.Thenable[Unit]) = {
-    val onr = js.Any.fromFunction1((e: Any) => f(e).`then`[Unit]((), js.defined((_: Any) => js.Promise.reject(e))))
+    val onr = js.Any
+      .fromFunction1((e: Any) => f(e).`then`[Unit]((), js.defined((_: Any) => js.Promise.reject(e))))
       .asInstanceOf[REJECTED[A]]
     self.`then`[A]((), onr)
   }
@@ -130,8 +130,8 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   @inline def filter(p: A => Boolean): js.Thenable[A] = {
     val onf = js.Any.fromFunction1 { (a: A) =>
       val result = p(a)
-      if (result) JSPromise[A](a)
-      else JSPromise.fail(new NoSuchElementException())
+      if (result) JSPromiseCreators[A](a)
+      else JSPromiseCreators.fail(new NoSuchElementException())
     }.asInstanceOf[RESOLVE[A, A]]
     self.`then`[A](onf, js.undefined)
   }
@@ -145,14 +145,16 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
    */
   @inline def recover[U >: A](pf: PartialFunction[scala.Any, U]): js.Thenable[U] = {
     val onf = ().asInstanceOf[RESOLVE[A, U]]
-    val onr = js.Any.fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
+    val onr = js.Any
+      .fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
       .asInstanceOf[REJECTED[U]]
     self.`then`[U](onf, onr)
   }
 
   @inline def recoverWith[U >: A](pf: PartialFunction[scala.Any, js.Thenable[U]]): js.Thenable[U] = {
     val onf = ().asInstanceOf[RESOLVE[A, U]]
-    val onr = js.Any.fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
+    val onr = js.Any
+      .fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
       .asInstanceOf[REJECTED[U]]
     self.`then`[U](onf, onr)
   }
@@ -176,16 +178,55 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
 final class JSPromiseObjectOps[A](private val a: A) extends AnyVal {
 
   /** Return a js.Thenable. */
-  def resolve = JSPromise.effectTotal[A](a)
+  def resolve = JSPromiseCreators.effectTotal[A](a)
 
   /** Return a reject promise with value `a`. */
-  def reject = JSPromise.fail(a)
+  def reject = JSPromiseCreators.fail(a)
 
   /** Return a `js.Thenable[B]` with rejected value `a`. */
   def fail[B] = js.Promise.reject(a).asInstanceOf[js.Thenable[B]]
 }
 
-trait JSPromiseSyntax {
+final class JSPromise2[A, B](private val tuple: (js.Thenable[A], js.Thenable[B])) extends AnyVal {
+  implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  def parMapX[T](thunk: (A, B) => T) =
+    (for {
+      valueA <- tuple._1
+      valueB <- tuple._2
+    } yield thunk(valueA, valueB)).asInstanceOf[js.Promise[T]]
+}
+
+final class JSPromise3[A, B, C](private val tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C])) extends AnyVal {
+  implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  def parMapX[T](thunk: (A, B, C) => T) =
+    (for {
+      valueA <- tuple._1
+      valueB <- tuple._2
+      valueC <- tuple._3
+    } yield thunk(valueA, valueB, valueC)).asInstanceOf[js.Promise[T]]
+}
+
+final class JSPromise4[A, B, C, D](private val tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D]))
+    extends AnyVal {
+  implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  def parMapX[T](thunk: (A, B, C, D) => T) =
+    (for {
+      valueA <- tuple._1
+      valueB <- tuple._2
+      valueC <- tuple._3
+      valueD <- tuple._4
+    } yield thunk(valueA, valueB, valueC, valueD)).asInstanceOf[js.Promise[T]]
+}
+
+trait JSPromiseLowerOrderImplicits {
+  @inline implicit def jsPromise2[A, B](a: (js.Thenable[A], js.Thenable[B])) = new JSPromise2[A, B](a)
+  @inline implicit def jsPromise3[A, B, C](a: (js.Thenable[A], js.Thenable[B], js.Thenable[C])) =
+    new JSPromise3[A, B, C](a)
+  @inline implicit def jsPromise4[A, B, C, D](a: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D])) =
+    new JSPromise4[A, B, C, D](a)
+}
+
+trait JSPromiseSyntax extends JSPromiseLowerOrderImplicits {
   @inline implicit def anyToJSPromise[A](a: A) = new JSPromiseObjectOps[A](a)
   @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
 }
@@ -194,7 +235,7 @@ trait JSPromiseSyntax {
  * If you want anything more complicated you should use a scala effect such as
  * zio, monix or cats-effect.
  */
-object JSPromise {
+private[jshelpers] object JSPromiseCreators {
   def fail(error: => scala.Any): js.Promise[Nothing] = js.Promise.reject(error)
 
   def fromOption[A](v: => Option[A]): js.Promise[A] =
@@ -206,7 +247,11 @@ object JSPromise {
 
   def unit: js.Promise[Unit] = js.Promise.resolve[Unit]((()))
 
+  def nullValue: js.Promise[Null] = js.Promise.resolve[Null](null)
+
   def apply[A](a: => A): js.Promise[A] = js.Promise.resolve[A](a)
+
+  def from[A](a: => A): js.Promise[A] = js.Promise.resolve[A](a)
 
   /** Use this if you *know* this does not throw any exceptions. */
   def effectTotal[A](effect: => A): js.Promise[A] = js.Promise.resolve[A](effect)
@@ -219,4 +264,8 @@ object JSPromise {
       } catch {
         case scala.util.control.NonFatal(t) => rej(t)
       })
+}
+
+trait JSPromiseInstances {
+  val JSPromise = JSPromiseCreators
 }

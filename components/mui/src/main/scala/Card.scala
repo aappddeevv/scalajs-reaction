@@ -36,7 +36,7 @@ object Card {
 
   @js.native
   @JSImport("@material-ui/core/Card", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -55,7 +55,7 @@ object Card {
   object Media {
     @js.native
     @JSImport("@material-ui/core/CardMedia", JSImport.Default)
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
@@ -74,7 +74,7 @@ object Card {
   object Header {
     @js.native
     @JSImport("@material-ui/core/CardHeader", JSImport.Default)
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
@@ -98,7 +98,7 @@ object Card {
   object Content {
     @js.native
     @JSImport("@material-ui/core/CardContent", JSImport.Default)
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
@@ -115,7 +115,7 @@ object Card {
   object Actions {
     @js.native
     @JSImport("@material-ui/core/CardActions", JSImport.Default)
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
@@ -132,7 +132,7 @@ object Card {
   object ActionArea {
     @js.native
     @JSImport("@material-ui/core/CardActionArea", JSImport.Default)
-    object JS extends ReactJsComponent
+    object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)

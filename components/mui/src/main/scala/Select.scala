@@ -36,7 +36,7 @@ object Select {
 
   @js.native
   @JSImport("@material-ui/core/Select", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

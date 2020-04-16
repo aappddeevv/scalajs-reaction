@@ -36,7 +36,7 @@ object Input {
 
   @js.native
   @JSImport("@material-ui/core/Input", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

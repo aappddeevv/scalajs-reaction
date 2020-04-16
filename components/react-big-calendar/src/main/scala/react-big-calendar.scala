@@ -42,7 +42,7 @@ object ReactBigCalendar {
 
   @js.native
   @JSImport("react-big-calendar", JSImport.Default)
-  object JS extends ReactJsComponent {
+  object JS extends ReactJSComponent {
 
     /** Keep untyped so you can use your own moment library. */
     def momentLocalizer(m: js.Any): Localizer = js.native
@@ -137,14 +137,14 @@ object ReactBigCalendar {
     var messages: js.UndefOr[Messages]                                      = js.undefined
   }
 
-  /** Mixin for ReactJsComponent. Create a `ReactJsComponent` using
+  /** Mixin for ReactJSComponent. Create a `ReactJSComponent` using
    * `wrapScalaForJs`. Then merge that value with an object with the methods in
    * this trait and cast to this type. Use the final result in `ViewSpecifier`.
    * You can use the individual types for casting a scala function. This is very
    * message.
    */
   @js.native
-  trait ReactJsComponentEnh extends ReactJsComponent {
+  trait ReactJSComponentEnh extends ReactJSComponent {
     val navigate: NavigateThunk = js.native
     val title: TitleThunk       = js.native
   }
@@ -153,11 +153,11 @@ object ReactBigCalendar {
   type TitleThunk    = js.Function2[js.Date, js.Dynamic, js.Date]
 
   trait ViewsSpecifier extends js.Object {
-    var month: js.UndefOr[Boolean | ReactJsComponentEnh]    = js.undefined
-    var week: js.UndefOr[Boolean | ReactJsComponentEnh]     = js.undefined
-    var workWeek: js.UndefOr[Boolean | ReactJsComponentEnh] = js.undefined
-    var day: js.UndefOr[Boolean | ReactJsComponentEnh]      = js.undefined
-    var agenda: js.UndefOr[Boolean | ReactJsComponentEnh]   = js.undefined
+    var month: js.UndefOr[Boolean | ReactJSComponentEnh]    = js.undefined
+    var week: js.UndefOr[Boolean | ReactJSComponentEnh]     = js.undefined
+    var workWeek: js.UndefOr[Boolean | ReactJSComponentEnh] = js.undefined
+    var day: js.UndefOr[Boolean | ReactJSComponentEnh]      = js.undefined
+    var agenda: js.UndefOr[Boolean | ReactJSComponentEnh]   = js.undefined
   }
 
   @js.native
@@ -269,36 +269,36 @@ object ReactBigCalendar {
   }
 
   trait Agenda extends js.Object {
-    var date: js.UndefOr[ReactJsComponent]  = js.undefined
-    var time: js.UndefOr[ReactJsComponent]  = js.undefined
-    var event: js.UndefOr[ReactJsComponent] = js.undefined
+    var date: js.UndefOr[ReactJSComponent]  = js.undefined
+    var time: js.UndefOr[ReactJSComponent]  = js.undefined
+    var event: js.UndefOr[ReactJSComponent] = js.undefined
   }
 
   trait Day extends js.Object {
-    var header: js.UndefOr[ReactJsComponent] = js.undefined
-    var event: js.UndefOr[ReactJsComponent]  = js.undefined
+    var header: js.UndefOr[ReactJSComponent] = js.undefined
+    var event: js.UndefOr[ReactJSComponent]  = js.undefined
   }
 
   trait Week extends js.Object {
-    var header: js.UndefOr[ReactJsComponent] = js.undefined
-    var event: js.UndefOr[ReactJsComponent]  = js.undefined
+    var header: js.UndefOr[ReactJSComponent] = js.undefined
+    var event: js.UndefOr[ReactJSComponent]  = js.undefined
   }
 
   trait Month extends js.Object {
-    var header: js.UndefOr[ReactJsComponent]     = js.undefined
-    var dateHeader: js.UndefOr[ReactJsComponent] = js.undefined
-    var event: js.UndefOr[ReactJsComponent]      = js.undefined
+    var header: js.UndefOr[ReactJSComponent]     = js.undefined
+    var dateHeader: js.UndefOr[ReactJSComponent] = js.undefined
+    var event: js.UndefOr[ReactJSComponent]      = js.undefined
   }
 
   trait Components extends js.Object {
-    var event: js.UndefOr[ReactJsComponent]                 = js.undefined
-    var eventWrapper: js.UndefOr[ReactJsComponent]          = js.undefined
-    var eventContainerWrapper: js.UndefOr[ReactJsComponent] = js.undefined
-    var dayWrapper: js.UndefOr[ReactJsComponent]            = js.undefined
-    var dateCellWrapper: js.UndefOr[ReactJsComponent]       = js.undefined
-    var timesSlotWrapper: js.UndefOr[ReactJsComponent]      = js.undefined
-    var timesGutterHeader: js.UndefOr[ReactJsComponent]     = js.undefined
-    var toolbar: js.UndefOr[ReactJsComponent]               = js.undefined
+    var event: js.UndefOr[ReactJSComponent]                 = js.undefined
+    var eventWrapper: js.UndefOr[ReactJSComponent]          = js.undefined
+    var eventContainerWrapper: js.UndefOr[ReactJSComponent] = js.undefined
+    var dayWrapper: js.UndefOr[ReactJSComponent]            = js.undefined
+    var dateCellWrapper: js.UndefOr[ReactJSComponent]       = js.undefined
+    var timesSlotWrapper: js.UndefOr[ReactJSComponent]      = js.undefined
+    var timesGutterHeader: js.UndefOr[ReactJSComponent]     = js.undefined
+    var toolbar: js.UndefOr[ReactJSComponent]               = js.undefined
     var agenda: js.UndefOr[Agenda]                          = js.undefined
     var day: js.UndefOr[Day]                                = js.undefined
     var week: js.UndefOr[Week]                              = js.undefined

@@ -31,7 +31,7 @@ import react._
 object Toolbar {
   @js.native
   @JSImport("@material-ui/core/Toolbar", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

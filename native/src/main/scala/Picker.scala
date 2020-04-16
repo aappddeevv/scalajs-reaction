@@ -30,8 +30,8 @@ object Picker {
 
   @js.native
   @JSImport("react-native", "Picker")
-  object JS extends ReactJsComponent {
-    val Item: ReactJsComponent = js.native
+  object JS extends ReactJSComponent {
+    val Item: ReactJSComponent = js.native
   }
 
   def apply[T](props: Props[T] = null)(children: ReactNode*) =

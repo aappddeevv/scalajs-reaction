@@ -36,7 +36,7 @@ object Tabs {
 
   @js.native
   @JSImport("@material-ui/core/Tabs", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

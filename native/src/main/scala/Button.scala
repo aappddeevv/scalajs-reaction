@@ -29,7 +29,7 @@ object Button {
 
   @js.native
   @JSImport("react-native", "Button")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null) = createElement0(JS, props)
 

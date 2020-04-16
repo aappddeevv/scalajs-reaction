@@ -35,7 +35,7 @@ import vdom._
 object Stepper {
   @js.native
   @JSImport("@material-ui/core/Stepper", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -67,7 +67,7 @@ object StepLabel {
 
   @js.native
   @JSImport("@material-ui/core/StepLabel", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -95,7 +95,7 @@ object Step {
 
   @js.native
   @JSImport("@material-ui/core/Step", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -120,7 +120,7 @@ object StepContent {
 
   @js.native
   @JSImport("@material-ui/core/StepContent", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -146,7 +146,7 @@ object StepButton {
 
   @js.native
   @JSImport("@material-ui/core/StepButton", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -195,7 +195,7 @@ object StepConnecter {
 
   @js.native
   @JSImport("@material-ui/core/StepConnector", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -218,7 +218,7 @@ object StepIcon {
 
   @js.native
   @JSImport("@material-ui/core/StepIcon", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

@@ -55,7 +55,7 @@ trait Theme extends js.Object {
 @js.native
 @JSImport("theming", JSImport.Namespace)
 object theming extends js.Object {
-  val ThemeProvider: ReactJsComponent                            = js.native
+  val ThemeProvider: ReactJSComponent                            = js.native
   val ThemeContext: ReactContext[_root_.jss.ThemeProvider.Props] = js.native
   def useTheme(): Theme                                          = js.native
 }

@@ -57,18 +57,18 @@ trait UndefOrCommon[A] {
 
   /** Convert UndefOr[A] => A|Null */
   def toNull: A | Null = if (as.isDefined) a.asInstanceOf[A | Null] else null
-  
+
   /** Same as `.getOrElse` just shorter. */
   @inline def ??[B >: A](default: => B): B = a.getOrElse(default)
-  
+
   /** Same as `.getOrElse` just shorter. */
   @inline def !?[B >: A](default: => B): B = a.getOrElse[B](default)
-  
+
   /** Uh-oh, thought it was `js.UndefOr[A]` but you need to say its a
-    * `js.UndefOr[A|Null]` because the docs were wrong :-).
-    */
-  @inline def toUndefOrNull: js.UndefOr[A|Null] = a.asInstanceOf[js.UndefOr[A|Null]]
-  
+   * `js.UndefOr[A|Null]` because the docs were wrong :-).
+   */
+  @inline def toUndefOrNull: js.UndefOr[A | Null] = a.asInstanceOf[js.UndefOr[A | Null]]
+
   /** Factor out the null along they way of the flatMap. */
 //   @inline def flatMapAbsorb[B](f: A => js.UndefOr[B|Null]): js.UndefOr[B] =
 //     a.flatMap{ v =>
@@ -88,9 +88,10 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
 }
 
 final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
+
   /** Get the value or return true. */
   @inline def orTrue: Boolean = a.getOrElse(true)
-  
+
   /** Get the value or return false. */
   @inline def orFalse: Boolean = a.getOrElse(false)
 
@@ -114,7 +115,7 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
 //   /** Not a true flatMap because the Null is factored out along the way. */
 //   @inline def flatMapAbsorb[B](f: T => js.UndefOr[B|Null]): js.UndefOr[B] =
 //     if(a.isDefined && a != null) f(forceGet) else js.undefined
-  
+
   /** Flatten the UndefOr and Null to UndefOr only. */
   @inline def flatten = absorbNull
 
@@ -136,20 +137,20 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
     if (a.isDefined && a != null) a.asInstanceOf[js.UndefOr[T] | Null]
     else ().asInstanceOf[js.UndefOr[T] | Null]
 
-  @inline def getOrElse[B >: T](default: => T): T = 
-    if(a.isEmpty || a == null) default else a.asInstanceOf[T]
-    
+  @inline def getOrElse[B >: T](default: => T): T =
+    if (a.isEmpty || a == null) default else a.asInstanceOf[T]
+
   /** Alias for getOrElse. */
   @inline def ??[B >: T](default: => T): T = getOrElse[B](default)
-    
+
   @inline def !?[B >: T](default: => T): T = getOrElse[B](default)
-    
+
   /** Alias for `.get` */
   @inline def ! = forceGet
-  
+
   /** May be undefined or null or something. Throws exception. */
-  @inline def get: T = 
-    if(a==null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]") 
+  @inline def get: T =
+    if (a == null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]")
     else forceGet
 }
 
@@ -157,13 +158,13 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
 final class JsUndefOrOps[A](val a: UndefOr[A]) extends UndefOrCommon[A] {}
 
 final class UndefMap2[A, B](private val tuple: (js.UndefOr[A], js.UndefOr[B])) extends AnyVal {
-  @inline def mapX[T](f: (A, B) => T): js.UndefOr[T] =
+  def mapX[T](f: (A, B) => T): js.UndefOr[T] =
     if (tuple._1.isDefined && tuple._2.isDefined) js.defined(f(tuple._1.get, tuple._2.get))
     else js.undefined
 }
 
 final class UndefMap3[A, B, C](private val tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) extends AnyVal {
-  @inline def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
+  def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
     if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined)
       js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get))
     else js.undefined
@@ -171,7 +172,7 @@ final class UndefMap3[A, B, C](private val tuple: (js.UndefOr[A], js.UndefOr[B],
 
 final class UndefMap4[A, B, C, D](private val tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D]))
     extends AnyVal {
-  @inline def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
+  def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
     if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined &&
         tuple._4.isDefined)
       js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get))

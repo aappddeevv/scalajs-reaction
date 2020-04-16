@@ -33,7 +33,7 @@ object Typography {
 
   @js.native
   @JSImport("@material-ui/core/Typography", JSImport.Default)
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
@@ -92,7 +92,7 @@ object Typography {
     var className: js.UndefOr[String]                    = js.undefined
     var classes: js.UndefOr[js.Object]                   = js.undefined
     var color: js.UndefOr[Color]                         = js.undefined
-    var component: js.UndefOr[String | ReactJsComponent] = js.undefined
+    var component: js.UndefOr[String | ReactJSComponent] = js.undefined
     var gutterBottom: js.UndefOr[Boolean]                = js.undefined
     var headlineMapping: js.UndefOr[js.Object]           = js.undefined
     var internalDeprecatedVariant: js.UndefOr[Boolean]   = js.undefined

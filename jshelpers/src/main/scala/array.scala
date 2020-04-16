@@ -19,9 +19,19 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react
+package jshelpers
 
-/** Simple effects for UI code. DO NOT USE, NOT SURE I'LL KEEP THIS. */
-abstract class Callback[-A, +B] extends (A => B) {}
+import scala.scalajs.js
+import js.|
 
-object Callback {}
+final class JSArrayOps[T](private val arr: js.Array[T]) extends AnyVal {
+
+  /** Easier cast of elements. Would be nice to do some structural
+   * checking here but maybe not...
+   */
+  def as[B] = arr.asInstanceOf[js.Array[B]]
+}
+
+trait JSArraySyntax {
+  @inline implicit def jsArrayOpsSyntax[T](arr: js.Array[T]) = new JSArrayOps[T](arr)
+}

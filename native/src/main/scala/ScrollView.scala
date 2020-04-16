@@ -32,7 +32,7 @@ object ScrollView {
 
   @js.native
   @JSImport("react-native", "ScrollView")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

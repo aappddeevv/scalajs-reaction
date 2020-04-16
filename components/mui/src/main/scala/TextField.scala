@@ -36,7 +36,7 @@ import vdom._
 object TextField {
   @JSImport("@material-ui/core/TextField", JSImport.Default)
   @js.native
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

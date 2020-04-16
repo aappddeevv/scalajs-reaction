@@ -49,9 +49,18 @@ trait DeferredValueConfig extends js.Object {
 trait Concurrent extends js.Object {
   def useTransition(config: TransitionConfig): js.Tuple2[js.Any, js.Any] = js.native
   def useDeferredValue(value: js.Any, config: DeferredValueConfig): js.Any = js.native
-  val SuspenseList: ReactJsComponent = js.native
+  val SuspenseList: ReactJSComponent = js.native
   // unstable_withSuspenseConfig
+  def createMutableSource[S](source: scala.Any, getVersion: js.Function0[scala.Any]): MutableSource[S] = js.native
+  /** subscribe 2nd arg is to be called whenever the value changes and is stable. Last is an unsubscribe for unmounting. */
+  def useMutableSource[S,A](source: MutableSource[S], 
+    getSnapshot: js.Function1[S, A], 
+    subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A = js.native
 }
+
+/** Opaque type. */
+@js.native
+trait MutableSource[T] extends js.Object
 
 @js.native
 trait ReactJS extends js.Object with Concurrent {
@@ -72,9 +81,9 @@ trait ReactJS extends js.Object with Concurrent {
   // should not use rally ever...
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
 
-  val Fragment: ReactJsComponent = js.native
-  val StrictMode: ReactJsComponent = js.native
-  val Suspense: ReactJsComponent = js.native
+  val Fragment: ReactJSComponent = js.native
+  val StrictMode: ReactJSComponent = js.native
+  val Suspense: ReactJSComponent = js.native
 
   def createContext[T](defaultValue: T, calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] =
     js.native
@@ -88,7 +97,7 @@ trait ReactJS extends js.Object with Concurrent {
   val version: String = js.native
 
   /** Returns a "lazy" react component i.e. $$type = react.lazy */
-  def `lazy`(lazyComponent: DynamicImportThunk): ReactJsLazyComponent = js.native
+  def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent = js.native
 
   /** Takes a function component and optional props comparison func. This returns
     * a function component as this is an HOC. The returned component still needs
@@ -108,7 +117,7 @@ trait ReactJS extends js.Object with Concurrent {
 trait DynamicImport extends js.Object {
   // If default is defined in the exports
   // other exports will be here as well
-  val `default`: ReactJsComponent
+  val `default`: ReactJSComponent
 }
 
 /** Magnet pattern to create a friendly arg converter for effect hooks. As much

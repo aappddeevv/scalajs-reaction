@@ -42,7 +42,7 @@ trait Selection extends js.Object {
 object TextInput {
   @js.native
   @JSImport("react-native", "TextInput")
-  object JS extends ReactJsComponent
+  object JS extends ReactJSComponent
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)

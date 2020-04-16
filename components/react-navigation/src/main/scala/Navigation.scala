@@ -39,7 +39,7 @@ trait NavigationActions extends js.Object {
 trait NavigationJS extends js.Object {
   def createStackNavigator[T <: js.Object](config: RouteConfigs, options: StackNavigatorConfig[T]): Navigator =
     js.native
-  def createAppContainer(c: Navigator): ReactJsComponent = js.native
+  def createAppContainer(c: Navigator): ReactJSComponent = js.native
   val NavigationActions: NavigationActions               = js.native
 }
 
@@ -49,7 +49,7 @@ trait NavigatorProps[T] extends js.Object {
 
 // this component gets passed NavigatorProps[T]
 @js.native
-trait Navigator extends ReactJsComponent
+trait Navigator extends ReactJSComponent
 
 @js.native
 sealed trait GestureDirection extends js.Any
@@ -62,7 +62,7 @@ trait NavigationOptionsRec[T <: js.Object] extends js.Object {
   var title: js.UndefOr[String] = js.undefined
   @JSName("header")
   // takes HeaderProps???
-  val headerFunc: js.UndefOr[js.Function1[js.Object, ReactJsComponent]] = js.undefined
+  val headerFunc: js.UndefOr[js.Function1[js.Object, ReactJSComponent]] = js.undefined
   var header: js.UndefOr[ReactType | Null]                              = js.undefined // setting to null hides header
   var headerTitle: js.UndefOr[ReactType]                                = js.undefined
   var headerTitleAllowFontScaling: js.UndefOr[Boolean]                  = js.undefined
@@ -109,7 +109,7 @@ trait StackNavigatorConfig[T <: js.Object] extends js.Object {
 }
 
 trait RouteConfig[T <: js.Object] extends js.Object {
-  val screen: ReactJsComponent
+  val screen: ReactJSComponent
   var path: js.UndefOr[String]                            = js.undefined
   var navigationOptions: js.UndefOr[NavigationOptions[T]] = js.undefined
 }
