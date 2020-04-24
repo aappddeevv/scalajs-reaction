@@ -19,18 +19,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react_router
+package react_router6
+
+import scala.scalajs.js
+import js.|
 
 package object dom {
-  type Pathname    = String
-  type Search      = String
-  type Path        = String
-  type Hash        = String
-  type Href        = String
-  type LocationKey = String
+  type Pathname = String
+  type Search = String
+  type Path = String
+  type Href = String
 
-  /** LocationDescriptor is Location but all vars are optional. */
-  implicit class Location2LocationDescriptor[S](location: Location[S]) {
-    def toLocationDescriptor: LocationDescriptor[S] = location.asInstanceOf[LocationDescriptor[S]]
-  }
+  def usePrompt(message: String, when: js.UndefOr[Boolean] = js.undefined) = module.usePrompt(message, when)
+  def useSearchParams() = module.useSearchParams()
 }

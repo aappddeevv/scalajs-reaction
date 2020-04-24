@@ -117,6 +117,19 @@ trait React {
   def createElement[P <: js.Object](component: ReactType, props: P, children: ReactNode*): ReactElement =
     ReactJS.createElement(component, props, children:_*)
     
+  /** For creating quick ReactElements using js.Dynamic. Input is a scala function
+  * taking a single props argument.
+  */
+  def unsafeCreateElement(component: () => ReactNode) = {
+    val jsc = js.Any.fromFunction0(component).asInstanceOf[ReactType]
+    createElement0(jsc, null)
+  }
+  
+  def unsafeCreateElement(component: js.Dynamic => ReactNode, props: js.Dynamic) = {
+    val jsc = js.Any.fromFunction1(component).asInstanceOf[ReactType]
+    createElement0(jsc, props)
+  }
+  
   /** Create a react fragment. Fragments are created as an "element" with a
     * specific tag (symbol or number if target does not support symbol) vs say,
     * the string "div".
@@ -147,14 +160,14 @@ trait React {
       .asInstanceOf[js.Function1[P, ReactNode]]
 
   /** Memoize a SFC1. React uses js "shallow" compare. */
-  def memo[P <: js.Object](fc: SFC1[P]): SFC1[P] = new SFC1(ReactJS.memo(fc.run))
+  //def memo[P <: js.Object](fc: SFC1[P]): SFC1[P] = new SFC1(ReactJS.memo(fc.run))
 
   /** Memoize a SFC1 using a compare function for the props. */
-  def memo[P <: js.Object](
-      fc: SFC1[P],
-      compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]
-    ): SFC1[P] =
-    new SFC1(ReactJS.memo(fc.run, compare.asInstanceOf[js.Function2[js.Any, js.Any, Boolean]]))
+//   def memo[P <: js.Object](
+//       fc: SFC1[P],
+//       compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]
+//     ): SFC1[P] =
+//     new SFC1(ReactJS.memo(fc.run, compare.asInstanceOf[js.Function2[js.Any, js.Any, Boolean]]))
 
   def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
 

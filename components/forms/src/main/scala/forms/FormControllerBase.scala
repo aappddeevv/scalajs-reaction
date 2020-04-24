@@ -25,17 +25,11 @@ import concurrent.ExecutionContext.Implicits.global
 import concurrent._
 
 import scala.scalajs.js
-
 import js.Dynamic.{literal => jsobj}
-
 import org.scalajs.dom
-
 import react._
-
 import implicits._
-
 import vdom._
-
 import util.Success
 
 trait HasValues {
@@ -310,7 +304,7 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
 
   val FormContext = react.createContext[Context](null)
 
-  trait Props extends js.Object {
+  trait PropsBase extends js.Object {
     val initialValue: Value
     var submit: js.UndefOr[SubmitCallback] = js.undefined
     var reset: js.UndefOr[ResetCallback] = js.undefined
@@ -321,16 +315,18 @@ trait FormControllerBase extends HasValues with HasTouches with HasErrors {
     var onChange: js.UndefOr[(Value, Boolean) => Unit] = js.undefined
     var touched: js.UndefOr[Seq[String] => Unit] = js.undefined
   }
-
-  trait PropsWithChildren extends Props {
+  
+  trait PropsInit extends PropsBase
+  
+  trait Props extends PropsBase {
     val children: FormProps => ReactNode
   }
 
-  def apply(props: Props)(c: FormProps => ReactNode): ReactElement =
-    sfc.unsafeApply(props.combineDynamic(jsobj("children" -> c)).asDyn)
+  def apply(props: PropsInit)(children: FormProps => ReactNode) =
+    render.elementWith( 
+        props.asInstanceOf[Props].combineDynamic(jsobj("children" -> children)))
 
-  val sfc = SFC1[PropsWithChildren] { props =>
-    useDebugValue(Name)
+  val render: Props => ReactNode = props => {
     val initialValue = useRef[Value](props.initialValue)
     val mounted = useRef[Boolean](false)
     val submitCount = useRef[Int](0)

@@ -32,6 +32,9 @@ x.fold[String | Unit](())(x => x)
 /**
  * It is common in interop code to model a value as A or null but not undefined
  * even though null and undefined may both mean "absent value." See `|.merge`
+ * Many of these methods are already on `js.|` but they appear to be left biased
+ * as near as I can tell. I'm happy to delete these methods of that's not right
+ * and those methods use `js.UndefOr` in some way.
  *
  * Note that chaining many `js.|` together probably not work like you think and
  * sometimes its better to create a new target type then target implicits to
@@ -80,12 +83,12 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
       Option(forceGet)
     else None
 
-  /** Absorb the null and change A|Null => A. Value could still be null but
-   * it will no longer by typed that way.
+  /** Absorb the null and change A|Null => A. Value could still be null,
+   * which is valid in scala, but it will no longer by typed that way.
    */
   @inline def absorbNull: A = forceGet
 
-  /** Just get the value, may be null! This will not throw an error. */
+  /** Get the value or throw if its null. */
   @inline def get = if (a == null) throw new NoSuchElementException("get T|Null") else forceGet
 
   /** Same as get and absorbNull. */

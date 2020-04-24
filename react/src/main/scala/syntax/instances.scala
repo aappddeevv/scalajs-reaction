@@ -142,13 +142,16 @@ trait ValueConverters {
   
 }
 
-trait AllInstances extends ValueConverters with ValueInstances
+trait AllInstances 
+    extends jshelpers.AllInstances
+    with ValueConverters 
+    with ValueInstances
 
 /** Instances is the wrong concept here as these are not typeclass
  * instances--but close enough as they are not syntax extensions "'element'
  * converters" would be better similiar to `JSConverters` in scala.js.
  */
-object instances {
+object instances extends jshelpers.Instances {
   object all   extends AllInstances
   object value extends ValueConverters with ValueInstances
 }

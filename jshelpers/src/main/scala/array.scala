@@ -32,6 +32,23 @@ final class JSArrayOps[T](private val arr: js.Array[T]) extends AnyVal {
   def as[B] = arr.asInstanceOf[js.Array[B]]
 }
 
-trait JSArraySyntax {
+final class RichJSArrayTuple3[T,U,V](private val tuvs: js.Array[((T,U),V)]) extends AnyVal {
+   def toTuple3 = tuvs.map(tuv => (tuv._1._1, tuv._1._2, tuv._2))
+}
+
+final class RichJSArrayTuple4[T,U,V,W](private val tuvs: js.Array[(((T,U),V),W)]) extends AnyVal {
+   def toTuple4 = tuvs.map(tuv => (tuv._1._1._1, tuv._1._1._2, tuv._1._2, tuv._2))
+}
+
+/** @todo Use sbt-boilerplace to replacite the tuple functions. */
+trait LowerOrderJSArrayImplicits {
+//   @inline implicit def toTuple3[T,U,V](tuvs: js.Array[((T,U),V)]): js.Array[(T,U,V)] =
+//     tuvs.map(tuv => (tuv._1._1, tuv._1._2, tuv._2))
+    @inline implicit def mixedTupel3ToTuple[T,U,V](arr: js.Array[((T,U),V)]) = new RichJSArrayTuple3[T,U,V](arr)
+    @inline implicit def mixedTupel4ToTuple[T,U,V,W](arr: js.Array[(((T,U),V),W)]) = new RichJSArrayTuple4[T,U,V,W](arr)
+}
+  
+trait JSArraySyntax extends LowerOrderJSArrayImplicits {
   @inline implicit def jsArrayOpsSyntax[T](arr: js.Array[T]) = new JSArrayOps[T](arr)
+
 }

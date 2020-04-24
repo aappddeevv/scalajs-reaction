@@ -156,10 +156,11 @@ private[react] class JSEnrichMacros(val c: Context) extends ImplTransformers {
                 )
             }
 
-            q"""def apply[..$tparams](..${immutables.map(_._2) ++ mutables.map(_._2)}): $tpname[..$tparamsRef] = 
+            q"""def apply[..$tparams](..${immutables.map(_._2) ++ mutables.map(_._2)}): $tpname[..$tparamsRef] = {
                     _root_.scala.scalajs.js.Object.assign(js.Dynamic.literal(
                         ..${(immutables ++ mutables).map(p => q"${p._1} -> ${p._3}.asInstanceOf[js.Any]")}
-                )).asInstanceOf[$tpname]"""
+                )).asInstanceOf[$tpname]
+            }"""
           }
 
           val mdef0 =

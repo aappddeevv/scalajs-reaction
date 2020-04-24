@@ -69,7 +69,7 @@ ReactFC0 does not do much other than ensure that the scala function on the right
 becomes a js function--which is all that is needed to use react. You
 could have just declared it directly: 
 
-```
+```scala
 val HelloWorld: js.Function0[ReactNode] = props => div("hello world")
 ```
 
@@ -235,6 +235,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * prop-types
 * react
 * react-content-loader
+* react-device-detect
 * react-dom
 * react-big-calendar
 * react-native-nativebase
@@ -243,9 +244,10 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * react-native-sideswipe
 * react-plotlyjs
 * react-redux
+* react-responsive
 * react-helmet
 * react-flexbox-grid
-* react-router-dom
+* react-router-dom (5 and 6)
 * use-query-params
 * vdom
 * whydidyourender (use include/exclude regexs, see the readme in that directory)

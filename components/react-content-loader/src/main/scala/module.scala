@@ -54,6 +54,7 @@ object ContentLoader {
     //var speed: js.UndefOr[Float] = js.undefined
     var title: js.UndefOr[String] = js.undefined
     var uniqueKey: js.UndefOr[String] = js.undefined
+    //var viewBox: js.UndefOr[String] = js.undefined
   }
 
   /** Should only be SVG children. */
@@ -88,9 +89,9 @@ object ContentLoader {
     def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
   }
-  object BulletListStyle {
+  object BulletList {
     @js.native
-    @JSImport("react-content-loader", "BulletListStyle")
+    @JSImport("react-content-loader", "BulletList")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)

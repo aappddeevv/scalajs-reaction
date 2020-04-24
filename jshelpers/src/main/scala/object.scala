@@ -46,24 +46,25 @@ final case class JsObjectOps[A <: js.Object](o: A) {
   def unsafeCombine(that: js.Any) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with a generic js object and cast. */
-  def combineGenericTo[B <: js.Object](that: js.Object) = js.Object.assign(o, that).asInstanceOf[B]
+  def combineGenericTo[B](that: js.UndefOr[js.Object]) =
+    js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 
   /** Combine with a dynamic and cast. */
-  def combineDynamicTo[B <: js.Object](that: js.Dynamic) =
+  def combineDynamicTo[B](that: js.Dynamic) =
     js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
-  def as[T <: js.Object] = o.asInstanceOf[T]
+  def as[T] = o.asInstanceOf[T]
 
   /** Duplicate using `js.Object.assign` */
   def duplicate = js.Object.assign(new js.Object, o).asInstanceOf[A]
 
   /** Duplicate then combineDynamic */
-  def duplicateWithDynamic(that: js.Dynamic) =
+  def duplicateCombine(that: js.Dynamic) =
     js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Duplicate then combineDynamic then cast :-). */
-  def duplicateWithDynamicTo[B <: js.Object](that: js.Dynamic) =
+  def duplicateCombineTo[B](that: js.Dynamic) =
     js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 }
 

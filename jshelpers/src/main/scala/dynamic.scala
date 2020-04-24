@@ -40,7 +40,7 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
     jsdyn.asInstanceOf[js.UndefOr[T | Null]]
 
   /** Short version of `.asInstanceOf`. */
-  def as[T <: js.Object] = jsdyn.asInstanceOf[T]
+  def as[T] = jsdyn.asInstanceOf[T]
 
   def asJsObj: js.Object = jsdyn.asInstanceOf[js.Object]
 
@@ -60,15 +60,40 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
     if (jsdyn == null || jsdyn.asInstanceOf[js.UndefOr[T]].isEmpty) None
     else Option(jsdyn.asInstanceOf[T])
 
-  /** Shallow combine. */
+  /** Shallow combine into existing value. */
   def combine(that: js.Dynamic) =
     js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
 
+  /** Combine and cast. */
+  def combineTo[B](that: js.Dynamic) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[B]
+  
   /** Determine if truthy. Very tricky! */
   def toTruthy: Boolean = js.DynamicImplicits.truthValue(jsdyn)
 
   /** Duplicate using `js.Object.assign` */
-  def duplicate = js.Object.assign(new js.Object, jsdyn.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+  def duplicate = js.Object.assign(new js.Object,   
+    jsdyn.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+  
+  /** Duplicate and combine. */
+  def duplicateCombine(that: js.Dynamic) = 
+    js.Object.assign(new js.Object, jsdyn.asInstanceOf[js.Object],
+    that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+    
+  /** Duplicate, combine and cast! */
+  def duplicateCombineTo[B](that: js.Dynamic) =
+    js.Object.assign(new js.Object, jsdyn.asInstanceOf[js.Object],
+    that.asInstanceOf[js.Object]).asInstanceOf[B]
+    
+  /** Combine with general js.Object */
+  def combineGeneric(that: js.UndefOr[js.Object]) = 
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], 
+        that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+
+  /** Combine with general js.Object and cast. */
+  def combineGenericTo[B](that: js.UndefOr[js.Object]) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object],
+        that.asInstanceOf[js.Object]).asInstanceOf[B]
 
 }
 

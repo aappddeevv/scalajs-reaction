@@ -23,9 +23,7 @@ package react
 package vdom
 
 import scala.scalajs.js
-
 import js.|
-
 import implicits._
 
 /**

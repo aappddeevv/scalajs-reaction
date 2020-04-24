@@ -19,7 +19,7 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package react_router
+package react_router5
 package dom
 
 import scala.scalajs.js
@@ -35,7 +35,7 @@ object hooks extends ReactRouterDOM
 
 @js.native
 trait ReactRouterDOM extends js.Object {
-  def useHistory[S](): History[S]   = js.native
+  def useHistory[S](): History[S] = js.native
   def useLocation[S](): Location[S] = js.native
 
   /** Values should be strings, can't enforce that though without using dict. */
@@ -43,8 +43,11 @@ trait ReactRouterDOM extends js.Object {
   @JSName("useParams")
   def useParamsDict(): js.Dictionary[String] = js.native
   @JSName("useRouteMatch")
-  def useRouteMatchWithProps[S, T](arg: RouteProps[S]): Match[T] = js.native
-  def useRouteMatch[T](arg: String | Array[String]): Match[T]    = js.native
+  def useRouteMatchWithProps[S, T](arg: RouteProps[S]): Match[T] | Null = js.native
+  def useRouteMatch[T](arg: js.UndefOr[String | Array[String]] = js.undefined): Match[T] | Null = js.native
+  /* With no args, this matches to whatever the url is and there is always a url. */
+  @JSName("useRouteMatch")
+  def useRouteMatchExisting[T](): Match[T] = js.native
 }
 
 /**
@@ -54,10 +57,10 @@ trait ReactRouterDOM extends js.Object {
  */
 @js.native
 trait Match[T] extends js.Object {
-  val params: T        = js.native
+  val params: T = js.native
   val isExact: Boolean = js.native
-  val path: String     = js.native
-  val url: String      = js.native
+  val path: String = js.native
+  val url: String = js.native
 }
 
 /** History from package `history`. Allows you control navigation via "commands"
@@ -66,40 +69,40 @@ trait Match[T] extends js.Object {
  */
 @js.native
 trait History[S] extends js.Object {
-  val length: Int                                                 = js.native
-  val action: Action                                              = js.native
-  val location: Location[S]                                       = js.native
+  val length: Int = js.native
+  val action: Action = js.native
+  val location: Location[S] = js.native
   def push(path: Path, state: js.UndefOr[S] = js.undefined): Unit = js.native
   @JSName("push")
   def pushLocation[S](location: LocationDescriptor[S]): Unit = js.native
   @JSName("push")
-  def pushLocation[S](location: Location[S]): Unit                   = js.native
+  def pushLocation[S](location: Location[S]): Unit = js.native
   def replace(path: Path, state: js.UndefOr[S] = js.undefined): Unit = js.native
-  def replace[S](location: LocationDescriptor[S]): Unit              = js.native
-  def go(n: Int): Unit                                               = js.native
-  def goBack(): Unit                                                 = js.native
-  def goForward(): Unit                                              = js.native
-  def createHref(location: LocationDescriptor[S]): Href              = js.native
+  def replace[S](location: LocationDescriptor[S]): Unit = js.native
+  def go(n: Int): Unit = js.native
+  def goBack(): Unit = js.native
+  def goForward(): Unit = js.native
+  def createHref(location: LocationDescriptor[S]): Href = js.native
 }
 
 trait RouteProps[S] extends js.Object {
-  var location: js.UndefOr[Location[S]]                      = js.undefined
-  var component: js.UndefOr[js.Object]                       = js.undefined
-  var render: js.UndefOr[js.Function1[js.Object, ReactNode]] = js.undefined
-  var children: js.UndefOr[ReactNode]                        = js.undefined
-  var path: js.UndefOr[String | Array[String]]               = js.undefined
-  var exact: js.UndefOr[Boolean]                             = js.undefined
-  var sensitive: js.UndefOr[Boolean]                         = js.undefined
-  var strict: js.UndefOr[Boolean]                            = js.undefined
+  var location: js.UndefOr[Location[S]] = js.undefined
+  //var component: js.UndefOr[js.Object]                       = js.undefined
+  //var render: js.UndefOr[js.Function1[js.Object, ReactNode]] = js.undefined
+  //var children: js.UndefOr[ReactNode]                        = js.undefined
+  var path: js.UndefOr[String | js.Array[String]] = js.undefined
+  var exact: js.UndefOr[Boolean] = js.undefined
+  var sensitive: js.UndefOr[Boolean] = js.undefined
+  var strict: js.UndefOr[Boolean] = js.undefined
 }
 
 /** Like Location but everything is optional. */
 trait LocationDescriptor[S] extends js.Object {
   var pathname: js.UndefOr[Pathname] = js.undefined
-  var search: js.UndefOr[Search]     = js.undefined
-  var state: js.UndefOr[S]           = js.undefined
-  var hash: js.UndefOr[Hash]         = js.undefined
-  var key: js.UndefOr[LocationKey]   = js.undefined
+  var search: js.UndefOr[Search] = js.undefined
+  var state: js.UndefOr[S] = js.undefined
+  var hash: js.UndefOr[Hash] = js.undefined
+  var key: js.UndefOr[LocationKey] = js.undefined
 }
 
 /** A simplified but overlapping version from the DOM lib per the js package
@@ -107,18 +110,18 @@ trait LocationDescriptor[S] extends js.Object {
  */
 @js.native
 trait Location[S] extends js.Object {
-  val pathname: Pathname           = js.native
-  val search: Search               = js.native
-  val state: S                     = js.native
-  val hash: js.UndefOr[Hash]       = js.native
+  val pathname: Pathname = js.native
+  val search: Search = js.native
+  val state: S = js.native
+  val hash: js.UndefOr[Hash] = js.native
   val key: js.UndefOr[LocationKey] = js.native
 }
 
 @js.native
 sealed trait Action extends js.Any
 object Action {
-  val PUSH    = "PUSH".asInstanceOf[Action]
-  val POP     = "POP".asInstanceOf[Action]
+  val PUSH = "PUSH".asInstanceOf[Action]
+  val POP = "POP".asInstanceOf[Action]
   val REPLACE = "REPLACE".asInstanceOf[Action]
 }
 
@@ -129,7 +132,7 @@ trait RouterContext extends js.Object {
 }
 
 /** Route, most commonly used router component. Watch out for which apply
- * method you use as rendering with path, children or exact=true does 
+ * method you use as rendering with path, children or exact=true does
  * different thnigs. Rendering with a "component" specified as the prop
  * is not supported. Rendering with children means that the child is
  * always rendered regardless of whether there is a match or not.
@@ -157,37 +160,38 @@ object Route {
   def apply[S, P](props: Props[S, P])(children: js.Function1[RouteComponentProps[S, P], ReactNode]) =
     createElementN(JS, props)(children.asInstanceOf[ReactNode])
 
-  def withPath(p: String, child: ReactNode) =
-    createElementN(JS, new Props[Nothing, Nothing] { path = p })(child)
+  def withPath(p: String | js.Array[String], child: ReactNode) =
+    createElementN(JS, new Props[Nothing, Nothing] { path = js.defined(p) })(child)
 
   /** Uses children prop. */
-  def withPath[S, P](p: String)(children: js.Function1[RouteComponentProps[S, P], ReactNode]) =
-    createElementN(JS, new Props[S, P] { path = p })(children.asInstanceOf[ReactNode])
+  def withPath[S, P](p: String | js.Array[String])(children: js.Function1[RouteComponentProps[S, P], ReactNode]) =
+    createElementN(JS, new Props[S, P] { path = js.defined(p) })(children.asInstanceOf[ReactNode])
 
   /** Uses render prop. */
-  def withPathRender[S, P](p: String)(thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
-    createElement0(JS, new Props[S, P] { path = p; render = thunk })
+  def withPathRender[S, P](p: String | js.Array[String])(thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
+    createElement0(JS, new Props[S, P] { path = js.defined(p); render = thunk })
 
   /** With exact = true */
-  def withExactPath(p: String, child: ReactNode) =
-    createElementN(JS, new Props[Nothing, Nothing] { exact = true; path = p })(child)
+  def withExactPath(p: String | js.Array[String], child: ReactNode) =
+    createElementN(JS, new Props[Nothing, Nothing] { exact = true; path = js.defined(p) })(child)
 
   /** Uses render prop. */
-  def withExactPathRender[S, P](p: String)(thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
-    createElement0(JS, new Props[S, P] { exact = true; path = p; render = thunk })
+  def withExactPathRender[S, P](p: String | js.Array[String])(
+    thunk: js.Function1[RouteComponentProps[S, P], ReactNode]) =
+    createElement0(JS, new Props[S, P] { exact = true; path = js.defined(p); render = thunk })
 
-  trait Props[S, P] extends js.Object {
-    var location: js.UndefOr[Location[_]] = js.undefined
+  trait Props[S, P] extends RouteProps[S] {
+    //var location: js.UndefOr[Location[_]] = js.undefined
     // component
     // skip component, not robust
     // render
     /** Only renders if route matched. children prop always renders regardless of match. */
     var render: js.UndefOr[js.Function1[RouteComponentProps[S, P], ReactNode]] = js.undefined
     // children thunk is in apply
-    var path: js.UndefOr[String | Array[String]] = js.undefined
-    var exact: js.UndefOr[Boolean]               = js.undefined
-    var sensitive: js.UndefOr[Boolean]           = js.undefined
-    var strict: js.UndefOr[Boolean]              = js.undefined
+    //var path: js.UndefOr[String | Array[String]] = js.undefined
+    //var exact: js.UndefOr[Boolean]               = js.undefined
+    //var sensitive: js.UndefOr[Boolean]           = js.undefined
+    //var strict: js.UndefOr[Boolean]              = js.undefined
   }
 }
 
@@ -195,7 +199,7 @@ object Route {
  * you can use `RouteComponentProps[Null, Nothing]`. */
 @js.native
 trait RouteComponentProps[S, P] extends js.Object {
-  val history: History[S]   = js.native
+  val history: History[S] = js.native
   val location: Location[S] = js.native
 
   /** Could be null so we should add `|Null`. */
@@ -217,10 +221,10 @@ object HashRouter {
     apply(new Props { basename = bn })(child)
 
   trait Props extends js.Object {
-    var basename: js.UndefOr[String]                                                             = js.undefined
+    var basename: js.UndefOr[String] = js.undefined
     var getUserConfirmation: js.UndefOr[js.Function2[String, js.Function1[Boolean, Unit], Unit]] = js.undefined
-    var forceRefresh: js.UndefOr[Boolean]                                                        = js.undefined
-    var keyLength: js.UndefOr[Int]                                                               = js.undefined
+    var forceRefresh: js.UndefOr[Boolean] = js.undefined
+    var keyLength: js.UndefOr[Int] = js.undefined
   }
 }
 
@@ -233,10 +237,10 @@ object BrowserRouter {
     createElementN(JS, props)(children)
 
   trait Props extends js.Object {
-    var basename: js.UndefOr[String]                                                             = js.undefined
+    var basename: js.UndefOr[String] = js.undefined
     var getUserConfirmation: js.UndefOr[js.Function2[String, js.Function1[Boolean, Unit], Unit]] = js.undefined
-    var forceRefresh: js.UndefOr[Boolean]                                                        = js.undefined
-    var keyLength: js.UndefOr[Int]                                                               = js.undefined
+    var forceRefresh: js.UndefOr[Boolean] = js.undefined
+    var keyLength: js.UndefOr[Int] = js.undefined
   }
 }
 
@@ -261,7 +265,7 @@ object Redirect {
   @JSImport("react-router-dom", "Redirect")
   object JS extends ReactJSComponent
 
-  def to(t: String)                        = createElement0(JS, new Props { to = t         })
+  def to(t: String) = createElement0(JS, new Props { to = t })
   def toLocation(t: LocationDescriptor[_]) = createElement0(JS, new Props { toLocation = t })
 
   def apply(props: Props = null) =
@@ -271,11 +275,11 @@ object Redirect {
     var to: js.UndefOr[String] = js.undefined
     @JSName("to")
     var toLocation: js.UndefOr[LocationDescriptor[_]] = js.undefined
-    var push: js.UndefOr[Boolean]                     = js.undefined
-    var from: js.UndefOr[String]                      = js.undefined
+    var push: js.UndefOr[Boolean] = js.undefined
+    var from: js.UndefOr[String] = js.undefined
     // not sure this is there...
     //var path: js.UndefOr[String] = js.undefined
-    var exact: js.UndefOr[Boolean]  = js.undefined
+    var exact: js.UndefOr[Boolean] = js.undefined
     var strict: js.UndefOr[Boolean] = js.undefined
   }
 }
@@ -289,7 +293,7 @@ object Prompt {
     createElement0(JS, props)
 
   trait Props extends js.Object {
-    var when: js.UndefOr[Boolean]                                                 = js.undefined
+    var when: js.UndefOr[Boolean] = js.undefined
     var message: js.UndefOr[js.Function1[String | Location[_], String | Boolean]] = js.undefined
   }
 }

@@ -69,7 +69,7 @@ trait HTMLTagsX {
   final lazy val abbr = tagt[AbbrProps]("abbr")
 
   type AddressProps = ElementAttributesOnly
-  final lazy val address = tagt[AddressProps]("addres")
+  final lazy val address = tagt[AddressProps]("address")
 
   trait AreaProps extends AreaHTMLAttributes[dom.html.Area] with ClassAttributes[dom.html.Area]
   final lazy val area = tagt[AreaProps]("area")
@@ -214,6 +214,13 @@ trait HTMLTagsX {
   final lazy val h4 = tagt[HProps]("h2")
   final lazy val h5 = tagt[HProps]("h2")
   final lazy val h6 = tagt[HProps]("h2")
+  
+  def h1(text: String) = createDOMElement("h1", null)(text.asInstanceOf[ReactNode])
+  def h2(text: String) = createDOMElement("h2", null)(text.asInstanceOf[ReactNode])
+  def h3(text: String) = createDOMElement("h3", null)(text.asInstanceOf[ReactNode])
+  def h4(text: String) = createDOMElement("h4", null)(text.asInstanceOf[ReactNode])
+  def h5(text: String) = createDOMElement("h5", null)(text.asInstanceOf[ReactNode])
+  def h6(text: String) = createDOMElement("h6", null)(text.asInstanceOf[ReactNode])
 
   trait HeadProps extends HTMLAttributes[dom.html.Head] with ClassAttributes[dom.html.Head]
   final lazy val head = tagt[HeadProps]("head")
@@ -233,6 +240,8 @@ trait HTMLTagsX {
   type IProps = ElementAttributesOnly
   final lazy val i = tagt[IProps]("i")
 
+  def i(text: String) = createDOMElement("i", null)(text.asInstanceOf[ReactNode])
+  
   trait IframeProps extends IframeHTMLAttributes[dom.html.IFrame] with ClassAttributes[dom.html.IFrame]
   final lazy val iframe = tagt[IframeProps]("iframe")
 
@@ -309,8 +318,8 @@ trait HTMLTagsX {
   final lazy val main = tagt[MainProps]("main")
 
   /** Common scenario to have a main method with no attributes. */
-  def mainWith(children: ReactNode*) = 
-    main(new MainProps { })(children: _*)
+  def mainWith(cn: String, children: ReactNode*) = 
+    main(new MainProps { className = cn })(children: _*)
   
   trait MapProps extends MapHTMLAttributes[dom.html.Map] with ClassAttributes[dom.html.Map]
   final lazy val map = tagt[MapProps]("map")
@@ -356,6 +365,9 @@ trait HTMLTagsX {
   trait PProps extends HTMLAttributes[dom.html.Paragraph] with ClassAttributes[dom.html.Paragraph]
   final lazy val p = tagt[PProps]("p")
 
+  /** Convenience: Create `p` from text. */
+  def p(text: String) = createDOMElement("p", null)(text.asInstanceOf[ReactNode])
+  
   trait ParamProps extends ParamHTMLAttributes[dom.html.Param] with ClassAttributes[dom.html.Param]
   final lazy val param = tagt[ParamProps]("param")
 

@@ -153,7 +153,7 @@ object attrlist extends AttributeListSyntax {
   /**
    * Default tags and attributes you can use. You can import all of the actual
    * values using `import ^._, <._`.  This style is popular with other
-   * scalajs-react facades but should really not be used in this library vs the
+   * scalajs react facades but should really not be used in this library vs the
    * more (but not perfectly) strongly typed versions in `vdom.tags`.
    */
   object prefix_<^ {

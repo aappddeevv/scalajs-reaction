@@ -69,14 +69,19 @@ trait Disabled extends js.Object {
   var disabled: js.UndefOr[Boolean] = js.undefined
 }
 
-/** Add a theme member. */
+/** Add a theme member. This should be HasTheme. */
 trait Theme extends js.Object {
   var theme: js.UndefOr[ITheme] = js.undefined
 }
 
-/** Use this not `Theme` */
+/** Use this not `Theme`. This should be HasTheme */
 trait Themable extends js.Object {
   var theme: js.UndefOr[ITheme] = js.undefined
+}
+
+/** Use this not Themable. :-) */
+trait HasTheme extends js.Object {
+    var theme: js.UndefOr[ITheme] = js.undefined
 }
 
 /** Adds an iconProps member. */

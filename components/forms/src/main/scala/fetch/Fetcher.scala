@@ -95,11 +95,10 @@ class Fetcher[F[_], P, E, T](Name: String) {
     * @param run Run a F[T] to obtain an error or a result.
     * @param initialValue Optional initial fetch, to kick things off.
     */
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(Name, props)
 
-  val sfc = SFC1[Props] { props =>
+  val render: Props => ReactNode = props => {
     import props._
-    useDebugValue(Name)
     val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
     val makeRequest = useCallback1[F[P], Unit](unsafeDeps(fstate)) { f =>
@@ -123,11 +122,12 @@ class Fetcher2[F[_], P, E, T](
     Name: String,
     runner: F[P] => (Either[E, T] => Unit) => Unit)
     extends Fetcher[F, P, E, T](Name) {
+    
   def apply(
       children: (FetchState, FetchCallback) => ReactNode,
       initialValue: Option[F[P]] = None
     ) =
-    sfc.unsafeApply(
+    render.unsafeElementWith(Name,
       js.Dynamic.literal(
         "children" -> children.asJsAny,
         "run" -> runner.asJsAny,

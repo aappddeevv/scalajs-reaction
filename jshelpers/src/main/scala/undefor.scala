@@ -52,7 +52,7 @@ trait UndefOrCommon[A] {
   /** null => undefined, else the value remains. */
   def filterNull: js.UndefOr[A] = a.filter(_ != null)
 
-  /** Very dangerous! */
+  /** Changes what's inside but preserves UndefOr. */
   def as[B]: js.UndefOr[B] = a.map(_.asInstanceOf[B])
 
   /** Convert UndefOr[A] => A|Null */

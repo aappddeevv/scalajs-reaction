@@ -91,7 +91,8 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
 
   /** Make QueryHookOptions */
   def makeOptions(
-    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
     query: js.UndefOr[DocumentNode] = js.undefined,
     displayName: js.UndefOr[String] = js.undefined,
     onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined,
@@ -105,11 +106,10 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
     context: js.UndefOr[js.Object] = js.undefined,
     partialRefetch: js.UndefOr[Boolean] = js.undefined,
     returnPartialData: js.UndefOr[Boolean] = js.undefined,
-  ) =
-    js.Dynamic
+  ) = {
+    val __obj = js.Dynamic
       .literal(
         "query" -> query,
-        "variables" -> variables.asInstanceOf[js.Any],
         "displayName" -> displayName,
         "onCompleted" -> onCompleted,
         "onError" -> onError,
@@ -123,7 +123,10 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
         "partialRefetch" -> partialRefetch,
         "returnPartialData" -> returnPartialData
       )
-      .asInstanceOf[QueryHookOptions[T, TVars]]
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    __obj.asInstanceOf[QueryHookOptions[T, TVars]]
+  }
 
   /** Make apollo_client.QueyrOptions for the ApolloClient returned from `useQuery` which are slightly different than
    * `QueryHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
@@ -131,16 +134,16 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
    */
   def makeClientOptions(
     query: DocumentNode,
-    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
     context: js.UndefOr[js.Object] = js.undefined,
     fetchResults: js.UndefOr[Boolean] = js.undefined,
     metadata: js.UndefOr[js.Object] = js.undefined,
     fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
-  ) =
-    js.Dynamic
+  ) = {
+    val __obj = js.Dynamic
       .literal(
-        "variables" -> variables.asInstanceOf[js.Any],
         "query" -> query,
         "errorPolicy" -> errorPolicy,
         "context" -> context,
@@ -148,7 +151,10 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
         "metadata" -> metadata,
         "fetchPolicy" -> fetchPolicy
       )
-      .asInstanceOf[apollo_client.QueryOptions[TVars]]
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDynamic("variables")(unsafeVariables)
+    __obj.asInstanceOf[apollo_client.QueryOptions[TVars]]
+  }
 }
 
 @js.native
@@ -168,7 +174,7 @@ private[react_apollo] object module extends js.Object {
   // Need Ext for ExecutionResult...
   def useMutation[T <: js.Any, TVars <: js.Object](
     mutation: DocumentNode,
-    options: js.UndefOr[MutationHookOptions[T, TVars]|js.Dynamic] = js.undefined
+    options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]] =
     js.native
 
@@ -229,7 +235,10 @@ trait QueryHookOptions[T <: js.Any, TVars <: js.Object] extends QueryFunctionOpt
 
 // @apollo/react-hooks
 object QueryHookOptions {
-  def variables[T <: js.Any, TVars <: js.Object](v: TVars | js.Dynamic) = new QueryHookOptions[T, TVars] {
+  def variables[T <: js.Any, TVars <: js.Object](v: TVars) = new QueryHookOptions[T, TVars] {
+    variables = v
+  }
+  def unsafeVariables[T <: js.Any, TVars <: js.Object](v: js.Dynamic) = new QueryHookOptions[T, TVars] {
     variables = v
   }
 }
@@ -256,7 +265,7 @@ object ApolloProvider {
   trait Props extends ApolloContextValue
 
   def apply(props: Props)(children: ReactNode*) =
-    react.createElementN(JS, props)(children:_*)
+    react.createElementN(JS, props)(children: _*)
 
   def apply(c: apollo_client.ApolloClient)(children: ReactNode*) =
     react.createElementN(JS, new Props { client = c })(children: _*)
@@ -315,7 +324,9 @@ trait MutationHookOptions[T <: js.Any, TVars <: js.Object] extends BaseMutationO
  * need to always specify the types.
  */
 case class UseMutation[T <: js.Any, TVars <: js.Object]() {
-  def useMutation(mutation: DocumentNode, options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
+  def useMutation(
+    mutation: DocumentNode,
+    options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
     module.useMutation[T, TVars](mutation, options)
 
   /** Make MutationHookOptions */
@@ -332,9 +343,10 @@ case class UseMutation[T <: js.Any, TVars <: js.Object]() {
     onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined,
     onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined,
     update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
-    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
-  ) =
-    js.Dynamic
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
+  ) = {
+    val __obj = js.Dynamic
       .literal(
         "awaitRefetchQueries" -> awaitRefetchQueries,
         "client" -> client,
@@ -347,9 +359,12 @@ case class UseMutation[T <: js.Any, TVars <: js.Object]() {
         "onCompleted" -> onCompleted,
         "onError" -> onError,
         "update" -> update,
-        "variables" -> variables.asInstanceOf[js.Any]
+        //"variables" -> variables.asInstanceOf[js.Any],
       )
-      .asInstanceOf[MutationHookOptions[T, TVars]]
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    __obj.asInstanceOf[MutationHookOptions[T, TVars]]
+  }
 
   /** Make apollo_client.QueryOptions for the ApolloClient returned from `useMutation` which are slightly different than
    * `MutationHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
@@ -360,25 +375,29 @@ case class UseMutation[T <: js.Any, TVars <: js.Object]() {
     context: js.UndefOr[js.Object] = js.undefined,
     fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined,
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
-    variables: js.UndefOr[TVars | js.Dynamic] = js.undefined,
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
     update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
     awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
     updateQueries: js.UndefOr[MutationQueryReducersMap[T, js.Object]] = js.undefined,
     optimisticResponse: js.UndefOr[T | js.Function1[TVars, T]] = js.undefined,
-  ) =
-    js.Dynamic
+  ) = {
+    val __obj = js.Dynamic
       .literal(
         "mutation" -> mutation,
         "context" -> context,
         "fetchPolicy" -> fetchPolicy,
         "errorPolicy" -> errorPolicy,
-        "variables" -> variables.asInstanceOf[js.Any],
+        //"variables" -> variables.asInstanceOf[js.Any],
         "update" -> update,
         "awaitRefetchQueries" -> awaitRefetchQueries,
         "updateQueries" -> updateQueries,
         "optimisticResponse" -> optimisticResponse.asInstanceOf[js.Any],
       )
-      .asInstanceOf[apollo_client.MutationOptions[T, TVars]]
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    __obj.asInstanceOf[apollo_client.MutationOptions[T, TVars]]
+  }
 }
 
 // @apollo/react-common

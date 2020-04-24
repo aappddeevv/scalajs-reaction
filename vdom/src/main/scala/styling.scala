@@ -173,9 +173,17 @@ trait RawStyleBase extends RawFontStyle {
   var display: js.UndefOr[String]                    = js.undefined
   var elevation: js.UndefOr[String]                  = js.undefined
   var emptyCells: js.UndefOr[String]                 = js.undefined
-  var float: js.UndefOr[String]                      = js.undefined
-
+  var `float`: js.UndefOr[String]                      = js.undefined
   var height: js.UndefOr[String | Double]        = js.undefined
+  
+  var inset: js.UndefOr[String | Double]       = js.undefined
+  var insetBlock: js.UndefOr[String | Double]       = js.undefined
+  var insetBlockEnd: js.UndefOr[String | Double]       = js.undefined
+  var insetBlockStart: js.UndefOr[String | Double]       = js.undefined
+  var insetInline: js.UndefOr[String | Double]       = js.undefined
+  var insetInlineEnd: js.UndefOr[String | Double]       = js.undefined
+  var insetInlineStart: js.UndefOr[String | Double]       = js.undefined
+  
   var left: js.UndefOr[String]                   = js.undefined
   var letterSpacing: js.UndefOr[String]          = js.undefined
   var lineHeight: js.UndefOr[String | Double]    = js.undefined
@@ -184,12 +192,23 @@ trait RawStyleBase extends RawFontStyle {
   var listStylePosition: js.UndefOr[String]      = js.undefined
   var listStyleType: js.UndefOr[String]          = js.undefined
   var margin: js.UndefOr[String | Double]        = js.undefined
+  var marginBlockStart: js.UndefOr[String | Double]        = js.undefined
+  var marginBlockEnd: js.UndefOr[String | Double]        = js.undefined
+  var marginInline: js.UndefOr[String | Double]        = js.undefined
+  var marginInlineEnd: js.UndefOr[String | Double]        = js.undefined
+  var marginInlineStart: js.UndefOr[String | Double]        = js.undefined
   var marginTop: js.UndefOr[String | Double]     = js.undefined
   var marginRight: js.UndefOr[String | Double]   = js.undefined
   var marginBottom: js.UndefOr[String | Double]  = js.undefined
   var marginLeft: js.UndefOr[String | Double]    = js.undefined
   var markerOffset: js.UndefOr[String | Double]  = js.undefined
   var marks: js.UndefOr[String]                  = js.undefined
+  
+  //var maxHeight: js.UndefOr[String | Int]        = js.undefined
+  var maxBlockSize: js.UndefOr[String | Int]        = js.undefined
+  var maxInlineSize: js.UndefOr[String | Int]        = js.undefined
+  var minInlineSize: js.UndefOr[String | Int]        = js.undefined
+  
   var maxHeight: js.UndefOr[String | Int]        = js.undefined
   var maxWidth: js.UndefOr[String | Int]         = js.undefined
   var minHeight: js.UndefOr[String | Int]        = js.undefined
@@ -203,6 +222,13 @@ trait RawStyleBase extends RawFontStyle {
   var overflowX: js.UndefOr[String]              = js.undefined
   var overflowY: js.UndefOr[String]              = js.undefined
   var padding: js.UndefOr[String | Double]       = js.undefined
+  var paddingBlock: js.UndefOr[String | Double]       = js.undefined
+  var paddingBlockEnd: js.UndefOr[String | Double]       = js.undefined
+  var paddingBlockStart: js.UndefOr[String | Double]       = js.undefined
+  var paddingInline: js.UndefOr[String | Double]       = js.undefined
+  var paddingInlineEnd: js.UndefOr[String | Double]       = js.undefined
+  var paddingInlineStart: js.UndefOr[String | Double]       = js.undefined
+  //var padding: js.UndefOr[String | Double]       = js.undefined
   var paddingTop: js.UndefOr[String | Double]    = js.undefined
   var paddingRight: js.UndefOr[String | Double]  = js.undefined
   var paddingBottom: js.UndefOr[String | Double] = js.undefined

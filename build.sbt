@@ -116,7 +116,8 @@ lazy val root = project
     apollo,
     `apollo-server`,
     forms,
-    `react-router-dom`,
+    `react-router-dom5`,
+    `react-router-dom6`,
     pathtoregexp,
     dataValidationJS,
     msal,
@@ -133,7 +134,8 @@ lazy val root = project
     ,`react-teleporter`,
     plotlyjs,
 	`react-plotlyjs`
-  
+,`react-device-detect`
+   ,`react-responsive`
   )
 
 lazy val `react` = project
@@ -186,10 +188,17 @@ lazy val jss = project
   .dependsOn(react, vdom)
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
-lazy val `react-router-dom` = project
-  .in(file("components/react-router-dom"))
-  .settings(std_settings("react-router-dom", "scalajs reaction react-router-dom bindings (hook)"))
-  .settings(buildinfo_settings("react_router.dom"))
+lazy val `react-router-dom5` = project
+  .in(file("components/react-router-dom5"))
+  .settings(std_settings("react-router-dom5", "react-router-dom5"))
+  .settings(buildinfo_settings("react_router5.dom"))
+  .dependsOn(react, vdom, `react-macros`)
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+
+lazy val `react-router-dom6` = project
+  .in(file("components/react-router-dom6"))
+  .settings(std_settings("react-router-dom6", "react-router-dom v6"))
+  .settings(buildinfo_settings("react_router6.dom"))
   .dependsOn(react, vdom, `react-macros`)
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
@@ -273,6 +282,19 @@ lazy val `apollo-server` = project.in(file("components/apollo-server"))
 .settings(buildinfo_settings("apollo_server"))
 .dependsOn(react, apollo, `react-macros`)
 .enablePlugins(ScalaJSPlugin)
+
+lazy val `react-responsive` = project.in(file("components/react-responsive"))
+.settings(std_settings("react-responsive", "react-responsive"))
+.settings(buildinfo_settings("react_responsive"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
+lazy val `react-device-detect` = project.in(file("components/react-device-detect"))
+.settings(std_settings("react-device-detect", "react-device-detect"))
+.settings(buildinfo_settings("react_device_detect"))
+.dependsOn(react, `react-macros`)
+.enablePlugins(ScalaJSPlugin)
+
 
 
 // jvm and js based project
@@ -420,8 +442,9 @@ lazy val examples = project
     bootstrap,
     mui,
     `react-big-calendar`,
-    `react-router-dom`
+    `react-router-dom5`
      ,dataValidationJS
+    ,`react-router-dom6`,
   )
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .settings(buildinfo_settings("ttg.examples"))
@@ -464,7 +487,8 @@ lazy val docs = project
     apollo,
     `apollo-server`,
     forms,
-    `react-router-dom`,
+    `react-router-dom5`,
+    `react-router-dom6`,
     pathtoregexp,
     dataValidationJS,
     msal,
@@ -481,6 +505,8 @@ lazy val docs = project
     `react-teleporter`,
     plotlyjs,
 	`react-plotlyjs`
+   ,`react-device-detect`
+   ,`react-responsive`
 )
 
 addCommandAlias("prepare", "headerCreate; fix; fmt")

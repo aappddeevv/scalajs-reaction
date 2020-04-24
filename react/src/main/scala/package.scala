@@ -100,39 +100,33 @@ package object react extends react.React {
   def refCB[E](f: E | Null => Unit): Ref[E] = js.Any.fromFunction1[E | Null, Unit](f)
 
   /**
-   * Something that can be rendered in reactjs. We need to restrict this a bit
-   * more when returning values from the scala side API. reactjs allows this to
+   * Something that can be rendered in reactjs. react allows this to
    * be quite flexible including strings, numbers, booleans in additon to
-   * classes, functions, etc. This should probably be a js.Any as any API used
-   * in this library will ensure that the right types are used and this would
-   * get rid of the ugly `stringToElement` type functions below.  js.Object is
-   * technically not correct.
+   * classes or functions. Classes and functions are convered to 
+   * a ReactNode by calling `createElement` on them however strings and
+   * numbers can be rendered directly.
    */
   @js.native
-  trait ReactNode extends js.Object
+  trait ReactNode extends js.Any
 
-  /** Output from `react.createElement` and is something you can render with key
-   * and ref accessors which are present on objects vs primitives (and a
-   * primitive can be a ReactNode on its own). A ReactNode with a key. Keep the
-   * trait parameterless at the expense of pushing the type parameter to `ref`.
-   * This uses internal knowledge of a react element object and should be
-   * avoid because it could change.
-   */
+  /** Output from `react.createElement`. Subtype of ReactNode to indicate
+  * that the output came from `createElement` vs say, a string or number.
+  */
   @js.native
-  trait ReactElement extends ReactNode {
+  trait ReactElement extends ReactNode
+  /*{
     val key: UndefOr[String] = js.native
     def ref[E]: UndefOr[RefCb[E]] = js.native
-    // ...add ref here...is it a string or a callback now?
-
-    /** Pretty sure this is always here, don't use it. */
+    /** Internal react. Do not use. */
     val `type`: String = js.native
   }
+  */
 
-  object ReactElement {
-    implicit class RichReactElement(el: ReactElement) {
-      def withKey(key: String): ReactElement = merge[ReactElement](el, js.Dynamic.literal("key" -> key))
-    }
-  }
+//   object ReactElement {
+//     implicit class RichReactElement(el: ReactElement) {
+//       def withKey(key: String): ReactElement = merge[ReactElement](el, js.Dynamic.literal("key" -> key))
+//     }
+//   }
 
   @js.native
   trait ReactChildren extends ReactElement
@@ -227,6 +221,10 @@ package object react extends react.React {
   type ReactType =
     ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
 
+   /** Component type that can be used in HOCs. */
+   type ReactComponentType =
+    ReactClass | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    
   /**
    * This type is used only as a target for imported javascript authored components to
    * "tag" a component type or created via other js-interop mechanisms such as
@@ -413,8 +411,8 @@ package object react extends react.React {
 
   /** Test equaliy with two js objects. Standard == in scala.js on 2 js objects
    * (e.g. non-native traits) will not test in the same way that standard scala
-   * tests equality. Do not use this with ract components (js objects) because
-   * react component objects have circular data structures.
+   * tests equality. Do not use this with react components (js objects) because
+   * react component objects may have circular data structures.
    *
    *  You may want to look at some standard js equality libraries--there are
    *  many and are opimized in various ways. See
@@ -476,6 +474,9 @@ package object react extends react.React {
   
   /** Type inference helper. */
   val nullJSObject = null.asInstanceOf[js.Object]
+  
+  /** Type inference helper. */
+  val nullDate = null.asInstanceOf[js.Date]
   
   /** Empty array. Freshly allocated! */
   def emptyArray[T] = js.Array[T]()

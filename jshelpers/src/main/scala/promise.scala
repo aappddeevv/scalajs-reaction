@@ -38,6 +38,9 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   type RESOLVE[A, B] = js.Function1[A, RVAL[B]]
   type REJECTED[A] = js.Function1[scala.Any, RVAL[A]]
 
+  /** Cast since these js effect types get a bit screwed up in scala-js. */
+  @inline def asPromise = self.asInstanceOf[js.Promise[A]]
+  
   /** map */
   @inline def jsThen[B](f: A => B): js.Thenable[B] = {
     val onf = js.Any.fromFunction1(f).asInstanceOf[RESOLVE[A, B]]
@@ -194,6 +197,13 @@ final class JSPromise2[A, B](private val tuple: (js.Thenable[A], js.Thenable[B])
       valueA <- tuple._1
       valueB <- tuple._2
     } yield thunk(valueA, valueB)).asInstanceOf[js.Promise[T]]
+    
+  def parFlatMapX[T](thunk: (A, B) => js.Thenable[T]) =
+    (for {
+      valueA <- tuple._1
+      valueB <- tuple._2
+      d <- thunk(valueA, valueB)
+    } yield d).asInstanceOf[js.Promise[T]]    
 }
 
 final class JSPromise3[A, B, C](private val tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C])) extends AnyVal {
@@ -204,6 +214,14 @@ final class JSPromise3[A, B, C](private val tuple: (js.Thenable[A], js.Thenable[
       valueB <- tuple._2
       valueC <- tuple._3
     } yield thunk(valueA, valueB, valueC)).asInstanceOf[js.Promise[T]]
+    
+  def parFlatMapX[T](thunk: (A, B, C) => js.Thenable[T]) =
+    (for {
+      valueA <- tuple._1
+      valueB <- tuple._2
+      valueC <- tuple._3
+      d <- thunk(valueA, valueB, valueC)
+    } yield d).asInstanceOf[js.Promise[T]]
 }
 
 final class JSPromise4[A, B, C, D](private val tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D]))
@@ -216,6 +234,15 @@ final class JSPromise4[A, B, C, D](private val tuple: (js.Thenable[A], js.Thenab
       valueC <- tuple._3
       valueD <- tuple._4
     } yield thunk(valueA, valueB, valueC, valueD)).asInstanceOf[js.Promise[T]]
+
+  def parFlatMapX[T](thunk: (A, B, C, D) => js.Thenable[T]) =
+    (for {
+      valueA <- tuple._1
+      valueB <- tuple._2
+      valueC <- tuple._3
+      valueD <- tuple._4
+      d <- thunk(valueA,valueB,valueC,valueD)
+    } yield d).asInstanceOf[js.Promise[T]]
 }
 
 trait JSPromiseLowerOrderImplicits {
