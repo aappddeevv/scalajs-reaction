@@ -35,6 +35,7 @@ trait Events {
 
   /** Friendly name alias for SyntheticEvent */
   type ReactEvent[+T <: dom.EventTarget]          = SyntheticEvent[T]
+  type ReactAnimationEvent[+T <: dom.EventTarget]  = SyntheticAnimationEvent[T]
   type ReactKeyboardEvent[+T <: dom.EventTarget]  = SyntheticKeyboardEvent[T]
   type ReactMouseEvent[+T <: dom.EventTarget]     = SyntheticMouseEvent[T]
   type ReactFocusEvent[+T <: dom.EventTarget]     = SyntheticFocusEvent[T]
@@ -64,6 +65,7 @@ trait Events {
 
   /** General event handler parameterized on the receiver. */
   type ReactEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticEvent[T]]
+  type AnimationEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticAnimationEvent[T]]  
   type MouseEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticMouseEvent[T]]
   type KeyboardEventHandler[T <: dom.EventTarget]    = EventHandler[T, SyntheticKeyboardEvent[T]]
   type UIEventHandler[T <: dom.EventTarget]          = EventHandler[T, SyntheticUIEvent[T]]
@@ -75,6 +77,7 @@ trait Events {
   type PointerEventHandler[T <: dom.EventTarget]     = EventHandler[T, SyntheticPointerEvent[T]]
   type TouchEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticTouchEvent[T]]
   type CompositionEventHandler[T <: dom.EventTarget] = EventHandler[T, SyntheticCompositionEvent[T]]
+  type TransitionEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticTransitionEvent[T]]
   type WheelEventHandler[T <: dom.EventTarget]       = EventHandler[T, SyntheticWheelEvent[T]]
 }
 

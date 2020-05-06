@@ -41,12 +41,11 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
     var children: ReactNode
   }
 
-  def apply(children_ : ReactNode) = sfc(new Props {
+  def apply(children_ : ReactNode) = render.elementWith(new Props {
     var children = children_
   })
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
+  def render: Props => ReactNode = props => {
     val (state, setState) = useStateStrictDirect[State](None)
     // subscribe to routing source on mount
     useEffectMounting{() =>
@@ -81,19 +80,19 @@ abstract trait RoutingSourceComponent[Info <: scala.AnyRef, To] { self =>
       var modify: RouterInfo => RouterInfo // = identity
     }
 
-    def apply(props: Props) = sfc(props)
+    def apply(props: Props) = render.elementWith(props)
 
     def apply(
       child_ : () => ReactNode,
       cond_ : RouterInfo => Boolean,
       modify_ : RouterInfo => RouterInfo = identity
-    ) = sfc(new Props {
+    ) = render.elementWith(new Props {
       var child = child_
       var cond = cond_
       var modify = modify_
     })
 
-    val sfc = SFC1[Props]{ props =>
+  def render: Props => ReactNode = props => {
       import props._
       useDebugValue(Name)
       RouterContext.consume(routerInfo => {

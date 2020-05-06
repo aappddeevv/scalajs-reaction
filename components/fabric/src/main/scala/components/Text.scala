@@ -38,6 +38,10 @@ object Text {
   def apply(props: Props)(text: js.UndefOr[String] = js.undefined) =
     createElementN(JS, props)(text.asInstanceOf[ReactNode])
 
+  def apply(variant: Variant, text: String) =
+    createElement(JS, js.Dynamic.literal("variant" -> variant), text.asInstanceOf[ReactNode])
+    
+    
   // from ReactJsProps
   trait Props extends ReactJSProps with HTMLAttributes[dom.html.Element]{
     var variant: js.UndefOr[Variant] = js.undefined

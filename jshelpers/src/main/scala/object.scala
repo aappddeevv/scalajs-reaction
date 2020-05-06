@@ -25,61 +25,61 @@ import scala.scalajs.js
 import js.|
 
 /** The "combine" methods are shallow, mutable merges, this may not be what you want. */
-final case class JsObjectOps[A <: js.Object](o: A) {
-  def asDict[B] = o.asInstanceOf[js.Dictionary[B]]
-  def asAnyDict = o.asInstanceOf[js.Dictionary[js.Any]]
-  def asDyn = o.asInstanceOf[js.Dynamic]
-  def asUndefOr: js.UndefOr[A] = js.defined(o)
+final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal  {
+  @inline def asDict[B] = o.asInstanceOf[js.Dictionary[B]]
+  @inline def asAnyDict = o.asInstanceOf[js.Dictionary[js.Any]]
+  @inline def asDyn = o.asInstanceOf[js.Dynamic]
+  @inline def asUndefOr: js.UndefOr[A] = js.defined(o)
 
   /** Shallow merge ! If you are merging multiple levels of props, this is not
    * what you want to use.
    */
-  def combine(that: js.UndefOr[A]) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combine(that: js.UndefOr[A]) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with a js.Dynamic explicitly. */
-  def combineDynamic(that: js.Dynamic) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combineDynamic(that: js.Dynamic) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with a generic js object or undefined. */
-  def combineGeneric(that: js.UndefOr[js.Object]) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combineGeneric(that: js.UndefOr[js.Object]) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with something! Client takes ownership to make sure `that` is suitable to be combined. */
-  def unsafeCombine(that: js.Any) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def unsafeCombine(that: js.Any) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with a generic js object and cast. */
-  def combineGenericTo[B](that: js.UndefOr[js.Object]) =
+  @inline def combineGenericTo[B](that: js.UndefOr[js.Object]) =
     js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 
   /** Combine with a dynamic and cast. */
-  def combineDynamicTo[B](that: js.Dynamic) =
+  @inline def combineDynamicTo[B](that: js.Dynamic) =
     js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
-  def as[T] = o.asInstanceOf[T]
+  @inline def as[T] = o.asInstanceOf[T]
 
   /** Duplicate using `js.Object.assign` */
-  def duplicate = js.Object.assign(new js.Object, o).asInstanceOf[A]
+  @inline def duplicate = js.Object.assign(new js.Object, o).asInstanceOf[A]
 
   /** Duplicate then combineDynamic */
-  def duplicateCombine(that: js.Dynamic) =
+  @inline def duplicateCombine(that: js.Dynamic) =
     js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Duplicate then combineDynamic then cast :-). */
-  def duplicateCombineTo[B](that: js.Dynamic) =
+  @inline def duplicateCombineTo[B](that: js.Dynamic) =
     js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 }
 
 /** Dictionary casts. */
-final case class JsDictionaryOps(self: js.Dictionary[_]) {
-  def asJsObj = self.asInstanceOf[js.Object]
-  def asDyn = self.asInstanceOf[js.Dynamic]
-  def asUndefOr = js.defined(self)
+final class JsDictionaryOps(private val self: js.Dictionary[_]) extends AnyVal {
+  @inline def asJsObj = self.asInstanceOf[js.Object]
+  @inline def asDyn = self.asInstanceOf[js.Dynamic]
+  @inline def asUndefOr = js.defined(self)
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
-  def as[T <: js.Object] = self.asInstanceOf[T]
+  @inline def as[T <: js.Object] = self.asInstanceOf[T]
 
 }
 
 trait JsObjectSyntax {
-  implicit def jsObjectOpsSyntax[A <: js.Object](a: A) = new JsObjectOps(a)
-  implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
+  @inline implicit def jsObjectOpsSyntax[A <: js.Object](a: A) = new JsObjectOps(a)
+  @inline implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
 }

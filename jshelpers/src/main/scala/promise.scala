@@ -143,7 +143,7 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   @inline def withFilter(p: A => Boolean) = filter(p)
 
   /** Recover from the error using a partial function. If the partial function is
-   * defined at the value, then the function is applied and its resolved. Otherwise the original
+   * defined at the value, then the function is applied. Otherwise the original
    * value or error remains.
    */
   @inline def recover[U >: A](pf: PartialFunction[scala.Any, U]): js.Thenable[U] = {
@@ -154,6 +154,7 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
     self.`then`[U](onf, onr)
   }
 
+  /** Like `recover` but the partial function returns a `js.Thenable`. */
   @inline def recoverWith[U >: A](pf: PartialFunction[scala.Any, js.Thenable[U]]): js.Thenable[U] = {
     val onf = ().asInstanceOf[RESOLVE[A, U]]
     val onr = js.Any
@@ -171,7 +172,36 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
 
   @inline def flatten[S](implicit ev: A <:< js.Thenable[S]): js.Thenable[S] = {
     val onf = js.Any.fromFunction1(ev).asInstanceOf[RESOLVE[A, S]]
-    self.`then`(onf, js.undefined)
+    self.`then`[S](onf, js.undefined)
+  }
+  
+  /** Not sure this is semantically right... */
+  @inline def collect[S](pf: PartialFunction[A,S]): js.Thenable[S] = {
+    val onf: RESOLVE[A,S] = (a: A) => {
+        if(pf.isDefinedAt(a)) js.Promise.resolve[S](pf.apply(a))
+        else js.Promise.reject(new NoSuchElementException())
+    }
+    self.`then`[S](onf, js.undefined)
+  }
+  
+  /** Not sure this is semantically right... */
+  @inline def transform[S](f: scala.util.Try[A] => scala.util.Try[S]): js.Thenable[S] = {
+    val onf: RESOLVE[A,S] = (a: A) =>
+        f(scala.util.Success(a)) match { 
+          case scala.util.Success(s) => js.Promise.resolve(s.asInstanceOf[RVAL[S]])
+          case scala.util.Failure(t) => js.Promise.reject(t.asInstanceOf[RVAL[S]])
+        }
+    val onr: REJECTED[S] = (err: scala.Any) => {
+        val trya = err match {
+            case th: Throwable => scala.util.Failure(th)
+            case _ => scala.util.Failure(js.JavaScriptException(err))
+        }
+        f(trya) match { 
+            case scala.util.Success(v) => js.Promise.resolve(v.asInstanceOf[RVAL[S]])
+            case scala.util.Failure(th) => js.Promise.reject(th.asInstanceOf[RVAL[S]])
+        }
+    }
+    self.`then`[S](onf, onr)
   }
 }
 
@@ -253,7 +283,14 @@ trait JSPromiseLowerOrderImplicits {
     new JSPromise4[A, B, C, D](a)
 }
 
+/** Extension methods for js.Array[js.Thenable[_]]. */
+final class JSArrayPromiseOps(private val arr: js.Array[js.Thenable[_]]) extends AnyVal {
+  /** `js.Promise.all` only takes js.Promise arrays. This takes an array of `js.Thenable[_]`s. */
+  def all = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[_]]])
+}
+
 trait JSPromiseSyntax extends JSPromiseLowerOrderImplicits {
+  @inline implicit def jsArrayToPromise(arr: js.Array[js.Thenable[_]]) = new JSArrayPromiseOps(arr)
   @inline implicit def anyToJSPromise[A](a: A) = new JSPromiseObjectOps[A](a)
   @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
 }

@@ -515,65 +515,14 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onCompositionUpdate: js.UndefOr[CompositionEventHandler[T @uv]]        = js.undefined
   var onCompositionUpdateCapture: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
 
-  // keyboard events val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
-  var onKeyDown: js.UndefOr[KeyboardEventHandler[T @uv]]         = js.undefined
-  var onKeyPress: js.UndefOr[KeyboardEventHandler[T @uv]]        = js.undefined
-  var onKeyPressCapture: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
-  var onKeyUp: js.UndefOr[KeyboardEventHandler[T @uv]]           = js.undefined
-  var onKeyUpCapture: js.UndefOr[KeyboardEventHandler[T @uv]]    = js.undefined
-
-  // image events
-  var onLoad: js.UndefOr[ReactEventHandler[T @uv]]         = js.undefined
-  var onLoadCapture: js.UndefOr[ReactEventHandler[T @uv]]  = js.undefined
-  var onError: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onErrorCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-
-  // mouse events
-  var onClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
-  var onClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined
-  var onContextMenu: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
-  var onContextMenuCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-  var onDoubleClick: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
-  var onDoubleClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-  var onDrag: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
-  var onDragCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
-  var onDragEnd: js.UndefOr[DragEventHandler[T @uv]]             = js.undefined
-  var onDragEndCapture: js.UndefOr[DragEventHandler[T @uv]]      = js.undefined
-  var onDragEnter: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
-  var onDragEnterCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
-  var onDragExit: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
-  var onDragExitCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
-  var onDragLeave: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
-  var onDragLeaveCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
-  var onDragOver: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
-  var onDragOverCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
-  var onDragStart: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
-  var onDragStartCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
-  var onDrop: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
-  var onDropCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
-  var onMouseDown: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
-  var onMouseDownCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
-  var onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
-  var onMouseMove: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
-  var onMouseMoveCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseOut: js.UndefOr[MouseEventHandler[T @uv]]           = js.undefined
-  var onMouseOutCapture: js.UndefOr[MouseEventHandler[T @uv]]    = js.undefined
-  var onMouseOver: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
-  var onMouseOverCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseUp: js.UndefOr[MouseEventHandler[T @uv]]            = js.undefined
-  var onMouseUpCapture: js.UndefOr[MouseEventHandler[T @uv]]     = js.undefined
-
-  // this won't work because once it's a val we can't put in type bounds
-  //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
-
   // Focus Events
   var onFocus: js.UndefOr[FocusEventHandler[T @uv]]        = js.undefined
   var onFocusCapture: js.UndefOr[FocusEventHandler[T @uv]] = js.undefined
   var onBlur: js.UndefOr[FocusEventHandler[T @uv]]         = js.undefined
   var onBlurCapture: js.UndefOr[FocusEventHandler[T @uv]]  = js.undefined
-
+  
   // Form Events
+  // onChange specialized in each subclass
   //var        onChange: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
   var onChangeCapture: js.UndefOr[FormEventHandler[T @uv]]  = js.undefined
   var onInput: js.UndefOr[FormEventHandler[T @uv]]          = js.undefined
@@ -585,23 +534,18 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onInvalid: js.UndefOr[FormEventHandler[T @uv]]        = js.undefined
   var onInvalidCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
 
-  // selection events
-  var onSelect: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onSelectCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-
-  // wheel events
-  var onWheel: js.UndefOr[WheelEventHandler[T @uv]]        = js.undefined
-  var onWheelCapture: js.UndefOr[WheelEventHandler[T @uv]] = js.undefined
-
-  // touch events
-  var onTouchCancel: js.UndefOr[TouchEventHandler[T @uv]]        = js.undefined
-  var onTouchCancelCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
-  var onTouchEnd: js.UndefOr[TouchEventHandler[T @uv]]           = js.undefined
-  var onTouchEndCapture: js.UndefOr[TouchEventHandler[T @uv]]    = js.undefined
-  var onTouchMove: js.UndefOr[TouchEventHandler[T @uv]]          = js.undefined
-  var onTouchMoveCapture: js.UndefOr[TouchEventHandler[T @uv]]   = js.undefined
-  var onTouchStart: js.UndefOr[TouchEventHandler[T @uv]]         = js.undefined
-  var onTouchStartCapture: js.UndefOr[TouchEventHandler[T @uv]]  = js.undefined
+  // image events
+  var onLoad: js.UndefOr[ReactEventHandler[T @uv]]         = js.undefined
+  var onLoadCapture: js.UndefOr[ReactEventHandler[T @uv]]  = js.undefined
+  var onError: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onErrorCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  
+  // keyboard events val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
+  var onKeyDown: js.UndefOr[KeyboardEventHandler[T @uv]]         = js.undefined
+  var onKeyPress: js.UndefOr[KeyboardEventHandler[T @uv]]        = js.undefined
+  var onKeyPressCapture: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  var onKeyUp: js.UndefOr[KeyboardEventHandler[T @uv]]           = js.undefined
+  var onKeyUpCapture: js.UndefOr[KeyboardEventHandler[T @uv]]    = js.undefined
 
   // media events
   var onAbort: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
@@ -648,14 +592,106 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onVolumeChangeCapture: js.UndefOr[ReactEventHandler[T @uv]]   = js.undefined
   var onWaiting: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
   var onWaitingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  
+  // mouse events
+  var onAuxClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
+  var onAuxClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined  
+  var onClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
+  var onClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined
+  var onContextMenu: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
+  var onContextMenuCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onDoubleClick: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
+  var onDoubleClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onDrag: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
+  var onDragCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
+  var onDragEnd: js.UndefOr[DragEventHandler[T @uv]]             = js.undefined
+  var onDragEndCapture: js.UndefOr[DragEventHandler[T @uv]]      = js.undefined
+  var onDragEnter: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
+  var onDragEnterCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
+  var onDragExit: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
+  var onDragExitCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
+  var onDragLeave: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
+  var onDragLeaveCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
+  var onDragOver: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
+  var onDragOverCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
+  var onDragStart: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
+  var onDragStartCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
+  var onDrop: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
+  var onDropCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
+  var onMouseDown: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
+  var onMouseDownCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
+  var onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
+  var onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
+  var onMouseMove: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
+  var onMouseMoveCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
+  var onMouseOut: js.UndefOr[MouseEventHandler[T @uv]]           = js.undefined
+  var onMouseOutCapture: js.UndefOr[MouseEventHandler[T @uv]]    = js.undefined
+  var onMouseOver: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
+  var onMouseOverCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
+  var onMouseUp: js.UndefOr[MouseEventHandler[T @uv]]            = js.undefined
+  var onMouseUpCapture: js.UndefOr[MouseEventHandler[T @uv]]     = js.undefined
 
+  // this won't work because once it's a val we can't put in type bounds
+  //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
+
+  // selection events
+  var onSelect: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onSelectCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  
+  // touch events
+  var onTouchCancel: js.UndefOr[TouchEventHandler[T @uv]]        = js.undefined
+  var onTouchCancelCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchEnd: js.UndefOr[TouchEventHandler[T @uv]]           = js.undefined
+  var onTouchEndCapture: js.UndefOr[TouchEventHandler[T @uv]]    = js.undefined
+  var onTouchMove: js.UndefOr[TouchEventHandler[T @uv]]          = js.undefined
+  var onTouchMoveCapture: js.UndefOr[TouchEventHandler[T @uv]]   = js.undefined
+  var onTouchStart: js.UndefOr[TouchEventHandler[T @uv]]         = js.undefined
+  var onTouchStartCapture: js.UndefOr[TouchEventHandler[T @uv]]  = js.undefined
+ 
+  // Pointer Events
+  var onPointerDown: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerDownCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerMove: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerMoveCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerUp: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerUpCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerCancel: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerCancelCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerEnter: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerEnterCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerLeave: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerLeaveCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerOver: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerOverCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerOut: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onPointerOutCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onGotPointerCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onGotPointerCaptureCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+  var onLostPointerCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
+ 
   // scroll events
   var onScroll: js.UndefOr[UIEventHandler[T @uv]]        = js.undefined
   var onScrollCapture: js.UndefOr[UIEventHandler[T @uv]] = js.undefined
+  
+  // wheel events
+  var onWheel: js.UndefOr[WheelEventHandler[T @uv]]        = js.undefined
+  var onWheelCapture: js.UndefOr[WheelEventHandler[T @uv]] = js.undefined
 
+  // Animation Events
+  var onAnimationStart: js.UndefOr[AnimationEventHandler[T @uv]] = js.undefined
+  var onAnimationStartCapture: js.UndefOr[AnimationEventHandler[T @uv]] = js.undefined
+  var onAnimationEnd: js.UndefOr[AnimationEventHandler[T @uv]] = js.undefined
+  var onAnimationEndCapture: js.UndefOr[AnimationEventHandler[T @uv]] = js.undefined
+  var onAnimationIteration: js.UndefOr[AnimationEventHandler[T @uv]] = js.undefined
+  var onAnimationIterationCapture: js.UndefOr[AnimationEventHandler[T @uv]] = js.undefined
+
+  // Transition Events
+  var onTransitionEnd: js.UndefOr[TransitionEventHandler[T @uv]] = js.undefined
+  var onTransitionEndCapture: js.UndefOr[TransitionEventHandler[T @uv]] = js.undefined
+  
 }
 
-trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
+trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAttributes[T] {
 
   /** reactjs specific */
   var defaultChecked: js.UndefOr[Boolean] = js.undefined
@@ -710,30 +746,34 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
 
   @JSName("will-change")
   var willChange: js.UndefOr[String] = js.undefined;
+}
 
+trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
+
+  var `aria-activedescendant`: js.UndefOr[String] = js.undefined
   /*
-        'aria-activedescendant'?: string;
-        'aria-atomic'?: boolean | 'false' | 'true';
-        'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both';
+   var 'aria-atomic'?: boolean | 'false' | 'true' = js.undefined
+   var 'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both' = js.undefined
    */
   var `aria-busy`: js.UndefOr[Boolean|String] = js.undefined
   var `aria-checked`: js.UndefOr[Boolean|String] = js.undefined //?: boolean | 'false' | 'mixed' | 'true';
+
+  var `aria-colcount`: js.UndefOr[Int] = js.undefined
+  var `aria-colindex`: js.UndefOr[Int] = js.undefined
+  var `aria-colspan`: js.UndefOr[Int] = js.undefined
   /*
-        'aria-colcount'?: number;
-        'aria-colindex'?: number;
-        'aria-colspan'?: number;
-        'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time';
-        'aria-describedby'?: string;
+   var 'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time' = js.undefined
+        'aria-describedby'?: string = js.undefined
    */
   var `aria-details`: js.UndefOr[String]            = js.undefined //'?: string;
   var `aria-disabled`: js.UndefOr[Boolean | String] = js.undefined //?: boolean | 'false' | 'true';
   /*
-        'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup';
-        'aria-errormessage'?: string;
-        'aria-expanded'?: boolean | 'false' | 'true';
-        'aria-flowto'?: string;
-        'aria-grabbed'?: boolean | 'false' | 'true';
-        'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog';
+        var 'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' = js.undefined
+        var 'aria-errormessage': js.UndefOr[String] = js.undefined
+        var 'aria-expanded'?: boolean | 'false' | 'true' = js.undefined
+        var 'aria-flowto': js.UndefOr[String] = js.undefined
+        var 'aria-grabbed'?: boolean | 'false' | 'true' = js.undefined
+        var 'aria-haspopup'?: boolean | 'false' | 'true' | 'menu' | 'listbox' | 'tree' | 'grid' | 'dialog' = js.undefined
    */
   var `aria-hidden`: js.UndefOr[Boolean | String] = js.undefined //?: boolean | 'false' | 'true';
   var `aria-invalid`
@@ -744,19 +784,19 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var `aria-labelledby`: js.UndefOr[String]   = js.undefined
   var `aria-level`: js.UndefOr[Int]           = js.undefined
   /*
-        'aria-live'?: 'off' | 'assertive' | 'polite';
-        'aria-modal'?: boolean | 'false' | 'true';
-        'aria-multiline'?: boolean | 'false' | 'true';
-        'aria-multiselectable'?: boolean | 'false' | 'true';
-        'aria-orientation'?: 'horizontal' | 'vertical';
-        'aria-owns'?: string;
+        var 'aria-live'?: 'off' | 'assertive' | 'polite' = js.undefined
+        var 'aria-modal'?: boolean | 'false' | 'true' = js.undefined
+        var 'aria-multiline'?: boolean | 'false' | 'true' = js.undefined
+        var 'aria-multiselectable'?: boolean | 'false' | 'true' = js.undefined
+        var 'aria-orientation'?: 'horizontal' | 'vertical' = js.undefined
+        var 'aria-owns': js.UndefOr[String] = js.undefined
    */
   var `aria-placeholder`: js.UndefOr[String] = js.undefined
   var `aria-posinset`: js.UndefOr[Int]       = js.undefined
   /*
-        'aria-pressed'?: boolean | 'false' | 'mixed' | 'true';
-        'aria-readonly'?: boolean | 'false' | 'true';
-        'aria-relevant'?: 'additions' | 'additions text' | 'all' | 'removals' | 'text';
+        var 'aria-pressed'?: boolean | 'false' | 'mixed' | 'true' = js.undefined
+        var 'aria-readonly'?: boolean | 'false' | 'true' = js.undefined
+        var 'aria-relevant'?: 'additions' | 'additions text' | 'all' | 'removals' | 'text' = js.undefined
    */
   var `aria-required`: js.UndefOr[Boolean|String] = js.undefined
   var `aria-roledescription`: js.UndefOr[String] = js.undefined

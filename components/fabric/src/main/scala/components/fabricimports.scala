@@ -62,6 +62,7 @@ trait ComponentRef[T] extends js.Object {
 
   /** Callback style, the easiest to handle. */
   var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+  //var componentRef: js.UndefOr[Ref[T]] = js.undefined
 }
 
 /** Adds a disabled member. */
@@ -256,7 +257,7 @@ trait IContextualMenuItemBase extends WithIconProps {
   @JSName("onClick")
   var onEventItemClick: js.UndefOr[OC2] = js.undefined
   @JSName("onClick")
-  var onEmptyClick: js.UndefOr[OC0] = js.undefined
+  var onClickUnit: js.UndefOr[OC0] = js.undefined
   var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
   var className: js.UndefOr[String] = js.undefined
   var title: js.UndefOr[String] = js.undefined
@@ -280,12 +281,19 @@ trait IContextualMenuItem extends IContextualMenuItemBase {
 
 object IContextualMenuItem {
 
+  /* Smart callback constructor. */
+  def OnClick(f: (ReactMouseEvent[dom.html.Element], IContextualMenuItem) => Unit): OC2 =
+    js.Any.fromFunction2(f).asInstanceOf[OC2]
+
   /** Callback with the react synthetic event. OC = onClick. */
-  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], js.UndefOr[IContextualMenuItem], Unit]
+  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], IContextualMenuItem, Unit]
 
   /** Parameterless callback. OC = onClick. */
   type OC0 = js.Function0[Unit]
 
+  /** Smart callback constructor. */
+  def OnClickUnit(f: () => Unit): OC0 = js.Any.fromFunction0(f).asInstanceOf[OC0]
+  
   // cast your func to this to make it easier
   type RF2 = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
   // cast your func to this to make it easier

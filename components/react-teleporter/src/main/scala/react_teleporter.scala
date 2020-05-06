@@ -22,7 +22,4 @@
 import scala.scalajs.js
 
 package object react_teleporter {
- import react_teleporter._
- def createTeleporter[TC <: js.Object](options: js.UndefOr[TeleporterOptions]=js.undefined) = 
-        module.createTeleporter[TC](options)
 }

@@ -28,7 +28,7 @@ import js.|
 /**
  * A scala.js react facaded in the spirit of ReasonReact.
  */
-package object react extends react.React {
+package object react extends react.React with When {
 
   /** A js dispatch function for side effects. Used in useState. */
   type Dispatch[A] = js.Function1[A, Unit]
@@ -376,36 +376,7 @@ package object react extends react.React {
     if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])
 
-  /** Render something or return a null element. Render is by name. Could just use fold. */
-  def when[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (cond.getOrElse(false)) render else nullNode
-
-  /** Render something or return a null element. Render is by name. Could just use fold. */
-  def when[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (cond.getOrElse(false)) render else nullNode
-
-  /** Render something or return a null element. Render is by name. Could just use fold. */
-  def when(cond: Boolean)(render: => ReactNode): ReactNode =
-    if (cond) render else nullElement
-
-  /** Render something if notcond or return a null element. Render is by name. Could also use fold. */
-  def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
-    if (!cond) render else nullElement
-
-  /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
-  def whenNot[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (!cond.getOrElse(false)) render else nullElement
-
-  /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
-  def whenNot[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (!cond.getOrElse(false)) render else nullElement
-
-  def when[T](cond: js.UndefOr[T])(render: => ReactNode): ReactNode =
-    if (cond.isDefined) render else nullElement
-
-  def whenNot[T](cond: js.UndefOr[T])(render: => ReactNode): ReactNode =
-    if (cond.isEmpty) render else nullElement
-
+    
   /** Shorted version of `js.defined(blah)` */
   @inline def jsdef[A](a: A) = js.defined(a)
 
@@ -448,6 +419,22 @@ package object react extends react.React {
   /** A type used to drive type inference when declaring your component. */
   type ReactFC[P <: js.Object] = js.Function1[P, ReactNode]
 
+  /** Memo a function component. */
+  def memoWith[P <: js.Object](f: ReactFC[P]): ReactFC[P] =
+    memo(f).asInstanceOf[ReactFC[P]]
+  
+  /** Memo a function component. */
+  def memoWith[P <: js.Object](compare: js.Function2[js.UndefOr[P],js.UndefOr[P],Boolean])(f: ReactFC[P]): ReactFC[P] =
+    memo(f, compare).asInstanceOf[ReactFC[P]]
+
+  /** Memo a function component. */
+  def memoWith[P <: js.Object](f: P => ReactNode): ReactFC[P] = 
+    memo(js.Any.fromFunction1(f)).asInstanceOf[ReactFC[P]]
+
+  /** Memo a function component. */
+  def memoWith[P <: js.Object](compare: (js.UndefOr[P], js.UndefOr[P]) => Boolean)(f: P => ReactNode): ReactFC[P] = 
+    memo(js.Any.fromFunction1(f), js.Any.fromFunction2(compare)).asInstanceOf[ReactFC[P]]
+    
   /** A component that takes a ref as the second argument. */
   type RectFCWithRef[P <: js.Object, T <: js.Any] = js.Function2[P, ReactRef[T], ReactNode]
 

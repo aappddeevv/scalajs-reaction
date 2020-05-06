@@ -26,20 +26,6 @@ import js.|
 
 trait ComponentSyntax {
 
-//   /** Memoize SFC1. */
-//   implicit class MemoSFC1[P <: js.Object](private val sfc: SFC1[P]) {
-//     def memo: ReactNode= react.memo(sfc)
-//     def memoWith(compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]): ReactNode =
-//         react.memo(sfc, compare)
-//   }
-// 
-//   implicit def sfc0ToEl(sfc: SFC0): ReactNode =
-//     ReactJS.createElement(sfc.run, null)
-// 
-//   /** Convert a SFC and its argument, expressed as a tuple, to an element. */
-//   implicit def sfc1TupleOpsSyntax[P <: js.Object](f: (SFC1[P], P)): ReactNode =
-//     ReactJS.createElement(f._1.run, f._2.asInstanceOf[js.Any])
-
   /** Given a function component and an arg, expressed as tuple, convert to ReactElement. */
   implicit def func2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P)): ReactNode =
     ReactJS.createElement(f._1, f._2)
@@ -58,21 +44,26 @@ trait ComponentSyntax {
     def toEl: ReactNode = ReactJS.createElement(f, null)
   }
 
+  /** Allow you to set the displayName of a react function component. */
+  //implicit class RichReactFC[P <: js.Object](private val f: ReactFC[P]) {
+  // def displayName(name: String): Unit = f.asInstanceOf[js.Dynamic].displayName = name
+  //}
+  
   /** Convert a plain js function with 1 props argument to an element using some syntax. */
   implicit class RichJSFunction1[P <: js.Object](private val f: js.Function1[P, ReactNode]) {
     def unsafeElementWith(props: js.Dynamic): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
     def unsafeElementWith(name: String, props: js.Dynamic): ReactNode = {
-        //f.asInstanceOf[js.Dynamic].constructor.displayName = name
-        //f.asInstanceOf[js.Dynamic].__proto__.displayName = name
+        f.asInstanceOf[js.Dynamic].displayName = name
         ReactJS.createElement(f, props.asInstanceOf[js.Any])
     }
     def elementWith(props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
     def elementWith(name: String, props: P): ReactNode = { 
-        //f.asInstanceOf[js.Dynamic].constructor.displayName = name
-        //f.asInstanceOf[js.Dynamic].__proto__.displayName = name
+        f.asInstanceOf[js.Dynamic].displayName = name
         ReactJS.createElement(f, props.asInstanceOf[js.Any])
     }
     def toEl(props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+    /** This does not seem to get picked up correctly. */
+    def displayName(name: String): Unit = f.asInstanceOf[js.Dynamic].displayName = name
   }
 
   /** Convert standard scala function with 1 props arguments to an element using some syntax. */
@@ -81,15 +72,13 @@ trait ComponentSyntax {
         ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
     def unsafeElementWith(name: String, props: js.Dynamic): ReactNode = {
         val jsf = js.Any.fromFunction1(f)
-        //jsf.asInstanceOf[js.Dynamic].constructor.displayName = name
-        //jsf.asInstanceOf[js.Dynamic].__proto__.displayName = name
+        jsf.asInstanceOf[js.Dynamic].displayName = name
         ReactJS.createElement(jsf, props.asInstanceOf[js.Any])
     }
     def elementWith(props: P): ReactNode = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
     def elementWith(name: String, props: P): ReactNode = {
         val jsf = js.Any.fromFunction1(f)
-        //jsf.asInstanceOf[js.Dynamic].constructor.displayName = name
-        //jsf.asInstanceOf[js.Dynamic].__proto__.displayName = name
+        jsf.asInstanceOf[js.Dynamic].displayName = name
         ReactJS.createElement(jsf, props.asInstanceOf[js.Any])
     }
     def toEl(props: P): ReactNode = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])

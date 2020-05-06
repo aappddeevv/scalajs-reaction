@@ -148,7 +148,7 @@ trait React {
 
   /** Memoize a function. */
   def memo[P <: js.Object](fc: js.Function1[P, ReactNode]) =
-    ReactJS.memo(js.Any.fromFunction1(fc)).asInstanceOf[js.Function1[js.Any, ReactNode]]
+    ReactJS.memo(js.Any.fromFunction1(fc)).asInstanceOf[js.Function1[P, ReactNode]]
 
   /** Memoize with a function and a comparator. */
   def memo[P <: js.Object](
@@ -159,60 +159,36 @@ trait React {
       .memo(fc, compare.asInstanceOf[js.Function2[js.Any, js.Any, Boolean]])
       .asInstanceOf[js.Function1[P, ReactNode]]
 
-  /** Memoize a SFC1. React uses js "shallow" compare. */
-  //def memo[P <: js.Object](fc: SFC1[P]): SFC1[P] = new SFC1(ReactJS.memo(fc.run))
-
-  /** Memoize a SFC1 using a compare function for the props. */
-//   def memo[P <: js.Object](
-//       fc: SFC1[P],
-//       compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]
-//     ): SFC1[P] =
-//     new SFC1(ReactJS.memo(fc.run, compare.asInstanceOf[js.Function2[js.Any, js.Any, Boolean]]))
-
   def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
 
   /** Initial value is strict. Setter is an updater. */
-  def useStateStrict[T](initial: T) = {
-    val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
-    (c._1, c._2.asInstanceOf[js.Function1[js.Function1[T, T], Unit]])
-  }
+  def useStateStrict[T](initial: T): (T, js.Function1[js.Function1[T,T],Unit]) =
+    ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T,js.Function1[js.Function1[T, T], Unit]]]
 
   /** Initial value is a "lazy". Setter is an updater. Use this one or
     * useReducer.
     */
-  def useState[T](initial: () => T) = {
-    val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
-    (c._1, c._2.asInstanceOf[js.Function1[js.Function1[T, T], Unit]])
-  }
+  def useState[T](initial: () => T): (T, js.Function1[js.Function1[T,T], Unit]) =
+    ReactJS.useState[T](js.Any.fromFunction0[T](initial)).asInstanceOf[js.Tuple2[T, js.Function1[js.Function1[T,T], Unit]]]
 
   /** Initial value is strict. Set new value directly. Don't use this. */
-  def useStateStrictDirect[T](initial: T) = {
-    val c = ReactJS.useState[T](initial.asInstanceOf[js.Any])
-    (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
-  }
+  def useStateStrictDirect[T](initial: T): (T, js.Function1[T,Unit]) =
+     ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, js.Function1[T,Unit]]]
 
   /** Initial value is a "lazy". Set new value directly. Don't use this. */
-  def useStateDirect[T](initial: () => T) = {
-    val c = ReactJS.useState[T](js.Any.fromFunction0[T](initial))
-    (c._1, c._2.asInstanceOf[js.Function1[T, Unit]])
-  }
+  def useStateDirect[T](initial: () => T): (T, js.Function1[T,Unit]) =
+    ReactJS.useState[T](js.Any.fromFunction0[T](initial)).asInstanceOf[js.Tuple2[T, js.Function1[T, Unit]]]
 
   def useReducer[S, A](
       reducer: (S, A) => S,
       initialState: S
-    ): (S, Dispatch[A]) = {
-    val c = ReactJS.useReducer(reducer, initialState)
-    (c._1, c._2)
-  }
+    ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialState)
 
   def useReducer[S, A, I](
       reducer: (S, A) => S,
       initialArg: I,
       init: I => S
-    ): (S, Dispatch[A]) = {
-    val c = ReactJS.useReducer(reducer, initialArg, init)
-    (c._1, c._2)
-  }
+    ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialArg, init)
 
   /** Effect is always run on render, which is probably too much. */
   def useEffectAlways(didUpdate: EffectArg) =

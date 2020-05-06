@@ -80,9 +80,11 @@ object MyComponent {
     trait Props extends js.Object {
         val name: String
     }
+    // I use this declaration style alot.
     val render: ReactFC[Props] = props =>
       div("hello " + props.name)
     }
+    render.displayName = "MyComponent"
     def apply(props: Props) = createElement(render, props)
 }
 ```
@@ -107,13 +109,17 @@ or with types and extension methods:
 object MyComponent {
   trait Props ...
 
-  // a standard scala function 
+  // A standard scala function is a val
   val render: Props => ReactNode = props => div(s"hello ${props.name}")
+
+  // A standard def scala function
+  def render(props: Props): ReactNode = div(s"hello ${props.name}")
 
   // ReactElementTuple causes scala=>js function conversion using standard scala methods
   def apply(props: Props): ReactElementTuple = (render, props)
 
-  // or convert using the `.elementWith` extension method which reads nicely
+  // r convert using the `.elementWith` extension method which reads nicely
+  // This is what I use alot.
   def apply(props: Props) = render.elementWith(props)
 }
 ````

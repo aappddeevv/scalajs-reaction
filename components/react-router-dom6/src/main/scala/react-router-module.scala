@@ -68,7 +68,7 @@ trait Hooks extends js.Object {
   def useBlocker(blocker: js.Function1[UnblockingTx, Unit], when: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   def useHref[S](to: LocationInit[S] | String): String = js.native
 
-  /** Should not need to use this. */
+  /** Should not need to use this according to docs. */
   def useLocation[S](): Location[S] = js.native
   /** Use this to avoid Route entries everywhere. */
   def useMatch[S](to: LocationInit[S] | String): Boolean = js.native
@@ -110,6 +110,11 @@ trait NavigateProps extends js.Object {
 trait LocationInit[+S] extends NavigateProps {
   var state: js.UndefOr[S @scala.annotation.unchecked.uncheckedVariance] = js.undefined
   var key: js.UndefOr[LocationKey] = js.undefined
+}
+
+object LocationInit {
+  def apply[S](pathname: String) = 
+    js.Dynamic.literal("pathname" -> pathname).asInstanceOf[LocationInit[S]]
 }
 
 /** A simplified but overlapping version from the DOM lib per the js package
@@ -204,19 +209,36 @@ object Route {
 
   def apply(props: Props) = createElement(JS, props)
   
-  /** With Route children. */
+  /** Use `Route` children. */
   def nested(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
   
+  /** Non-specialized version. */
   def apply(path: String, element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element))
 
+  /** Children should be `Route` nodes. `element` should use `Outlet` to show selected child. */
   def nested(path: String, element: ReactNode)(children: ReactNode*) =
     createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element), children:_*)
     
-  /** path = * */
+  /** Path is `*`. */
   def always(element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> "*", "element" -> element))
 
+  /** Appends `slash asterisk` to the path. Your element should *not* use `Outlet`. */
+  def descendant(path: String, element: ReactNode) =
+    createElement(JS, js.Dynamic.literal("path" -> (path + "/*"), "element" -> element))
+    
+  /** Uses `/` as the path. Typically used with nested route parent to render at the
+   * root of the parent.
+   */
+  def index(element: ReactNode) =
+    createElement(JS, js.Dynamic.literal("path" -> "/", "element" -> element))
+    
+  /** Use `slash asterisk` as the path. `element` should use `Outlet`. */
+  def indexNested(element: ReactNode)(children: ReactNode*) = 
+    createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children:_*)
+    
+    
   trait Props extends js.Object {
     val path: js.UndefOr[String] = js.undefined
     var element: js.UndefOr[ReactNode] = js.undefined

@@ -60,7 +60,7 @@ object AuthorityType {
 
 @js.native
 @JSImport("@azure/msal", "AuthError")
-class AuthError(val code: String, val errorMessage: js.UndefOr[String] = js.undefined)
+class AuthError(val errorCode: String, val errorMessage: js.UndefOr[String] = js.undefined)
     extends js.Error(errorMessage.getOrElse("<no message>"))
 
 @js.native

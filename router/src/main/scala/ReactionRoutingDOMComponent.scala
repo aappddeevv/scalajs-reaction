@@ -103,13 +103,14 @@ trait ReactionRouterDOMComponent
     /**
      * @param config Routing config that maps the current route info to a react
      */
-    def apply(config_ : Config) = sfc(new Props {
+    def apply(config_ : Config) = render.elementWith(new Props {
       val config = config_
     })
 
-    def apply(props: Props) = sfc(props)
+    def apply(props: Props) = render.elementWith(props)
 
-    val sfc = SFC1[Props] { props =>
+
+  def render: Props => ReactNode = props => {
       import props._
       RouterContext.consume{ctx =>
         ctx.info match {

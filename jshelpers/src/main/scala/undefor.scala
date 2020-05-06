@@ -157,14 +157,19 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
 /** Note that js.UndefOr and js.| already have a `.orNull` method. */
 final class JsUndefOrOps[A](val a: UndefOr[A]) extends UndefOrCommon[A] {}
 
+final class JsUndefOrJsObject[A <: js.Object](private val a: js.UndefOr[A]) extends AnyVal {
+    /** Duplicate inner value if it exists. Saves you a `.map`. */
+    @inline def duplicate = a.map(value => js.Object.assign(js.Object(), value.asInstanceOf[js.Object]).asInstanceOf[A])
+}
+
 final class UndefMap2[A, B](private val tuple: (js.UndefOr[A], js.UndefOr[B])) extends AnyVal {
-  def mapX[T](f: (A, B) => T): js.UndefOr[T] =
+  @inline def mapX[T](f: (A, B) => T): js.UndefOr[T] =
     if (tuple._1.isDefined && tuple._2.isDefined) js.defined(f(tuple._1.get, tuple._2.get))
     else js.undefined
 }
 
 final class UndefMap3[A, B, C](private val tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) extends AnyVal {
-  def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
+  @inline def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
     if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined)
       js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get))
     else js.undefined
@@ -172,20 +177,16 @@ final class UndefMap3[A, B, C](private val tuple: (js.UndefOr[A], js.UndefOr[B],
 
 final class UndefMap4[A, B, C, D](private val tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D]))
     extends AnyVal {
-  def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
-    if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined &&
-        tuple._4.isDefined)
+  @inline def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
+    if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined && tuple._4.isDefined)
       js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get))
     else js.undefined
 }
 
 trait JsUndefLowerOrderImplicits {
-  @inline implicit def jsUndefOrTuple2[A, B](a: (js.UndefOr[A], js.UndefOr[B])) =
-    new UndefMap2[A, B](a)
-  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) =
-    new UndefMap3[A, B, C](a)
-  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])) =
-    new UndefMap4[A, B, C, D](a)
+  @inline implicit def jsUndefOrTuple2[A, B](a: (js.UndefOr[A], js.UndefOr[B])) = new UndefMap2[A, B](a)
+  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) = new UndefMap3[A, B, C](a)
+  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])) = new UndefMap4[A, B, C, D](a)
 }
 
 trait JsUndefOrSyntax extends JsUndefLowerOrderImplicits {
@@ -195,4 +196,5 @@ trait JsUndefOrSyntax extends JsUndefLowerOrderImplicits {
 //  implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
   @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]) = new JsUndefOrNullOps[A](a)
   @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]) = new JsUndefOrBooleanOps(a)
+  @inline implicit def jsUndefOrJsObject[A <: js.Object](a: js.UndefOr[A]) = new JsUndefOrJsObject[A](a)
 }

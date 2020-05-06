@@ -81,6 +81,25 @@ object CommandBar {
     val items: js.Array[_ >: ItemProps]
   }
 
+  trait ItemPropsInit extends IContextualMenuItemInit {
+    var iconOnly: js.UndefOr[Boolean] = js.undefined
+    //tooltipHostPropsp
+    // buttonStyles
+    var cacheKey: js.UndefOr[Boolean]           = js.undefined
+    var renderedInOverflow: js.UndefOr[Boolean] = js.undefined
+    //commandBarButtonAs is a IComponentAs<ICommandBarItemProps> is this something new?
+  }
+  
+  object ItemPropsInit { 
+    implicit class RichItemPropsInit(private val i: ItemPropsInit) extends AnyVal {
+        def required(key: String) = js.Object.assign(
+        js.Dynamic.literal("key" -> key),
+        i
+        ).asInstanceOf[ItemProps]
+        def hasRequired = i.asInstanceOf[ItemProps]
+    }
+  }
+
   trait ItemProps extends IContextualMenuItem {
     var iconOnly: js.UndefOr[Boolean] = js.undefined
     //tooltipHostPropsp

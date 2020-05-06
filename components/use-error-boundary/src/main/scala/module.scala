@@ -39,8 +39,11 @@ trait ReactErrorInfo extends js.Object {
 trait ReactJSComponentErrorBoundary extends ReactJSComponent
 
 trait Props extends js.Object {
+  /** Rendered if there is no error. Could also use `render. `*/
   var children: js.UndefOr[ReactNode] = js.undefined
+  /** Render when no error. */
   var render: js.UndefOr[js.Function0[ReactNode]] = js.undefined
+  /** Fallback, render when there is an error. */
   var renderError: js.UndefOr[js.Function1[scala.Any, ReactNode]] = js.undefined
 }
 

@@ -23,15 +23,11 @@ package fabric
 package components
 
 import scala.scalajs.js
-
+import js.|
 import js.annotation._
-
-import org.scalajs.dom.html
-
+import org.scalajs.dom
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object TextField {
@@ -40,11 +36,10 @@ object TextField {
   @JSImport("office-ui-fabric-react/lib/TextField", "TextField")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props = null) = createElement0(JS, props)
 
   @js.native
-  trait ITextField extends Focusable with ClassAttributes[html.Input] {
+  trait ITextField extends Focusable with ClassAttributes[dom.html.Input] {
     var value: js.UndefOr[String]                       = js.native
     var select: js.Function0[Unit]                      = js.native
     var blur: js.Function0[Unit]                        = js.native
@@ -61,9 +56,11 @@ object TextField {
 
   //export interface ITextFieldProps extends React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   // withDisabled
+  
+  type BI = dom.html.Input|dom.html.TextArea
 
   // should also included attributes from dom.html.TextArea
-  trait Props extends WithIconProps with Theme with ComponentRef[ITextField] with AllHTMLAttributes[html.Input] {
+  trait Props extends WithIconProps with Theme with ComponentRef[ITextField] with AllHTMLAttributes[dom.html.Input] {
     var autoAdjustHeight: js.UndefOr[Boolean] = js.undefined
     var ariaLabel: js.UndefOr[String]         = js.undefined
     var addonString: js.UndefOr[String]       = js.undefined
@@ -85,14 +82,13 @@ object TextField {
     // should this be js.UndefOr[String] ?
     //var readOnly: js.UndefOr[Boolean] = js.undefined
     //var disabled: js.UndefOr[Boolean] = js.undefined
+    // scroll events
+    
+    var onChange: js.UndefOr[js.Function2[js.Any,js.UndefOr[String], Unit]] = js.undefined
     @JSName("onChange")
-    var onChangeInput: js.UndefOr[js.Function2[SyntheticFormEvent[html.Input], String, Unit]] = js.undefined
+    var onChangeInput: js.UndefOr[js.Function2[dom.html.Input, js.UndefOr[String], Unit]] = js.undefined
     @JSName("onChange")
-    var onChangeInput1: js.UndefOr[js.Function1[SyntheticFormEvent[html.Input], Unit]] = js.undefined
-    @JSName("onChange")
-    var onChangeTextArea: js.UndefOr[js.Function2[SyntheticFormEvent[html.TextArea], String, Unit]] = js.undefined
-    @JSName("onChange")
-    var onChangeTextArea1: js.UndefOr[js.Function1[SyntheticFormEvent[html.TextArea], Unit]] = js.undefined
+    var onChangeTextArea: js.UndefOr[js.Function2[dom.html.TextArea, js.UndefOr[String], Unit]] = js.undefined
     // onChanged is deprecated
     var onBeforeChange: js.UndefOr[js.Function1[String, Unit]] = js.undefined
 
@@ -116,5 +112,15 @@ object TextField {
       js.undefined
     //var autoComplete: js.UndefOr[String] = js.undefined
   }
+  
+  type OC2 = js.Function2[js.Any, js.UndefOr[String], Unit] 
 
+  def OnChangeInput(f: (SyntheticFormEvent[dom.html.Input], js.UndefOr[String]) => Unit) = 
+    js.Any.fromFunction2(f).asInstanceOf[OC2]
+    
+  def OnChangeTextArea(f: (SyntheticFormEvent[dom.html.TextArea], js.UndefOr[String]) => Unit) = 
+    js.Any.fromFunction2(f).asInstanceOf[OC2]
+    
+  def OnChange(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC2]
+  
 }

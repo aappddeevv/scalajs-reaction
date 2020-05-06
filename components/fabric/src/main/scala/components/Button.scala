@@ -107,6 +107,13 @@ object Button {
     var persistMenu: js.UndefOr[Boolean] = js.undefined
     var description: js.UndefOr[IStyle] = js.undefined
   }
+  
+  type OC = MouseEventHandler[dom.html.Button]
+  
+  def OnClick(f: MouseEventHandler[dom.html.Button] => Unit) = 
+    js.Any.fromFunction1(f).asInstanceOf[OC]
+    
+  def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC]
 
   object Default {
     @js.native

@@ -27,7 +27,7 @@ import js.Dynamic.{ literal => jsobj }
 import js.annotation._
 
 import react._
-import react.syntax.jsobject._
+import react.implicits._
 
 /** Return a useStyles() hook. The return value is a js function to call with
  * prop arguments.
@@ -67,12 +67,12 @@ object ThemeProvider {
     val children: ReactNode
   }
 
-  def apply(props: Props = null)(child: ReactNode) =
-    sfc(props.combineDynamic(jsobj("children" -> child)))
+  def apply(props: Props)(child: ReactNode) =
+    render.elementWith(props.combineDynamic(jsobj("children" -> child)))
 
   // will children be pickeup in props correctly anyway? not sure...
-  val sfc = SFC1[Props] { props =>
-    createElementN(theming.ThemeProvider, props)(props.children)
+  val render: Props => ReactNode = props => {
+    createElement0(theming.ThemeProvider, props)
   }
 }
 

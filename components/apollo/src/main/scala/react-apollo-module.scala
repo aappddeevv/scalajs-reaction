@@ -80,22 +80,14 @@ object QueryResult {
   }
 }
 
-/** Because there are some duplicative types in the signatures
- * which become burdensome, this helper class reduces type noise.
- * Instantiate the object then use values and methods in it without
- * need to always specify the types.
- */
-case class UseQuery[T <: js.Any, TVars <: js.Object]() {
-  def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
-    module.useQuery[T, TVars](query, options)
-
-  /** Make QueryHookOptions */
+trait OptionsMaker[T <: js.Any, TVars <: js.Object] {
+ /** Make QueryHookOptions */
   def makeOptions(
     variables: js.UndefOr[TVars] = js.undefined,
     unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
     query: js.UndefOr[DocumentNode] = js.undefined,
     displayName: js.UndefOr[String] = js.undefined,
-    onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined,
+    onCompleted: js.UndefOr[js.Function1[js.UndefOr[T], Unit]] = js.undefined,
     onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined,
     ssr: js.UndefOr[Boolean] = js.undefined,
     fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
@@ -106,6 +98,7 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
     context: js.UndefOr[js.Object] = js.undefined,
     partialRefetch: js.UndefOr[Boolean] = js.undefined,
     returnPartialData: js.UndefOr[Boolean] = js.undefined,
+    skip: js.UndefOr[Boolean] = js.undefined
   ) = {
     val __obj = js.Dynamic
       .literal(
@@ -121,7 +114,8 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
         "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
         "context" -> context,
         "partialRefetch" -> partialRefetch,
-        "returnPartialData" -> returnPartialData
+        "returnPartialData" -> returnPartialData,
+        "skip" -> skip,
       )
     if (variables.isDefined) __obj.updateDynamic("variables")(variables)
     if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
@@ -156,6 +150,23 @@ case class UseQuery[T <: js.Any, TVars <: js.Object]() {
     __obj.asInstanceOf[apollo_client.QueryOptions[TVars]]
   }
 }
+
+/** Because there are some duplicative types in the signatures
+ * which become burdensome, this helper class reduces type noise.
+ * Instantiate the object then use values and methods in it without
+ * need to always specify the types.
+ */
+case class UseQuery[T <: js.Any, TVars <: js.Object]() extends OptionsMaker[T, TVars] {
+  def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
+    module.useQuery[T, TVars](query, options)
+}
+
+/*
+case class UseLazyQuery[T <: js.Any, TVars <: js.Object]() extends OptionsMaker[T, Tvars] {
+  def useLazyQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
+    module.useLazyQuery[T, TVars](query, options)
+}
+*/
 
 @js.native
 @JSImport("react-apollo", JSImport.Namespace)
@@ -223,7 +234,7 @@ trait Skip extends js.Object {
 // @apollo/react-common
 trait QueryFunctionOptions[T <: js.Any, TVars <: js.Object] extends BaseQueryOptions[TVars] {
   var displayName: js.UndefOr[String] = js.undefined
-  var onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+  var onCompleted: js.UndefOr[js.Function1[js.UndefOr[T], Unit]] = js.undefined
   var onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined
 }
 
@@ -286,7 +297,7 @@ trait BaseMutationOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
   var client: js.UndefOr[ApolloClient] = js.undefined
   var notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined
   var context: js.UndefOr[js.Object] = js.undefined
-  var onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+  var onCompleted: js.UndefOr[js.Function1[js.UndefOr[T], Unit]] = js.undefined
   var onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
   var ignoreResults: js.UndefOr[Boolean] = js.undefined
@@ -340,7 +351,7 @@ case class UseMutation[T <: js.Any, TVars <: js.Object]() {
     ignoreResults: js.UndefOr[Boolean] = js.undefined,
     mutation: js.UndefOr[DocumentNode] = js.undefined,
     notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined,
-    onCompleted: js.UndefOr[js.Function1[T, Unit]] = js.undefined,
+    onCompleted: js.UndefOr[js.Function1[js.UndefOr[T], Unit]] = js.undefined,
     onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined,
     update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
     variables: js.UndefOr[TVars] = js.undefined,

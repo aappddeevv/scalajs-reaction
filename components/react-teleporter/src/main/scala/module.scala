@@ -27,25 +27,31 @@ import scala.scalajs.js
 import org.scalajs.dom
 import js.annotation._
 import js.|
+@js.native
+@JSImport("react-teleporter", "createTeleporter")
+object createTeleporter extends js.Any {
+  def apply[TC <: js.Object](options: js.UndefOr[TeleporterOptions] = js.undefined): Teleporter[TC] = js.native
+}
 
 @js.native
 @JSImport("react-teleporter", JSImport.Namespace)
 object module extends js.Object {
+
   /**
-  * @tparam TC Props that you want the target to pass along to the source but defined in target.
-  */
-  def createTeleporter[TC <: js.Object](
-      options: js.UndefOr[TeleporterOptions]=js.undefined): Teleporter[TC] = js.native
+   * @tparam TC Props that you want the target to pass along to the source but defined in target.
+   */
+  def createTeleporter[TC <: js.Object](options: js.UndefOr[TeleporterOptions] = js.undefined): Teleporter[TC] =
+    js.native
 }
 
-/** 
- * @tparam TC Props that will be passed along to the source but defined in target.
+/**
+ * @tparam TC Props passed to the source but defined in target.
  */
 @js.native
-trait Teleporter[TC <: js.Object]  extends js.Object {
-    def Source: TeleporterSource[TC] = js.native
-    def Target: TeleporterTarget[TC] = js.native
-    def useTargetRef(): Ref[dom.html.Element] = js.native
+trait Teleporter[TC <: js.Object] extends js.Object {
+  def Source: TeleporterSource[TC] = js.native
+  def Target: TeleporterTarget[TC] = js.native
+  def useTargetRef(): Ref[dom.html.Element] = js.native
 }
 
 trait TargetProps extends js.Object {
@@ -56,39 +62,31 @@ trait SourceProps extends js.Object {
   var multiple: js.UndefOr[Boolean] = js.undefined
 }
 
-@js.native trait TeleporterSource[TC <: js.Object] extends ReactJSComponent
+@js.native
+trait TeleporterSource[TC <: js.Object] extends ReactJSComponent
 
 object TeleporterSource {
 
-    implicit class RichTeleporterSource[TC <: js.Object](private val s: TeleporterSource[TC]) extends AnyVal {
-      def apply(children: TC => ReactNode) = {
-        val fchild: js.Function1[TC, ReactNode] = props => {
-          children(props)
-        }
-        createElement(s, null, createElement(fchild, null))
-      }
-      def multiple(children: TC => ReactNode) = {
-        val fchild: js.Function1[TC, ReactNode] = props => {
-          children(props)
-        }
-        createElement(s, new SourceProps { multiple = true }, createElement(fchild, null))
-      }
-    }
+  implicit class RichTeleporterSource[TC <: js.Object](private val s: TeleporterSource[TC]) extends AnyVal {
+    def apply(children: ReactNode*) = createElement(s, null, children:_*)
+    def multiple(children: ReactNode*) = createElement(s, new SourceProps { multiple = true }, children:_*)
+  }
 }
 
-@js.native trait TeleporterTarget[TC <: js.Object] extends ReactJSComponent 
+@js.native
+trait TeleporterTarget[TC <: js.Object] extends ReactJSComponent
 
 object TeleporterTarget {
   implicit class RichTeleporterTarget[TC <: js.Object](private val t: TeleporterTarget[TC]) extends AnyVal {
-      def apply(childProps: js.UndefOr[TC] = js.undefined, tprops: js.UndefOr[TargetProps] = js.undefined) =
-          createElement(
-            t, 
-            js.Object.assign(js.Object(), childProps.asInstanceOf[js.Object], tprops.asInstanceOf[js.Object]), 
-          )
-    }
+    // should this be TC with TargetProps ???
+    def apply(childProps: TC, tprops: js.UndefOr[TargetProps] = js.undefined) =
+      createElement(
+        t,
+        js.Object.assign(js.Object(), childProps.asInstanceOf[js.Object], tprops.asInstanceOf[js.Object]),
+      )
+  }
 }
 
 trait TeleporterOptions extends js.Object {
   var multiSources: js.UndefOr[Boolean] = js.undefined
 }
-
