@@ -245,23 +245,47 @@ trait IContextualMenuProps extends KeyAndRef {
   val items: js.Array[IContextualMenuItem]
 }
 
+@js.native
+abstract trait ContextualMenuItemType extends js.Any
+object ContextualMenuItemType {
+    val Normal = 0.asInstanceOf[ContextualMenuItemType]
+    val Divider = 1.asInstanceOf[ContextualMenuItemType]
+    val Header = 2.asInstanceOf[ContextualMenuItemType]
+    val Section = 3.asInstanceOf[ContextualMenuItemType]
+}
+
 trait IContextualMenuItemBase extends WithIconProps {
   import IContextualMenuItem._
-  var name: js.UndefOr[String] = js.undefined
-
-  /** 1 => divider, 0 => normal */
-  var itemType: js.UndefOr[Int] = js.undefined
+  
+  // key
+  var text: js.UndefOr[String] = js.undefined
+  var secondaryText: js.UndefOr[String] = js.undefined
+  var itemType: js.UndefOr[ContextualMenuItemType] = js.undefined
+  // iconProps
+  var onRenderIcon: js.UndefOr[IRenderFunction[_ <: IContextualMenuItemBase]] = js.undefined
+  var submenuIconProps: js.UndefOr[Icon.Props|js.Dynamic] = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
-  //var onClick: js.UndefOr[OC2 | OC0]                 = js.undefined
-  var onClick: js.UndefOr[OC2 | OC0] = js.undefined
-  @JSName("onClick")
-  var onEventItemClick: js.UndefOr[OC2] = js.undefined
-  @JSName("onClick")
-  var onClickUnit: js.UndefOr[OC0] = js.undefined
+  var primaryDisabled: js.UndefOr[Boolean] = js.undefined
+  var canCheck: js.UndefOr[Boolean] = js.undefined
+  var checked: js.UndefOr[Boolean] = js.undefined
+  var split: js.UndefOr[Boolean] = js.undefined
+  var data: js.UndefOr[scala.Any] = js.undefined
+  var onClick: js.UndefOr[OC] = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
   var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
+  var itemProps: js.UndefOr[IContextualMenuProps] = js.undefined
+  //getSplitButtonVerticalDividerClassNames
+  var sectionProps: js.UndefOr[js.Object/*IContextualMenuSection*/] = js.undefined
   var className: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
   var title: js.UndefOr[String] = js.undefined
-  var onRender: js.UndefOr[RF2 | RF0] = js.undefined
+  var onRender: js.UndefOr[RF] = js.undefined
+  var onMouseDown: js.UndefOr[OMD] = js.undefined
+  var role: js.UndefOr[String] = js.undefined
+  var customOnRenderLength: js.UndefOr[Int] = js.undefined
+  var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
 }
 
 trait IContextualMenuItemInit extends IContextualMenuItemBase {
@@ -280,24 +304,18 @@ trait IContextualMenuItem extends IContextualMenuItemBase {
 }
 
 object IContextualMenuItem {
+  /** Callback with the react synthetic event. OC = onClick. Should be Mouse or Keyboard event! */
+  type OC = js.Function2[ReactMouseEvent[dom.html.Element], IContextualMenuItem, js.UndefOr[Boolean]]
 
-  /* Smart callback constructor. */
-  def OnClick(f: (ReactMouseEvent[dom.html.Element], IContextualMenuItem) => Unit): OC2 =
-    js.Any.fromFunction2(f).asInstanceOf[OC2]
+  def OnClick(f: (ReactMouseEvent[dom.html.Element], IContextualMenuItem) => js.UndefOr[Boolean]) =
+    js.Any.fromFunction2(f).asInstanceOf[OC]
 
-  /** Callback with the react synthetic event. OC = onClick. */
-  type OC2 = js.Function2[ReactMouseEvent[dom.html.Element], IContextualMenuItem, Unit]
-
-  /** Parameterless callback. OC = onClick. */
-  type OC0 = js.Function0[Unit]
-
-  /** Smart callback constructor. */
-  def OnClickUnit(f: () => Unit): OC0 = js.Any.fromFunction0(f).asInstanceOf[OC0]
+  def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC]
+    
+  type RF = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
   
-  // cast your func to this to make it easier
-  type RF2 = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
-  // cast your func to this to make it easier
-  type RF0 = js.Function0[ReactNode]
+  type OMD = js.Function2[IContextualMenuItem, ReactMouseEvent[dom.html.Element], Unit]
+  
 }
 
 // from @uifabric/utilities

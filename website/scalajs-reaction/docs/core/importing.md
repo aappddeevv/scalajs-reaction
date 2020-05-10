@@ -17,12 +17,12 @@ object SomeLibNS {
 }
 
 object SomeLib {
-  def YourComponent1(props: Props)(children: ReactNode*) = 
+  def YourComponent1(props: Props)(children: ReactNode*) =
      createElement(SomeLibNS.YourComponent1, props)(children:_*)
 }
 ```
 
-You can think of this as a template, here's a more ergonomic way 
+You can think of this as a template, here's a more ergonomic way
 of doing the above:
 
 ```scala
@@ -34,8 +34,8 @@ object YourComponent1 {
   trait Props extends js.Object {
     var param1: js.UndefOr[String] = js.undefined
   }
-  
-  def apply(props: Props)(children: ReactNode*) = 
+
+  def apply(props: Props)(children: ReactNode*) =
     createElement(JS, props)(children:_*)
 }
 ```
@@ -70,25 +70,26 @@ function definition in its `React.createElement` API. Hence, you can import a
 SFC and just "label" it a `ReactJSComponent`. Here's an example:
 
 ```typescript
-import * as React from "react"
-import { Address } from "./datamodel"
-import cx = require("classnames")
+import * as React from "react";
+import { Address } from "./datamodel";
+import cx = require("classnames");
 
 export interface Props {
-    className?: string | null
-    address?: Address | null
+  className?: string | null;
+  address?: Address | null;
 }
 
 /** Summarize address. */
 export const AddressSummary: React.SFC<Address> = (props?: Props) => {
-    props = props || {}
-    const name = (props && props.address && props.address.name) || "<unnamed address>"
-    return (
-        <div className={cx("addressSummary", props.className)}>
-            Typescript sourced: Address Summary: {name}
-        </div>
-    )
-}
+  props = props || {};
+  const name =
+    (props && props.address && props.address.name) || "<unnamed address>";
+  return (
+    <div className={cx("addressSummary", props.className)}>
+      Typescript sourced: Address Summary: {name}
+    </div>
+  );
+};
 ```
 
 `Address` is defined in typescript language and represents an interface you need
@@ -97,11 +98,11 @@ to type in:
 ```typescript
 // We have to define this on the scala.js and typescript side.
 export interface Address {
-    customeraddressid: string | null
-    name?: string | null
-    city?: string
-    stateorprovince?: string | null
-    postalcode?: string | null
+  customeraddressid: string | null;
+  name?: string | null;
+  city?: string;
+  stateorprovince?: string | null;
+  postalcode?: string | null;
 }
 ```
 
@@ -135,7 +136,7 @@ object AddressSummary {
    var address: js.UndefOr[Address | Null]
   }
 
-  def apply(props: Props) = 
+  def apply(props: Props) =
     createElement0(AddressSummaryNS.AddressSummary, props)
 }
 ```
@@ -149,9 +150,9 @@ to worry about so the children parameter list is dropped.
 If you have typescript definitions you may want to try to convert them to a
 native JS trait. There are converters you can try:
 
-* [definitely typed](https://github.com/DefinitelyTyped/DefinitelyTyped)
-* [scala-js-ts-importer](https://github.com/sjrd/scala-js-ts-importer)
+- [scalably-typed](https://scalablytyped.org/docs/readme.html)
+- [definitely typed](https://github.com/DefinitelyTyped/DefinitelyTyped)
+- [scala-js-ts-importer](https://github.com/sjrd/scala-js-ts-importer)
 
 You may find that for complicated libraries the conversion is not accurate and
 you still need hand editing or that the conversion fails.
-

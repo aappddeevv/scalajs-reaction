@@ -35,14 +35,14 @@ trait PureQueryOptions extends js.Object {
 }
 
 @js.native
-trait MutationQueryReducerOptions[T <: js.Any] extends js.Object {
+trait MutationQueryReducerOptions[T] extends js.Object {
   val mutationResult: FetchResult[T]
   var queryName: js.UndefOr[String] = js.undefined
   val queryVariables: js.Object // Record<string,any>
 }
 
 // can also have other properties
-trait MutationBaseOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
+trait MutationBaseOptions[T, TVars <: js.Object] extends js.Object {
   var optimisticResponse: js.UndefOr[T | js.Function1[TVars, T]] = js.undefined
   // dict can take other string=>any args as well
   var updateQueries: js.UndefOr[MutationQueryReducersMap[T, js.Object]] = js.undefined
@@ -54,14 +54,14 @@ trait MutationBaseOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
   var variables: js.UndefOr[TVars|js.Dynamic]             = js.undefined
 }
 
-trait MutationOptions[T <: js.Any, TVars <: js.Object] extends MutationBaseOptions[T, TVars] {
+trait MutationOptions[T, TVars <: js.Object] extends MutationBaseOptions[T, TVars] {
   var mutation: js.UndefOr[DocumentNode]   = js.undefined
   var context: js.UndefOr[js.Object]       = js.undefined
   var fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
 }
 
 object MutationOptions {
-  def apply[T <: js.Any, TVars<:js.Object](
+  def apply[T, TVars<:js.Object](
     mutation: DocumentNode,
     context: js.UndefOr[js.Object] = js.undefined,
     fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined,
@@ -121,9 +121,9 @@ class ApolloClient(options: js.UndefOr[ApolloClientOptions] = js.undefined) exte
   import apollo_cache._
   def stop(): Unit = js.native
 
-  def query[T <: js.Any, TVars <: js.Object](options: QueryOptions[TVars]): js.Promise[ApolloQueryResult[T]] = js.native
+  def query[T, TVars <: js.Object](options: QueryOptions[TVars]): js.Promise[ApolloQueryResult[T]] = js.native
   
-  def mutate[T <: js.Any, TVars <: js.Object](options: MutationOptions[T, TVars]): js.Promise[FetchResult[T]] =
+  def mutate[T, TVars <: js.Object](options: MutationOptions[T, TVars]): js.Promise[FetchResult[T]] =
     js.native
 
   def readQuery[QueryType <: js.Object, TVars <: js.Object](
@@ -136,9 +136,9 @@ class ApolloClient(options: js.UndefOr[ApolloClientOptions] = js.undefined) exte
     optimistic: js.UndefOr[Boolean] = js.undefined
   ): FragmentType | Null                                                                            = js.native
   
-  def writeQuery[T <: js.Any, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit       = js.native
-  def writeFragment[T <: js.Any, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit = js.native
-  def writeData[T <: js.Any](options: WriteDataOptions[T]): Unit                                    = js.native
+  def writeQuery[T, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit       = js.native
+  def writeFragment[T, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit = js.native
+  def writeData[T](options: WriteDataOptions[T]): Unit                                    = js.native
 }
 
 @js.native
@@ -228,7 +228,7 @@ trait WatchQueryOptions[TVars <: js.Object] extends ModifiableWatchQueryOptions[
   //var fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
 }
 
-trait FetchMoreOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
+trait FetchMoreOptions[T, TVars <: js.Object] extends js.Object {
   trait Options extends js.Object {
     var fetchMoreResult: js.UndefOr[T] = js.undefined
     var variables: js.UndefOr[TVars]   = js.undefined
@@ -244,7 +244,7 @@ trait FetchMoreQueryOptions[TVars <: js.Object] extends js.Object {
 }
 
 @js.native
-trait ApolloQueryResult[T <: js.Any] extends js.Object {
+trait ApolloQueryResult[T] extends js.Object {
   // is this null or undefined when it is not present? ts defs just say data: T
   val data: T | Null                             = js.native
   val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
@@ -254,7 +254,7 @@ trait ApolloQueryResult[T <: js.Any] extends js.Object {
 }
 
 @js.native
-trait ApolloCurrentResult[T <: js.Any] extends js.Object {
+trait ApolloCurrentResult[T] extends js.Object {
   // T | {}
   val data: T                                    = js.native
   val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
@@ -268,7 +268,7 @@ trait UpdateQueryOptions[TVars <: js.Object] {
   var variables: js.UndefOr[TVars] = js.undefined
 }
 
-trait SubscribeToMoreOptions[A <: js.Any, AVars <: js.Object, T <: js.Any] extends js.Object {
+trait SubscribeToMoreOptions[A, AVars <: js.Object, T] extends js.Object {
   val document: DocumentNode
   var variables: js.UndefOr[AVars] = js.undefined
   // apollo-client/core/watchQueryOptions
@@ -279,7 +279,7 @@ trait SubscribeToMoreOptions[A <: js.Any, AVars <: js.Object, T <: js.Any] exten
 
 /** Class but we keep as a trait since we do not create these directly. */
 @js.native
-trait ObservableQuery[T <: js.Any, TVars <: js.Object] extends apollo_observable.Observable[T] {
+trait ObservableQuery[T, TVars <: js.Object] extends apollo_observable.Observable[T] {
   val queryId: String                   = js.native
   val options: WatchQueryOptions[TVars] = js.native
   val queryName: js.UndefOr[String]     = js.native
@@ -297,7 +297,7 @@ trait ObservableQuery[T <: js.Any, TVars <: js.Object] extends apollo_observable
     fetchMoreOptions: FetchMoreQueryOptions[TVars] with FetchMoreOptions[T, TVars]
   ): js.Promise[ApolloQueryResult[T]] = js.native
   // subscribeToMore
-  def subscribeToMore[A <: js.Any, AVars <: js.Object](
+  def subscribeToMore[A, AVars <: js.Object](
     options: SubscribeToMoreOptions[T, AVars, A]
   ): js.Function0[Unit]                                                                   = js.native
   def setOptions(opts: WatchQueryOptions[TVars]): Unit | js.Promise[ApolloQueryResult[T]] = js.native

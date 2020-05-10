@@ -29,7 +29,7 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-         Your real focus should be on creating great web applications not on the framework or making the interop work.
+        Your real focus should be on creating great web applications not on the framework or making the interop work.
       </>
     ),
   },
@@ -46,7 +46,7 @@ const features = [
 
 function Home() {
   const context = useDocusaurusContext();
-  const {siteConfig = {}} = context;
+  const { siteConfig = {} } = context;
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
@@ -61,18 +61,18 @@ function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={withBaseUrl('docs/intro')}>
+              to={withBaseUrl('docs/intro/index')}>
               Get Started
             </Link>
           </div>
         </div>
       </header>
       <main>
-          {features && features.length && (
+        {features && features.length && (
           <section className={styles.features}>
             <div className="container">
               <div className="row">
-                {features.map(({imageUrl, title, description}, idx) => (
+                {features.map(({ imageUrl, title, description }, idx) => (
                   <div
                     key={idx}
                     className={classnames('col col--4', styles.feature)}>
@@ -91,21 +91,21 @@ function Home() {
                 ))}
               </div>
             </div>
-                </section>
-          )}
-      
-          <section className={styles.features}>
+          </section>
+        )}
+
+        <section className={styles.features}>
           <div className="container">
-          <p>It is easy to create a component. The code below creates a functional component that takes zero args.</p>
-          <p>
-          <CodeBlock className="scala">{`
-          val HelloWorld: ReactFC0 = () => div("hello world")
-`}
-      </CodeBlock>
-          </p>
-          <p>A functional component that takes props (one argument) with a mandatory [name] property is</p>
-          <p><CodeBlock className="scala">{`
-object MyComponent {
+            <p>It is easy to create a component. The code below creates a functional component that takes zero args.</p>
+            <p>
+              <CodeBlock className="scala">{
+`val HelloWorld: ReactFC0 = () => div("hello world")`
+}
+              </CodeBlock>
+            </p>
+            <p>A functional component that takes props (one argument) with a mandatory [name] property is</p>
+            <p><CodeBlock className="scala">{
+`object MyComponent {
   trait Props extends js.Object {
      val name: String
   }
@@ -116,31 +116,31 @@ object MyComponent {
   def apply(props: Props) = render.elementWith(props)
 }
 `}
-      </CodeBlock>
-</p>
-<p>By defining an apply method (or not) you decide how component users 
+            </CodeBlock>
+            </p>
+            <p>By defining an apply method (or not) you decide how component users
 create elements.</p>
-<p>To use MyComponent, we just need to create it. Creating an element is as natural and easy
+            <p>To use MyComponent, we just need to create it. Creating an element is as natural and easy
 as calling it's apply function.</p>
-<p>
-<CodeBlock className="scala">{`
-// scala code
+            <p>
+              <CodeBlock className="scala">{
+`// scala code
 div(
   MyComponent(new Props {
     val name = "world"
   })
-)
-`}
-</CodeBlock>
-</p>
-<p>You can create custom Props creation methods if you choose. Everything above
-is just pure scala.js--not tricks or macros. Type inference is very good
+)`
+}
+              </CodeBlock>
+            </p>
+            <p>You can create custom Props creation methods if you choose. Everything above
+            is just pure scala.js--not tricks or macros. Type inference is very good
 and it is a natural scala programming style.</p>
 
           </div>
-          </section>
+        </section>
 
-     </main>
+      </main>
     </Layout>
   );
 }

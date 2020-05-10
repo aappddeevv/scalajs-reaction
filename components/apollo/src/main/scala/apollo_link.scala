@@ -30,12 +30,12 @@ package object apollo_link {
   import apollo_link._
 
   // apollo-link-error, returns Unit or Observable[FetchResult]
-  type ErrorHandler[T <: js.Any] =
+  type ErrorHandler[T] =
     js.Function1[ErrorResponse, Observable[FetchResult[T]] | Unit]
   // apollo-link
-  type NextLink[TVars <: js.Object, T <: js.Any] =
+  type NextLink[TVars <: js.Object, T] =
     js.Function1[Operation[TVars], Observable[FetchResult[T]]]
   // apollo-link
-  type RequestHandler[TVars <: js.Object, T <: js.Any] =
+  type RequestHandler[TVars <: js.Object, T] =
     js.Function2[Operation[TVars], NextLink[TVars, T], Observable[FetchResult[T] | Null]]
 }

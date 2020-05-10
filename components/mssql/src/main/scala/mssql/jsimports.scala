@@ -63,7 +63,7 @@ trait Config extends js.Object {
 class ConnectionPool(config: Config) extends MSSQLEventEmitter {
   def request(): Request = js.native
   def cancel(): js.Promise[Unit] = js.native
-  def transaciton(): Transaction = js.native
+  def transaction(): Transaction = js.native
 }
 
 @js.native
@@ -110,11 +110,13 @@ object ISOLATION_LEVEL extends js.Object {
 @js.native
 @JSImport("mssql", "Transaction")
 class Transaction(pool: js.UndefOr[ConnectionPool] = js.undefined) extends MSSQLEventEmitter {
-  def begin(isolationLevel: Int): js.Promise[Unit] = js.native
-  def commitCB(err: js.UndefOr[js.Function1[scala.Any, Unit]] = js.undefined): Unit = js.native
+  // ts indicates this is js.Promise[Unit] but that's wrong...and causes issues around Unit in scala
+  def begin(isolationLevel: js.UndefOr[Int]=js.undefined): js.Promise[Transaction] = js.native
+  //def commitCB(err: js.UndefOr[js.Function1[scala.Any, Unit]] = js.undefined): Unit = js.native
   def commit(): js.Promise[Unit] = js.native
   def rollback(): js.Promise[Unit] = js.native
-  def rollbackCB(err: js.UndefOr[js.Function1[scala.Any, Unit]] = js.undefined): Unit = js.native
+  //def rollbackCB(err: js.UndefOr[js.Function1[scala.Any, Unit]] = js.undefined): Unit = js.native
+  def request(): Request = js.native
 }
 
 /** No type constraints on the recordsets, use with care. */
@@ -144,26 +146,25 @@ trait ColumnMetadata extends js.Object {
 
 @js.native
 @JSImport("mssql", "MSSQLError")
-class MSSQLError(message: String | js.Error, code: js.UndefOr[String] = js.undefined)
+class MSSQLError(messageOrError: String | js.Error, val code: String)
     extends js.Error() {
-  /** enumerable: true, value: string */
   val originalError: js.UndefOr[js.Object] = js.native
 }
 
 @js.native
 @JSImport("mssql", "ConnectionError")
-class ConnectionError(message: String | js.Error, code: js.UndefOr[String] = js.undefined)
-    extends MSSQLError(message, code)
+class ConnectionError(messageOrError: String | js.Error, code: String)
+    extends MSSQLError(messageOrError, code)
 
 @js.native
 @JSImport("mssql", "TransactionError")
-class TransactionError(message: String | js.Error, code: js.UndefOr[String] = js.undefined)
-    extends MSSQLError(message, code)
+class TransactionError(messageOrError: String | js.Error, code: String)
+    extends MSSQLError(messageOrError, code)
 
 @js.native
 @JSImport("mssql", "RequestError")
-class RequestError(message: String | js.Error, code: js.UndefOr[String] = js.undefined)
-    extends MSSQLError(message, code) {
+class RequestError(messageOrError: String | js.Error, code: String)
+    extends MSSQLError(messageOrError, code) {
   val number: js.UndefOr[Int] = js.native
   val state: js.UndefOr[Int] = js.native
   val `class`: js.UndefOr[js.Any] = js.native
@@ -174,8 +175,8 @@ class RequestError(message: String | js.Error, code: js.UndefOr[String] = js.und
 
 @js.native
 @JSImport("mssql", "PreparedStatementError")
-class PreparedStatementError(message: String | js.Error, code: js.UndefOr[String] = js.undefined)
-    extends MSSQLError(message, code)
+class PreparedStatementError(messageOrError: String | js.Error, code: String)
+    extends MSSQLError(messageOrError, code)
 
 @js.native
 trait Table extends js.Object {}

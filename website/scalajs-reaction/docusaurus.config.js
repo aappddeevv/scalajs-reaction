@@ -17,6 +17,10 @@ module.exports = {
   projectName: 'scalajs-reaction', // Usually your repo name.
   //customDocsPath: "scalajs-reaction-docs/target/mdoc",
   themeConfig: {
+    prism: {
+      additionalLanguages: ["typescript", "java", "scala"],
+    },
+
     navbar: {
       title: 'scalajs-reaction',
       logo: {
@@ -24,15 +28,15 @@ module.exports = {
         src: 'img/logo.svg',
       },
       links: [
-        {to: 'docs/intro', label: 'Docs', position: 'left'},
-        {to: 'blog', label: 'Blog', position: 'left'},
+        { to: 'docs/intro/index', label: 'Docs', position: 'left' },
+        { to: 'blog', label: 'Blog', position: 'left' },
         {
           href: 'https://github.com/aappddeevv/scalajs-reaction',
           label: 'GitHub',
           position: 'right',
         },
-          { href: 'api/index.html', label: 'API', position: 'left'},
-          { href: 'demo', label: 'Demo', position: 'left' },
+        { href: 'api/index.html', label: 'API', position: 'left' },
+        { href: 'demo', label: 'Demo', position: 'left' },
       ],
     },
     Footer: {
@@ -47,23 +51,27 @@ module.exports = {
             },
           ],
         },
-          /*
+        /*
+      {
+        title: 'Community',
+        items: [
+          {
+            label: 'Discord',
+            href: 'https://discordapp.com/invite/docusaurus',
+          },
+        ],
+      },
+        */
         {
           title: 'Community',
           items: [
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-          ],
-        },
-          */
-        {
-          title: 'Social',
-          items: [
-            {
               label: 'Blog',
               to: 'blog',
+            },
+            {
+              label: 'Twitter',
+              href: 'https://twitter.com/dmillercorp',
             },
           ],
         },
@@ -72,7 +80,7 @@ module.exports = {
         alt: 'scalajs-reaction Logo',
         src: 'https://docusaurus.io/img/oss_logo.png',
       },
-      copyright: `Copyright © ${new Date().getFullYear()} TTG, LLC. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} aappddeevv. Built with Docusaurus.`,
     },
   },
   presets: [
@@ -81,6 +89,13 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          editUrl:
+            'https://github.com/aappddeevv/scalar2020online/edit/master/presentation/',
+        },
+        blog: {
+          showReadingTime: true,
+          editUrl:
+            'https://github.com/aappddeevv/scalar2020online/edit/master/presentation/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -88,8 +103,8 @@ module.exports = {
       },
     ],
   ],
-    plugins: [
-        path.resolve(__dirname, "build-demo-plugin"),
-        path.resolve(__dirname, "copy-api-plugin")
-    ]
+  // plugins: [
+  //     path.resolve(__dirname, "build-demo-plugin"),
+  //     path.resolve(__dirname, "copy-api-plugin")
+  // ]
 };

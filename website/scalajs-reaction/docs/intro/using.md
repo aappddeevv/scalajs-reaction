@@ -1,5 +1,5 @@
 ---
-id: index
+id: using
 title: Getting Started
 ---
 
@@ -65,16 +65,19 @@ import fabric.styling._
 
 ## Implicits
 
-Most facade libraries and scala.js use implicit conversion to automatically
-convert scala objects to javascript objects. Since this is a facade library that
+Some extension methods a few implicit conversions
+are provided to make the facade more ergonomic.
+
+Since this is a facade library that
 is designed to be integrated into other javascript/reason react applications,
 you will most likely need to use javascript objects on your imported objects as
-well as your exported components.
+well as your exported components. Making js objects easy to use in scala
+is an importent design point.
 
-The `react.implicits._` imports a variety of syntax and automatic
-converters. Since implicit conversion can make your code base more complicated
+The `react.implicits._` imports the extensions.
+Since implicit conversion can make your code base more complicated
 when automatic conversions go awry, the syntax enhancements and conversions are
-offered ala cart. However, you should use the general `import react.implicits._` 
+offered ala cart. However, you should use the general `import react.implicits._`
 when first starting out. See the API docs for ala cart imports.
 
 ## npm and js packages
@@ -83,12 +86,12 @@ Based on the scala libraries you use, you will need to bundle the appropriate
 packages. All of the scala.js imports underneath in the interop layer convert to
 CJS `require` calls.
 
-* core: react (>=16.8+)
-* react-dom: react-dom (>=16.8+)
-* prop-types: prop-types
-* vdom: no js dependencies
-* fabric: office-ui-fabric-react (>= 7.0), or merge-styles directly for only that
-* redux: react-redux, redux
+- core: react (>=16.8+)
+- react-dom: react-dom (>=16.8+)
+- prop-types: prop-types
+- vdom: no js dependencies
+- fabric: office-ui-fabric-react (>= 7.0), or merge-styles directly for only that
+- redux: react-redux, redux
 
 If you include these in your package.json as runtime dependencies you
 should be all set. If you use `scalajs-bundler` you would need to add these to

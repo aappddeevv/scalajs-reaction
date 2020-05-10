@@ -149,20 +149,20 @@ trait ServerParseError extends js.Error {
 trait ErrorResponse extends js.Object {
   val graphQLErrors: js.UndefOr[js.Array[GraphQLError]]            = js.native
   val networkError: js.Error | ServerError | ServerParseError      = js.native
-  def response[T <: js.Any]: js.UndefOr[ExecutionResult[T]]        = js.native
+  def response[T]: js.UndefOr[ExecutionResult[T]]        = js.native
   val operation: Operation[js.Object]                              = js.native
-  def forward[TVars <: js.Object, T <: js.Any]: NextLink[TVars, T] = js.native
+  def forward[TVars <: js.Object, T]: NextLink[TVars, T] = js.native
 }
 
 @js.native
 @JSImport("apollo-link-error", JSImport.Namespace)
 object apollo_link_error_module extends js.Object {
-  def onError[T <: js.Any](errorHandler: ErrorHandler[T]): ApolloLink =
+  def onError[T](errorHandler: ErrorHandler[T]): ApolloLink =
     js.native
 }
 
 // apollo-link
 @js.native
-trait FetchResult[T <: js.Any] extends ExecutionResult[T] {
+trait FetchResult[T] extends ExecutionResult[T] {
   def context[C <: js.Object]: js.UndefOr[C]
 }

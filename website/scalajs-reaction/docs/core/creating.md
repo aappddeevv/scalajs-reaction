@@ -16,12 +16,13 @@ demo code for an example of using a reducer component, a component that manages
 state.
 
 Some good tutorials on react hooks and how to use them can be found at:
-* https://overreacted.io/a-complete-guide-to-useeffect
-* https://www.robinwieruch.de/react-hooks-fetch-data
-* https://itnext.io/how-to-create-react-custom-hooks-for-data-fetching-with-useeffect-74c5dc47000a
-* https://www.codebeast.dev/react-memoize-hooks-useRef-useCallback-useMemo
-* https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70
-* https://usehooks.com/
+
+- https://overreacted.io/a-complete-guide-to-useeffect
+- https://www.robinwieruch.de/react-hooks-fetch-data
+- https://itnext.io/how-to-create-react-custom-hooks-for-data-fetching-with-useeffect-74c5dc47000a
+- https://www.codebeast.dev/react-memoize-hooks-useRef-useCallback-useMemo
+- https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70
+- https://usehooks.com/
 
 ## Stateless Component
 
@@ -36,14 +37,16 @@ object Component1 {
 
 
 object Component2 {
+  val NAME = "Component2"
    trait Props extends js.Object {
      var p: js.UndefOr[String] = js.undefined
    }
 
    def apply(props:Props) = render.elementWith(props)
-   
+
    val render: ReactFC[Props] = props =>
       div(s"""hello world ${p.getOrElse("no-arg")""")
+   render.displayName(NAME)
 }
 ```
 
@@ -57,7 +60,7 @@ at the right time for you. To create the "description" you need some
 way for scala to detect that it has both parts. `.elementWith`
 is one way to do that but you could just call `createElement` yourself, see below.
 
-Hence, you do not to use `ReactFC0` or `ReactFC`. Define your render function as a 
+Hence, you do not to use `ReactFC0` or `ReactFC`. Define your render function as a
 normal javascript function `js.Function1[Props, ReactNode]` directly.
 The types `ReactFC` force a conversion from a scala function to
 a javascript function. That's all it does.
@@ -73,8 +76,7 @@ You can skip all of this by defining directly:
   val render: js.Function1[Props, ReactNode] = props => div("hello world")
 ```
 
-
-The reason you need to specify a few types it the right places is to 
+The reason you need to specify a few types it the right places is to
 activate the syntax or implicit conversions. Scala function to javascript
 function conversion is part of scala.js predef so it happens automatically.
 But to ensure that a `div("hello world")` is converted to a `ReactNode`
@@ -91,7 +93,7 @@ automatically convert a tuple of the component and props:
 (component2, new Props {...})
 ```
 
-A nice benefit of using simple functions is that you can easily export them 
+A nice benefit of using simple functions is that you can easily export them
 for use in the
 js/ts side of your application assuming the parameter is js friendly.
 
@@ -100,9 +102,9 @@ concept above. The `ReactElementTuple` helps coerce `render`
 to a javascript function, that's all it does.
 
 ```scala
-object Components { 
+object Components {
   trait Props extends js.Object { val name: String }
-  
+
   // important to have  this signature
   val render: Props => ReactNode = props => div(s"hello ${name}")
 
@@ -122,16 +124,16 @@ You could also use:
   def make(props: Props) = render.elementWith(props)
 
   // Call like Components.doit(props),
-  def doit(props: Props) = render.toEl(props) 
+  def doit(props: Props) = render.toEl(props)
 ```
 
 `.toEl` is an alias for to `.elementWith`.
 
 You can define your own protocol for creating a component as long as:
 
-* Your component is a js function or is converted to a js function.
-* You separate out the "component" and the props in a way that allows
-`react.createElement` to be called.
+- Your component is a js function or is converted to a js function.
+- You separate out the "component" and the props in a way that allows
+  `react.createElement` to be called.
 
 This facade provides a few implicit conversions to improve type inference
 and calling `createElement` at the right time. That's pretty much all
@@ -147,8 +149,8 @@ scala functions, they do not have to be javascript functions.
 
 A component's props can take either a list of attributes or an
 object that bundles the attributes together. You can choose how you want to
-define the make parameters.  If you define your non-native JS traits
- with vars you can create
+define the make parameters. If you define your non-native JS traits
+with vars you can create
 them without having to use "override val" syntax:
 
 ```scala
@@ -162,11 +164,12 @@ You can create your props using "new" and without the "val" or "override"
 keywords:
 
 ```scala
-new MyOpts { 
+new MyOpts {
   prop1 = "foo",
   prop2 = "bar"
 }
 ```
+
 instead of:
 
 ```scala
@@ -191,14 +194,14 @@ trait MyOpts extends HTMLAttributes[dom.html.Div] {
 ```
 
 You may need to filter your props so you can access only your attributes. See
-office-ui-fabric-react for an example of a filtering function 
-. 
+office-ui-fabric-react for an example of a filtering function
+.
 
 ## Child Elements
 
-Include a children property in your `Props` object. That's it. 
+Include a children property in your `Props` object. That's it.
 
-If you wish, you could alter your API slightly to make it more friendly. 
+If you wish, you could alter your API slightly to make it more friendly.
 
 For example, here's a component that exposes a children property but its awkward
 sometimes to use it that way.
@@ -209,9 +212,9 @@ object Component {
   trait Props extends js.Object {
     val children: ReactNode
   }
-  
+
   def apply(props: Props) = render.elementWith(props)
-  
+
   val render = Props => ReactNode = ???
 }
 ```
@@ -228,9 +231,9 @@ object Component {
     var children: js.Undefined[ReactNode] = js.undefined
   }
 
-  // ergonomic API 
+  // ergonomic API
   def apply(props: Props)(children: ReactNode*) = react.createElementN(render, props)(children:_*)
-  
+
   val render: Props => ReactNode = ???
 }
 ```

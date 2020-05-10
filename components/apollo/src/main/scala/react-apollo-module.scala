@@ -34,7 +34,7 @@ import graphql._
 
 // @apollo/react-common, but pulls from ObservableQuery
 @js.native
-trait ObservableQueryFields[T <: js.Any, TVars <: js.Object] extends js.Object {
+trait ObservableQueryFields[T, TVars <: js.Object] extends js.Object {
   // this looks quite complicated
   @JSName("fetchMore")
   val fetchMore
@@ -55,7 +55,7 @@ trait ObservableQueryFields[T <: js.Any, TVars <: js.Object] extends js.Object {
  */
 // @apollo/react-common
 @js.native
-trait QueryResult[T <: js.Any, TVars <: js.Object] extends ObservableQueryFields[T, TVars] {
+trait QueryResult[T, TVars <: js.Object] extends ObservableQueryFields[T, TVars] {
   val client: apollo_client.ApolloClient = js.native
   // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
   // ts defs say T | undefined but not null !?!?
@@ -80,7 +80,7 @@ object QueryResult {
   }
 }
 
-trait OptionsMaker[T <: js.Any, TVars <: js.Object] {
+trait OptionsMaker[T, TVars <: js.Object] {
  /** Make QueryHookOptions */
   def makeOptions(
     variables: js.UndefOr[TVars] = js.undefined,
@@ -156,13 +156,13 @@ trait OptionsMaker[T <: js.Any, TVars <: js.Object] {
  * Instantiate the object then use values and methods in it without
  * need to always specify the types.
  */
-case class UseQuery[T <: js.Any, TVars <: js.Object]() extends OptionsMaker[T, TVars] {
+case class UseQuery[T, TVars <: js.Object]() extends OptionsMaker[T, TVars] {
   def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
     module.useQuery[T, TVars](query, options)
 }
 
 /*
-case class UseLazyQuery[T <: js.Any, TVars <: js.Object]() extends OptionsMaker[T, Tvars] {
+case class UseLazyQuery[T, TVars <: js.Object]() extends OptionsMaker[T, Tvars] {
   def useLazyQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
     module.useLazyQuery[T, TVars](query, options)
 }
@@ -172,29 +172,31 @@ case class UseLazyQuery[T <: js.Any, TVars <: js.Object]() extends OptionsMaker[
 @JSImport("react-apollo", JSImport.Namespace)
 private[react_apollo] object module extends js.Object {
   // ... from @apollo/react-hooks
-  def useQuery[T <: js.Any, TVars <: js.Object](
+  def useQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): QueryResult[T, TVars] = js.native
 
-  def useLazyQuery[T <: js.Any, TVars <: js.Object](
+  def useLazyQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): js.Tuple2[QueryLazyOptions[TVars], QueryResult[T, TVars]] = js.native
 
   // Need Ext for ExecutionResult...
-  def useMutation[T <: js.Any, TVars <: js.Object](
+  def useMutation[T, TVars <: js.Object](
     mutation: DocumentNode,
     options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined
-  ): js.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]] =
-    js.native
+  ): js.Tuple2[
+        js.Function1[MutationFunctionOptions[T, TVars], 
+        js.Promise[ExecutionResult[T]]], MutationResult[T]
+    ] = js.native
 
-  def useSubscription[T <: js.Any, TVars <: js.Object](
+  def useSubscription[T, TVars <: js.Object](
     subscription: DocumentNode,
     options: js.UndefOr[SubscriptionHookOptions[T, TVars]] = js.undefined
   ): SubscriptionResult[T] with Variables[TVars] = js.native
 
-  def useBaseQuery[T <: js.Any, TVars <: js.Object](
+  def useBaseQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[QueryHookOptions[T, TVars]] = js.undefined
   ): js.Tuple2[js.Function1[js.UndefOr[QueryLazyOptions[TVars]], Unit], QueryResult[T, TVars]] = js.native
@@ -232,24 +234,24 @@ trait Skip extends js.Object {
 }
 
 // @apollo/react-common
-trait QueryFunctionOptions[T <: js.Any, TVars <: js.Object] extends BaseQueryOptions[TVars] {
+trait QueryFunctionOptions[T, TVars <: js.Object] extends BaseQueryOptions[TVars] {
   var displayName: js.UndefOr[String] = js.undefined
   var onCompleted: js.UndefOr[js.Function1[js.UndefOr[T], Unit]] = js.undefined
   var onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined
 }
 
 // @apollo/react-hooks
-trait QueryHookOptions[T <: js.Any, TVars <: js.Object] extends QueryFunctionOptions[T, TVars] with Skip {
+trait QueryHookOptions[T, TVars <: js.Object] extends QueryFunctionOptions[T, TVars] with Skip {
   // children?
   var query: js.UndefOr[DocumentNode] = js.undefined
 }
 
 // @apollo/react-hooks
 object QueryHookOptions {
-  def variables[T <: js.Any, TVars <: js.Object](v: TVars) = new QueryHookOptions[T, TVars] {
+  def variables[T, TVars <: js.Object](v: TVars) = new QueryHookOptions[T, TVars] {
     variables = v
   }
-  def unsafeVariables[T <: js.Any, TVars <: js.Object](v: js.Dynamic) = new QueryHookOptions[T, TVars] {
+  def unsafeVariables[T, TVars <: js.Object](v: js.Dynamic) = new QueryHookOptions[T, TVars] {
     variables = v
   }
 }
@@ -263,7 +265,7 @@ trait QueryLazyOptions[TVars <: js.Object] extends js.Object {
 }
 
 // @apollo/react-hooks
-trait LazyQueryHookOptions[T <: js.Any, TVars <: js.Object] extends QueryFunctionOptions[T, TVars] {
+trait LazyQueryHookOptions[T, TVars <: js.Object] extends QueryFunctionOptions[T, TVars] {
   var query: js.UndefOr[DocumentNode] = js.undefined
 }
 
@@ -283,7 +285,7 @@ object ApolloProvider {
 }
 
 // @apollo/react-common
-trait BaseMutationOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
+trait BaseMutationOptions[T, TVars <: js.Object] extends js.Object {
   var variables: js.UndefOr[TVars] = js.undefined
   //optimisticResponse
   @JSName("refetchQueries")
@@ -304,7 +306,7 @@ trait BaseMutationOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
 }
 
 // @apollo/react-common
-trait MutationFunctionOptions[T <: js.Any, TVars <: js.Object] extends js.Object {
+trait MutationFunctionOptions[T, TVars <: js.Object] extends js.Object {
   var variables: js.UndefOr[TVars] = js.undefined
   @JSName("optimisticResponse")
   var optimisticResponseStrict: js.UndefOr[T] = js.undefined
@@ -318,14 +320,14 @@ trait MutationFunctionOptions[T <: js.Any, TVars <: js.Object] extends js.Object
 }
 
 object MutationFunctionOptions {
-  def forVariables[T <: js.Any, TVars <: js.Object](values: TVars) =
+  def forVariables[T, TVars <: js.Object](values: TVars) =
     new MutationFunctionOptions[T, TVars] {
       variables = values
     }
 }
 
 // @apollo/react-hooks
-trait MutationHookOptions[T <: js.Any, TVars <: js.Object] extends BaseMutationOptions[T, TVars] {
+trait MutationHookOptions[T, TVars <: js.Object] extends BaseMutationOptions[T, TVars] {
   var mutation: js.UndefOr[DocumentNode] = js.undefined
 }
 
@@ -334,11 +336,11 @@ trait MutationHookOptions[T <: js.Any, TVars <: js.Object] extends BaseMutationO
  * Instantiate the object then use values and methods in it without
  * need to always specify the types.
  */
-case class UseMutation[T <: js.Any, TVars <: js.Object]() {
+case class UseMutation[T, TVars <: js.Object]() {
   def useMutation(
     mutation: DocumentNode,
     options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
-    module.useMutation[T, TVars](mutation, options)
+    react_apollo.useMutation[T, TVars](mutation, options)
 
   /** Make MutationHookOptions */
   def makeOptions(
@@ -413,7 +415,7 @@ case class UseMutation[T <: js.Any, TVars <: js.Object]() {
 
 // @apollo/react-common
 @js.native
-trait MutationResult[T <: js.Any] extends js.Object {
+trait MutationResult[T] extends js.Object {
   val loading: Boolean = js.native
   val called: Boolean = js.native
   val client: js.UndefOr[ApolloClient] = js.native
@@ -423,7 +425,7 @@ trait MutationResult[T <: js.Any] extends js.Object {
 }
 
 object MutationResult {
-  implicit final class RichMutationResult[T <: js.Any] private[MutationResult] (private val mr: MutationResult[T])
+  implicit final class RichMutationResult[T] private[MutationResult] (private val mr: MutationResult[T])
       extends AnyVal {
     def successful = !mr.loading && mr.called && mr.error.isEmpty
     def notSuccessful = !successful
@@ -432,7 +434,7 @@ object MutationResult {
 
 // @apollo/react-common
 @js.native
-trait SubscriptionResult[T <: js.Any] extends js.Object {
+trait SubscriptionResult[T] extends js.Object {
   val loading: Boolean = js.native
   val data: js.UndefOr[T] = js.native
   val error: js.UndefOr[ApolloError] = js.native
@@ -445,13 +447,13 @@ trait Variables[TVars <: js.Object] extends js.Object {
 
 // @apollo/react-common
 @js.native
-trait OnSubscriptionDataOptions[T <: js.Any] extends js.Object {
+trait OnSubscriptionDataOptions[T] extends js.Object {
   val client: ApolloClient = js.native
   val subscriptionData: SubscriptionResult[T]
 }
 
 // @apollo/react-common
-trait BaseSubscriptionOptions[T <: js.Any, TVars <: js.Object] {
+trait BaseSubscriptionOptions[T, TVars <: js.Object] {
   var variables: js.UndefOr[TVars] = js.undefined
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
   @JSName("shouldResubscribe")
@@ -464,7 +466,7 @@ trait BaseSubscriptionOptions[T <: js.Any, TVars <: js.Object] {
 }
 
 // @apollo/react-hooks
-trait SubscriptionHookOptions[T <: js.Any, TVars <: js.Object] extends BaseSubscriptionOptions[T, TVars] {
+trait SubscriptionHookOptions[T, TVars <: js.Object] extends BaseSubscriptionOptions[T, TVars] {
   val subscription: js.UndefOr[DocumentNode] = js.undefined
   //var children: js.UndefOr[js.Function1[SubscriptionResult[T], ReactNode|Null]] = js.undefined
 }

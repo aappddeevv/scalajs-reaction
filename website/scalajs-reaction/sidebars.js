@@ -7,10 +7,30 @@
 
 module.exports = {
   docs: {
-    Introduction: ['intro', 'index'],
-      Core: ['creating', 'vdom', 'exporting', 'importing'],
-      Facades: ['facades', 'react_native'],
-      ['Useful Topics']: ['styling', 'forms', 'routing', 'redux', 'data_validation'],
-      Miscellaneous: ['bundling', 'data_interop']
+    Introduction: [
+      'intro/index',
+      'intro/using'
+    ],
+    Core: [
+      'core/creating',
+      'core/vdom',
+      'core/exporting',
+      'core/importing'
+    ],
+    Facades: [
+      'facades/facades',
+      'facades/react_native'
+    ],
+    ['Useful Topics']: [
+      'topics/styling',
+      'topics/forms',
+      'topics/routing',
+      'topics/redux',
+      'topics/data_validation'
+    ],
+    Miscellaneous: [
+      'misc/bundling',
+      'misc/data_interop'
+    ]
   },
 };

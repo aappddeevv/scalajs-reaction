@@ -1,11 +1,12 @@
 ---
-id: intro
+id: index
 title: What is it?
 ---
 
-This new website is a WIP. API docs and the example demo are
-not hooked up yet although the demo is available from the github front page for
-this repo.
+The scalajs-reaction website is a WIP.
+
+API docs and the demo are not hooked up yet :-) You can generate docs
+and run the demo by cloning the repo and running them directly yourself.
 
 # A scala.js facade
 
@@ -14,7 +15,7 @@ API in the spirit of ReasonReact. It focuses on integration with existing
 javascript-based react applications so you can plug in scalajs-react components
 to any part of the component hierarchy.
 
-A scalajs-reaction component is just a javascript function and you can easily 
+A scalajs-reaction component is just a javascript function and you can easily
 create that using standard scala.js code. Nothing new is invented in this
 facade.
 
@@ -37,9 +38,10 @@ there is a wide variety of facades available including support
 for react-native. You can also use it on electron easily.
 
 Since the project is kept very simple, the scalajs-reaction ecosystem takes very little
-effort to maintain. 
+effort to maintain.
 
 # ReasonReact
+
 The interface is built on the model provided by
 [ReasonReact](https://reasonml.github.io/reason-react). You can apply the same
 concepts in that library to this API.
@@ -50,7 +52,7 @@ support for class based components. Anyway, you should be using hooks.
 
 # API Documentation
 
-* [API: all modules](../api)
+- [API: all modules](../api)
 
 The API focuses on integration with existing javascript libraries.
 For example, it is easy to interface with redux and it allows
@@ -63,5 +65,6 @@ facades for additional functionality but it provides a significant amount of the
 core facades. In other words, there is more here so check the source!
 
 # Demo
+
 A WIP demo is here:
 [Demo](../demo)

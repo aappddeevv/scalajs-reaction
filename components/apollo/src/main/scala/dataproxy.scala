@@ -39,16 +39,16 @@ trait Fragment[TVars <: js.Object] extends js.Object {
   var variables: js.UndefOr[TVars]     = js.undefined
 }
 
-trait WriteFragmentOptions[T <: js.Any, TVars <: js.Object] extends Fragment[TVars] {
+trait WriteFragmentOptions[T, TVars <: js.Object] extends Fragment[TVars] {
   val data: T
 }
 
-trait WriteDataOptions[T <: js.Any] extends js.Object {
+trait WriteDataOptions[T] extends js.Object {
   val data: T
   var id: js.UndefOr[String] = js.undefined
 }
 
-trait WriteQueryOptions[T <: js.Any, TVars <: js.Object] extends Query[TVars] {
+trait WriteQueryOptions[T, TVars <: js.Object] extends Query[TVars] {
   val data: T
 }
 
@@ -62,7 +62,7 @@ trait DataProxy extends js.Object {
     options: Fragment[TVars],
     optimistic: js.UndefOr[Boolean] = js.undefined
   ): FragmentType | Null
-  def writeQuery[T <: js.Any, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit
-  def writeFragment[T <: js.Any, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit
-  def writeData[T <: js.Any](options: WriteDataOptions[T]): Unit
+  def writeQuery[T, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit
+  def writeFragment[T, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit
+  def writeData[T](options: WriteDataOptions[T]): Unit
 }

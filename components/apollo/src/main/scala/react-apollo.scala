@@ -20,11 +20,11 @@
  */
 
 import scala.scalajs.js
-
 import js.|
-
+import js.JSConverters._
 import apollo_boost._
-import react_apollo._
+import apollo_client._
+import graphql._
 
 /** Relies on @apollo/react-hooks, @apollo/react-hoc, @apollo/react-common,
  * @apollo/react-ssr and @apollo/react-component in the real world. We just
@@ -32,36 +32,31 @@ import react_apollo._
  */
 package object react_apollo {
 
-  def useQuery[T <: js.Any, TVars <: js.Object](
+  def useQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): QueryResult[T, TVars] =
     react_apollo.module.useQuery(query, options)
 
-  def useMutation[T <: js.Any, TVars <: js.Object](
+  def useMutation[T, TVars <: js.Object](
     mutation: DocumentNode,
-    options: js.UndefOr[MutationHookOptions[T, TVars]] = js.undefined
-  ) //= react_apollo.module.useMutation[T,TVars](mutation, options)
-  = {
-    val c = react_apollo.module.useMutation[T, TVars](mutation, options)
-    (c._1, c._2)
-  }
-
-  def useLazyQuery[T <: js.Any, TVars <: js.Object](
+    options: js.UndefOr[MutationHookOptions[T, TVars]|js.Dynamic] = js.undefined
+  ): scala.Tuple2[js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]] =
+    react_apollo.module.useMutation[T, TVars](mutation, options)
+   
+  def useLazyQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
-  ) = {
-    val c = react_apollo.module.useLazyQuery[T, TVars](query, options)
-    (c._1, c._2)
-  }
+  ): scala.Tuple2[QueryLazyOptions[TVars], QueryResult[T, TVars]] =
+    react_apollo.module.useLazyQuery[T, TVars](query, options)
 
-  def useSubscription[T <: js.Any, TVars <: js.Object](
+  def useSubscription[T, TVars <: js.Object](
     subscription: DocumentNode,
     options: js.UndefOr[SubscriptionHookOptions[T, TVars]] = js.undefined
   ) =
     react_apollo.module.useSubscription[T, TVars](subscription, options)
 
-  def useBaseQuery[T <: js.Any, TVars <: js.Object](
+  def useBaseQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[QueryHookOptions[T, TVars]] = js.undefined
   ) =
