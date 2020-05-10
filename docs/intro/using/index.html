@@ -18,7 +18,7 @@
 
 <link rel="preload" href="/scalajs-reaction/styles.5c3bc461.js" as="script">
 
-<link rel="preload" href="/scalajs-reaction/runtime~main.1f967e44.js" as="script">
+<link rel="preload" href="/scalajs-reaction/runtime~main.321c0d7a.js" as="script">
 
 <link rel="preload" href="/scalajs-reaction/main.3c816209.js" as="script">
 
@@ -34,7 +34,7 @@
 
 <link rel="preload" href="/scalajs-reaction/17896441.bf8545bc.js" as="script">
 
-<link rel="preload" href="/scalajs-reaction/d069811b.1c875301.js" as="script">
+<link rel="preload" href="/scalajs-reaction/d069811b.ddfb1cb2.js" as="script">
 
 </head>
 <body>
@@ -54,12 +54,13 @@ maven.</p><div class="mdxCodeBlock_iHAB"><div class="codeBlockContent_32p_"><but
 </span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">// imports renderToElementWithId, include this in the package with your top level render call</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import react_dom._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
 </span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">// contains virtual dom objects</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import vdom._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
 </span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">// non-native JS trait style attributes</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import vdom._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import vdom.styling._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import vdom.svg._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
-</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">// import this if you are using the office-ui-fabric-react library</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import fabric._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import fabric.components._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import fabric.styling._</span></div></div></div></div></div><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_ZqCz" id="implicits"></a><a aria-hidden="true" tabindex="-1" class="hash-link" href="#implicits" title="Direct link to heading">#</a>Implicits</h2><p>Most facade libraries and scala.js use implicit conversion to automatically
-convert scala objects to javascript objects. Since this is a facade library that
+</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">// import this if you are using the office-ui-fabric-react library</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import fabric._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import fabric.components._</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">import fabric.styling._</span></div></div></div></div></div><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_ZqCz" id="implicits"></a><a aria-hidden="true" tabindex="-1" class="hash-link" href="#implicits" title="Direct link to heading">#</a>Implicits</h2><p>Some extension methods a few implicit conversions
+are provided to make the facade more ergonomic.</p><p>Since this is a facade library that
 is designed to be integrated into other javascript/reason react applications,
 you will most likely need to use javascript objects on your imported objects as
-well as your exported components.</p><p>The <code>react.implicits._</code> imports a variety of syntax and automatic
-converters. Since implicit conversion can make your code base more complicated
+well as your exported components. Making js objects easy to use in scala
+is an importent design point.</p><p>The <code>react.implicits._</code> imports the extensions.
+Since implicit conversion can make your code base more complicated
 when automatic conversions go awry, the syntax enhancements and conversions are
 offered ala cart. However, you should use the general <code>import react.implicits._</code>
 when first starting out. See the API docs for ala cart imports.</p><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_ZqCz" id="npm-and-js-packages"></a><a aria-hidden="true" tabindex="-1" class="hash-link" href="#npm-and-js-packages" title="Direct link to heading">#</a>npm and js packages</h2><p>Based on the scala libraries you use, you will need to bundle the appropriate
@@ -71,7 +72,7 @@ your build.sbt file.</p></div></article><div class="margin-vert--xl"><div class=
 
 <script src="/scalajs-reaction/styles.5c3bc461.js"></script>
 
-<script src="/scalajs-reaction/runtime~main.1f967e44.js"></script>
+<script src="/scalajs-reaction/runtime~main.321c0d7a.js"></script>
 
 <script src="/scalajs-reaction/main.3c816209.js"></script>
 
@@ -87,7 +88,7 @@ your build.sbt file.</p></div></article><div class="margin-vert--xl"><div class=
 
 <script src="/scalajs-reaction/17896441.bf8545bc.js"></script>
 
-<script src="/scalajs-reaction/d069811b.1c875301.js"></script>
+<script src="/scalajs-reaction/d069811b.ddfb1cb2.js"></script>
 
 
 </body>
