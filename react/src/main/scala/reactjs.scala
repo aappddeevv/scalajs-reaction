@@ -174,8 +174,8 @@ trait Hooks extends js.Object {
 
   def useDebugValue[T](value: T, format: js.UndefOr[js.Function1[T, String]] = js.undefined): Unit = js.native
 
-  // callback and the return value will require extensive casting
-  def useCallback(cb: js.Any, deps: js.UndefOr[Dependencies]): js.Any = js.native
+  // callback and the return value will require extensive casting so this is a template
+  def useCallback(cb: js.Any, deps: js.UndefOr[Dependencies]=js.undefined): js.Any = js.native
 
   def useMemo[T](value: js.Function0[T], dependencies: Dependencies | Unit): T = js.native
 

@@ -379,6 +379,9 @@ package object react extends react.React with When {
     
   /** Shorted version of `js.defined(blah)` */
   @inline def jsdef[A](a: A) = js.defined(a)
+  
+  /** Short version of `js.undefined`. */
+  val jsundef = js.undefined
 
   /** Test equaliy with two js objects. Standard == in scala.js on 2 js objects
    * (e.g. non-native traits) will not test in the same way that standard scala

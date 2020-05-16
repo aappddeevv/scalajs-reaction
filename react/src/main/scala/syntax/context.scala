@@ -36,10 +36,10 @@ final class ReactContextOps2[T](private val ctx: ReactContext[T]) extends AnyVal
     ReactJS.createElement(ctx.Provider, literal("value"->value.asInstanceOf[js.Any]), child)
     
   def consume(f: T => ReactNode, key: String) =
-    ReactJS.createElement(ctx.Consumer, literal("key" -> key), js.Any.toFunction1(f).asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, literal("key" -> key), createElement(js.Any.toFunction1(f).asInstanceOf[ReactJSFunctionComponent], null))
 
   def consume(f: T => ReactNode) =
-    ReactJS.createElement(ctx.Consumer, literal(), js.Any.toFunction1(f).asInstanceOf[ReactNode])
+    ReactJS.createElement(ctx.Consumer, literal(), createElement(js.Any.toFunction1(f).asInstanceOf[ReactJSFunctionComponent], null))
 }
 
 trait ContextSyntax {

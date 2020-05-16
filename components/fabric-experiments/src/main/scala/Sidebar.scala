@@ -30,6 +30,13 @@ import react.vdom._
 import fabric.components._
 import fabric.styling._
 
+@js.native
+trait ISidebar extends js.Object {
+  def toggleCollapsed(): Unit = js.native
+  def setCollapsed(newValue: Boolean): Unit = js.native
+  def getCollapsed(): Boolean = js.native
+}
+
 object Sidebar {
 
   @js.native
@@ -38,24 +45,17 @@ object Sidebar {
 
   def apply(props: Props = null) = createElement0(JS, props)
 
-  @js.native
-  trait ISidebar extends js.Object {
-    val toggleCollapsed: js.Function0[Unit]       = js.native
-    val setCollapsed: js.Function1[Boolean, Unit] = js.native
-    val getCollapsed: js.Function0[Boolean]       = js.native
-  }
-
   trait PropsBase extends HTMLAttributes[dom.html.Div] with ComponentRef[ISidebar] {
-    var collapsible: js.UndefOr[Boolean]                  = js.undefined
-    var onCallapseChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
-    var collapseButtonAriaLabel: js.UndefOr[String]       = js.undefined
-    var footerItems: js.UndefOr[js.Array[ItemProps]]      = js.undefined
-    var items: js.UndefOr[js.Array[ItemProps]]            = js.undefined
-    var colors: js.UndefOr[Colors]                        = js.undefined
-    var styles: js.UndefOr[Styles]                        = js.undefined
-    var collapseButtonStyles: js.UndefOr[Button.Styles]   = js.undefined
-    var buttonStyles: js.UndefOr[Button.Styles]           = js.undefined
-    var defaultButton: js.UndefOr[js.Any]                 = js.undefined
+    var collapsible: js.UndefOr[Boolean] = js.undefined
+    var onCollapseChanged: js.UndefOr[js.Function0[Unit]] = js.undefined
+    var collapseButtonAriaLabel: js.UndefOr[String] = js.undefined
+    var footerItems: js.UndefOr[js.Array[ItemProps]] = js.undefined
+    var items: js.UndefOr[js.Array[ItemProps]] = js.undefined
+    var colors: js.UndefOr[Colors] = js.undefined
+    var styles: js.UndefOr[Styles] = js.undefined
+    var collapseButtonStyles: js.UndefOr[components.Button.Styles] = js.undefined
+    var buttonStyles: js.UndefOr[components.Button.Styles] = js.undefined
+    var defaultButton: js.UndefOr[ReactComponentType] = js.undefined
   }
 
   trait PropsInit extends PropsBase {
@@ -63,13 +63,13 @@ object Sidebar {
   }
 
   trait Props extends PropsBase {
-    val theme: ITheme    
+    val theme: ITheme
   }
 
   @js.native
   sealed trait Colors extends js.Any
   object Colors {
-    val Dark  = "Dark".asInstanceOf[Colors]
+    val Dark = "Dark".asInstanceOf[Colors]
     val Light = "Light".asInstanceOf[Colors]
   }
 
@@ -99,22 +99,38 @@ object Sidebar {
   @js.native
   sealed trait StylingConstants extends js.Any
   object StylingConstants {
-    val sidewbarWidth         = "220px".asInstanceOf[Colors]
+    val sidewbarWidth = "220px".asInstanceOf[Colors]
     val sidebarCollapsedWidth = "48px".asInstanceOf[Colors]
-    val sidebarIconSize       = "16px".asInstanceOf[Colors]
+    val sidebarIconSize = "16px".asInstanceOf[Colors]
+  }
+
+  trait ItemPropsInit extends IContextualMenuItemInit
+
+  object ItemsPropInit {
+    implicit class RichItemsPropInit(private val i: ItemPropsInit) extends AnyVal {
+      def required = i.asInstanceOf[ItemProps]
+    }
   }
 
   trait ItemProps extends IContextualMenuItem {
-    var active: js.UndefOr[Boolean]            = js.undefined
+    var active: js.UndefOr[Boolean] = js.undefined
     var items: js.UndefOr[js.Array[ItemProps]] = js.undefined
-    var buttonAs: js.UndefOr[js.Any]           = js.undefined
+    var buttonAs: js.UndefOr[js.Any] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {
-    var root: js.UndefOr[IStyle]             = js.undefined
-    var rootCallopsed: js.UndefOr[IStyle]    = js.undefined
-    var content: js.UndefOr[IStyle]          = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
+    var rootCallapsed: js.UndefOr[IStyle] = js.undefined
+    var content: js.UndefOr[IStyle] = js.undefined
     var contentCollapsed: js.UndefOr[IStyle] = js.undefined
-    var footer: js.UndefOr[IStyle]           = js.undefined
+    var footer: js.UndefOr[IStyle] = js.undefined
+  }
+
+  object Button {
+    @js.native
+    @JSImport("@uifabric/experiments/lib/Sidebar", "SidebarButton")
+    object JS extends ReactJSComponent
+
+    def apply(props: components.Button.Props) = createElement0(JS, props)
   }
 }

@@ -61,8 +61,9 @@ trait KeyAndRef extends js.Object {
 trait ComponentRef[T] extends js.Object {
 
   /** Callback style, the easiest to handle. */
-  var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+  //var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
   //var componentRef: js.UndefOr[Ref[T]] = js.undefined
+  var componentRef: js.UndefOr[MutableRef[T]] = js.undefined
 }
 
 /** Adds a disabled member. */

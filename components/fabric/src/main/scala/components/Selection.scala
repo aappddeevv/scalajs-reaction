@@ -66,19 +66,19 @@ object SelectionMode {
   val multiple = 2.asInstanceOf[SelectionMode]
 }
 
-trait ISelectionOptions[T <: js.Object] extends js.Object {
-  var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
-    js.undefined
-  @JSName("getKey")
-  var getKeyFromItem: js.UndefOr[js.Function1[T, String | Int]]                         = js.undefined
-  var selectionMode: js.UndefOr[SelectionMode]                                          = js.undefined
-  var onSelectionChanged: js.UndefOr[js.Function0[Unit]]                                = js.undefined
-  var canSelectItem: js.UndefOr[js.Function2[IObjectWithKey, js.UndefOr[Int], Boolean]] = js.undefined
-}
+// trait ISelectionOptions[T <: js.Object] extends js.Object {
+//   var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
+//     js.undefined
+//   /*@JSName("getKey")
+//   */var getKeyFromItem: js.UndefOr[js.Function1[T, String | Int]]                         = js.undefined
+//   var selectionMode: js.UndefOr[SelectionMode]                                          = js.undefined
+//   var onSelectionChanged: js.UndefOr[js.Function0[Unit]]                                = js.undefined
+//   var canSelectItem: js.UndefOr[js.Function2[IObjectWithKey, js.UndefOr[Int], Boolean]] = js.undefined
+// }
 
 @js.native
 @JSImport("office-ui-fabric-react/lib/utilities/selection", "Selection")
-class Selection[T <: js.Object](options: js.UndefOr[ISelectionOptions[T]] = js.undefined)
+class Selection[T <: js.Object](options: js.UndefOr[Selection.Options[T]] = js.undefined)
     extends js.Object
     with ISelection[T] {
 
@@ -102,21 +102,37 @@ class Selection[T <: js.Object](options: js.UndefOr[ISelectionOptions[T]] = js.u
   def toggleKeySelected(key: String): Unit                                                          = js.native
   def toggleIndexSelected(index: Int): Unit                                                         = js.native
   def toggleRangeSelected(fromIndex: Int, count: Int): Unit                                         = js.native
-
 }
 
 object Selection {
 
   def apply[T <: js.Object](options: Options[T]) =
-    new Selection[T](options.asInstanceOf[ISelectionOptions[T]])
+    new Selection[T](options.asInstanceOf[Selection.Options[T]])
+
+  type GetKey[T <: js.Object] = js.Function2[T, Int, String|Int]
+    
+  def GetStringKey[T <: js.Object](f: (T, Int) => String) = 
+    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
+
+  //def GetStringKey[T <: js.Object](f: T => String) = 
+  //  js.Any.fromFunction1(f).asInstanceOf[GetKey[T]]
+    
+  def GetIntKey[T <: js.Object](f: (T, Int) => Int) = 
+    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
+
+  //def GetIntKey[T <: js.Object](f: T => Int) = 
+  //  js.Any.fromFunction1(f).asInstanceOf[GetKey[T]]
+
+  def GetKey[T <: js.Object](f: (T, Int) => String|Int) = 
+    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
+
+  //def GetKey[T <: js.Object](f: T => String|Int) = 
+  //  js.Any.fromFunction1(f).asInstanceOf[GetKey[T]]
 
   trait Options[T <: js.Object] extends js.Object {
-    var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] =
-      js.undefined
-    @JSName("getKey")
-    var getKeyFromItem: js.UndefOr[js.Function1[T, String | Int]]                         = js.undefined
+    var getKey: js.UndefOr[GetKey[T]] = js.undefined
     var selectionMode: js.UndefOr[SelectionMode]                                          = js.undefined
     var onSelectionChanged: js.UndefOr[js.Function0[Unit]]                                = js.undefined
-    var canSelectItem: js.UndefOr[js.Function2[IObjectWithKey, js.UndefOr[Int], Boolean]] = js.undefined
+    var canSelectItem: js.UndefOr[js.Function2[T, Int, Boolean]] = js.undefined
   }
 }

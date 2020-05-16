@@ -254,6 +254,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * react-helmet
 * react-flexbox-grid
 * react-router-dom (5 and 6)
+* recoil (facebook state management)
 * use-query-params
 * vdom
 * whydidyourender (use include/exclude regexs, see the readme in that directory)

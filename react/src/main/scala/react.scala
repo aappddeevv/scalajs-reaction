@@ -213,6 +213,9 @@ trait React {
   def useEffectMounting(didUpdate: EffectArg) =
     ReactJS.useEffect(didUpdate, emptyDependencies)
 
+  def useEffectUnmounting(thunk: js.Function0[Unit]) =
+    ReactJS.useEffect(js.Any.fromFunction0(() => thunk()), emptyDependencies)
+    
   /** Run before browser updates the screen. Kinda a "sync" effect. */
   def useLayoutEffect(
       didUpdate: EffectArg,
@@ -251,13 +254,8 @@ trait React {
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
 
   def useCallback[T](dependencies: AllType*)(callback: js.Function0[T]): js.Function0[T] =
-    ReactJS
-      .useCallback(
-        callback,
-        if (dependencies.length == 0) undefinedDependencies
-        else dependencies.toJSArray
-      )
-      .asInstanceOf[js.Function0[T]]
+    if(dependencies.length == 0) ReactJS.useCallback(callback).asInstanceOf[js.Function0[T]]
+    else ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function0[T]]
 
   def useCallbackMounting1[A1, T](callback: A1 => T): js.Function1[A1, T] =
     ReactJS.useCallback(callback, emptyDependencies).asInstanceOf[js.Function1[A1, T]]
@@ -461,7 +459,7 @@ trait ReactContext[T] extends js.Object {
   /** Mutable var per https://reactjs.org/docs/context.html#reactcreatecontext */
   //var displayName: String = js.native
 
-  /** Only takes a single attribute value, "value" with the context . */
+  /** Props take an object with a single property, `value`, with the context value. */
   val Provider: ReactJSComponent = js.native
 
   /** Requires function as a childe. */

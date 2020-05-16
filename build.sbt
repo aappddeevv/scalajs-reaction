@@ -105,6 +105,7 @@ lazy val root = project
     `react-dom`,
     `prop-types`,
     bootstrap,
+    loglevel,
     mui,
     //router,
     `react-big-calendar`,
@@ -136,6 +137,7 @@ lazy val root = project
 	`react-plotlyjs`
 ,`react-device-detect`
    ,`react-responsive`
+   ,recoil
   )
 
 lazy val `react` = project
@@ -420,6 +422,11 @@ lazy val `react-plotlyjs` = project.in(file("components/react-plotlyjs"))
   .settings(std_settings("react-plotlyjs", "react-plotly.js"))
   .settings(buildinfo_settings("react_plotlyjs"))
 
+lazy val `recoil` = project.in(file("components/recoil"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react)
+  .settings(std_settings("recoil", "recoil state management"))
+  .settings(buildinfo_settings("recoil"))
 
 lazy val examples = project
   .settings(fpsettings)
@@ -444,7 +451,8 @@ lazy val examples = project
     `react-big-calendar`,
     `react-router-dom5`
      ,dataValidationJS
-    ,`react-router-dom6`,
+    ,`react-router-dom6`
+    ,recoil
   )
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .settings(buildinfo_settings("ttg.examples"))

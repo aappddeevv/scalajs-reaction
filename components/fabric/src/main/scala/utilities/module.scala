@@ -125,11 +125,15 @@ object module extends module_base with customizer_base {
 //@deriveForwardingTrait(module)
 //trait module_exports
 
-trait AddEventListenerOptions extends js.Object {}
+trait AddEventListenerOptions extends js.Object {
+    var capture: js.UndefOr[Boolean] = js.undefined
+    var once: js.UndefOr[Boolean] = js.undefined
+    var passive: js.UndefOr[Boolean] = js.undefined
+}
 
 @js.native
 @JSImport("@uifabric/utilities", "EventGroup")
-class EventGroup(parent: js.Any) extends js.Object {
+class EventGroup(parent: js.UndefOr[js.Any] = js.undefined) extends js.Object {
   def dispose(): Unit = js.native
   def onAll(
     target: js.Any,

@@ -385,6 +385,8 @@ private[jshelpers] object JSPromiseCreators {
   def unit: js.Promise[Unit] = js.Promise.resolve[Unit]((()))
 
   def nullValue: js.Promise[Null] = js.Promise.resolve[Null](null)
+  
+  def nullAs[A]: js.Promise[A|Null] = js.Promise.resolve[A|Null](null)
 
   def apply[A](a: => A): js.Promise[A] = js.Promise.resolve[A](a)
 
