@@ -157,9 +157,9 @@ trait recoil_module extends js.Object {
   @JSName("selector")
   def readonlySelector[T](options: ReadOnlySelectorOptions[T]): RecoilValueReadOnly[T] = js.native
   @JSName("selector")
-  def writableSelector[T](options: WriteableSelectorOptions[T]): RecoilValue[T] = js.native
-  def useRecoilState[T](atom: RecoilValue[T]): js.Tuple2[T, SetterOrUpdater[T]] = js.native
-  def useRecoilStateLoadable[T](state: RecoilValue[T]): js.Tuple2[Loadable[T], SetterOrUpdater[T]] = js.native
+  def writableSelector[T](options: WriteableSelectorOptions[T]): RecoilState[T] = js.native
+  def useRecoilState[T](atom: RecoilState[T]): js.Tuple2[T, SetterOrUpdater[T]] = js.native
+  def useRecoilStateLoadable[T](state: RecoilState[T]): js.Tuple2[Loadable[T], SetterOrUpdater[T]] = js.native
 
   /** If pending, throws Promise to suspend, or throws an error. */
   def useRecoilValue[T](selector: RecoilValue[T]): T = js.native
@@ -255,9 +255,9 @@ trait hooks {
   def readonlySelector[T](options: ReadOnlySelectorOptions[T]) = module.readonlySelector[T](options)
   @JSName("selector")
   def writableSelector[T](options: WriteableSelectorOptions[T]) = module.writableSelector[T](options)
-  def useRecoilState[T](atom: RecoilValue[T]): (T, SetterOrUpdater[T]) =
+  def useRecoilState[T](atom: RecoilState[T]): (T, SetterOrUpdater[T]) =
     module.useRecoilState[T](atom)
-  def useRecoilStateLoadable[T](state: RecoilValue[T]): (Loadable[T], SetterOrUpdater[T]) =
+  def useRecoilStateLoadable[T](state: RecoilState[T]): (Loadable[T], SetterOrUpdater[T]) =
     module.useRecoilStateLoadable[T](state)
 
   /** If pending, throws Promise to suspend, or throws an error. */

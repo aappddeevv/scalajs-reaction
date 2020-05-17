@@ -41,6 +41,8 @@ trait utils_module extends js.Object {
   def constSelector[T <: SerializableParameter](constant: T): RecoilValueReadOnly[T] = js.native
   def errorSelector[T](message: String): RecoilValueReadOnly[T] = js.native
 
+    // there is no way in js to restrict F with a context bounds since that adds an argument.
+
   @JSName("waitForNone")
   def waitForNoneF[F[_]](args: F[RecoilValueReadOnly[_]]): F[Loadable[_]] = js.native
   @JSName("waitForAny")
@@ -70,3 +72,8 @@ trait utils_module extends js.Object {
 @js.native
 @JSImport("recoil", "RecoilUtils")
 object module extends utils_module
+
+/** Move type parameter to type member. */
+trait JSF[F[_]] { 
+    type JS[T] = F[T]
+}
