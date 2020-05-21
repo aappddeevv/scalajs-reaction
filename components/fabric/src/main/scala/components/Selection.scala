@@ -34,21 +34,25 @@ trait ISelection[T <: js.Object] extends js.Object {
   def canSelectItem(item: T, index: js.UndefOr[Int] = js.undefined): Boolean
   def getItems(): js.Array[T]
   def getSelection(): js.Array[T]
-  def getSelectionIndices(): js.Array[Int]
+  def getSelectedIndices(): js.Array[Int]
   def getSelectedCount(): Int
   def isAllSelected(): Boolean
-  def isModel(): Boolean
-  def selectToKey(key: String, clearSelection: js.UndefOr[Boolean] = js.undefined): Unit
+  def isModal(): Boolean
+  def selectToKey(key: String|Int, clearSelection: js.UndefOr[Boolean] = js.undefined): Unit
   def selectToIndex(index: Int, clearSelection: js.UndefOr[Boolean] = js.undefined): Unit
-  def setItems(items: js.Array[T], shouldClear: Boolean): Unit
-  def setKeySelected(key: String, isSelected: Boolean, shouldAnchor: Boolean): Unit
+  def setItems(items: js.Array[T], shouldClear: js.UndefOr[Boolean]): Unit
+  def setKeySelected(key: String|Int, isSelected: Boolean, shouldAnchor: Boolean): Unit
   def setIndexSelected(index: Int, isSelected: Boolean, shouldAnchor: Boolean): Unit
   def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean] = js.undefined): Unit
   def setModal(isModal: Boolean): Unit
   def toggleAllSelected(): Unit
-  def toggleKeySelected(key: String): Unit
+  def toggleKeySelected(key: String|Int): Unit
   def toggleIndexSelected(index: Int): Unit
   def toggleRangeSelected(fromIndex: Int, count: Int): Unit
+  
+  def isKeySelected(key: String|Int): Boolean 
+  def isIndexSelected(index: Int): Boolean
+  def setAllSelected(isAllSelected: Boolean): Unit
 }
 
 @js.native
@@ -87,21 +91,25 @@ class Selection[T <: js.Object](options: js.UndefOr[Selection.Options[T]] = js.u
   val mode: SelectionMode                                                                           = js.native
   def getItems(): js.Array[T]                                                                       = js.native
   def getSelection(): js.Array[T]                                                                   = js.native
-  def getSelectionIndices(): js.Array[Int]                                                          = js.native
+  def getSelectedIndices(): js.Array[Int]                                                          = js.native
   def getSelectedCount(): Int                                                                       = js.native
-  def isModel(): Boolean                                                                            = js.native
+  def isModal(): Boolean                                                                            = js.native
   def isAllSelected(): Boolean                                                                      = js.native
-  def selectToKey(key: String, clearSelection: js.UndefOr[Boolean] = js.undefined): Unit            = js.native
+  def selectToKey(key: String|Int, clearSelection: js.UndefOr[Boolean] = js.undefined): Unit            = js.native
   def selectToIndex(index: Int, clearSelection: js.UndefOr[Boolean] = js.undefined): Unit           = js.native
-  def setItems(items: js.Array[T], shouldClear: Boolean): Unit                                      = js.native
-  def setKeySelected(key: String, isSelected: Boolean, shouldAnchor: Boolean): Unit                 = js.native
+  def setItems(items: js.Array[T], shouldClear: js.UndefOr[Boolean] = js.undefined): Unit                                      = js.native
+  def setKeySelected(key: String|Int, isSelected: Boolean, shouldAnchor: Boolean): Unit                 = js.native
   def setIndexSelected(index: Int, isSelected: Boolean, shouldAnchor: Boolean): Unit                = js.native
   def setChangeEvents(isEnabled: Boolean, suppressChange: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   def setModal(isModal: Boolean): Unit                                                              = js.native
   def toggleAllSelected(): Unit                                                                     = js.native
-  def toggleKeySelected(key: String): Unit                                                          = js.native
+  def toggleKeySelected(key: String|Int): Unit                                                          = js.native
   def toggleIndexSelected(index: Int): Unit                                                         = js.native
   def toggleRangeSelected(fromIndex: Int, count: Int): Unit                                         = js.native
+  
+  def isKeySelected(key: String|Int): Boolean = js.native
+  def isIndexSelected(index: Int): Boolean = js.native
+  def setAllSelected(isAllSelected: Boolean): Unit = js.native
 }
 
 object Selection {
@@ -109,26 +117,22 @@ object Selection {
   def apply[T <: js.Object](options: Options[T]) =
     new Selection[T](options.asInstanceOf[Selection.Options[T]])
 
-  type GetKey[T <: js.Object] = js.Function2[T, Int, String|Int]
+  type CanSelectItem[T <: js.Object] = js.Function2[js.UndefOr[T], Int, Boolean]
+  type GetKey[T <: js.Object] = js.Function2[js.UndefOr[T], Int, String|Int]
+  type OnSelectionChanged = js.Function0[Unit]
     
-  def GetStringKey[T <: js.Object](f: (T, Int) => String) = 
+  def GetStringKey[T <: js.Object](f: (js.UndefOr[T], Int) => String) = 
     js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
 
-  //def GetStringKey[T <: js.Object](f: T => String) = 
-  //  js.Any.fromFunction1(f).asInstanceOf[GetKey[T]]
+  def GetIntKey[T <: js.Object](f: (js.UndefOr[T], Int) => Int) = 
+    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
+
+  def GetKey[T <: js.Object](f: (js.UndefOr[T], Int) => String|Int) = 
+    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
+
+  def CanSelectItem[T <: js.Object](f: (js.UndefOr[T], Int) => Boolean) =
+    js.Any.fromFunction2(f).asInstanceOf[CanSelectItem[T]]
     
-  def GetIntKey[T <: js.Object](f: (T, Int) => Int) = 
-    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
-
-  //def GetIntKey[T <: js.Object](f: T => Int) = 
-  //  js.Any.fromFunction1(f).asInstanceOf[GetKey[T]]
-
-  def GetKey[T <: js.Object](f: (T, Int) => String|Int) = 
-    js.Any.fromFunction2(f).asInstanceOf[GetKey[T]]
-
-  //def GetKey[T <: js.Object](f: T => String|Int) = 
-  //  js.Any.fromFunction1(f).asInstanceOf[GetKey[T]]
-
   trait Options[T <: js.Object] extends js.Object {
     var getKey: js.UndefOr[GetKey[T]] = js.undefined
     var selectionMode: js.UndefOr[SelectionMode]                                          = js.undefined

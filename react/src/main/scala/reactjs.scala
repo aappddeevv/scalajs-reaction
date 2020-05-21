@@ -137,16 +137,19 @@ object EffectArg {
     * Use a general return of A vs unit to be more friendly. Requires
     * 2 scala => js function conversions. Ugh!
     */
-  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () => {
-      { () => arg(); () }: js.Function0[Unit]
-    }
+  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () => 
+    val rthunk = arg()
+    js.Any.fromFunction0(() => { rthunk(); () })
   }: js.Function0[js.Function0[Unit]]
 
-  /** No callback. */
+  /** No final callback. 
+  *
+  *  @todo Not sure inner definition is needed.
+  */
   @inline implicit def fromThunkJS[U](f: js.Function0[U]): EffectArg =
     js.Any.fromFunction0[Unit](() => { f(); () }).asInstanceOf[EffectArg]
 
-  /** No callback. */
+  /** No final callback. */
   @inline implicit def fromThunk[U](f: () => U): EffectArg =
     js.Any.fromFunction0[Unit](() => { f(); () }).asInstanceOf[EffectArg]
 
@@ -156,7 +159,7 @@ object EffectArg {
 
   /** Return value form the callback is discarded. */
   @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
-    ({ () => { () => f(); () }: js.Function0[Unit] }: js.Function0[js.Function0[Unit]])
+    ((() => { val rthunk = f(); js.Any.fromFunction0(() => {rthunk(); () })}): js.Function0[js.Function0[Unit]])
       .asInstanceOf[EffectArg]
 }
 
@@ -175,7 +178,7 @@ trait Hooks extends js.Object {
   def useDebugValue[T](value: T, format: js.UndefOr[js.Function1[T, String]] = js.undefined): Unit = js.native
 
   // callback and the return value will require extensive casting so this is a template
-  def useCallback(cb: js.Any, deps: js.UndefOr[Dependencies]=js.undefined): js.Any = js.native
+  def useCallback(cb: js.Function, deps: js.UndefOr[Dependencies]=js.undefined): js.Any = js.native
 
   def useMemo[T](value: js.Function0[T], dependencies: Dependencies | Unit): T = js.native
 

@@ -43,7 +43,7 @@ trait ObservableQueryFields[T, TVars <: js.Object] extends js.Object {
   val variables: TVars = js.native
 
   // from pick ObservableQuery
-  def refetch(variables: TVars): js.Promise[ApolloQueryResult[T]] = js.native
+  def refetch(variables: js.UndefOr[TVars]=js.undefined): js.Promise[ApolloQueryResult[T]] = js.native
   // subscribeToMore
   def updateQuery(f: js.Function2[T, UpdateQueryOptions[TVars], T]): Unit = js.native
   def stopPolling(): Unit = js.native
@@ -57,11 +57,14 @@ trait ObservableQueryFields[T, TVars <: js.Object] extends js.Object {
 @js.native
 trait QueryResult[T, TVars <: js.Object] extends ObservableQueryFields[T, TVars] {
   val client: apollo_client.ApolloClient = js.native
-  // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
-  // ts defs say T | undefined but not null !?!?
-  val data: js.UndefOr[T] = js.native
-  //val data: T | Null = js.native
   val error: js.UndefOr[ApolloError] = js.native
+  // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
+  // ts defs say T | undefined but not null !?!?  
+  //val data: T | Null = js.native
+  
+  // only these are returned if lazy query or skip=true, but the type lies.
+  // if called is true, then I think the other attributes are there
+  val data: js.UndefOr[T] = js.native
   val loading: Boolean = js.native
   val networkStatus: NetworkStatus = js.native
   val called: Boolean = js.native
@@ -80,7 +83,38 @@ object QueryResult {
   }
 }
 
-trait OptionsMaker[T, TVars <: js.Object] {
+trait ApolloClientOptionsMaker[T, TVars <: js.Object] {
+
+  /** Make apollo_client.QueryOptions for the ApolloClient returned from `useQuery` which are slightly different than
+   * `QueryHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
+   * to the suspense mechanism.
+   */
+  def makeClientOptions(
+    query: DocumentNode,
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    fetchResults: js.UndefOr[Boolean] = js.undefined,
+    metadata: js.UndefOr[js.Object] = js.undefined,
+    fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
+  ) = {
+    val __obj = js.Dynamic
+      .literal(
+        "query" -> query,
+        "errorPolicy" -> errorPolicy,
+        "context" -> context,
+        "fetchResult" -> fetchResults,
+        "metadata" -> metadata,
+        "fetchPolicy" -> fetchPolicy
+      )
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDynamic("variables")(unsafeVariables)
+    __obj.asInstanceOf[apollo_client.QueryOptions[TVars]]
+  }
+}
+
+trait OptionsMaker[T, TVars <: js.Object] extends ApolloClientOptionsMaker[T,TVars] {
  /** Make QueryHookOptions */
   def makeOptions(
     variables: js.UndefOr[TVars] = js.undefined,
@@ -122,33 +156,6 @@ trait OptionsMaker[T, TVars <: js.Object] {
     __obj.asInstanceOf[QueryHookOptions[T, TVars]]
   }
 
-  /** Make apollo_client.QueyrOptions for the ApolloClient returned from `useQuery` which are slightly different than
-   * `QueryHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
-   * to the suspense mechanism.
-   */
-  def makeClientOptions(
-    query: DocumentNode,
-    variables: js.UndefOr[TVars] = js.undefined,
-    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
-    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
-    context: js.UndefOr[js.Object] = js.undefined,
-    fetchResults: js.UndefOr[Boolean] = js.undefined,
-    metadata: js.UndefOr[js.Object] = js.undefined,
-    fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined
-  ) = {
-    val __obj = js.Dynamic
-      .literal(
-        "query" -> query,
-        "errorPolicy" -> errorPolicy,
-        "context" -> context,
-        "fetchResult" -> fetchResults,
-        "metadata" -> metadata,
-        "fetchPolicy" -> fetchPolicy
-      )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
-    if (unsafeVariables.isDefined) __obj.updateDynamic("variables")(unsafeVariables)
-    __obj.asInstanceOf[apollo_client.QueryOptions[TVars]]
-  }
 }
 
 /** Because there are some duplicative types in the signatures
@@ -157,16 +164,77 @@ trait OptionsMaker[T, TVars <: js.Object] {
  * need to always specify the types.
  */
 case class UseQuery[T, TVars <: js.Object]() extends OptionsMaker[T, TVars] {
+  type TArg = T
+  type TVarsArg = TVars
   def useQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
     module.useQuery[T, TVars](query, options)
 }
 
-/*
-case class UseLazyQuery[T, TVars <: js.Object]() extends OptionsMaker[T, Tvars] {
-  def useLazyQuery(query: DocumentNode, options: js.UndefOr[QueryHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
-    module.useLazyQuery[T, TVars](query, options)
+/** Instantiate to avoid all the type parameter noise. */
+case class UseLazyQuery[T, TVars <: js.Object]() extends ApolloClientOptionsMaker[T, TVars] {
+  type TArg = T
+  type TVarsArg = TVars
+
+  def useLazyQuery(query: DocumentNode, options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined):
+  (js.Function1[QueryLazyOptions[TVars], Unit], QueryResult[T, TVars]) = module.useLazyQuery[T, TVars](query, options)
+ 
+ /** Make LazyQueryHookOptions for the hook, not for the lazy fetcher. */
+  def makeOptions(
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
+    query: js.UndefOr[DocumentNode] = js.undefined,
+    displayName: js.UndefOr[String] = js.undefined,
+    onCompleted: js.UndefOr[js.Function1[js.UndefOr[T], Unit]] = js.undefined,
+    onError: js.UndefOr[js.Function1[ApolloError, Unit]] = js.undefined,
+    ssr: js.UndefOr[Boolean] = js.undefined,
+    fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
+    errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
+    pollInterval: js.UndefOr[Int] = js.undefined,
+    client: js.UndefOr[ApolloClient] = js.undefined,
+    notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    partialRefetch: js.UndefOr[Boolean] = js.undefined,
+    returnPartialData: js.UndefOr[Boolean] = js.undefined,
+    skip: js.UndefOr[Boolean] = js.undefined
+  ) = {
+    val __obj = js.Dynamic
+      .literal(
+        "query" -> query,
+        "displayName" -> displayName,
+        "onCompleted" -> onCompleted,
+        "onError" -> onError,
+        "ssr" -> ssr,
+        "fetchPolicy" -> fetchPolicy,
+        "errorPolicy" -> errorPolicy,
+        "pollInterval" -> pollInterval,
+        "client" -> client,
+        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
+        "context" -> context,
+        "partialRefetch" -> partialRefetch,
+        "returnPartialData" -> returnPartialData,
+        "skip" -> skip,
+      )
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    __obj.asInstanceOf[LazyQueryHookOptions[T, TVars]]
+  }
+
+    
+ /** Make LazyQueryHookOptions */
+  def makeLazyOptions(
+    variables: js.UndefOr[TVars] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+  ) = {
+    val __obj = js.Dynamic
+      .literal(
+        "context" -> context,
+      )
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    __obj.asInstanceOf[QueryLazyOptions[TVars]]
+  }
 }
-*/
 
 @js.native
 @JSImport("react-apollo", JSImport.Namespace)
@@ -180,7 +248,7 @@ private[react_apollo] object module extends js.Object {
   def useLazyQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
-  ): js.Tuple2[QueryLazyOptions[TVars], QueryResult[T, TVars]] = js.native
+  ): js.Tuple2[js.Function1[QueryLazyOptions[TVars],Unit], QueryResult[T, TVars]] = js.native
 
   // Need Ext for ExecutionResult...
   def useMutation[T, TVars <: js.Object](
@@ -259,9 +327,9 @@ object QueryHookOptions {
 // @apollo/react-hooks, return value from useLazyQuery
 @js.native
 trait QueryLazyOptions[TVars <: js.Object] extends js.Object {
-  val variables: js.UndefOr[TVars] = js.undefined
+  var variables: js.UndefOr[TVars] = js.undefined
   // there is a type call Context = Record<string, any>
-  val context: js.UndefOr[js.Object] = js.undefined
+  var context: js.UndefOr[js.Object] = js.undefined
 }
 
 // @apollo/react-hooks
@@ -315,6 +383,7 @@ trait MutationFunctionOptions[T, TVars <: js.Object] extends js.Object {
   @JSName("refetchQueries")
   var refetchQueriesByName: js.UndefOr[js.Array[String]] = js.undefined
   var awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined
+  var update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined
   var context: js.UndefOr[js.Object] = js.undefined
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
 }
@@ -337,6 +406,9 @@ trait MutationHookOptions[T, TVars <: js.Object] extends BaseMutationOptions[T, 
  * need to always specify the types.
  */
 case class UseMutation[T, TVars <: js.Object]() {
+  type TArg = T
+  type TVarsArg = TVars
+
   def useMutation(
     mutation: DocumentNode,
     options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined) =
@@ -378,9 +450,40 @@ case class UseMutation[T, TVars <: js.Object]() {
     if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
     __obj.asInstanceOf[MutationHookOptions[T, TVars]]
   }
+  
+  /** Options needed for the "caller" function return from the mutation hook.
+   * Other config info, such as error policy and the operation itself are take
+   * from the hook.
+   */
+  def makeFunctionOptions(
+  unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
+   variables: js.UndefOr[TVars] = js.undefined,
+  optimisticResponseStrict: js.UndefOr[T] = js.undefined,
+  optimisticResponse: js.UndefOr[js.Function1[TVars, T]] = js.undefined,
+  refetchQueriesByName: js.UndefOr[js.Array[String]] = js.undefined,
+  awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
+  update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
+  context: js.UndefOr[js.Object] = js.undefined,
+  fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
+  ) = {
+  val __obj = js.Dynamic
+    .literal(
+        "context" -> context,
+        "fetchPolicy" -> fetchPolicy,
+        "update" -> update,
+        "refetchQueries" -> refetchQueriesByName,
+        "awaitRefetchQueries" -> awaitRefetchQueries,
+    )
+    if(optimisticResponseStrict.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponseStrict.asInstanceOf[js.Any])
+    if(optimisticResponse.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponse)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    __obj.asInstanceOf[MutationFunctionOptions[T, TVars]]
+  }
 
   /** Make apollo_client.QueryOptions for the ApolloClient returned from `useMutation` which are slightly different than
-   * `MutationHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
+   * `MutationHookOptions` used in the hook!
+   * This primarily exists so we can get a `js.Promise` to throw an exception
    * to the suspense mechanism.
    */
   def makeClientOptions(
@@ -453,7 +556,7 @@ trait OnSubscriptionDataOptions[T] extends js.Object {
 }
 
 // @apollo/react-common
-trait BaseSubscriptionOptions[T, TVars <: js.Object] {
+trait BaseSubscriptionOptions[T, TVars <: js.Object] extends js.Object {
   var variables: js.UndefOr[TVars] = js.undefined
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
   @JSName("shouldResubscribe")

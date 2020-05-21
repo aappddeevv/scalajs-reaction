@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package recoil
 
 import scala.scalajs.js
@@ -25,27 +46,34 @@ object RecoilRoot {
 
 trait AtomOptions[T] extends js.Object {
   val key: String
-  val default: T | RecoilValue[T] | js.Promise[T]
+  val default: FlexiValue[T]
   // persistence
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
 
 }
 
-trait GetArgs[T] {
-    // val get: GetRecoilValuen[T]
-  def get(value: RecoilValue[T]): Return[T]
+object AtomOptions {
+   def apply[T](k: String, d: FlexiValue[T]) = 
+    new AtomOptions[T] {
+      val key = k
+      val default = d
+    }
 }
 
 @js.native
-trait GetSetResetArgs extends js.Object {
+trait ReadOnlyAccessors extends js.Object {
+  def get[A](value: RecoilValue[A]): A = js.native
+}
+
+@js.native
+trait ReadWriteAccessors extends ReadOnlyAccessors {
   def set[A](atom: RecoilState[A], newValue: A | DefaultValue | js.Function1[A, A | DefaultValue]): Unit = js.native
-  def get[A](atom: RecoilValue[A]): A = js.native
   def reset(atom: RecoilState[_]): Unit = js.native
 }
 
 trait ReadOnlySelectorOptions[T] extends js.Object {
   val key: NodeKey
-  def get(getter: GetArgs[T]): Return[T]
+  def get(accessors: ReadOnlyAccessors): Return[T]
 
   /** If undefined, creates a readonly selector. */
   //def set[A]: js.UndefOr[js.Function2[SetArgs, A, Unit]] = js.undefined
@@ -53,7 +81,7 @@ trait ReadOnlySelectorOptions[T] extends js.Object {
 }
 
 trait WriteableSelectorOptions[T] extends ReadOnlySelectorOptions[T] {
-  def set[A](getSetReset: GetSetResetArgs, value: A | DefaultValue): Unit
+  def set[A](accessors: ReadWriteAccessors, value: A | DefaultValue): Unit
 }
 
 @js.native
@@ -144,9 +172,9 @@ abstract trait RecoilValueReadOnly[+T] extends AbstractRecoilValueReadOnly[T]
 
 @js.native
 trait CallbackInterface extends js.Object {
-  def getPromise[T](value: RecoilValue[T]): js.Promise[T] = js.native
-  def getLoadable[T](value: RecoilValue[T]): Loadable[T] = js.native
-  def set[T](value: RecoilState[T], valOrUpdater: SetValOrUpdater[T]): Unit = js.native
+  def getPromise[A](value: RecoilValue[A]): js.Promise[A] = js.native
+  def getLoadable[A](value: RecoilValue[A]): Loadable[A] = js.native
+  def set[A](value: RecoilState[A], valOrUpdater: SetValOrUpdater[A]): Unit = js.native
   def reset(value: RecoilState[_]): Unit = js.native
 }
 
@@ -167,7 +195,7 @@ trait recoil_module extends js.Object {
   def useSetRecoilState[T](state: RecoilState[T]): SetterOrUpdater[T] = js.native
   def useResetRecoilState[T](state: RecoilState[T]): Resetter = js.native
   @JSName("useRecoilCallback")
-  def useRecoilCallback_UNTYPED[T](f: js.Function, deps: js.UndefOr[js.Array[AllType]] = js.undefined): js.Any =
+  def useRecoilCallback_UNTYPED[T](f: js.Function, deps: js.UndefOr[Dependencies] = js.undefined): js.Any =
     js.native
   def isRecoilValue(value: Any): Boolean = js.native
 }
@@ -181,79 +209,68 @@ class DefaultValue() extends js.Object
 object module extends recoil_module
 
 trait hooks {
-  def useRecoilCallbackMounting[T](deps: AllType*)(f: js.Function1[CallbackInterface, Return[T]]) =
+
+  def useRecoilCallbackMounting[T](f: js.Function1[CallbackInterface, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function0[T]]
-
-  def useRecoilCallback[T](f: js.Function1[CallbackInterface, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function0[T]]
-
   def useRecoilCallback[T](deps: AllType*)(f: js.Function1[CallbackInterface, Return[T]]) =
     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function0[T]]
     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function0[T]]
-
   def useRecoilCallbackA[T](deps: Dependencies)(f: js.Function1[CallbackInterface, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function0[T]]
 
-  def useRecoilCallback1[A1, T](f: js.Function2[CallbackInterface, A1, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[A1, T]]
-
+    
+  def useRecoilCallbackMounting1[A1, T](f: js.Function2[CallbackInterface, A1, Return[T]]) =
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function1[A1, T]]
   def useRecoilCallback1[A1, T](deps: AllType*)(f: js.Function2[CallbackInterface, A1, Return[T]]) =
     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[A1, T]]
     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function1[A1, T]]
-
   def useRecoilCallback1A[A1, T](deps: Dependencies)(f: js.Function2[CallbackInterface, A1, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function1[A1, T]]
 
-  def useRecoilCallback2[A1, A2, T](f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function2[A1, A2, T]]
-
+    
+  def useRecoilCallbackMounting2[A1, A2, T](f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function2[A1, A2, T]]
   def useRecoilCallback2[A1, A2, T](deps: AllType*)(f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function2[A1, A2, T]]
     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function2[A1, A2, T]]
-
   def useRecoilCallback2A[A1, A2, T](deps: Dependencies)(f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function2[A1, A2, T]]
 
-  def useRecoilCallback3[A1, A2, A3, T](f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function3[A1, A2, A3, T]]
-
+    
+  def useRecoilCallbackMounting3[A1, A2, A3, T](f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function3[A1, A2, A3, T]]
   def useRecoilCallback3[A1, A2, A3, T](deps: AllType*)(f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function3[A1, A2, A3, T]]
     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function3[A1, A2, A3, T]]
-
   def useRecoilCallback3A[A1, A2, A3, T](deps: Dependencies)(
     f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function3[A1, A2, A3, T]]
 
-  def useRecoilCallback4[A1, A2, A3, A4, T](f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
-
+    
+  def useRecoilCallbackMounting4[A1, A2, A3, A4, T](f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
   def useRecoilCallback4[A1, A2, A3, A4, T](deps: AllType*)(
     f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
-
   def useRecoilCallback4A[A1, A2, A3, A4, T](deps: Dependencies)(
     f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
 
-  def useRecoilCallback5[A1, A2, A3, A4, A5, T](f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-
+    
+  def useRecoilCallbackMounting5[A1, A2, A3, A4, A5, T](f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
   def useRecoilCallback5[A1, A2, A3, A4, A5, T](deps: AllType*)(
     f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-
   def useRecoilCallback5A[A1, A2, A3, A4, A5, T](deps: Dependencies)(
     f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
   def atom[T](options: AtomOptions[T]) = module.atom[T](options)
 
-  @JSName("selector")
   def readonlySelector[T](options: ReadOnlySelectorOptions[T]) = module.readonlySelector[T](options)
-  @JSName("selector")
   def writableSelector[T](options: WriteableSelectorOptions[T]) = module.writableSelector[T](options)
   def useRecoilState[T](atom: RecoilState[T]): (T, SetterOrUpdater[T]) =
     module.useRecoilState[T](atom)

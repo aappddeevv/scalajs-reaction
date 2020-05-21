@@ -108,12 +108,14 @@ object Button {
     var description: js.UndefOr[IStyle] = js.undefined
   }
   
-  type OC = MouseEventHandler[dom.html.Button]
+  @deprecated("Use OnClick")
+  type OC = OnClick
+  type OnClick = MouseEventHandler[dom.html.Button]
   
   def OnClick(f: MouseEventHandler[dom.html.Button] => Unit) = 
-    js.Any.fromFunction1(f).asInstanceOf[OC]
+    js.Any.fromFunction1(f).asInstanceOf[OnClick]
     
-  def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC]
+  def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OnClick]
 
   object Default {
     @js.native

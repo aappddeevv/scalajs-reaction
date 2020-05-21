@@ -271,7 +271,7 @@ trait IContextualMenuItemBase extends WithIconProps {
   var checked: js.UndefOr[Boolean] = js.undefined
   var split: js.UndefOr[Boolean] = js.undefined
   var data: js.UndefOr[scala.Any] = js.undefined
-  var onClick: js.UndefOr[OC] = js.undefined
+  var onClick: js.UndefOr[OnClick] = js.undefined
   var href: js.UndefOr[String] = js.undefined
   var target: js.UndefOr[String] = js.undefined
   var rel: js.UndefOr[String] = js.undefined
@@ -282,8 +282,8 @@ trait IContextualMenuItemBase extends WithIconProps {
   var className: js.UndefOr[String] = js.undefined
   var ariaLabel: js.UndefOr[String] = js.undefined
   var title: js.UndefOr[String] = js.undefined
-  var onRender: js.UndefOr[RF] = js.undefined
-  var onMouseDown: js.UndefOr[OMD] = js.undefined
+  var onRender: js.UndefOr[RenderFunction] = js.undefined
+  var onMouseDown: js.UndefOr[OnMouseDown] = js.undefined
   var role: js.UndefOr[String] = js.undefined
   var customOnRenderLength: js.UndefOr[Int] = js.undefined
   var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
@@ -306,16 +306,22 @@ trait IContextualMenuItem extends IContextualMenuItemBase {
 
 object IContextualMenuItem {
   /** Callback with the react synthetic event. OC = onClick. Should be Mouse or Keyboard event! */
-  type OC = js.Function2[ReactMouseEvent[dom.html.Element], IContextualMenuItem, js.UndefOr[Boolean]]
+  type OnClick = js.Function2[ReactMouseEvent[dom.html.Element], IContextualMenuItem, js.UndefOr[Boolean]]
+  @deprecated("Use OnClick")
+  type OC = OnClick
 
   def OnClick(f: (ReactMouseEvent[dom.html.Element], IContextualMenuItem) => js.UndefOr[Boolean]) =
     js.Any.fromFunction2(f).asInstanceOf[OC]
 
   def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC]
     
-  type RF = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
+  type RenderFunction = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
+  @deprecated("Use RenderFunction")
+  type RF = RenderFunction
   
-  type OMD = js.Function2[IContextualMenuItem, ReactMouseEvent[dom.html.Element], Unit]
+  type OnMouseDown = js.Function2[IContextualMenuItem, ReactMouseEvent[dom.html.Element], Unit]
+  @deprecated("Use OnMouseDown")
+  type OMD = OnMouseDown
   
 }
 

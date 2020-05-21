@@ -70,12 +70,15 @@ def std_settings(p: String, d: String) =
     description := d,
     libraryDependencies ++= Seq(
       //"org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
-    )
+  ),
+  // temp fix as scalafix plugin is incompat with 2.13.2
+  // https://github.com/scalacenter/scalafix/issues/1109
+  addCompilerPlugin(scalafixSemanticdb("4.3.10"))
   ) ++ resolverSettings ++ compilerSettings ++ bintraySettings ++ jsSettings
 
 inThisBuild(
   List(
-    scalaVersion := "2.13.1",
+    scalaVersion := "2.13.2",
     organization := "ttg",
     organizationName := "The Trapelo Group",
     startYear := Some(2018),
@@ -134,6 +137,7 @@ lazy val root = project
     ,`use-error-boundary`
     ,`react-teleporter`,
     plotlyjs,
+    `react-fast-compare`,
 	`react-plotlyjs`
 ,`react-device-detect`
    ,`react-responsive`
@@ -156,6 +160,12 @@ lazy val msal = project
   .in(file("components/msal"))
   .settings(std_settings("azure.msal", "Microsoft Authentication Library msal"))
   .settings(buildinfo_settings("msal"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+
+lazy val `react-fast-compare`= project
+  .in(file("components/react-fast-compare"))
+  .settings(std_settings("react-fast-compare", "fast compare customized for react"))
+  .settings(buildinfo_settings("react_fast_compare"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val mssql = project
@@ -511,6 +521,7 @@ lazy val docs = project
     `use-query-params`,
     `use-error-boundary`,
     `react-teleporter`,
+    `react-fast-compare`,
     plotlyjs,
 	`react-plotlyjs`
    ,`react-device-detect`

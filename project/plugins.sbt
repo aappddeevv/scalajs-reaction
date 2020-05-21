@@ -1,5 +1,5 @@
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.0.1")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.1.0")
 
 addSbtPlugin("org.scala-js"                      % "sbt-scalajs"      % scalaJSVersion)
 addSbtPlugin("org.scalameta"                     % "sbt-scalafmt"     % "2.3.0")
@@ -9,7 +9,7 @@ addSbtPlugin("de.heikoseeberger"                 % "sbt-header"       % "5.4.0")
 addSbtPlugin("com.eed3si9n"                      % "sbt-unidoc"       % "0.4.2")
 //addSbtPlugin("org.scalameta"                     % "sbt-mdoc"         % "2.1.1")
 addSbtPlugin("com.thoughtworks.sbt-scala-js-map" % "sbt-scala-js-map" % "latest.release")
-addSbtPlugin("ch.epfl.scala"                     % "sbt-scalafix"     % "0.9.11")
+addSbtPlugin("ch.epfl.scala"                     % "sbt-scalafix"     % "0.9.15")
 addSbtPlugin("ch.epfl.scala"                     % "sbt-bloop"        % "1.4.0-RC1")
 //addSbtPlugin("com.thoughtworks.sbt-scala-js-map" % "sbt-api-mappings" % "4.0.0+21-b1f441da")
 

@@ -20,7 +20,7 @@
  */
 
 package apollo
-package client
+package client3
 
 import scala.scalajs.js
 import js.annotation._

@@ -42,6 +42,8 @@ object Image {
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
+    
+  def only(props: Props) = createElement0(JS, props)
 
   @js.native
   trait IImage extends js.Object {}
@@ -88,11 +90,11 @@ object Image {
 
   @js.native
   abstract sealed trait LoadState extends js.Any
-  object LoadaState {
-    val notLoaded  = 0.asInstanceOf[CoverStyle]
-    val loaded     = 1.asInstanceOf[CoverStyle]
-    val error      = 2.asInstanceOf[CoverStyle]
-    val erroLoaded = 3.asInstanceOf[CoverStyle]
+  object LoadState {
+    val notLoaded  = 0.asInstanceOf[LoadState]
+    val loaded     = 1.asInstanceOf[LoadState]
+    val error      = 2.asInstanceOf[LoadState]
+    val erroLoaded = 3.asInstanceOf[LoadState]
   }
 
   trait Props extends ComponentRef[IImage] with ImgHTMLAttributes[dom.html.Image] with Theme {

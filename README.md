@@ -244,6 +244,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * react-device-detect
 * react-dom
 * react-big-calendar
+* react-fast-compare
 * react-native-nativebase
 * react-native-elements
 * react-navigation

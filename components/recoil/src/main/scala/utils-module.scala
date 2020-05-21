@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package recoil
 package utils
 
@@ -20,7 +41,7 @@ trait ReadOnlySelectorFamilyOptions[T, P <: SerializableParameter] extends js.Ob
 }
 
 trait ReadWriteSelectorFamilyOptions[T, P <: SerializableParameter] extends ReadOnlySelectorFamilyOptions[T, P] {
-  def set(args: P): js.Function2[GetSetResetArgs, T | DefaultValue, Unit]
+  def set(args: P): js.Function2[ReadWriteAccessors, T | DefaultValue, Unit]
 }
 
 @js.native
@@ -41,7 +62,7 @@ trait utils_module extends js.Object {
   def constSelector[T <: SerializableParameter](constant: T): RecoilValueReadOnly[T] = js.native
   def errorSelector[T](message: String): RecoilValueReadOnly[T] = js.native
 
-    // there is no way in js to restrict F with a context bounds since that adds an argument.
+  // there is no way in js to restrict F with a context bounds since that adds an argument.
 
   @JSName("waitForNone")
   def waitForNoneF[F[_]](args: F[RecoilValueReadOnly[_]]): F[Loadable[_]] = js.native
@@ -74,6 +95,6 @@ trait utils_module extends js.Object {
 object module extends utils_module
 
 /** Move type parameter to type member. */
-trait JSF[F[_]] { 
-    type JS[T] = F[T]
+trait JSF[F[_]] {
+  type JS[T] = F[T]
 }

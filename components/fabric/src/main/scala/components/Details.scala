@@ -307,7 +307,11 @@ object Details {
       var compact: js.UndefOr[Boolean] = js.undefined
       var columns: js.UndefOr[js.Array[IColumn]] = js.undefined
       var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
-      var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String] | js.Function1[T, String]] = js.undefined
+      var getKey: js.UndefOr[js.Function2[js.UndefOr[T], Int, String|Int]] = js.undefined
+      @JSName("getKey")
+      var getKeyString: js.UndefOr[js.Function2[js.UndefOr[T],Int,String]] = js.undefined
+      @JSName("getKey")
+      var getKeyInt: js.UndefOr[js.Function2[js.UndefOr[T],Int,Int]] = js.undefined
       var indentWidth: js.UndefOr[Double] = js.undefined
       var initialFocusedIndex: js.UndefOr[Int] = js.undefined
       var isHeaderVisible: js.UndefOr[Boolean] = js.undefined

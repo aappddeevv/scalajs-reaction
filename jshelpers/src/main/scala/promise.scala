@@ -352,13 +352,13 @@ trait JSPromiseLowerOrderImplicits {
 }
 
 /** Extension methods for js.Array[js.Thenable[_]]. */
-final class JSArrayPromiseOps(private val arr: js.Array[js.Thenable[_]]) extends AnyVal {
+final class JSArrayPromiseOps[A](private val arr: js.Array[js.Thenable[A]]) extends AnyVal {
   /** `js.Promise.all` only takes js.Promise arrays. This takes an array of `js.Thenable[_]`s. */
-  def all = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[_]]])
+  def all = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[A]]])
 }
 
 trait JSPromiseSyntax extends JSPromiseLowerOrderImplicits {
-  @inline implicit def jsArrayToPromise(arr: js.Array[js.Thenable[_]]) = new JSArrayPromiseOps(arr)
+  @inline implicit def jsArrayToPromise[A](arr: js.Array[js.Thenable[A]]) = new JSArrayPromiseOps[A](arr)
   @inline implicit def anyToJSPromise[A](a: A) = new JSPromiseObjectOps[A](a)
   @inline implicit def anyToJSPromiseFail(a: scala.Any) = new JSPromiseFailObjectOps(a)
   @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
