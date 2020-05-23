@@ -43,28 +43,37 @@ trait ComponentSyntax {
     def element: ReactNode = ReactJS.createElement(f, null)
     def toEl: ReactNode = ReactJS.createElement(f, null)
   }
-
-  /** Allow you to set the displayName of a react function component. */
-  //implicit class RichReactFC[P <: js.Object](private val f: ReactFC[P]) {
-  // def displayName(name: String): Unit = f.asInstanceOf[js.Dynamic].displayName = name
-  //}
   
   /** Convert a plain js function with 1 props argument to an element using some syntax. */
-  implicit class RichJSFunction1[P <: js.Object](private val f: js.Function1[P, ReactNode]) {
+  implicit class RichScalaJSFunction1(private val f: ScalaJSFunctionComponent1) {
     def unsafeElementWith(props: js.Dynamic): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
     def unsafeElementWith(name: String, props: js.Dynamic): ReactNode = {
+         f.asInstanceOf[js.Dynamic].displayName = name
+         ReactJS.createElement(f, props.asInstanceOf[js.Any])
+     }
+    def elementWith[P <: js.Object](props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+    def elementWith[P <: js.Object](name: String, props: P): ReactNode = { 
         f.asInstanceOf[js.Dynamic].displayName = name
         ReactJS.createElement(f, props.asInstanceOf[js.Any])
     }
-    def elementWith(props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
-    def elementWith(name: String, props: P): ReactNode = { 
-        f.asInstanceOf[js.Dynamic].displayName = name
-        ReactJS.createElement(f, props.asInstanceOf[js.Any])
-    }
-    def toEl(props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
-    /** This does not seem to get picked up correctly. */
     def displayName(name: String): Unit = f.asInstanceOf[js.Dynamic].displayName = name
   }
+  
+  /** Convert a plain js function with 1 props argument to an element using some syntax. */
+//   implicit class RichJSFunction1[P <: js.Object](private val f: js.Function1[P, ReactNode]) {
+//     def unsafeElementWith(props: js.Dynamic): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+//     def unsafeElementWith(name: String, props: js.Dynamic): ReactNode = {
+//         f.asInstanceOf[js.Dynamic].displayName = name
+//         ReactJS.createElement(f, props.asInstanceOf[js.Any])
+//     }
+//     def elementWith(props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+//     def elementWith(name: String, props: P): ReactNode = { 
+//         f.asInstanceOf[js.Dynamic].displayName = name
+//         ReactJS.createElement(f, props.asInstanceOf[js.Any])
+//     }
+//     def toEl(props: P): ReactNode = ReactJS.createElement(f, props.asInstanceOf[js.Any])
+//     def displayName(name: String): Unit = f.asInstanceOf[js.Dynamic].displayName = name
+//   }
 
   /** Convert standard scala function with 1 props arguments to an element using some syntax. */
   implicit class RichScalaFunction[P <: js.Object](private val f: P => ReactNode) {

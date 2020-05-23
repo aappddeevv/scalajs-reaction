@@ -38,16 +38,16 @@ trait Children extends js.Object {
 }
 
 trait TransitionConfig extends js.Object {
-  var timoutMs: js.UndefOr[Int] = js.undefined
+  var timeoutMs: js.UndefOr[Int] = js.undefined
 }
 
 trait DeferredValueConfig extends js.Object {
-  var timoutMs: js.UndefOr[Int] = js.undefined
+  var timeoutMs: js.UndefOr[Int] = js.undefined
 }
 
 @js.native
 trait Concurrent extends js.Object {
-  def useTransition(config: TransitionConfig): js.Tuple2[js.Any, js.Any] = js.native
+  def useTransition(config: TransitionConfig): js.Tuple2[js.Function1[js.Function0[Unit], Unit], Boolean] = js.native
   def useDeferredValue(value: js.Any, config: DeferredValueConfig): js.Any = js.native
   val SuspenseList: ReactJSComponent = js.native
   // unstable_withSuspenseConfig

@@ -110,7 +110,7 @@ trait Accessors[+T] extends js.Object {
   def promiseMaybe(): js.UndefOr[js.Promise[T]] = js.native
   def promiseOrThrow(): js.Promise[T] = js.native
   //map ????
-  def map[S](thunk: js.Function1[Any, S | js.Promise[S]]): Loadable[S] = js.native
+  def map[S](thunk: js.Function1[Any, S | js.Thenable[S]]): Loadable[S] = js.native
 }
 
 @js.native

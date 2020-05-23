@@ -29,14 +29,14 @@ If your `Props` takes type parameters, you have to lock the type down
 to create a stable value before exporting:
 
 ```scala
-  trait Props[T <: js.Object] ...
-  def apply[T <: js.Object](props: Props[T]) = render.elementWith(props)
-  def render[T <: js.Object]: Props[T] => ReactNode = props => { ... }
+  trait Props[T] ...
+  def apply[T](props: Props[T]) = stable_render.elementWith(props)
+  def render[T]: ReactFC[Props[T]] = props => { ... }
 
   // Use any T type since js does not care about types
   // But since it was def above, you need to create a stable value.
   @JSExportTopLevel("MyComponent")
-  val exportableJSFuncComponentWithPropsParam = render[js.Object]
+  val stable_render: ScalaJSFunctionComponent1 = render[js.Object]
 ```
 
 ## Exporting from scala.js and javascript bundling

@@ -200,7 +200,8 @@ trait QueryOptions[TVars <: js.Object] extends QueryBaseOptions[TVars] {
 }
 
 object QueryOptions {
-  def apply[TVars <: js.Object](query: DocumentNode, 
+  def apply[TVars <: js.Object](
+    query: DocumentNode, 
     fetchPolicy: js.UndefOr[FetchPolicy] = js.undefined,
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
     variables: js.UndefOr[TVars|js.Dynamic] = js.undefined,

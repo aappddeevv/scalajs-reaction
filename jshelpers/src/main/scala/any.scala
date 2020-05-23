@@ -22,9 +22,10 @@
 package jshelpers
 
 import scala.scalajs.js
+import js.|
 
 trait AnyOps[T] {
-  def a: T
+  protected def a: T
 
   /** If T is js.Any, this may be redundent. */
   def asJsAny: js.Any = a.asInstanceOf[js.Any]
@@ -79,7 +80,7 @@ trait AnyOps[T] {
     else js.undefined
 }
 
-final class JsAnyOps[T <: js.Any](val a: T) extends AnyOps[T] {}
+final class JsAnyOps[T <: js.Any](protected val a: T) extends AnyOps[T] {}
 
 trait JsAnySyntax {
   // this does not seem to pick p scala.js mapped types, ask gitter
@@ -90,29 +91,38 @@ trait JsAnySyntax {
  * Intended for directly mapped scala types, not scala.Any in general. Know what
  * you are doing!!! Very dangerous!
  */
-final class ScalaMappedOps[T <: scala.Any](val a: T) extends AnyOps[T] {
+final class ScalaMappedOps[T <: scala.Any](protected val a: T) extends AnyOps[T] {
   ///** Very dangerous! You should know what you are doing. */
   @inline def unsafeAsJsAny = a.asInstanceOf[js.Any]
   @inline def unsafeAsJsObject = a.asInstanceOf[js.Object]
 }
 
-/** Typeclass to get `.toLocaleString` on a few targeted scala AnyVal types. */
-trait ToLocaleString[A <: AnyVal] {
-  def toLocaleString(a: A): String = a.asInstanceOf[js.Object].toLocaleString
+//trait ToLocaleStringOps..
+final class ToLocaleStringOps[A <: AnyVal](protected val a: A) extends AnyVal {
+  def toLocaleString(locale: js.UndefOr[String|js.Array[String]] = js.undefined, 
+    options: js.UndefOr[js.Object]= js.undefined): String = a.asInstanceOf[js.Object].toLocaleString
 }
 
+/*
 trait ToLocaleStringInstances { 
   implicit object intToLocaleString extends ToLocaleString[Int]
   implicit object floatToLocaleString extends ToLocaleString[Int]
   implicit object doubleToLocaleString extends ToLocaleString[Int]
 }
+*/
 
+/*
 final class ToLocaleStringInstanceOps[A <: AnyVal](private val a: A) extends AnyVal {
   def toLocaleString(implicit ev: ToLocaleString[A]) = ev.toLocaleString(a)
 }
+*/
 
 trait ScalaMappedSyntax {
-  @inline implicit def toLocaleStringOps[A <: AnyVal](a: A) = new ToLocaleStringInstanceOps[A](a)
+  //@inline implicit def toLocaleStringOps[A <: AnyVal](a: A) = new ToLocaleStringInstanceOps[A](a)
+  @inline implicit def toIntLocaleOps(a: Int) = new ToLocaleStringOps[Int](a)
+  @inline implicit def toFloatLocaleOps(a: Float) = new ToLocaleStringOps[Float](a)
+  @inline implicit def toDoubleLocaleOps(a: Double) = new ToLocaleStringOps[Double](a)
+  
   @inline implicit def stringScalaOpsSyntax[String](a: String): ScalaMappedOps[String] =
     new ScalaMappedOps[String](a)
   // all of these seem to conflict with the first String def above and are these needed if they are <: js.Any

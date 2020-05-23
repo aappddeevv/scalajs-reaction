@@ -29,7 +29,7 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-        Your real focus should be on creating great web applications not on the framework or making the interop work.
+        Focus on creating great web applications not on the framework or making the interop work.
       </>
     ),
   },
@@ -110,8 +110,8 @@ function Home() {
      val name: String
   }
 
-  // you could also use the type ReactFC[Props]
-  val render: Props => ReactNode = props => div("hello " + props.name)
+  val render: ReactFC[Props] = props => div("hello " + props.name)
+  render.displayName("MyComponent")
   
   def apply(props: Props) = render.elementWith(props)
 }

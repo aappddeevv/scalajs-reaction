@@ -24,7 +24,7 @@ Some good tutorials on react hooks and how to use them can be found at:
 - https://blog.logrocket.com/react-hooks-cheat-sheet-unlock-solutions-to-common-problems-af4caf699e70
 - https://usehooks.com/
 
-## Stateless Component
+## Components
 
 The easiest way to create a component is to use a simple function.
 
@@ -105,7 +105,7 @@ to a javascript function, that's all it does.
 object Components {
   trait Props extends js.Object { val name: String }
 
-  // important to have  this signature
+  // need this type signature
   val render: Props => ReactNode = props => div(s"hello ${name}")
 
   // Call like Components.HelloWorld(...)
@@ -138,6 +138,37 @@ You can define your own protocol for creating a component as long as:
 This facade provides a few implicit conversions to improve type inference
 and calling `createElement` at the right time. That's pretty much all
 this facade does.
+
+## Components with `Props[T]`
+
+If your `Props` takes a `T`, you can create a class:
+
+```scala
+class MyComponent[T] {
+ // component stuff here like above
+}
+```
+
+If you want to keep the `T` close to the render function
+you need to create the parameterized render but also
+a stable value:
+
+```scala
+class MyComponent {
+   trait Props[T] extends js.Object {
+     val items: js.UndefOr[js.Array[T]] = js.undefined
+   }
+
+   def apply[T](props: Props[T]) = stable_render.elementWith(props)
+   
+   def render[T]: ReactFC[Props[T]] = props => { ... }
+   def stable_render: ScalaJSFunctionComponent1 = render[js.Object]   
+}
+```
+
+So pushing down the `T` from the class costs you 1 extra line
+of code to stablize the value.
+
 
 ## Stateful Components
 

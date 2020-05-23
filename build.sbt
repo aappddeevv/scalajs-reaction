@@ -518,6 +518,7 @@ lazy val docs = project
     dataloader,
     `react-content-loader`,
     jshelpers,
+    recoil,
     `use-query-params`,
     `use-error-boundary`,
     `react-teleporter`,

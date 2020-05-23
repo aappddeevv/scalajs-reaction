@@ -43,7 +43,7 @@ package object react extends react.React with When {
   type Dependencies = js.Array[AllType]
 
   /** Empty array which is different than undefinedDependencies. Typically
-   * indicates mount/unmount hook comptutation.
+   * indicates mount/unmount hook processing.
    */
   val emptyDependencies: Dependencies = js.Array()
 

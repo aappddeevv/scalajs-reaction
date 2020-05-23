@@ -368,27 +368,24 @@ trait React {
     * @tparam R js object whose properties are functions. This is not enforced in
     * the type.
     */
-  def useImperativeHandle[T, R <: js.Object](
-      ref: MutableRef[T],
-      thunk: () => R,
-      dependencies: js.UndefOr[Dependencies]
-    ): Unit =
+  def useImperativeHandle[T, R <: js.Object](ref: MutableRef[T],  thunk: () => R, dependencies: js.UndefOr[Dependencies]): Unit =
     ReactJS.useImperativeHandle[T, R](ref, thunk, dependencies)
 
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent =
     ReactJS.`lazy`(lazyComponent)
 
-  def useTransition(config: TransitionConfig) = {
-    val p = ReactJS.useTransition(config)
-    (p._1.asInstanceOf[js.Function1[js.Function0[Unit], Unit]], p._2.asInstanceOf[Boolean])
-  }
+  def useTransition(config: TransitionConfig): (js.Function1[js.Function0[Unit], Unit], Boolean) = 
+    ReactJS.useTransition(config)
+  
+  def useTransition(t: Int): (js.Function1[js.Function0[Unit], Unit], Boolean) =
+    ReactJS.useTransition(new TransitionConfig { timeoutMs = t})
 
   /** Use a deferred value. Config indicates how long the value is good for. */
-  def useDeferredValue[T](
-      value: T,
-      config: DeferredValueConfig
-    ): T =
+  def useDeferredValue[T]( value: T, config: DeferredValueConfig): T =
     ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
+    
+  def useDeferredValue[T](value: T, t: Int): T = 
+    ReactJS.useDeferredValue(value.asInstanceOf[js.Any], new DeferredValueConfig { timeoutMs = t }).asInstanceOf[T]
 
   def createMutableSource[S](source: scala.Any, getVersion: js.Function0[scala.Any]) = 
         ReactJS.createMutableSource[S](source, getVersion)

@@ -46,7 +46,7 @@ object PivotItem {
   def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
-  trait Props extends HTMLAttributes[dom.html.Div] {
+  trait Props extends HTMLAttributes[dom.html.Div] with MaybeHasStrKey {
     var headerText: js.UndefOr[String]                       = js.undefined
     var itemKey: js.UndefOr[String]                          = js.undefined
     var headerButtonProps: js.UndefOr[js.Object]             = js.undefined

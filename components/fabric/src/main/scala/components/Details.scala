@@ -304,6 +304,7 @@ object Details {
       //var className: js.UndefOr[String] = js.undefined
       //var groups: js.UndefOr[js.Array[IGroup]] = js.undefined
       var checkboxCellClassName: js.UndefOr[String] = js.undefined
+    var checkboxVisibility: js.UndefOr[CheckboxVisibility] = js.undefined
       var compact: js.UndefOr[Boolean] = js.undefined
       var columns: js.UndefOr[js.Array[IColumn]] = js.undefined
       var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined

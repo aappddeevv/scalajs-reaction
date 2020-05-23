@@ -29,7 +29,7 @@ import js.annotation._
 // should inherit from AtomOptions
 trait AtomFamilyOptions[T, P <: SerializableParameter] extends js.Object {
   val key: NodeKey
-  val default: T | RecoilValue[T] | js.Promise[T] | js.Function1[Primitive, Return[T]] | js.Function1[P, Return[T]] | js.Function1[
+  val default: T | RecoilValue[T] | js.Thenable[T] | js.Function1[Primitive, Return[T]] | js.Function1[P, Return[T]] | js.Function1[
     js.Array[P],
     Return[T]] | js.Function1[js.Dictionary[P], Return[T]]
 }

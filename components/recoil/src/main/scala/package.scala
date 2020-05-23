@@ -46,7 +46,7 @@ package object recoil extends recoil.hooks {
   type Resetter = js.Function0[Unit]
   type AtomValues = js.Dictionary[Loadable[js.Any]]
 
-  type FlexiValue[T] = T | RecoilValue[T] | js.Promise[T]
+  type FlexiValue[T] = T | RecoilValue[T] | js.Thenable[T]
   type Return[T] = FlexiValue[T]
   type GetRecoilValue[T] = js.Function1[RecoilValue[T], T]
   type SetRecoilState[T] = js.Function2[RecoilState[T], T | DefaultValue | js.Function1[T, T | DefaultValue], Unit]

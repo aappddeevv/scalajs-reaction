@@ -176,6 +176,12 @@ trait HTMLTagsX {
     cn: js.UndefOr[String],
     children: ReactNode*
   ) = div(new DivProps { className = cn })(children: _*)
+  
+  def divWithKeyAndClass(
+    key: String,
+    cn: js.UndefOr[String],
+    children: ReactNode*
+  ) = div(new DivProps { `key` = key; className = cn })(children: _*)
 
   // should be dom.html.Dl
   type DlProps = ElementAttributesOnly
