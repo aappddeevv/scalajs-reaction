@@ -18,7 +18,7 @@
 
 <link rel="preload" href="/scalajs-reaction/styles.5c3bc461.js" as="script">
 
-<link rel="preload" href="/scalajs-reaction/runtime~main.321c0d7a.js" as="script">
+<link rel="preload" href="/scalajs-reaction/runtime~main.6f9bb183.js" as="script">
 
 <link rel="preload" href="/scalajs-reaction/main.3c816209.js" as="script">
 
@@ -34,7 +34,7 @@
 
 <link rel="preload" href="/scalajs-reaction/17896441.bf8545bc.js" as="script">
 
-<link rel="preload" href="/scalajs-reaction/e9abffe4.c7805fa8.js" as="script">
+<link rel="preload" href="/scalajs-reaction/e9abffe4.6d2c3d78.js" as="script">
 
 </head>
 <body>
@@ -44,8 +44,8 @@
 the function component. It is quite easy.</p><p>Since your function component already takes a js object as the props parameter,
 you can simple export the component using scala.js export API.</p><p>Here&#x27;s the API. This is all you need to do:</p><div class="mdxCodeBlock_iHAB"><div class="codeBlockContent_32p_"><button type="button" aria-label="Copy code to clipboard" class="copyButton_1BYj">Copy</button><div tabindex="0" class="prism-code language-scala codeBlock_19pQ"><div class="codeBlockLines_2n9r" style="color:#bfc7d5;background-color:#292d3e"><div class="token-line" style="color:#bfc7d5"><span class="token plain">object MyComponent {</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  trait Props extends js.Object { ... }</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  def apply(props: Props) = render.elementWith(props)</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  </span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  @JSExportTopLevel(&quot;MyComponent&quot;) // or whatever name you want  </span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  val render: ReactFC[Props] = props =&gt; { ... }</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">}</span></div></div></div></div></div><p>The export can be placed anywhere in the code but it was included in the
 Component object for convenience.</p><p>If your <code>Props</code> takes type parameters, you have to lock the type down
-to create a stable value before exporting:</p><div class="mdxCodeBlock_iHAB"><div class="codeBlockContent_32p_"><button type="button" aria-label="Copy code to clipboard" class="copyButton_1BYj">Copy</button><div tabindex="0" class="prism-code language-scala codeBlock_19pQ"><div class="codeBlockLines_2n9r" style="color:#bfc7d5;background-color:#292d3e"><div class="token-line" style="color:#bfc7d5"><span class="token plain">  trait Props[T &lt;: js.Object] ...</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  def apply[T &lt;: js.Object](props: Props[T]) = render.elementWith(props)</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  def render[T &lt;: js.Object]: Props[T] =&gt; ReactNode = props =&gt; { ... }</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
-</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  // Use any T type since js does not care about types</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  // But since it was def above, you need to create a stable value.</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  @JSExportTopLevel(&quot;MyComponent&quot;)</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  val exportableJSFuncComponentWithPropsParam = render[js.Object]</span></div></div></div></div></div><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_ZqCz" id="exporting-from-scalajs-and-javascript-bundling"></a><a aria-hidden="true" tabindex="-1" class="hash-link" href="#exporting-from-scalajs-and-javascript-bundling" title="Direct link to heading">#</a>Exporting from scala.js and javascript bundling</h2><p>When you bundle, say using webpack, your <code>MyComponent</code> will be available at the
+to create a stable value before exporting:</p><div class="mdxCodeBlock_iHAB"><div class="codeBlockContent_32p_"><button type="button" aria-label="Copy code to clipboard" class="copyButton_1BYj">Copy</button><div tabindex="0" class="prism-code language-scala codeBlock_19pQ"><div class="codeBlockLines_2n9r" style="color:#bfc7d5;background-color:#292d3e"><div class="token-line" style="color:#bfc7d5"><span class="token plain">  trait Props[T] ...</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  def apply[T](props: Props[T]) = stable_render.elementWith(props)</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  def render[T]: ReactFC[Props[T]] = props =&gt; { ... }</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain" style="display:inline-block">
+</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  // Use any T type since js does not care about types</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  // But since it was def above, you need to create a stable value.</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  @JSExportTopLevel(&quot;MyComponent&quot;)</span></div><div class="token-line" style="color:#bfc7d5"><span class="token plain">  val stable_render: ScalaJSFunctionComponent1 = render[js.Object]</span></div></div></div></div></div><h2><a aria-hidden="true" tabindex="-1" class="anchor enhancedAnchor_ZqCz" id="exporting-from-scalajs-and-javascript-bundling"></a><a aria-hidden="true" tabindex="-1" class="hash-link" href="#exporting-from-scalajs-and-javascript-bundling" title="Direct link to heading">#</a>Exporting from scala.js and javascript bundling</h2><p>When you bundle, say using webpack, your <code>MyComponent</code> will be available at the
 name <code>WebPackLibName.MyComponent</code> because MyComponent was exported at the module level.
 WebPackLibName is the name of the access point given to the webpacka configuration.
 Since MyComponent was exported at the top level of this access point, the
@@ -57,7 +57,7 @@ and translate them into scala.js :-). It&#x27;s up to you.</p></div></article><d
 
 <script src="/scalajs-reaction/styles.5c3bc461.js"></script>
 
-<script src="/scalajs-reaction/runtime~main.321c0d7a.js"></script>
+<script src="/scalajs-reaction/runtime~main.6f9bb183.js"></script>
 
 <script src="/scalajs-reaction/main.3c816209.js"></script>
 
@@ -73,7 +73,7 @@ and translate them into scala.js :-). It&#x27;s up to you.</p></div></article><d
 
 <script src="/scalajs-reaction/17896441.bf8545bc.js"></script>
 
-<script src="/scalajs-reaction/e9abffe4.c7805fa8.js"></script>
+<script src="/scalajs-reaction/e9abffe4.6d2c3d78.js"></script>
 
 
 </body>
