@@ -29,28 +29,21 @@ import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
+import react.extras._
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.components._
-
+import fabric.utilities._
 import ReactContentLoaderComponents._
 import react_redux._
 
-@js.native
-@JSImport("Examples/addressmanager/addressmanager.css", JSImport.Namespace)
-object componentStyles extends js.Object
-
 object styles {
-  val amstyles = componentStyles.asInstanceOf[js.Dynamic]
+  @js.native
+  @JSImport("Examples/addressmanager/addressmanager.css", JSImport.Namespace)
+  val amstyles: js.Object with js.Dynamic = js.native
 }
 
 import styles._
@@ -68,20 +61,20 @@ object AddressManager {
       val items = js.Array(
         new IContextualMenuItem {
           val key = "new"
-          name = "New"
+          text= "New"
           disabled = isFetching
           iconProps = lit("iconName" -> "Add")
         },
         new IContextualMenuItem {
           val key = "delete"
-          name = "Delete"
+          text = "Delete"
           disabled = isFetching
           iconProps = lit("iconName" -> "Delete")
         },
         new IContextualMenuItem {
           val key = "footerSize"
-          name = "Incr Footer Height (CSS Var)"
-          onClick = (() => {
+          text = "Incr Footer Height (CSS Var)"
+          onClick = IContextualMenuItem.OnClick(() => {
             val pattern    = "([0-9]+)px".r
             val pattern(h) = vdom.styling.getCSSVar("--footer").trim
             val hint       = h.toInt
@@ -89,7 +82,7 @@ object AddressManager {
             // This is really as side effect that should force a re-render.
             // So I should really call into the reducer, but I'm lazy.
             vdom.styling.setCSSVar("--footer", s"${newHeight}px")
-          }): IContextualMenuItem.OC0
+          })
           iconProps = lit("iconName" -> "Add")
         }
       )
@@ -97,12 +90,12 @@ object AddressManager {
         if (isFetching)
           new IContextualMenuItem {
             val key = "refresh"
-            name = "Fetching..."
+            text = "Fetching..."
           } else
           new IContextualMenuItem {
             val key = "refresh"
-            name = "Refresh"
-            onClick = (() => refresh()): IContextualMenuItem.OC0
+            text = "Refresh"
+            onClick = IContextualMenuItem.OnClick(() => refresh())
             iconProps = lit("iconName" -> "Refresh")
           }
       )
@@ -159,22 +152,14 @@ object AddressManager {
         }
     )
 
-  // create lazily. Callback just logs selection to console.
-  def createSelection(cb: () => Unit) =
-    new Selection[Address](js.defined(new ISelectionOptions[Address] {
-      getKey = getAddressKey
-      selectionMode = SelectionMode.single
-      onSelectionChanged = js.defined(cb)
-    }))
-
   /**
    * Instead of a non-native JS trait, we use explicit parameters. Our interop
    * wrappers must take this into account. Note that we cerated the "ViewModel"
    * as a test as we would not normally break up the parameters this way.
    */
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     // redux hooks
     val label = useSelector[GlobalAppState, js.UndefOr[String]](_.view.label.flatMap(_.toUndefOr))
     val lastActiveAddressId =
@@ -182,33 +167,30 @@ object AddressManager {
     val activeId  = useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
     val active    = useSelector[GlobalAppState, js.UndefOr[Address]](_.addressManager.active.toUndefOr)
     val dispatchG = useDispatch[GlobalAppAction]()
-    val setActive = useCallback[Id | Null, Address | Null, Unit](dispatchG)(
-      (id, addr) =>
+    val setActive = useCallback2[Id | Null, Address | Null, Unit](dispatchG)((id, addr) =>
         dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny).asInstanceOf[GlobalAppAction])
     )
 
-    // react hooks
-    // see https://github.com/OfficeDev/office-ui-fabric-react/issues/9882
-    // we solve it via a lazy val
-    lazy val selection: ISelection[Address] =
-      useMemo[ISelection[Address]](deps(setActive))(
-        () =>
-          createSelection { () =>
-            dom.console.log(
-              s"$Name: Selection.onSelectionChanged(): notification via Selection object!",
-              selection.getSelection()
-            )
-            val selected = selection.getSelection().headOption
-            selected.fold(
-              // None
-              setActive(null, null)
-            )(
-              // Some
-              addr => setActive(addr.customeraddressid.get, addr) // :-) with get
-            )
-          }
-      )
-    val (fetchState, doFetch) = useFetch(props.dao, selection.setItems(_, true))
+    val sref = useExpensiveRef[ISelection[Address]]{
+        new Selection[Address](new Selection.Options[Address] {
+            getKey = Selection.GetKey(getAddressKey)
+            selectionMode = SelectionMode.single
+        })
+    }
+
+    useEffect(sref()){() => 
+        val events = new EventGroup()
+            events.on(sref(), "change", _ => { 
+                sref().getSelection().headOption.fold(
+                    setActive(null,null))(
+                    addr => setActive(addr.customeraddressid.get, addr) // :-) with get
+                    )
+                
+        })
+        () => events.dispose()
+    }
+    
+    val (fetchState, doFetch) = useFetch(props.dao, sref().setItems(_, true))
     dom.console.log(s"$Name: loading", fetchState.loading)
     useEffectMounting { () =>
       doFetch()
@@ -221,10 +203,11 @@ object AddressManager {
 
     val addressStuff = useMemo(active)(() => {
       val t = active.toNonNullOption
-      (AddressDetail(t), AddressSummary(amstyles.footer.asUndefOr[String].toOption, t))
+      val footer = amstyles.selectDynamic("footer").asInstanceOf[js.UndefOr[String]]
+      (AddressDetail(t), AddressSummary(footer.toOption, t))
     })
 
-    val commandBar = useMemo(unsafe_deps(fetchState.loading, doFetch, setActive))(() => {
+    val commandBar = useMemo(unsafeDeps(fetchState.loading, doFetch, setActive))(() => {
       dom.console.log(s"$Name: Calculating props", fetchState.loading)
       CommandBar(cbopts(fetchState.loading, () => { setActive(null, null); doFetch() }))
     })
@@ -235,7 +218,7 @@ object AddressManager {
       divWithClassname(
         amstyles.masterAndDetail.asString,
         AddressList(new AddressList.Props {
-          var sel       = selection
+          var sel       = sref()
           var addresses = fetchState.data
           var ifx       = ifx_
           var shimmer   = fetchState.loading
@@ -249,4 +232,5 @@ object AddressManager {
       )
     )
   }
+  render.displayName(Name)
 }

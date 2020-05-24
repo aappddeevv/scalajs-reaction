@@ -33,6 +33,10 @@ trait ComponentSyntax {
   /** Given a function component and an arg with children, expressed as a tuple, convert to ReactElement. */
   implicit def funcChild2Element[P <: js.Object](f: (ScalaJSFunctionComponent1, P, ReactNode)): ReactNode =
     ReactJS.createElement(f._1, f._2, f._3)
+    
+  /** Slightly evil. Auto conversion of no-props function component to `ReactNode`. */  
+  implicit def sfc02Node(f: js.Function0[ReactNode]): ReactNode = 
+    ReactJS.createElement(f, null)
 
   /** Evil! Auto type conversion from a no-arg function. */
   implicit def thunkToSFC(f: () => ReactNode): ReactNode =
@@ -42,6 +46,7 @@ trait ComponentSyntax {
   implicit class RichJSFunction0(private val f: js.Function0[ReactNode]) {
     def element: ReactNode = ReactJS.createElement(f, null)
     def toEl: ReactNode = ReactJS.createElement(f, null)
+    def displayName(name: String): Unit = f.asInstanceOf[js.Dynamic].displayName = name
   }
   
   /** Convert a plain js function with 1 props argument to an element using some syntax. */

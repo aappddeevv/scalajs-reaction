@@ -68,7 +68,8 @@ package object react extends react.React with When {
    * Object returned from `createRef()`. It's typically either js component or a
    * DOM element, both of which are js.Objects. You only use this type with the
    * `React.createRef()` machinery. Use this instead of a string or ref
-   * callback. Introduced in 16.3.
+   * callback. Introduced in 16.3. `useRef` uses a slightly different flavor
+   * of `current`.
    *
    * @todo Validate a null value is present if the ref is never set. typescript
    * says so.
@@ -85,19 +86,28 @@ package object react extends react.React with When {
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E | Null, Unit]
 
-  /** Combine the callback and the createRef models. Also include the newer hooks model. */
-  type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
-
+ 
   /** For use with useRef() hook which is slightly different than the mutable
    * Ref. `current` is designed to be set directly or can be used on the `ref`
-   * attribute for a component.
+   * attribute for a component. Since you can provide an initial value, if you
+   * want `null` to be valid, either use `null` directly or model it explicitly
+   * as `T|Null` to force client's to deal with the explict null value (otherwise
+   * they need to check for the `null` value directly).
    */
   trait MutableRef[T] extends js.Object {
     var current: T
   }
 
+  /** Combine the callback and the createRef models. Also include the newer hooks model. */
+  type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
+
+  /* Like `refCB` but better named. */
+  def callbackAsRef[E](f: (E|Null => Unit)): Ref[E] = 
+    js.Any.fromFunction1(f).asInstanceOf[Ref[E]]
+
   /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
-  def refCB[E](f: E | Null => Unit): Ref[E] = js.Any.fromFunction1[E | Null, Unit](f)
+  def refCB[E](f: E | Null => Unit): Ref[E] = 
+    js.Any.fromFunction1[E | Null, Unit](f).asInstanceOf[Ref[E]]
 
   /**
    * Something that can be rendered in reactjs. react allows this to

@@ -603,6 +603,8 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onAuxClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
   var onAuxClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined  
   var onClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
+  @JSName("onClick")
+  var onEmptyClick: js.UndefOr[js.Function0[Unit]] = js.undefined
   var onClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined
   var onContextMenu: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
   var onContextMenuCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined

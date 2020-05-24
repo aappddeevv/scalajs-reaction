@@ -454,7 +454,6 @@ lazy val examples = project
     `fabric-experiments`,
     `react-redux`,
     `react-dom`,
-    //router,
     forms,
     bootstrap,
     mui,

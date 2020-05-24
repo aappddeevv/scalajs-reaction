@@ -84,7 +84,7 @@ object TextField {
     //var disabled: js.UndefOr[Boolean] = js.undefined
     // scroll events
     
-    var onChange: js.UndefOr[js.Function2[js.Any,js.UndefOr[String], Unit]] = js.undefined
+    var onChange: js.UndefOr[OnChange] = js.undefined
     @JSName("onChange")
     var onChangeInput: js.UndefOr[js.Function2[dom.html.Input, js.UndefOr[String], Unit]] = js.undefined
     @JSName("onChange")
@@ -113,14 +113,17 @@ object TextField {
     //var autoComplete: js.UndefOr[String] = js.undefined
   }
   
-  type OC2 = js.Function2[js.Any, js.UndefOr[String], Unit] 
+  @deprecated
+  type OC2 = OnChange
+  type OnChange = js.Function2[SyntheticFormEvent[dom.EventTarget], js.UndefOr[String], Unit]
+  //type OnChange = js.Function2[SyntheticFormEvent[dom.html.Input|dom.html.TextArea], js.UndefOr[String], Unit]
 
   def OnChangeInput(f: (SyntheticFormEvent[dom.html.Input], js.UndefOr[String]) => Unit) = 
-    js.Any.fromFunction2(f).asInstanceOf[OC2]
+    js.Any.fromFunction2(f).asInstanceOf[OnChange]
     
   def OnChangeTextArea(f: (SyntheticFormEvent[dom.html.TextArea], js.UndefOr[String]) => Unit) = 
-    js.Any.fromFunction2(f).asInstanceOf[OC2]
+    js.Any.fromFunction2(f).asInstanceOf[OnChange]
     
-  def OnChange(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC2]
+  def OnChange(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OnChange]
   
 }

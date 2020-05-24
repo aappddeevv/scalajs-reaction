@@ -26,15 +26,10 @@ package helloworld
 import scala.scalajs.js
 
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
 import react.implicits._
-
 import vdom._
-
-import tags._
 
 /** Props for make2 outside the HellowWorld object.  By using js.UndefOr for the
  * defintion, a SFC taking these props can easily interop with the js world.
@@ -53,12 +48,11 @@ object HelloWorld {
     val name: Option[String]
   }
 
-  def apply()                       = sfc(new Props { val name = None  })
-  def apply(name_ : Option[String]) = sfc(new Props { val name = name_ })
+  def apply()                       = render.elementWith(new Props { val name = None  })
+  def apply(name_ : Option[String]) = render.elementWith(new Props { val name = name_ })
 
   /** No props data structure, just parameters. */
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
+  val render: ReactFC[Props] = props => {
     div("hello world " + props.name.map(": " + _).getOrElse(""))
   }
 
@@ -67,22 +61,18 @@ object HelloWorld {
   }
 
   def withMount(name_ : Option[String] = None) =
-    sfcWithMount(new Props2 { val name = name_ })
+    renderWithMount.elementWith(new Props2 { val name = name_ })
 
-  val sfcWithMount = SFC1[Props2] { props =>
+  val renderWithMount: ReactFC[Props2] = props => {
     useEffectMounting { () =>
       println("HelloWorld.makeWithMount: didMount was called!")
     }
     div("hello world " + props.name.map(": " + _).getOrElse(""))
   }
 
-  // Exported to javascript world under th nam <modulename>.HelloWorld
-  @JSExportTopLevel("HelloWorld")
-  val exported = sfc2.run
+  def make2(props: HelloWorldProps) = render2(props)
 
-  def make2(props: HelloWorldProps) = sfc2(props)
-
-  lazy val sfc2 = SFC1[HelloWorldProps] { props =>
+  val render2: ReactFC[HelloWorldProps] = props => {
     div("hello world (2) " + props.name.toOption.map(": " + _).getOrElse(""))
   }
 
@@ -90,10 +80,12 @@ object HelloWorld {
     val content: String
   }
 
-  def make3(props: Props3) = sfc3(props)
-  def make3(c: String)     = sfc3(new Props3 { val content = c })
+  def make3(props: Props3) = render3.elementWith(props)
+  def make3(c: String)     = render3.elementWith(new Props3 { val content = c })
 
-  val sfc3 = SFC1[Props3] { props =>
+  // Exported to javascript world under the nam <modulename>.HelloWorld
+  @JSExportTopLevel("HelloWorld")
+  val render3: ReactFC[Props3] = props => {
     val hwref = useRef[dom.html.Div](null)
     div(new DivProps {
       ref = hwref

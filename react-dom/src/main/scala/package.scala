@@ -73,10 +73,10 @@ package object react_dom {
     )
   }
 
-  def createSyncRoot(id: String): Either[String, ReactNode => Unit] = {
+  def createBlockingRoot(id: String): Either[String, ReactNode => Unit] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(htmlel =>
-      Right(ReactDOMJS.createSyncRoot(htmlel).render(_))
+      Right(ReactDOMJS.createBlockingRoot(htmlel).render(_))
     )
   }
 

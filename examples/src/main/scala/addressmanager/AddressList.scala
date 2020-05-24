@@ -29,51 +29,53 @@ import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.components._
-
 import ReactContentLoaderComponents._
 import react_redux._
 import styles._
 
-object AddressList {import IColumn.toCol
-
-  val icolumns = js.Array[js.Dynamic](
-    lit("key" -> "name", "name" -> "Name", "fieldName" -> "name", "minWidth"              -> 150),
-    lit("key" -> "id", "name"   -> "Id", "fieldName"   -> "customeraddressid", "minWidth" -> 150)
+object AddressList {
+  
+  val icolumns = js.Array[IColumn](
+    new IColumn {
+        val key = "name"
+        val name = "Name"
+        fieldName = "name"
+        val minWidth = 150
+    },
+    new IColumn {
+        val key = "id"
+        val name = "Id"
+        fieldName = "customeraddressid"
+        val minWidth = 150
+    }
   )
 
   val Name = "AddressList"
 
+  val shouldVirtualize: js.Function1[js.Object, Boolean] = _ => false
+  
   trait Props extends js.Object {
     var sel: ISelection[Address]
     var addresses: AddressList
-    // This does not properly signal deselect without additional state
-    // so use this for just notifying that a change occurred.
-    //var activeChanged: js.UndefOr[Address] => Unit
     var ifx: Option[Int]
     var shimmer: Boolean
   }
+  
+  def apply(props: Props) = render.elementWith(props)
 
-  def apply(props: Props) = sfc(props)
-
-  val sfc = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     val listopts = new Details.Shimmered.Props[Address] {
-      items = props.addresses.toJSArray
+      val items = props.addresses.toJSArray
       className = amstyles.list.asString
       selectionPreservedOnEmptyClick = true
       columns = icolumns
-      getKey = getAddressKey
+      getKey = getAddressKeyJS
       //initialFocusedIndex = 2 //ifx.orUndefined
       selection = props.sel
       layoutMode = Details.LayoutMode.fixedColumns
@@ -81,9 +83,8 @@ object AddressList {import IColumn.toCol
       // onRenderDetailsHeader = js.defined { (props, defaultRender) =>
       //   Sticky()(defaultRender.fold[ReactNode]("...render me...")(_(props)))
       // }
-      onShouldVirtualize = js.defined(_ => false)
-      //enableShimmer = props.shimmer
-      //shimmerLines = 5
+      // if constant function, define outside the component, don't use useCallback
+      onShouldVirtualize = shouldVirtualize
     }
     div.merge(lit("data-is-scrollable" -> true))(new DivProps {
       className = amstyles.master.asString
@@ -91,4 +92,5 @@ object AddressList {import IColumn.toCol
       ScrollablePane()(Details.Shimmered[Address](listopts))
     )
   }
+  render.displayName(Name)
 }

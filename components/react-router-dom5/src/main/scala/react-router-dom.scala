@@ -33,5 +33,4 @@ package object dom {
   implicit class Location2LocationDescriptor[S](location: Location[S]) {
     def toLocationDescriptor: LocationDescriptor[S] = location.asInstanceOf[LocationDescriptor[S]]
   }
-
 }

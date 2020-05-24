@@ -27,43 +27,31 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => jsobj }
 import js.JSConverters._
 import js.annotation._
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
 import vdom.styling._
-
 import fabric._
 import fabric.components._
 import fabric.experiments._
 import fabric.styling._
-
 import cats._
 import cats.data._
 import cats.implicits._
-import tags._
 
 object Nav {
 
-  // trait Props extends js.Object {
-  //   var className: js.UndefOr[String] = js.undefined
-  //   val navigate: String => Unit
-  //   var collapsible: js.UndefOr[Boolean] = js.undefined
-  //   var isAdmin: js.UndefOr[Boolean]  = js.undefined
-  // }
-
-  def makeItem(k: String, nm: String, nav: String, goto: String => Unit) =
+def makeItem(k: String, nm: String, nav: String, goto: String => Unit) =
     new Sidebar.ItemProps {
       val key = k
-      name = nm
+      title = nm
+      text = nm
       active = false
       iconProps = jsobj("iconName" -> "Bullseye")
-      onEmptyClick = js.defined(() => goto(nav))
+      onClick = IContextualMenuItem.OnClick((_,_) => goto(nav))
     }
-
-  val fix: String => String = p => p //p => /examples.RouterConfig.fix(p)
+    
+  val fix: String => String = p => p
 
   val itemRoutes = Seq(
     ("readme", "Readme", fix("readme")),
@@ -86,12 +74,13 @@ object Nav {
   }
 
   val Name                = "Nav"
-  def apply(props: Props) = sfc(props)
-  val sfc = SFC1[Props] { props =>
+  def apply(props: Props) = render.elementWith(props)
+  val render: ReactFC[Props] = props => {
     Sidebar(new Sidebar.Props {
       className = props.rootClassName
       val theme = Styling.getTheme() // needed else exception!
       items = itemRoutes.map(p => makeItem(p._1, p._2, p._3, props.goto)).toJSArray
     })
   }
+  render.displayName(Name)
 }

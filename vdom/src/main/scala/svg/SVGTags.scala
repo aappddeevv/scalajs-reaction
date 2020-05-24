@@ -21,19 +21,17 @@
 
 package react
 package vdom
+package svgtags
 
 import scala.annotation.unchecked.{ uncheckedVariance => uv }
-
 import scala.scalajs.js
-
 import js.|
-
 import org.scalajs.dom
 
 /** A props trait that takes all SVG props. */
-trait SVGProps[+T <: dom.EventTarget] extends SVGAttributes[T @uv] with ClassAttributes[T @uv] {}
+trait AllSVGProps[+T <: dom.EventTarget] extends SVGAttributes[T @uv] with ClassAttributes[T @uv] {}
 
-trait svgtags {
+trait SVGTags {
   trait SVGProps extends SVGAttributes[dom.svg.SVG]
   final lazy val svg = tagt[SVGProps]("svg")
   trait AnimateProps extends SVGAttributes[dom.svg.SVG]
@@ -340,5 +338,3 @@ trait SVGAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var yChannelSelector: js.UndefOr[String]                    = js.undefined
   var z: js.UndefOr[String | Double]                          = js.undefined
 }
-
-object svgtags extends svgtags

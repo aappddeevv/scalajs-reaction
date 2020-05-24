@@ -43,7 +43,7 @@ trait AddressDAO extends js.Object {
   val fetch: js.Function1[Id, js.Promise[AddressList]]
   val add: js.Function1[Address, js.Promise[Id]]
   val remove: js.Function1[String, js.Promise[Unit]]
-  val update: js.Function1[Address, js.Promise[Unit]],
+  val update: js.Function1[Address, js.Promise[Unit]]
 }
 
 /** Manage data access and selection state as a pair. */

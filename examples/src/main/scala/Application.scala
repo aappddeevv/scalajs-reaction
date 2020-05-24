@@ -25,25 +25,19 @@ package examples
 import scala.scalajs.js
 
 import js.JSConverters._
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
 import vdom.styling._
-import vdom.tags._
-
 import cats._
 import cats.implicits._
-import react_router.dom._
-import react_router.dom.hooks._
+import react_router5.dom._
+import react_router5.dom.hooks._
 
-object routes {
+object Routes {
 
-  val sfc = SFC0 {
+  val render: ReactFC0 = () => {
     val history = useHistory[js.Any]()
     def body(bodyContent: ReactNode): ReactNode =
       AppBody(new AppBody.Props {
@@ -60,7 +54,7 @@ object routes {
       Switch(
         Route.withExactPath("/", Redirect.to("/readme")),
         Route.withPath("/readme", Pages.readme(readmetext)),
-        Route.withPath("/address", Pages.addressPage(addressmanager.fakedata.addressDAO)),
+        Route.withPath("/addresses", Pages.addressPage(addressmanager.fakedata.addressDAO)),
         Route.withPath("/todo", Pages.todoPage()),
         Route.withPath("/helloworld", Pages.helloWorldPage()),
         Route.withPath("/changeredux", Pages.changeReduxStatePage()),
@@ -75,6 +69,7 @@ object routes {
       )
     )
   }
+  render.displayName("Routes")
 }
 
 object Application {
@@ -88,9 +83,9 @@ object Application {
 
   val Name = "Application"
 
-  def apply() = sfc
+  def apply() = render()
 
-  val sfc = SFC0 {
+  val render: ReactFC0 = () => {
     div(new DivProps {
       className = "ttg-App"
       style = new StyleAttr {
@@ -101,13 +96,7 @@ object Application {
       }
     })(
       Header(),
-      HashRouter(
-        routes.sfc
-        // ReactionRouter.Route(RouterConfig.config(
-        //   n = nsegments,
-        //   baseUrl = baseUrl
-        // ))
-      )
+      HashRouter.withBasename(BuildSettings.routePrefix getOrElse "", Routes.render)
     )
   }
 }

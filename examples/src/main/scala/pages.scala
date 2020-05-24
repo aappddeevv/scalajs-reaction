@@ -27,19 +27,13 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
 import react.implicits._
-
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.components._
 import fabric.styling._
-
 import Styling._
 import bootstrap._
 import cats._

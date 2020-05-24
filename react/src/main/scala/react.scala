@@ -361,6 +361,7 @@ trait React {
       )
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
+  /** Do not include `Null` in your type parameter as it added to `MutableRef.current` automatically. */
   def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
 
   /** Expose imperative functions in R to refs.

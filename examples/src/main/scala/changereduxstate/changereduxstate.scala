@@ -27,38 +27,29 @@ import scala.scalajs.js
 
 import js.annotation._
 import js.|
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-
 import fabric._
 import fabric.components._
-
 import react_redux._
-import tags._
-
-@js.native
-@JSImport("Examples/changereduxstate/changereduxstate.css", JSImport.Namespace)
-private object componentStyles extends js.Object
 
 object styles {
-  val cstyles = componentStyles.asInstanceOf[js.Dynamic]
+  @js.native
+  @JSImport("Examples/changereduxstate/changereduxstate.css", JSImport.Namespace)
+  val cstyles: js.Object with js.Dynamic = js.native
 }
 import styles._
 
 object ChangeReduxState {
   val Name = "ChangeReduxState"
 
-  def apply() = sfc
+  def apply() = render.element
 
   /** We are a bit wasteful with renders, should be more careful per the
    * redux-react docs.
    */
-  val sfc = SFC0 {
-    useDebugValue(Name)
+  val render: ReactFC0 = () => {
     val label_   = useSelector[GlobalAppState, String](_.view.label.flatMap(_.toUndefOr).getOrElse("no redux label"))
     val dispatch = useDispatch[GlobalAppAction]()
 
@@ -72,7 +63,8 @@ object ChangeReduxState {
         className = cstyles.label.asString
         onChangeInput = js.defined((_, v) => dispatch(ActionsNS.ViewActions.setLabel(v).asInstanceOf[GlobalAppAction]))
         defaultValue = label_
-      })()
+      })
     )
   }
+  render.displayName(Name)
 }

@@ -23,14 +23,9 @@ package ttg
 package examples
 
 import scala.scalajs.js
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.components._
 
@@ -51,13 +46,13 @@ object Header {
   }
 
   val Name = "Header"
+  
   def apply(rcn: js.UndefOr[String] = js.undefined) =
-    sfc(new Props {
+    render.elementWith(new Props {
       rootClassName = rcn
     })
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
+  val render: ReactFC[Props] = props => {
     div(new DivProps {
       className = props.rootClassName
       style = hstyle
@@ -68,4 +63,5 @@ object Header {
       })("scalajs-reaction demo SPA")
     )
   }
+  render.displayName(Name)
 }

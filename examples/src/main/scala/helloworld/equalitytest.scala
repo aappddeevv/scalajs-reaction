@@ -24,15 +24,11 @@ package examples
 package helloworld
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import react._
 import react.implicits._
-
 import vdom._
 import vdom.styling._
-import vdom.tags._
 
 object EqualityTest {
 

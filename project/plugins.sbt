@@ -10,6 +10,6 @@ addSbtPlugin("com.eed3si9n"                      % "sbt-unidoc"       % "0.4.2")
 //addSbtPlugin("org.scalameta"                     % "sbt-mdoc"         % "2.1.1")
 addSbtPlugin("com.thoughtworks.sbt-scala-js-map" % "sbt-scala-js-map" % "latest.release")
 addSbtPlugin("ch.epfl.scala"                     % "sbt-scalafix"     % "0.9.15")
-addSbtPlugin("ch.epfl.scala"                     % "sbt-bloop"        % "1.4.0-RC1")
+addSbtPlugin("ch.epfl.scala"                     % "sbt-bloop"        % "1.4.0")
 //addSbtPlugin("com.thoughtworks.sbt-scala-js-map" % "sbt-api-mappings" % "4.0.0+21-b1f441da")
 

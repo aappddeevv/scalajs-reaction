@@ -28,16 +28,10 @@ import js.Dynamic.{ literal => lit, global => g }
 import js.JSConverters._
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.merge_styles._
 import fabric.styling._
@@ -52,10 +46,9 @@ object AppBody {
   }
 
   val Name                = "AppBody"
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
+  val render: ReactFC[Props] = props => {
     val cn = getClassNames(new StyleProps {
       className = props.rootClassName
     }, props.styles)
@@ -65,6 +58,7 @@ object AppBody {
       divWithClassname(cn.content, props.content)
     )
   }
+  render.displayName(Name)
 
   @js.native
   trait ClassNames extends IClassNamesTag {

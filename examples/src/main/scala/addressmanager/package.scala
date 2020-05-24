@@ -26,12 +26,10 @@ import scala.scalajs.js
 
 import js.JSConverters._
 import js.|
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import react_redux.Dispatch
+import fabric.components._
 
 package object addressmanager {
   type Id          = String
@@ -40,7 +38,8 @@ package object addressmanager {
   type Result      = Either[String, AddressList]
   type CRUDResult  = Either[String, Unit]
   val emptyAddressList = js.Array[Address]()
-  val emptyIdList      = js.Array[Id]()
-  val getAddressKey: js.Function1[Address, String] =
-    (item: Address) => item.customeraddressid.getOrElse("")
+  val emptyIdList      = js.Array[Id]()  
+  def getAddressKey(item: js.UndefOr[Address], idx: Int) = 
+    item.flatMap(_.customeraddressid) getOrElse idx.toString
+  val getAddressKeyJS = Selection.GetKey(getAddressKey)
 }

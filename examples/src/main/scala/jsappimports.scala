@@ -28,11 +28,8 @@ import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
 import js.|
-
 import react._
-
 import implicits._
-
 import react_redux._
 
 trait LabelAndChildProps extends js.Object {
@@ -48,7 +45,7 @@ object LabelAndChildNS extends js.Object {
 
 object JSAppImports {
   def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
-    createElement(LabelAndChildNS.LabelAndChild, props)(children: _*)
+    createElement(LabelAndChildNS.LabelAndChild, props, children: _*)
 }
 
 trait StoreState extends js.Object {}
@@ -155,5 +152,5 @@ class ReactContentLoaderOptions(
 
 object ReactContentLoaderComponents {
   def BulletList(props: ReactContentLoaderOptions = null)(children: ReactNode*) =
-    createElement(ReactContentLoader.List, props)(children: _*)
+    createElement(ReactContentLoader.List, props, children: _*)
 }

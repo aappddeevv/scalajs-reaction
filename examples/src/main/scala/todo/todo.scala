@@ -29,16 +29,10 @@ import js.Dynamic.{ literal => lit, global => g }
 import js.JSConverters._
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.components._
 import fabric.styling._
@@ -58,10 +52,9 @@ object ToDoItem {
     var key: js.UndefOr[String]            = js.undefined
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
+  val render: ReactFC[Props] = props => {
     divWithClassname(
       props.rootClassname,
       Label(new Label.Props {
@@ -74,7 +67,8 @@ object ToDoItem {
         onClick = js.defined(_ => props.remove())
       })()
     )
-  }.memo
+  }
+  render.displayName(Name)
 }
 
 object ToDoListHeader {
@@ -84,12 +78,13 @@ object ToDoListHeader {
     var length: Int
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     useDebugValue(Name)
     div(Label(s"# To Dos - ${props.length}"))
-  }.memo
+  }
+  render.displayName(Name)
 }
 
 object ToDoList {
@@ -104,10 +99,9 @@ object ToDoList {
     var titleClassname: js.UndefOr[String] = js.undefined
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
+  val render: ReactFC[Props] = props => {
     divWithClassname(
       props.listClassname,
       ToDoListHeader(new ToDoListHeader.Props { var length = props.length }),
@@ -122,7 +116,8 @@ object ToDoList {
           })
       )
     )
-  }.memo
+  }
+  render.displayName(Name)
 }
 
 object ToDos {
@@ -170,11 +165,10 @@ object ToDos {
     var className: js.UndefOr[String]                                  = js.undefined
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue(Name)
-    val ifield = useRef[Option[TextField.ITextField]](None)
+  val render: ReactFC[Props] = props => {
+    val ifield = useRef[TextField.ITextField](null)
     useEffectMounting { () =>
       println("ToDo: subscriptions: called during mount")
       () => println("ToDo: subscriptions: unmounted")
@@ -184,7 +178,7 @@ object ToDos {
       useReducer[State, Action](reducer, State(props.todos, None))
     // if the input is added as a todo or todo remove, reset focus
     useEffect(state.todos.length) { () =>
-      ifield.current.foreach(_.focus())
+      if(ifield.current != null) ifield.current.focus()
     }
 
     val cn = getClassNames(new StyleProps { className = props.className }, props.styles)
@@ -196,20 +190,16 @@ object ToDos {
       div(new DivProps { className = cn.dataEntry })(
         TextField(new TextField.Props {
           placeholder = "enter new todo"
-          componentRef = js.defined {
-            // Option(r) -> None if r is null
-            r =>
-              ifield.current = Option(r)
-          }
-          onChangeInput = js.defined { (_, e: String) =>
-            dispatch(InputChanged(Option(e)))
-          }
+          componentRef = ifield//callbackAsRef[TextField.ITextField](r => ifield.current = r.toOption)
+          onChange = TextField.OnChangeInput((_, e: js.UndefOr[String]) =>
+            e.foreach(s => dispatch(InputChanged(Option(s))))
+          )
           value = state.input.getOrElse[String]("")
           autoFocus = true
           onKeyPress = js.defined { e =>
             if (e.which == dom.ext.KeyCode.Enter) addit(state.input, dispatch)
           }
-        })(),
+        }),
         Button.Primary(new Button.Props {
           text = "Add"
           disabled = state.input.size == 0
@@ -231,6 +221,7 @@ object ToDos {
       })
     )
   }
+  render.displayName(Name)
 }
 
 object fakedata {

@@ -24,36 +24,31 @@ package examples
 package tagtest
 
 import scala.scalajs.js
-
 import js.Dynamic.{ literal => lit }
 import js.annotation._
-
 import react._
-
 import implicits._
-
-import vdom.SetInnerHTML
-import vdom.StyleAttr
+import vdom._
 import vdom.svgtags._
-import vdom.tags._
+import org.scalajs.dom
 
 @js.native
 @JSImport("Examples/tagtest/README.md", JSImport.Default)
 object README_MD extends js.Any
 
 object TagTest {
+    val NAME = "TagTest"
 
   trait Props extends js.Object {
     var rootClassName: js.UndefOr[String] = js.undefined
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
   def apply(rcn: js.UndefOr[String] = js.undefined) =
-    sfc(new Props { rootClassName = rcn })
+    render.elementWith(new Props { rootClassName = rcn })
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue("TagTest")
-    js.Dynamic.global.console.log("rootClassName", props.rootClassName)
+  val render: ReactFC[Props] = props => {
+    dom.console.log("rootClassName", props.rootClassName)
     div(new DivProps {
       // null here is giving a weird error in reactjs!
       className = props.rootClassName
@@ -197,4 +192,5 @@ object TagTest {
       })()
     )
   }
+  render.displayName(NAME)
 }

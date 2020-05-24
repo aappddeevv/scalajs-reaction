@@ -41,15 +41,18 @@ trait CreateRootOptions extends js.Object {
 
 @js.native
 trait Concurrent extends js.Object {
+  @JSName("unstable_createRoot")
   def createRoot(
     rootElement: dom.Element,
     options: js.UndefOr[CreateRootOptions] = js.undefined
   ): Renderable = js.native
 
-  def createSyncRoot(
+  @JSName("unstable_createBlockingRoot")
+  def createBlockingRoot(
     rootElement: dom.Element,
     options: js.UndefOr[CreateRootOptions] = js.undefined
   ): Renderable = js.native
+
 }
 
 @js.native

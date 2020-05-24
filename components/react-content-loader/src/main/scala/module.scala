@@ -29,6 +29,7 @@ import react._
 import react.implicits._
 import org.scalajs.dom
 import react.vdom._
+import svgtags._
 
 //
 @js.native
@@ -40,8 +41,8 @@ object ContentLoader {
   @JSImport("react-content-loader", "ContentLoader")
   object JS extends ReactJSComponent
 
-  trait Props extends SVGAttributes[dom.svg.Element] {
-    var key: js.UndefOr[String] = js.undefined
+  trait Props extends AllSVGProps[dom.svg.Element] {
+    //var key: js.UndefOr[String] = js.undefined
     var animate: js.UndefOr[Boolean] = js.undefined
     // var backgroundColor: js.UndefOr[String] = js.undefined
     // var backgroundOpacity: js.UndefOr[Int] = js.undefined
@@ -59,41 +60,41 @@ object ContentLoader {
 
   /** Should only be SVG children. */
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElement(JS, props,children: _*)
 
   object Facebook {
     @js.native
     @JSImport("react-content-loader", "Facebook")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElement(JS, props,children: _*)
   }
-  object Instagrcam {
+  object Instagram {
     @js.native
     @JSImport("react-content-loader", "Instagram")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElement(JS, props,children: _*)
   }
   object Code {
     @js.native
     @JSImport("react-content-loader", "Code")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElement(JS, props,children: _*)
   }
   object List {
     @js.native
     @JSImport("react-content-loader", "List")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElement(JS, props,children: _*)
   }
   object BulletList {
     @js.native
     @JSImport("react-content-loader", "BulletList")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElement(JS, props,children: _*)
   }
 }

@@ -24,24 +24,17 @@ package examples
 package helloworld
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-
-import tags._
 
 object SuspenseTest {
 
-  val sfc1 = SFC0 { vdom.tags.div("Text from a SFC") }
+  val sfc1: ReactFC0 = () => { div("Text from a SFC") }
 
-  val sfc2 = SFC0 {
+  val sfc2: ReactFC0 = () => {
     val (v, update) = useStateDirect[Int](() => 0)
     div(
       p(s"Using hooks useState: You clicked $v times"),
@@ -98,7 +91,7 @@ object SuspenseTest {
   }
 
   // test pure SFC with js.Dynamic
-  val sfc3 = SFC1[Props] { props =>
+  val sfc3: ReactFC[Props] = props => {
     val initialCount: Int = props.initialCount
     val (state, dispatch) =
       useReducer[State, Action, Int](reducer, initialCount, State(_))
@@ -138,7 +131,7 @@ object SuspenseTest {
   }
 
   // from useHooks.com
-  val sfc4 = SFC0 {
+  val sfc4: ReactFC0 = () => {
     val happyPress = useKeyPress("h")
     val sadPress   = useKeyPress("s")
     val robotPress = useKeyPress("r")
@@ -162,7 +155,7 @@ object SuspenseTest {
     def apply(c: ReactNode) = new Sfc5Props { val child = c }
   }
 
-  val sfc5 = SFC1[Sfc5Props] { props =>
+  val sfc5: ReactFC[Sfc5Props] = props => {
     //Fragment(
     //p("scala.js React.Suspense component test, parent is a SFC"),
     //p("Child is typescript SuspenseChild so we can throw a promise easily and test interop."),
@@ -170,7 +163,7 @@ object SuspenseTest {
     //)
   }
 
-  val sfc6 = SFC0 {
+  val sfc6: ReactFC0 = () => {
     val happyPress = useKeyPress("h")
     val sadPress   = useKeyPress("s")
     val robotPress = useKeyPress("r")
@@ -187,14 +180,14 @@ object SuspenseTest {
     )
   }
 
-  val jsc1 = SFC0 { div("hello world") }
+  val jsc1: ReactFC0 = () => { div("hello world") }
 
-  val jscomponent = SFC1[SProps] { p =>
+  val jscomponent: ReactFC[SProps] = p => {
     div(s"End of Tests: ${p.label}")
   }
 
   // these don't really work
-  val componentSucceed = SFC0 {
+  val componentSucceed: ReactFC0 = () => {
     T.throwit(js.Promise.resolve[Boolean](true))
     "succeeded"
   }
@@ -241,19 +234,19 @@ object SuspenseTest {
 
   // direct parent import
   def SuspenseParent(props: SProps = null)(children: ReactNode*) =
-    createElement(SuspenseParentNS.SuspenseParentJS, props)(children: _*)
+    createElement(SuspenseParentNS.SuspenseParentJS, props, children: _*)
 
   // lazy is called in the ts file
   def LazySuspenseChild(props: SProps = null)(children: ReactNode*) =
-    createElement(SuspenseParentNS.SuspenseChildJS, props)(children: _*)
+    createElement(SuspenseParentNS.SuspenseChildJS, props, children: _*)
 
   // child is imported directly
   def SuspenseChild(props: SProps = null)(children: ReactNode*) =
-    createElement(SuspenseChildJS, props)(children: _*)
+    createElement(SuspenseChildJS, props, children: _*)
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
-    createElement(`lazy`(SuspenseParentNS.X), props)(children: _*)
+    createElement(`lazy`(SuspenseParentNS.X), props, children: _*)
 
   def blah(): ReactNode =
     Fragment(
@@ -276,7 +269,7 @@ object SuspenseTest {
       // // sfc5(componentSucceed(null)),
       // testing some implicit and explicit conversions :-)
       // explicit
-      jscomponent.toEl(new SProps { label = "Almost the end!" }),
+      jscomponent(new SProps { label = "Almost the end!" }),
       // implicit, tuple of component and args => ReactNode
       (jscomponent, new SProps { label = "Really!" })
     )

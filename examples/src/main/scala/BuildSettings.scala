@@ -23,11 +23,13 @@ package ttg
 package examples
 
 import scala.scalajs.js
-
 import js.annotation._
 
 @js.native
 @JSImport("BuildSettings", JSImport.Namespace)
 object BuildSettings extends js.Object {
+  /** Public path prefix, needed if not at root. Use for github push.
+   * should not have trailing slash but should have leading slash.
+   */
   val routePrefix: js.UndefOr[String] = js.native
 }

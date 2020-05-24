@@ -24,36 +24,14 @@ package examples
 package graphs
 
 import scala.scalajs.js
-
 import js.Dynamic.{ literal => jsobj }
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-
 import fabric._
 import fabric.components._
-
 import cytoscape._
-import tags._
-
-// object GraphPage {
-//   val c = statelessComponent("GraphPage")
-//   import c.ops._
-
-//   render { self =>
-//     div(new DivProps {})(
-//       CommandBar(new ICommandBarProps {
-//         val items = js.Array()
-//       })(),
-//       Graph.make()
-//     )
-//   }
-// }
 
 /**
  * Treat the graph and ref as instance vars in State since State in
@@ -155,9 +133,9 @@ object Graph {
 
   trait Props extends js.Object {}
 
-  def apply() = sfc
+  def apply() = createElement(render, null)
 
-  val sfc = SFC0 {
+  val render: ReactFC0 = () => {
     val refR = useRef[Option[dom.html.Div]](None)
     var cyR  = useRef[Option[Graph]](None)
 
@@ -189,4 +167,5 @@ object Graph {
       ref = refCallback[dom.html.Div](el => refR.current = el.toNonNullOption)
     })()
   }
+  render.displayName(Name)
 }

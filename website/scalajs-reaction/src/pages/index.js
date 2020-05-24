@@ -20,7 +20,7 @@ const features = [
     imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-        scalajs-reaction uses reactjs hooks to make component creation and use easy. You use common, everyday, highly inferable scala idoms--no macros or tricks.
+        scalajs-reaction uses reactjs function components and hooks to make component creation and use easy. You use common, everyday, highly inferable scala idoms--no macros or tricks.
       </>
     ),
   },

@@ -23,31 +23,24 @@ package ttg.examples
 package bootstrap
 
 import scala.scalajs.js
-
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
 import vdom.styling._
-import vdom.tags._
-
 import bootstrap._
 import bootstrap.components._
 
 object BootstrapPage {
-
+    val Name = "BootstrapPage"
   trait Props extends js.Object {
     var rootClassName: js.UndefOr[String] = js.undefined
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     div(new DivProps {
       className = props.rootClassName
     })(
@@ -69,6 +62,7 @@ object BootstrapPage {
       })
     )
   }
+  render.displayName(Name)
 }
 
 object BootstrapExample {
@@ -77,9 +71,9 @@ object BootstrapExample {
     val children: ReactElement
   }
 
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     div(new DivProps {
       className = "ttg-bootstraExample"
       style = new StyleAttr {
@@ -90,6 +84,7 @@ object BootstrapExample {
       props.children
     )
   }
+  render.displayName("BootstrapExample")
 }
 
 object FormExample {
@@ -98,9 +93,9 @@ object FormExample {
 
   case class State(value: Option[String] = None)
 
-  def apply() = sfc
+  def apply() = createElement(render, null)
 
-  val sfc = SFC0 {
+  val render: ReactFC0 = () => {
     val (state, update) = useReducer[State, Action](
       (s, a) =>
         a match {
@@ -129,6 +124,7 @@ object FormExample {
       )
     )
   }
+  render.displayName("FormExample")
 
   def getValidationState(value: Option[String] = None) = {
     val len = value.map(_.length).getOrElse(-1)

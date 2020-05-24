@@ -36,16 +36,14 @@ import implicits._
 import vdom._
 import fabric._
 import fabric.components._
-
-import tags._
 import util.control._
 
-@js.native
-@JSImport("Examples/atmoache/styles.css", JSImport.Namespace)
 object atmoacheNS extends js.Object
 
 object CStyles {
-  val styles = atmoacheNS.asInstanceOf[js.Dynamic]
+ @js.native
+ @JSImport("Examples/atmoache/styles.css", JSImport.Namespace)
+ val styles: js.Object with js.Dynamic = js.native
 }
 import CStyles._
 
@@ -62,20 +60,19 @@ object Controls {
   }
 
   // props version
-  def apply(props: Props) = sfc(props)
+  def apply(props: Props) = render.elementWith(props)
 
   // arglist version
   def apply(
     onCitySet_ : Option[String] => Unit,
     cityName_ : Option[String]
   ) =
-    sfc(new Props {
+    render.elementWith(new Props {
       var onCitySet = onCitySet_
       var cityName  = cityName_
     })
 
-  val sfc = SFC1[Props] { props =>
-    useDebugValue("Controls")
+  val render: ReactFC[Props] = props => {
     val (state, setState) = useStateStrictDirect[State](None)
     div(new DivProps {
       className = styles.controls.asString
@@ -86,8 +83,8 @@ object Controls {
         // We just need change events but not track each change
         defaultValue = props.cityName.getOrElse[String]("")
         onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) props.onCitySet(state))
-        onChangeInput = js.defined((_, v: String) => setState(Option(v)))
-      })(),
+        onChange = TextField.OnChangeInput((_, v: js.UndefOr[String]) => setState(v.toOption))
+      }),
       Button.Primary(new Button.Props {
         text = "Get Weather Summary"
         disabled = state.map(_.size == 0).getOrElse[Boolean](true)
@@ -95,6 +92,7 @@ object Controls {
       })()
     )
   }
+  render.displayName(Name)
 }
 
 object DailyWeatherSummary {
@@ -119,30 +117,10 @@ object DailyWeatherSummary {
     var key: String
   }
 
-  def apply(props: Props)        = sfc(props)
-  def apply(s: Daily, k: String) = sfc(new Props { var summary = s; var key = k })
-
-  /*
-  val sfc = SFC1[Props] { arg =>
-    val cond = arg.summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
-    val props = new ReactWeatherDisplayProps {
-      temperature = arg.summary.temp
-      currentTemperature = arg.summary.temp
-      width = 150
-      height = 150
-      condition = cond
-      currentCondition = cond
-    }
-    div(new DivProps {
-      className = "daily"
-      style = layout
-    })(
-      Label(labelProps)(arg.summary.dateStr),
-      ReactWeatherDisplay(props)
-    )
-  }
-*/
-    val sfc = SFC1[Props] { argx =>
+  def apply(props: Props)        = render.elementWith(props)
+  def apply(s: Daily, k: String) = render.elementWith(new Props { var summary = s; var key = k })
+  
+  val render: ReactFC[Props] = argx => {
     val cond = argx.summary.facets.headOption.map(f => convertCondition(f.label)).orUndefined
     val props = new ReactWeatherDisplayProps {
       temperature = argx.summary.temp
@@ -160,6 +138,7 @@ object DailyWeatherSummary {
       ReactWeatherDisplay(props)
     )
     }
+  render.displayName(Name)
 }
 
 object app {
@@ -204,10 +183,9 @@ object app {
       }
     )
 
-  def apply() = sfc
+  def apply() = createElement(render, null)
 
-  val sfc = SFC0 {
-    useDebugValue(Name)
+  val render: ReactFC0 = () => {
     val (state, dispatch) = useReducer[State, Action](
       (s, a) =>
         a match {
@@ -221,7 +199,7 @@ object app {
       State()
     )
 
-    useEffect(unsafe_deps(state.cityName)) { () =>
+    useEffect(unsafeDeps(state.cityName)) { () =>
       state.cityName match {
         case Some(name) =>
           dao
@@ -250,4 +228,5 @@ object app {
       )
     )
   }
+  render.displayName(Name)
 }

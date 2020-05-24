@@ -23,26 +23,21 @@ package ttg.examples
 package materialui
 
 import scala.scalajs.js
-
 import js.Dynamic.{ literal => jsobj }
 import js.|
-
 import org.scalajs.dom
-
 import react._
 import react.implicits._
-
 import vdom._
 import vdom.styling._
-import vdom.tags._
-
 import components._
 import jss._
 import mui._
 import mui.components._
 
 object MaterialUIPage {
-
+    val NAME = "MaterialUIPage"
+    
   @js.native
   trait ClassNames extends ClassNamesTag {
     val bullet: String = js.native
@@ -88,9 +83,9 @@ object MaterialUIPage {
     var rootClassName: js.UndefOr[String] = js.undefined
   }
 
-  def apply(props: Props = new Props {}) = sfc(props)
+  def apply(props: Props = new Props {}) = render.elementWith(props)
 
-  private val sfc = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     val cn = useStyles()
 
     js.Dynamic.global.console.log("cn", cn)
@@ -173,17 +168,19 @@ object MaterialUIPage {
       parts.map(example(_))
     )
   }
+  render.displayName(NAME)
 }
 
 object components {
+  val NAME = "MaterialUIExample"
 
   trait Props extends js.Object {
     val child: ReactNode
   }
 
-  def example(c: ReactNode) = MaterialUIExample(new Props { val child = c })
+  def example(c: ReactNode) = render.elementWith(new Props { val child = c })
 
-  val MaterialUIExample = SFC1[Props] { props =>
+  val render: ReactFC[Props] = props => {
     div(new DivProps {
       className = "ttg-muiExample"
       // inline style to keep it easy
@@ -195,4 +192,5 @@ object components {
       props.child
     )
   }
+  render.displayName(NAME)
 }

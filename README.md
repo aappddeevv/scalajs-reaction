@@ -11,11 +11,6 @@
 
 You need to use a react version 16.8+ to make sure that hooks are included. Use the latest react-native.
 
-The documentation site is being converted to docusaurus v2. Links to the
-demo do not work yet but you can see the demo by cloning the project and running
-`npm i; npm run demo`. API documentation will be added back soon.
-The demo example may not build at the moment but I will fix it shortly.
-
 Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
 # What is scalajs-reaction?

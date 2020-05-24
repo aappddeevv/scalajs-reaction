@@ -27,20 +27,13 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
-import implicits._
-
+import react.implicits._
 import vdom._
-import vdom.tags._
-
 import fabric._
 import fabric.components._
 import fabric.styling._
-
 import Pages._
 import Styling._
 import addressmanager.fakedata._
@@ -64,7 +57,7 @@ object Contexts {
 object Main {
 
     // inject global styles
-  import merge_styles._
+  import fabric.merge_styles._
   mergeStyles(new IRawStyle {
     selectors = selectorset(":global(body), :global(html), :global(#container)" ->
       new IRawStyle {
@@ -77,6 +70,9 @@ object Main {
   import Contexts._
   val container = "container"
 
+  @JSExportTopLevel("settings")
+  val settings = BuildSettings
+  
   /**
    * This will be exported from the ES module that scala.js outputs.  How you
    * access it depends on your bundler. webpack can be configured to output a
@@ -102,8 +98,8 @@ object Main {
         render(
           createElement(react_redux.Provider, new ProviderProps {
             store = StoreNS.store.asInstanceOf[Store[js.Object, Action]]
-          })(
-            // mui
+          },
+          // mui
             StylesProvider(new StylesProvider.Props {
               _jss = myjss
             })(

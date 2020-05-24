@@ -23,7 +23,6 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.Dynamic.literal
 import js.annotation._
 import js.|
@@ -32,8 +31,6 @@ import react._
 import react.vdom._
 import fabric.styling
 import styling._
-
-//
 
 /** Provide a focs() method. */
 @js.native
@@ -59,11 +56,14 @@ trait KeyAndRef extends js.Object {
 
 /** Adds a componentRef member. */
 trait ComponentRef[T] extends js.Object {
-
-  /** Callback style, the easiest to handle. */
-  //var componentRef: js.UndefOr[js.Function1[T, Unit]] = js.undefined
-  //var componentRef: js.UndefOr[Ref[T]] = js.undefined
-  var componentRef: js.UndefOr[MutableRef[T]] = js.undefined
+  @JSName("componentRef")
+  var componentRefCallback: js.UndefOr[RefCb[T]] = js.undefined
+  @JSName("componentRef")
+  var componentRefMutable: js.UndefOr[MutableRef[T]] = js.undefined
+  @JSName("componentRef")
+  var componentRefReact: js.UndefOr[ReactRef[T]] = js.undefined
+  /** Take any kind of `Ref[T]`. */
+  var componentRef: js.UndefOr[Ref[T]] = js.undefined
 }
 
 /** Adds a disabled member. */
