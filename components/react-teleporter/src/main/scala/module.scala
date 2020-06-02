@@ -27,22 +27,6 @@ import scala.scalajs.js
 import org.scalajs.dom
 import js.annotation._
 import js.|
-@js.native
-@JSImport("react-teleporter", "createTeleporter")
-object createTeleporter extends js.Any {
-  def apply[TC <: js.Object](options: js.UndefOr[TeleporterOptions] = js.undefined): Teleporter[TC] = js.native
-}
-
-@js.native
-@JSImport("react-teleporter", JSImport.Namespace)
-object module extends js.Object {
-
-  /**
-   * @tparam TC Props that you want the target to pass along to the source but defined in target.
-   */
-  def createTeleporter[TC <: js.Object](options: js.UndefOr[TeleporterOptions] = js.undefined): Teleporter[TC] =
-    js.native
-}
 
 /**
  * @tparam TC Props passed to the source but defined in target.
@@ -68,6 +52,7 @@ trait TeleporterSource[TC <: js.Object] extends ReactJSComponent
 object TeleporterSource {
 
   implicit class RichTeleporterSource[TC <: js.Object](private val s: TeleporterSource[TC]) extends AnyVal {
+    //def apply(props: TC, children: ReactNode*) = createElement(s, props, children:_*)
     def apply(children: ReactNode*) = createElement(s, null, children:_*)
     def multiple(children: ReactNode*) = createElement(s, new SourceProps { multiple = true }, children:_*)
   }

@@ -128,6 +128,11 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
     if (value == null) js.undefined
     else new JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
   }
+  
+  /** Keep type signature, but filter out non-truthy values. */
+  @inline def filterTruthy =
+    if(js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+    else js.undefined
 
   /** Absorb the `js.UndefOr` leaving `T|Null`. */
   @inline def absorbUndef: T | Null =

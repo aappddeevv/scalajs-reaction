@@ -96,8 +96,7 @@ object Panel {
     var isBlocking: js.UndefOr[Boolean]                                         = js.undefined
     var isFooterAtBottom: js.UndefOr[Boolean]                                   = js.undefined
     var headerText: js.UndefOr[String]                                          = js.undefined
-    var onDismiss: js.UndefOr[js.Function1[ReactEvent[dom.html.Element], Unit]] = js.undefined
-    var onDismissed: js.UndefOr[js.Function0[Unit]]                             = js.undefined
+    var onDismiss: js.UndefOr[OnDismiss] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]]          = js.undefined
     var `type`: js.UndefOr[Type]                                                = js.undefined
     var className: js.UndefOr[String]                                           = js.undefined
@@ -120,5 +119,10 @@ object Panel {
     var onRenderFooter: js.UndefOr[IRenderFunction[Props]]        = js.undefined
     var onRenderFooterContent: js.UndefOr[IRenderFunction[Props]] = js.undefined
   }
+  
+  type OnDismiss = js.Function1[ReactEvent[dom.html.Element], Unit]
+  def OnDismiss(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OnDismiss]
+  def OnDismiss(f: ReactEvent[dom.html.Element] => Unit) =
+    js.Any.fromFunction1(f).asInstanceOf[OnDismiss]
 
 }

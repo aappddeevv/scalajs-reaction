@@ -87,6 +87,10 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
       Option(forceGet)
     else None
 
+  @inline def filterTruthy: A|Null = 
+    if(js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+    else null.asInstanceOf[A|Null]
+    
   /** Absorb the null and change A|Null => A. Value could still be null,
    * which is valid in scala, but it will no longer by typed that way.
    */

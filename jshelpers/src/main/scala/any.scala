@@ -24,10 +24,13 @@ package jshelpers
 import scala.scalajs.js
 import js.|
 
-/** Restrict T in subtype. */
+/** Restrict T in subtype to something js.* related. */
 trait AnyOps[T] {
   protected def a: T
 
+  /** Convert T => T|Null. */
+  def maybeNull = a.asInstanceOf[T|Null]
+  
   /** If T is js.Any, this may be redundent. */
   def asJsAny: js.Any = a.asInstanceOf[js.Any]
   def asJsObj: js.Object = a.asInstanceOf[js.Object]

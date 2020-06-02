@@ -708,7 +708,7 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
 
 }
 
-trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAttributes[T] {
+trait HTMLAttributesBase[+T <: dom.EventTarget] extends js.Object {
 
   /** reactjs specific */
   var defaultChecked: js.UndefOr[Boolean] = js.undefined
@@ -764,6 +764,9 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAt
   @JSName("will-change")
   var willChange: js.UndefOr[String] = js.undefined;
 }
+
+trait HTMLAttributes[+T <: dom.EventTarget] 
+    extends HTMLAttributesBase[T] with AriaAttributes[T] with DOMAttributes[T]
 
 trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
 
@@ -1058,7 +1061,7 @@ trait ImgHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var width: js.UndefOr[String | Double | Int] = js.undefined
 }
 
-trait InputHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
+trait InputHTMLAttributesBase[+T <: dom.EventTarget] extends js.Object {
   var accept: js.UndefOr[String] = js.undefined
   var alt: js.UndefOr[String] = js.undefined
   var autoComplete: js.UndefOr[String] = js.undefined
@@ -1092,6 +1095,9 @@ trait InputHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var width: js.UndefOr[String | Int] = js.undefined
   var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
 }
+
+trait InputHTMLAttributes[+T <: dom.EventTarget] 
+    extends InputHTMLAttributesBase[T] with HTMLAttributes[T]
 
 trait InsHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var cite: js.UndefOr[String] = js.undefined

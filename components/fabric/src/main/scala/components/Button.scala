@@ -49,6 +49,10 @@ object Button {
       with AllHTMLAttributes[dom.html.Button]
       with Theme
       with ReactJSProps {
+    
+    /** Simplest callback. () => Unit. */
+    @JSName("onClick")
+    var onClickSimple: js.UndefOr[js.Function0[Unit]] = js.undefined
     // having variance problems
     //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
     //var href: js.UndefOr[String] = js.undefined
@@ -178,7 +182,6 @@ object Button {
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS,props)
-
   }
 
   object MessageBar {

@@ -77,7 +77,7 @@ trait SVGTags {
   final lazy val use = tagt[UseProps]("use")
 }
 
-trait SVGAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
+trait SVGAttributesBase[+T <: dom.EventTarget] extends js.Object {
   var className: js.UndefOr[String] = js.undefined
   var color: js.UndefOr[String] = js.undefined
   var height: js.UndefOr[Int | String] = js.undefined
@@ -338,3 +338,6 @@ trait SVGAttributes[+T <: dom.EventTarget] extends DOMAttributes[T] {
   var yChannelSelector: js.UndefOr[String] = js.undefined
   var z: js.UndefOr[String | Double] = js.undefined
 }
+
+trait SVGAttributes[+T <: dom.EventTarget] 
+    extends SVGAttributesBase[T] with DOMAttributes[T]
