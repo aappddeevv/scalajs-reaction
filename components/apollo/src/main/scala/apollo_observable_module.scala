@@ -40,9 +40,9 @@ trait SubscriptionObserver[T] extends js.Object {
 
 trait Observer[T] extends js.Object {
   var start: js.UndefOr[js.Function1[Subscription, js.Any]] = js.undefined
-  var next: js.UndefOr[js.Function1[T, Unit]]               = js.undefined
-  var error: js.UndefOr[js.Function1[js.Any, Unit]]         = js.undefined
-  var complete: js.UndefOr[js.Function0[Unit]]              = js.undefined
+  var next: js.UndefOr[js.Function1[T, Unit]] = js.undefined
+  var error: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
+  var complete: js.UndefOr[js.Function0[Unit]] = js.undefined
 }
 
 @js.native
@@ -56,14 +56,14 @@ trait ObservableBase[T] extends js.Object {
     observerOrNext: js.Function1[T, Unit] | Observer[T],
     error: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined,
     complete: js.UndefOr[js.Function0[Unit]] = js.undefined
-  ): Subscription                             = js.native
+  ): Subscription = js.native
   def forEach(f: T => Unit): js.Promise[Unit] = js.native
-  def map[B](f: T => B): Observable[B]        = js.native
-  def filter(f: T => Boolean): Observable[T]  = js.native
+  def map[B](f: T => B): Observable[B] = js.native
+  def filter(f: T => Boolean): Observable[T] = js.native
   //reduce
   //flatMap
   def from[R](observable: Observable[R] | js.Array[R]): Observable[R] = js.native
-  def of[R](args: R*): Observable[R]                                  = js.native
+  def of[R](args: R*): Observable[R] = js.native
 }
 
 @js.native
@@ -74,5 +74,5 @@ class Observable[T](subscriber: Subscriber[T]) extends ObservableBase[T]
 @JSImport("zen-observable-ts", "Observable")
 object Observable extends js.Object {
   def from[R](observable: Observable[R] | js.Array[R]): Observable[R] = js.native
-  def of[R](args: R*): Observable[R]                                  = js.native
+  def of[R](args: R*): Observable[R] = js.native
 }

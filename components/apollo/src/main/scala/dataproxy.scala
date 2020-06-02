@@ -36,7 +36,7 @@ trait Fragment[TVars <: js.Object] extends js.Object {
   val id: String
   val fragment: graphql.DocumentNode
   var fragmentName: js.UndefOr[String] = js.undefined
-  var variables: js.UndefOr[TVars]     = js.undefined
+  var variables: js.UndefOr[TVars] = js.undefined
 }
 
 trait WriteFragmentOptions[T, TVars <: js.Object] extends Fragment[TVars] {

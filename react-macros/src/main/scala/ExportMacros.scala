@@ -63,8 +63,7 @@ private[react] class ExportMacros(val c: Context) extends ImplTransformers {
           }
           if (debug)
             ignored.foreach(i =>
-              System.err.println(
-                s"Forwarding from a module only forwards vals and defs. Ignoring ${i.name}."))
+              System.err.println(s"Forwarding from a module only forwards vals and defs. Ignoring ${i.name}."))
 
           // I think can filter better by using aMethodSymbol.accessed.
           val vals_only = to_process.collect {

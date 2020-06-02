@@ -35,8 +35,15 @@ import org.scalajs.dom
 
 /** Used to set the inner HTML dangerously. */
 trait SetInnerHTML extends js.Object {
-  val __html: String
+  var __html: js.UndefOr[String | Null] = js.undefined
   //var __html: js.UndefOr[String] = js.undefined
+}
+
+object SetInnerHTML {
+  def apply(value: js.UndefOr[String | Null] = js.undefined) =
+    new SetInnerHTML {
+      __html = value
+    }
 }
 
 /** Add a key. */
@@ -81,9 +88,9 @@ trait HTMLTagsX {
   // should be dom.html.Aside
   type AsideProps = ElementAttributesOnly
   final lazy val aside = tagt[AsideProps]("aside")
-  
+
   def asideWithClass(cn: String)(children: ReactNode*) =
-    aside(new AsideProps { className = cn})(children:_*)
+    aside(new AsideProps { className = cn })(children: _*)
 
   trait AudioProps extends AudioHTMLAttributes[dom.html.Audio] with ClassAttributes[dom.html.Audio]
   final lazy val audio = tagt[AudioProps]("audio")
@@ -143,10 +150,10 @@ trait HTMLTagsX {
 
   trait DataListProps extends HTMLAttributes[dom.html.DataList] with ClassAttributes[dom.html.DataList]
   final lazy val datalist = tagt[DataListProps]("datalist")
-/*
+  /*
   trait DDProps extends HTMLAttributes[dom.html.DD] with ClassAttributes[dom.html.DD]
   final lazy val dd = tagt[DDProps]("dd")
-*/
+   */
   // should be dom.html.Del, and DelHTMLAttributes
   type DelProps = ElementAttributesOnly
   final lazy val del = tagt[DelProps]("del")
@@ -171,17 +178,19 @@ trait HTMLTagsX {
     cn: js.UndefOr[String],
     children: ReactNode*
   ) = div(new DivProps { className = cn })(children: _*)
-  
+
   def divWithClass(
     cn: js.UndefOr[String],
     children: ReactNode*
   ) = div(new DivProps { className = cn })(children: _*)
-  
+
   def divWithKeyAndClass(
     key: String,
     cn: js.UndefOr[String],
     children: ReactNode*
   ) = div(new DivProps { `key` = key; className = cn })(children: _*)
+
+  def divWithProps(props: DivProps) = div(props)()
 
   // should be dom.html.Dl
   type DlProps = ElementAttributesOnly
@@ -220,7 +229,7 @@ trait HTMLTagsX {
   final lazy val h4 = tagt[HProps]("h2")
   final lazy val h5 = tagt[HProps]("h2")
   final lazy val h6 = tagt[HProps]("h2")
-  
+
   def h1(text: String) = createDOMElement("h1", null)(text.asInstanceOf[ReactNode])
   def h2(text: String) = createDOMElement("h2", null)(text.asInstanceOf[ReactNode])
   def h3(text: String) = createDOMElement("h3", null)(text.asInstanceOf[ReactNode])
@@ -247,7 +256,7 @@ trait HTMLTagsX {
   final lazy val i = tagt[IProps]("i")
 
   def i(text: String) = createDOMElement("i", null)(text.asInstanceOf[ReactNode])
-  
+
   trait IframeProps extends IframeHTMLAttributes[dom.html.IFrame] with ClassAttributes[dom.html.IFrame]
   final lazy val iframe = tagt[IframeProps]("iframe")
 
@@ -265,21 +274,21 @@ trait HTMLTagsX {
     lazy val button = this withType "button"
 
     /** Not supported? */
-    lazy val checkbox      = this withType "checkbox"
-    lazy val color         = this withType "color"
-    lazy val date          = this withType "date"
-    lazy val datetime      = this withType "datetime"
+    lazy val checkbox = this withType "checkbox"
+    lazy val color = this withType "color"
+    lazy val date = this withType "date"
+    lazy val datetime = this withType "datetime"
     lazy val datetimeLocal = this withType "datetime-local"
-    lazy val email         = this withType "email"
-    lazy val file          = this withType "file"
+    lazy val email = this withType "email"
+    lazy val file = this withType "file"
 
     /** Not supported? */
     lazy val hidden = this withType "hidden"
 
     /** Not supported? */
-    lazy val image    = this withType "image"
-    lazy val month    = this withType "month"
-    lazy val number   = this withType "number"
+    lazy val image = this withType "image"
+    lazy val month = this withType "month"
+    lazy val number = this withType "number"
     lazy val password = this withType "password"
 
     /** Not supported? */
@@ -287,16 +296,16 @@ trait HTMLTagsX {
     lazy val range = this withType "range"
 
     /** Not supported? */
-    lazy val reset  = this withType "reset"
+    lazy val reset = this withType "reset"
     lazy val search = this withType "search"
 
     /** Not supported? */
     lazy val submit = this withType "submit"
-    lazy val tel    = this withType "tel"
-    lazy val text   = this withType "text"
-    lazy val time   = this withType "time"
-    lazy val url    = this withType "url"
-    lazy val week   = this withType "week"
+    lazy val tel = this withType "tel"
+    lazy val text = this withType "text"
+    lazy val time = this withType "time"
+    lazy val url = this withType "url"
+    lazy val week = this withType "week"
   }
 
   trait InsProps extends InsHTMLAttributes[dom.html.Mod] with ClassAttributes[dom.html.Mod]
@@ -324,9 +333,9 @@ trait HTMLTagsX {
   final lazy val main = tagt[MainProps]("main")
 
   /** Common scenario to have a main method with no attributes. */
-  def mainWith(cn: String, children: ReactNode*) = 
+  def mainWith(cn: String, children: ReactNode*) =
     main(new MainProps { className = cn })(children: _*)
-  
+
   trait MapProps extends MapHTMLAttributes[dom.html.Map] with ClassAttributes[dom.html.Map]
   final lazy val map = tagt[MapProps]("map")
 
@@ -373,7 +382,7 @@ trait HTMLTagsX {
 
   /** Convenience: Create `p` from text. */
   def p(text: String) = createDOMElement("p", null)(text.asInstanceOf[ReactNode])
-  
+
   trait ParamProps extends ParamHTMLAttributes[dom.html.Param] with ClassAttributes[dom.html.Param]
   final lazy val param = tagt[ParamProps]("param")
 
@@ -506,156 +515,156 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var dangerouslySetInnerHTML: js.UndefOr[SetInnerHTML] = js.undefined
 
   // clipboard events
-  var onCopy: js.UndefOr[ClipboardEventHandler[T @uv]]         = js.undefined
-  var onCopyCapture: js.UndefOr[ClipboardEventHandler[T @uv]]  = js.undefined
-  var onCut: js.UndefOr[ClipboardEventHandler[T @uv]]          = js.undefined
-  var onCutCapture: js.UndefOr[ClipboardEventHandler[T @uv]]   = js.undefined
-  var onPaste: js.UndefOr[ClipboardEventHandler[T @uv]]        = js.undefined
+  var onCopy: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
+  var onCopyCapture: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
+  var onCut: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
+  var onCutCapture: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
+  var onPaste: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
   var onPasteCapture: js.UndefOr[ClipboardEventHandler[T @uv]] = js.undefined
 
   // compositoin events
-  var onCompositionEnd: js.UndefOr[CompositionEventHandler[T @uv]]           = js.undefined
-  var onCompositionEndCapture: js.UndefOr[CompositionEventHandler[T @uv]]    = js.undefined
-  var onCompositionStart: js.UndefOr[CompositionEventHandler[T @uv]]         = js.undefined
-  var onCompositionStartCapture: js.UndefOr[CompositionEventHandler[T @uv]]  = js.undefined
-  var onCompositionUpdate: js.UndefOr[CompositionEventHandler[T @uv]]        = js.undefined
+  var onCompositionEnd: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
+  var onCompositionEndCapture: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
+  var onCompositionStart: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
+  var onCompositionStartCapture: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
+  var onCompositionUpdate: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
   var onCompositionUpdateCapture: js.UndefOr[CompositionEventHandler[T @uv]] = js.undefined
 
   // Focus Events
-  var onFocus: js.UndefOr[FocusEventHandler[T @uv]]        = js.undefined
+  var onFocus: js.UndefOr[FocusEventHandler[T @uv]] = js.undefined
   var onFocusCapture: js.UndefOr[FocusEventHandler[T @uv]] = js.undefined
-  var onBlur: js.UndefOr[FocusEventHandler[T @uv]]         = js.undefined
-  var onBlurCapture: js.UndefOr[FocusEventHandler[T @uv]]  = js.undefined
-  
+  var onBlur: js.UndefOr[FocusEventHandler[T @uv]] = js.undefined
+  var onBlurCapture: js.UndefOr[FocusEventHandler[T @uv]] = js.undefined
+
   // Form Events
   // onChange specialized in each subclass
   //var        onChange: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
-  var onChangeCapture: js.UndefOr[FormEventHandler[T @uv]]  = js.undefined
-  var onInput: js.UndefOr[FormEventHandler[T @uv]]          = js.undefined
-  var onInputCapture: js.UndefOr[FormEventHandler[T @uv]]   = js.undefined
-  var onReset: js.UndefOr[FormEventHandler[T @uv]]          = js.undefined
-  var onResetCapture: js.UndefOr[FormEventHandler[T @uv]]   = js.undefined
-  var onSubmit: js.UndefOr[FormEventHandler[T @uv]]         = js.undefined
-  var onSubmitCapture: js.UndefOr[FormEventHandler[T @uv]]  = js.undefined
-  var onInvalid: js.UndefOr[FormEventHandler[T @uv]]        = js.undefined
+  var onChangeCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onInput: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onInputCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onReset: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onResetCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onSubmit: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onSubmitCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
+  var onInvalid: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
   var onInvalidCapture: js.UndefOr[FormEventHandler[T @uv]] = js.undefined
 
   // image events
-  var onLoad: js.UndefOr[ReactEventHandler[T @uv]]         = js.undefined
-  var onLoadCapture: js.UndefOr[ReactEventHandler[T @uv]]  = js.undefined
-  var onError: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onLoad: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onLoadCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onError: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
   var onErrorCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-  
+
   // keyboard events val onKeyDown: js.UndefOr[js.Function0[]] = js.undefined
-  var onKeyDown: js.UndefOr[KeyboardEventHandler[T @uv]]         = js.undefined
-  var onKeyPress: js.UndefOr[KeyboardEventHandler[T @uv]]        = js.undefined
+  var onKeyDown: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  var onKeyPress: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
   var onKeyPressCapture: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
-  var onKeyUp: js.UndefOr[KeyboardEventHandler[T @uv]]           = js.undefined
-  var onKeyUpCapture: js.UndefOr[KeyboardEventHandler[T @uv]]    = js.undefined
+  var onKeyUp: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
+  var onKeyUpCapture: js.UndefOr[KeyboardEventHandler[T @uv]] = js.undefined
 
   // media events
-  var onAbort: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
-  var onAbortCapture: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
-  var onCanPlay: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onCanPlayCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onCanPlayThrough: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onAbort: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onAbortCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onCanPlay: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onCanPlayCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onCanPlayThrough: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
   var onCanPlayThroughCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-  var onDurationChange: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onDurationChange: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
   var onDurationChangeCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-  var onEmptied: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onEmptiedCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onEncrypted: js.UndefOr[ReactEventHandler[T @uv]]             = js.undefined
-  var onEncryptedCapture: js.UndefOr[ReactEventHandler[T @uv]]      = js.undefined
-  var onEnded: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
-  var onEndedCapture: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
-  var onLoadedData: js.UndefOr[ReactEventHandler[T @uv]]            = js.undefined
-  var onLoadedDataCapture: js.UndefOr[ReactEventHandler[T @uv]]     = js.undefined
-  var onLoadedMetadata: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onEmptied: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onEmptiedCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onEncrypted: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onEncryptedCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onEnded: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onEndedCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onLoadedData: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onLoadedDataCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onLoadedMetadata: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
   var onLoadedMetadataCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-  var onLoadStart: js.UndefOr[ReactEventHandler[T @uv]]             = js.undefined
-  var onLoadStartCapture: js.UndefOr[ReactEventHandler[T @uv]]      = js.undefined
-  var onPause: js.UndefOr[ReactEventHandler[T @uv]]                 = js.undefined
-  var onPauseCapture: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
-  var onPlay: js.UndefOr[ReactEventHandler[T @uv]]                  = js.undefined
-  var onPlayCapture: js.UndefOr[ReactEventHandler[T @uv]]           = js.undefined
-  var onPlaying: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onPlayingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onProgress: js.UndefOr[ReactEventHandler[T @uv]]              = js.undefined
-  var onProgressCapture: js.UndefOr[ReactEventHandler[T @uv]]       = js.undefined
-  var onRateChange: js.UndefOr[ReactEventHandler[T @uv]]            = js.undefined
-  var onRateChangeCapture: js.UndefOr[ReactEventHandler[T @uv]]     = js.undefined
-  var onSeeked: js.UndefOr[ReactEventHandler[T @uv]]                = js.undefined
-  var onSeekedCapture: js.UndefOr[ReactEventHandler[T @uv]]         = js.undefined
-  var onSeeking: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onSeekingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onStalled: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onStalledCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onSuspend: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onSuspendCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  var onTimeUpdate: js.UndefOr[ReactEventHandler[T @uv]]            = js.undefined
-  var onTimeUpdateCapture: js.UndefOr[ReactEventHandler[T @uv]]     = js.undefined
-  var onVolumeChange: js.UndefOr[ReactEventHandler[T @uv]]          = js.undefined
-  var onVolumeChangeCapture: js.UndefOr[ReactEventHandler[T @uv]]   = js.undefined
-  var onWaiting: js.UndefOr[ReactEventHandler[T @uv]]               = js.undefined
-  var onWaitingCapture: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
-  
+  var onLoadStart: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onLoadStartCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onPause: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onPauseCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onPlay: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onPlayCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onPlaying: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onPlayingCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onProgress: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onProgressCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onRateChange: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onRateChangeCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onSeeked: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onSeekedCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onSeeking: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onSeekingCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onStalled: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onStalledCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onSuspend: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onSuspendCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onTimeUpdate: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onTimeUpdateCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onVolumeChange: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onVolumeChangeCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onWaiting: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+  var onWaitingCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
+
   // mouse events
-  var onAuxClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
-  var onAuxClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined  
-  var onClick: js.UndefOr[MouseEventHandler[T @uv]]              = js.undefined
+  var onAuxClick: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onAuxClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onClick: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
   @JSName("onClick")
   var onEmptyClick: js.UndefOr[js.Function0[Unit]] = js.undefined
-  var onClickCapture: js.UndefOr[MouseEventHandler[T @uv]]       = js.undefined
-  var onContextMenu: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
+  var onClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onContextMenu: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
   var onContextMenuCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-  var onDoubleClick: js.UndefOr[MouseEventHandler[T @uv]]        = js.undefined
+  var onDoubleClick: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
   var onDoubleClickCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
-  var onDrag: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
-  var onDragCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
-  var onDragEnd: js.UndefOr[DragEventHandler[T @uv]]             = js.undefined
-  var onDragEndCapture: js.UndefOr[DragEventHandler[T @uv]]      = js.undefined
-  var onDragEnter: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
-  var onDragEnterCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
-  var onDragExit: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
-  var onDragExitCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
-  var onDragLeave: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
-  var onDragLeaveCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
-  var onDragOver: js.UndefOr[DragEventHandler[T @uv]]            = js.undefined
-  var onDragOverCapture: js.UndefOr[DragEventHandler[T @uv]]     = js.undefined
-  var onDragStart: js.UndefOr[DragEventHandler[T @uv]]           = js.undefined
-  var onDragStartCapture: js.UndefOr[DragEventHandler[T @uv]]    = js.undefined
-  var onDrop: js.UndefOr[DragEventHandler[T @uv]]                = js.undefined
-  var onDropCapture: js.UndefOr[DragEventHandler[T @uv]]         = js.undefined
-  var onMouseDown: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
-  var onMouseDownCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
-  var onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]]         = js.undefined
-  var onMouseMove: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
-  var onMouseMoveCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseOut: js.UndefOr[MouseEventHandler[T @uv]]           = js.undefined
-  var onMouseOutCapture: js.UndefOr[MouseEventHandler[T @uv]]    = js.undefined
-  var onMouseOver: js.UndefOr[MouseEventHandler[T @uv]]          = js.undefined
-  var onMouseOverCapture: js.UndefOr[MouseEventHandler[T @uv]]   = js.undefined
-  var onMouseUp: js.UndefOr[MouseEventHandler[T @uv]]            = js.undefined
-  var onMouseUpCapture: js.UndefOr[MouseEventHandler[T @uv]]     = js.undefined
+  var onDrag: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragEnd: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragEndCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragEnter: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragEnterCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragExit: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragExitCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragLeave: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragLeaveCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragOver: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragOverCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragStart: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDragStartCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDrop: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onDropCapture: js.UndefOr[DragEventHandler[T @uv]] = js.undefined
+  var onMouseDown: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseDownCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseEnter: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseLeave: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseMove: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseMoveCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseOut: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseOutCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseOver: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseOverCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseUp: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
+  var onMouseUpCapture: js.UndefOr[MouseEventHandler[T @uv]] = js.undefined
 
   // this won't work because once it's a val we can't put in type bounds
   //def onKeyDown[U >: T <: dom.EventTarget]: js.UndefOr[KeyboardEventHandler[U]] = js.undefined
 
   // selection events
-  var onSelect: js.UndefOr[ReactEventHandler[T @uv]]        = js.undefined
+  var onSelect: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
   var onSelectCapture: js.UndefOr[ReactEventHandler[T @uv]] = js.undefined
-  
+
   // touch events
-  var onTouchCancel: js.UndefOr[TouchEventHandler[T @uv]]        = js.undefined
+  var onTouchCancel: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
   var onTouchCancelCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
-  var onTouchEnd: js.UndefOr[TouchEventHandler[T @uv]]           = js.undefined
-  var onTouchEndCapture: js.UndefOr[TouchEventHandler[T @uv]]    = js.undefined
-  var onTouchMove: js.UndefOr[TouchEventHandler[T @uv]]          = js.undefined
-  var onTouchMoveCapture: js.UndefOr[TouchEventHandler[T @uv]]   = js.undefined
-  var onTouchStart: js.UndefOr[TouchEventHandler[T @uv]]         = js.undefined
-  var onTouchStartCapture: js.UndefOr[TouchEventHandler[T @uv]]  = js.undefined
- 
+  var onTouchEnd: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchEndCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchMove: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchMoveCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchStart: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+  var onTouchStartCapture: js.UndefOr[TouchEventHandler[T @uv]] = js.undefined
+
   // Pointer Events
   var onPointerDown: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
   var onPointerDownCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
@@ -676,13 +685,13 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   var onGotPointerCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
   var onGotPointerCaptureCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
   var onLostPointerCapture: js.UndefOr[PointerEventHandler[T @uv]] = js.undefined
- 
+
   // scroll events
-  var onScroll: js.UndefOr[UIEventHandler[T @uv]]        = js.undefined
+  var onScroll: js.UndefOr[UIEventHandler[T @uv]] = js.undefined
   var onScrollCapture: js.UndefOr[UIEventHandler[T @uv]] = js.undefined
-  
+
   // wheel events
-  var onWheel: js.UndefOr[WheelEventHandler[T @uv]]        = js.undefined
+  var onWheel: js.UndefOr[WheelEventHandler[T @uv]] = js.undefined
   var onWheelCapture: js.UndefOr[WheelEventHandler[T @uv]] = js.undefined
 
   // Animation Events
@@ -696,7 +705,7 @@ trait DOMAttributes[+T <: dom.EventTarget] extends js.Object {
   // Transition Events
   var onTransitionEnd: js.UndefOr[TransitionEventHandler[T @uv]] = js.undefined
   var onTransitionEndCapture: js.UndefOr[TransitionEventHandler[T @uv]] = js.undefined
-  
+
 }
 
 trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAttributes[T] {
@@ -710,16 +719,16 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAt
   /** reactjs specific */
   var suppressContentEditableWarning: js.UndefOr[Boolean] = js.undefined
 
-  var accessKey: js.UndefOr[String]        = js.undefined
-  var className: js.UndefOr[String]        = js.undefined
+  var accessKey: js.UndefOr[String] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
   var contentEditable: js.UndefOr[Boolean] = js.undefined
-  var dir: js.UndefOr[String]              = js.undefined
+  var dir: js.UndefOr[String] = js.undefined
 
-  var draggable: js.UndefOr[Boolean]  = js.undefined
-  var hidden: js.UndefOr[Boolean]     = js.undefined
-  var id: js.UndefOr[String]          = js.undefined
-  var lang: js.UndefOr[String]        = js.undefined
-  var slot: js.UndefOr[String]        = js.undefined
+  var draggable: js.UndefOr[Boolean] = js.undefined
+  var hidden: js.UndefOr[Boolean] = js.undefined
+  var id: js.UndefOr[String] = js.undefined
+  var lang: js.UndefOr[String] = js.undefined
+  var slot: js.UndefOr[String] = js.undefined
   var spellCheck: js.UndefOr[Boolean] = js.undefined
 
   /** The react style attribute, which should be an object.  If you use this in
@@ -727,11 +736,11 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAt
    * object.
    */
   var style: js.UndefOr[js.Object | js.Dynamic] = js.undefined
-  var tabIndex: js.UndefOr[Int]                 = js.undefined
-  var title: js.UndefOr[String]                 = js.undefined
+  var tabIndex: js.UndefOr[Int] = js.undefined
+  var title: js.UndefOr[String] = js.undefined
 
-  var inputMode: js.UndefOr[String]  = js.undefined
-  var is: js.UndefOr[String]         = js.undefined
+  var inputMode: js.UndefOr[String] = js.undefined
+  var is: js.UndefOr[String] = js.undefined
   var radioGroup: js.UndefOr[String] = js.undefined
 
   // WAI-ARIA
@@ -739,17 +748,17 @@ trait HTMLAttributes[+T <: dom.EventTarget] extends AriaAttributes[T] with DOMAt
 
   // non-standard
   var autoCapitalize: js.UndefOr[String] = js.undefined
-  var autoCorrect: js.UndefOr[String]    = js.undefined
-  var autoSave: js.UndefOr[String]       = js.undefined
-  var color: js.UndefOr[String]          = js.undefined
-  var itemProp: js.UndefOr[String]       = js.undefined
-  var itemScope: js.UndefOr[Boolean]     = js.undefined
-  var itemType: js.UndefOr[String]       = js.undefined
-  var itemID: js.UndefOr[String]         = js.undefined
-  var itemRef: js.UndefOr[String]        = js.undefined
+  var autoCorrect: js.UndefOr[String] = js.undefined
+  var autoSave: js.UndefOr[String] = js.undefined
+  var color: js.UndefOr[String] = js.undefined
+  var itemProp: js.UndefOr[String] = js.undefined
+  var itemScope: js.UndefOr[Boolean] = js.undefined
+  var itemType: js.UndefOr[String] = js.undefined
+  var itemID: js.UndefOr[String] = js.undefined
+  var itemRef: js.UndefOr[String] = js.undefined
   // or Number?
-  var results: js.UndefOr[Int]         = js.undefined
-  var security: js.UndefOr[String]     = js.undefined
+  var results: js.UndefOr[Int] = js.undefined
+  var security: js.UndefOr[String] = js.undefined
   var nselectable: js.UndefOr[Boolean] = js.undefined
 
   @JSName("will-change")
@@ -763,8 +772,8 @@ trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
    var 'aria-atomic'?: boolean | 'false' | 'true' = js.undefined
    var 'aria-autocomplete'?: 'none' | 'inline' | 'list' | 'both' = js.undefined
    */
-  var `aria-busy`: js.UndefOr[Boolean|String] = js.undefined
-  var `aria-checked`: js.UndefOr[Boolean|String] = js.undefined //?: boolean | 'false' | 'mixed' | 'true';
+  var `aria-busy`: js.UndefOr[Boolean | String] = js.undefined
+  var `aria-checked`: js.UndefOr[Boolean | String] = js.undefined //?: boolean | 'false' | 'mixed' | 'true';
 
   var `aria-colcount`: js.UndefOr[Int] = js.undefined
   var `aria-colindex`: js.UndefOr[Int] = js.undefined
@@ -773,7 +782,7 @@ trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
    var 'aria-current'?: boolean | 'false' | 'true' | 'page' | 'step' | 'location' | 'date' | 'time' = js.undefined
         'aria-describedby'?: string = js.undefined
    */
-  var `aria-details`: js.UndefOr[String]            = js.undefined //'?: string;
+  var `aria-details`: js.UndefOr[String] = js.undefined //'?: string;
   var `aria-disabled`: js.UndefOr[Boolean | String] = js.undefined //?: boolean | 'false' | 'true';
   /*
         var 'aria-dropeffect'?: 'none' | 'copy' | 'execute' | 'link' | 'move' | 'popup' = js.undefined
@@ -788,9 +797,9 @@ trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
     : js.UndefOr[Boolean | String] = js.undefined // : boolean | 'false' | 'true' | 'grammar' | 'spelling';
 
   var `aria-keyshortcuts`: js.UndefOr[String] = js.undefined
-  var `aria-label`: js.UndefOr[String]        = js.undefined
-  var `aria-labelledby`: js.UndefOr[String]   = js.undefined
-  var `aria-level`: js.UndefOr[Int]           = js.undefined
+  var `aria-label`: js.UndefOr[String] = js.undefined
+  var `aria-labelledby`: js.UndefOr[String] = js.undefined
+  var `aria-level`: js.UndefOr[Int] = js.undefined
   /*
         var 'aria-live'?: 'off' | 'assertive' | 'polite' = js.undefined
         var 'aria-modal'?: boolean | 'false' | 'true' = js.undefined
@@ -800,157 +809,157 @@ trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
         var 'aria-owns': js.UndefOr[String] = js.undefined
    */
   var `aria-placeholder`: js.UndefOr[String] = js.undefined
-  var `aria-posinset`: js.UndefOr[Int]       = js.undefined
+  var `aria-posinset`: js.UndefOr[Int] = js.undefined
   /*
         var 'aria-pressed'?: boolean | 'false' | 'mixed' | 'true' = js.undefined
         var 'aria-readonly'?: boolean | 'false' | 'true' = js.undefined
         var 'aria-relevant'?: 'additions' | 'additions text' | 'all' | 'removals' | 'text' = js.undefined
    */
-  var `aria-required`: js.UndefOr[Boolean|String] = js.undefined
+  var `aria-required`: js.UndefOr[Boolean | String] = js.undefined
   var `aria-roledescription`: js.UndefOr[String] = js.undefined
   var `aria-rowcount`: js.UndefOr[Int] = js.undefined
   var `aria-rowindex`: js.UndefOr[Int] = js.undefined
   var `aria-rowspan`: js.UndefOr[Int] = js.undefined
-  var `aria-selected`: js.UndefOr[Boolean|String] = js.undefined
-  var `aria-setsize`: js.UndefOr[Boolean|String] = js.undefined
-  var `aria-sort`: js.UndefOr[String] = js.undefined//'?: 'none' | 'ascending' | 'descending' | 'other';
-  var `aria-valuemax`: js.UndefOr[Int]     = js.undefined
-  var `aria-valuemin`: js.UndefOr[Int]     = js.undefined
-  var `aria-valuenow`: js.UndefOr[Int]     = js.undefined
+  var `aria-selected`: js.UndefOr[Boolean | String] = js.undefined
+  var `aria-setsize`: js.UndefOr[Boolean | String] = js.undefined
+  var `aria-sort`: js.UndefOr[String] = js.undefined //'?: 'none' | 'ascending' | 'descending' | 'other';
+  var `aria-valuemax`: js.UndefOr[Int] = js.undefined
+  var `aria-valuemin`: js.UndefOr[Int] = js.undefined
+  var `aria-valuenow`: js.UndefOr[Int] = js.undefined
   var `aria-valuetext`: js.UndefOr[String] = js.undefined
 }
 
 trait AllHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   // Standard HTML Attributes
-  var accept: js.UndefOr[String]                      = js.undefined
-  var acceptCharset: js.UndefOr[String]               = js.undefined
-  var action: js.UndefOr[String]                      = js.undefined
-  var allowFullScreen: js.UndefOr[Boolean]            = js.undefined
-  var allowTransparency: js.UndefOr[Boolean]          = js.undefined
-  var alt: js.UndefOr[String]                         = js.undefined
-  var as: js.UndefOr[String]                          = js.undefined
-  var async: js.UndefOr[Boolean]                      = js.undefined
-  var autoComplete: js.UndefOr[String]                = js.undefined
-  var autoFocus: js.UndefOr[Boolean]                  = js.undefined
-  var autoPlay: js.UndefOr[Boolean]                   = js.undefined
-  var capture: js.UndefOr[Boolean]                    = js.undefined
-  var cellPadding: js.UndefOr[String | Int]           = js.undefined
-  var cellSpacing: js.UndefOr[String | Int]           = js.undefined
-  var charSet: js.UndefOr[String]                     = js.undefined
-  var challenge: js.UndefOr[String]                   = js.undefined
-  var checked: js.UndefOr[Boolean]                    = js.undefined
-  var cite: js.UndefOr[String]                        = js.undefined
-  var classID: js.UndefOr[String]                     = js.undefined
-  var cols: js.UndefOr[Int]                           = js.undefined
-  var colSpan: js.UndefOr[Int]                        = js.undefined
-  var content: js.UndefOr[String]                     = js.undefined
-  var controls: js.UndefOr[Boolean]                   = js.undefined
-  var coords: js.UndefOr[String]                      = js.undefined
-  var crossOrigin: js.UndefOr[String]                 = js.undefined
-  var data: js.UndefOr[String]                        = js.undefined
-  var dateTime: js.UndefOr[String]                    = js.undefined
-  var default: js.UndefOr[Boolean]                    = js.undefined
-  var defer: js.UndefOr[Boolean]                      = js.undefined
-  var disabled: js.UndefOr[Boolean]                   = js.undefined
-  var download: js.UndefOr[js.Any]                    = js.undefined
-  var encType: js.UndefOr[String]                     = js.undefined
-  var form: js.UndefOr[String]                        = js.undefined
-  var formAction: js.UndefOr[String]                  = js.undefined
-  var formEncType: js.UndefOr[String]                 = js.undefined
-  var formMethod: js.UndefOr[String]                  = js.undefined
-  var formNoValidate: js.UndefOr[Boolean]             = js.undefined
-  var formTarget: js.UndefOr[String]                  = js.undefined
-  var frameBorder: js.UndefOr[String | Int]           = js.undefined
-  var headers: js.UndefOr[String]                     = js.undefined
-  var height: js.UndefOr[Int | String]                = js.undefined
-  var high: js.UndefOr[Int]                           = js.undefined
-  var href: js.UndefOr[String]                        = js.undefined
-  var hrefLang: js.UndefOr[String]                    = js.undefined
-  var htmlFor: js.UndefOr[String]                     = js.undefined
-  var httpEquiv: js.UndefOr[String]                   = js.undefined
-  var integrity: js.UndefOr[String]                   = js.undefined
-  var keyParams: js.UndefOr[String]                   = js.undefined
-  var keyType: js.UndefOr[String]                     = js.undefined
-  var kind: js.UndefOr[String]                        = js.undefined
-  var label: js.UndefOr[String]                       = js.undefined
-  var list: js.UndefOr[String]                        = js.undefined
-  var loop: js.UndefOr[Boolean]                       = js.undefined
-  var low: js.UndefOr[Int]                            = js.undefined
-  var manifest: js.UndefOr[String]                    = js.undefined
-  var marginHeight: js.UndefOr[Int]                   = js.undefined
-  var marginWidth: js.UndefOr[Int]                    = js.undefined
-  var max: js.UndefOr[Int | String]                   = js.undefined
-  var maxLength: js.UndefOr[Int]                      = js.undefined
-  var media: js.UndefOr[String]                       = js.undefined
-  var mediaGroup: js.UndefOr[String]                  = js.undefined
-  var method: js.UndefOr[String]                      = js.undefined
-  var min: js.UndefOr[Int | String]                   = js.undefined
-  var minLength: js.UndefOr[Int]                      = js.undefined
-  var multiple: js.UndefOr[Boolean]                   = js.undefined
-  var muted: js.UndefOr[Boolean]                      = js.undefined
-  var name: js.UndefOr[String]                        = js.undefined
-  var nonce: js.UndefOr[String]                       = js.undefined
-  var noValidate: js.UndefOr[Boolean]                 = js.undefined
-  var open: js.UndefOr[Boolean]                       = js.undefined
-  var optimum: js.UndefOr[Int]                        = js.undefined
-  var pattern: js.UndefOr[String]                     = js.undefined
-  var placeholder: js.UndefOr[String]                 = js.undefined
-  var playsInline: js.UndefOr[Boolean]                = js.undefined
-  var poster: js.UndefOr[String]                      = js.undefined
-  var preload: js.UndefOr[String]                     = js.undefined
-  var readOnly: js.UndefOr[Boolean]                   = js.undefined
-  var rel: js.UndefOr[String]                         = js.undefined
-  var required: js.UndefOr[Boolean]                   = js.undefined
-  var reversed: js.UndefOr[Boolean]                   = js.undefined
-  var rows: js.UndefOr[Int]                           = js.undefined
-  var rowSpan: js.UndefOr[Int]                        = js.undefined
-  var sandbox: js.UndefOr[String]                     = js.undefined
-  var scope: js.UndefOr[String]                       = js.undefined
-  var scoped: js.UndefOr[String]                      = js.undefined
-  var scrolling: js.UndefOr[String]                   = js.undefined
-  var seamless: js.UndefOr[Boolean]                   = js.undefined
-  var selected: js.UndefOr[Boolean]                   = js.undefined
-  var shape: js.UndefOr[String]                       = js.undefined
-  var size: js.UndefOr[Int]                           = js.undefined
-  var sizes: js.UndefOr[String]                       = js.undefined
-  var span: js.UndefOr[Int]                           = js.undefined
-  var src: js.UndefOr[String]                         = js.undefined
-  var srcDoc: js.UndefOr[String]                      = js.undefined
-  var srcLang: js.UndefOr[String]                     = js.undefined
-  var srcSet: js.UndefOr[String]                      = js.undefined
-  var start: js.UndefOr[Int]                          = js.undefined
-  var step: js.UndefOr[Int | String]                  = js.undefined
-  var summary: js.UndefOr[String]                     = js.undefined
-  var target: js.UndefOr[String]                      = js.undefined
-  var `type`: js.UndefOr[String]                      = js.undefined
-  var useMap: js.UndefOr[String]                      = js.undefined
+  var accept: js.UndefOr[String] = js.undefined
+  var acceptCharset: js.UndefOr[String] = js.undefined
+  var action: js.UndefOr[String] = js.undefined
+  var allowFullScreen: js.UndefOr[Boolean] = js.undefined
+  var allowTransparency: js.UndefOr[Boolean] = js.undefined
+  var alt: js.UndefOr[String] = js.undefined
+  var as: js.UndefOr[String] = js.undefined
+  var async: js.UndefOr[Boolean] = js.undefined
+  var autoComplete: js.UndefOr[String] = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var autoPlay: js.UndefOr[Boolean] = js.undefined
+  var capture: js.UndefOr[Boolean] = js.undefined
+  var cellPadding: js.UndefOr[String | Int] = js.undefined
+  var cellSpacing: js.UndefOr[String | Int] = js.undefined
+  var charSet: js.UndefOr[String] = js.undefined
+  var challenge: js.UndefOr[String] = js.undefined
+  var checked: js.UndefOr[Boolean] = js.undefined
+  var cite: js.UndefOr[String] = js.undefined
+  var classID: js.UndefOr[String] = js.undefined
+  var cols: js.UndefOr[Int] = js.undefined
+  var colSpan: js.UndefOr[Int] = js.undefined
+  var content: js.UndefOr[String] = js.undefined
+  var controls: js.UndefOr[Boolean] = js.undefined
+  var coords: js.UndefOr[String] = js.undefined
+  var crossOrigin: js.UndefOr[String] = js.undefined
+  var data: js.UndefOr[String] = js.undefined
+  var dateTime: js.UndefOr[String] = js.undefined
+  var default: js.UndefOr[Boolean] = js.undefined
+  var defer: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var download: js.UndefOr[js.Any] = js.undefined
+  var encType: js.UndefOr[String] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var formAction: js.UndefOr[String] = js.undefined
+  var formEncType: js.UndefOr[String] = js.undefined
+  var formMethod: js.UndefOr[String] = js.undefined
+  var formNoValidate: js.UndefOr[Boolean] = js.undefined
+  var formTarget: js.UndefOr[String] = js.undefined
+  var frameBorder: js.UndefOr[String | Int] = js.undefined
+  var headers: js.UndefOr[String] = js.undefined
+  var height: js.UndefOr[Int | String] = js.undefined
+  var high: js.UndefOr[Int] = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var hrefLang: js.UndefOr[String] = js.undefined
+  var htmlFor: js.UndefOr[String] = js.undefined
+  var httpEquiv: js.UndefOr[String] = js.undefined
+  var integrity: js.UndefOr[String] = js.undefined
+  var keyParams: js.UndefOr[String] = js.undefined
+  var keyType: js.UndefOr[String] = js.undefined
+  var kind: js.UndefOr[String] = js.undefined
+  var label: js.UndefOr[String] = js.undefined
+  var list: js.UndefOr[String] = js.undefined
+  var loop: js.UndefOr[Boolean] = js.undefined
+  var low: js.UndefOr[Int] = js.undefined
+  var manifest: js.UndefOr[String] = js.undefined
+  var marginHeight: js.UndefOr[Int] = js.undefined
+  var marginWidth: js.UndefOr[Int] = js.undefined
+  var max: js.UndefOr[Int | String] = js.undefined
+  var maxLength: js.UndefOr[Int] = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var mediaGroup: js.UndefOr[String] = js.undefined
+  var method: js.UndefOr[String] = js.undefined
+  var min: js.UndefOr[Int | String] = js.undefined
+  var minLength: js.UndefOr[Int] = js.undefined
+  var multiple: js.UndefOr[Boolean] = js.undefined
+  var muted: js.UndefOr[Boolean] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var nonce: js.UndefOr[String] = js.undefined
+  var noValidate: js.UndefOr[Boolean] = js.undefined
+  var open: js.UndefOr[Boolean] = js.undefined
+  var optimum: js.UndefOr[Int] = js.undefined
+  var pattern: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var playsInline: js.UndefOr[Boolean] = js.undefined
+  var poster: js.UndefOr[String] = js.undefined
+  var preload: js.UndefOr[String] = js.undefined
+  var readOnly: js.UndefOr[Boolean] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var reversed: js.UndefOr[Boolean] = js.undefined
+  var rows: js.UndefOr[Int] = js.undefined
+  var rowSpan: js.UndefOr[Int] = js.undefined
+  var sandbox: js.UndefOr[String] = js.undefined
+  var scope: js.UndefOr[String] = js.undefined
+  var scoped: js.UndefOr[String] = js.undefined
+  var scrolling: js.UndefOr[String] = js.undefined
+  var seamless: js.UndefOr[Boolean] = js.undefined
+  var selected: js.UndefOr[Boolean] = js.undefined
+  var shape: js.UndefOr[String] = js.undefined
+  var size: js.UndefOr[Int] = js.undefined
+  var sizes: js.UndefOr[String] = js.undefined
+  var span: js.UndefOr[Int] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var srcDoc: js.UndefOr[String] = js.undefined
+  var srcLang: js.UndefOr[String] = js.undefined
+  var srcSet: js.UndefOr[String] = js.undefined
+  var start: js.UndefOr[Int] = js.undefined
+  var step: js.UndefOr[Int | String] = js.undefined
+  var summary: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var useMap: js.UndefOr[String] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
-  var width: js.UndefOr[String | Int]                 = js.undefined
-  var wmode: js.UndefOr[String]                       = js.undefined
-  var wrap: js.UndefOr[String]                        = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
+  var wmode: js.UndefOr[String] = js.undefined
+  var wrap: js.UndefOr[String] = js.undefined
 }
 
 trait AnchorHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var download: js.UndefOr[js.Any] = js.undefined
-  var href: js.UndefOr[String]     = js.undefined
+  var href: js.UndefOr[String] = js.undefined
   var hrefLang: js.UndefOr[String] = js.undefined
-  var media: js.UndefOr[String]    = js.undefined
-  var rel: js.UndefOr[String]      = js.undefined
-  var target: js.UndefOr[String]   = js.undefined
-  var `type`: js.UndefOr[String]   = js.undefined
-  var as: js.UndefOr[String]       = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var as: js.UndefOr[String] = js.undefined
 }
 
 trait AreaHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var alt: js.UndefOr[String]      = js.undefined
-  var coords: js.UndefOr[String]   = js.undefined
+  var alt: js.UndefOr[String] = js.undefined
+  var coords: js.UndefOr[String] = js.undefined
   var download: js.UndefOr[js.Any] = js.undefined
-  var href: js.UndefOr[String]     = js.undefined
+  var href: js.UndefOr[String] = js.undefined
   var hrefLang: js.UndefOr[String] = js.undefined
-  var media: js.UndefOr[String]    = js.undefined
-  var rel: js.UndefOr[String]      = js.undefined
-  var shape: js.UndefOr[String]    = js.undefined
-  var target: js.UndefOr[String]   = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var shape: js.UndefOr[String] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
 }
 
 trait AudioHTMLAttributes[+T <: dom.EventTarget] extends MediaHTMLAttributes[T] {}
@@ -964,22 +973,22 @@ trait BlockQuoteHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] 
 }
 
 trait ButtonHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var autoFocus: js.UndefOr[Boolean]                     = js.undefined
-  var disabled: js.UndefOr[Boolean]                      = js.undefined
-  var form: js.UndefOr[String]                           = js.undefined
-  var formAction: js.UndefOr[String]                     = js.undefined
-  var formEncType: js.UndefOr[String]                    = js.undefined
-  var formMethod: js.UndefOr[String]                     = js.undefined
-  var formNoVaridate: js.UndefOr[Boolean]                = js.undefined
-  var formTarget: js.UndefOr[String]                     = js.undefined
-  var name: js.UndefOr[String]                           = js.undefined
-  var `type`: js.UndefOr[String]                         = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var formAction: js.UndefOr[String] = js.undefined
+  var formEncType: js.UndefOr[String] = js.undefined
+  var formMethod: js.UndefOr[String] = js.undefined
+  var formNoVaridate: js.UndefOr[Boolean] = js.undefined
+  var formTarget: js.UndefOr[String] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
   var varue: js.UndefOr[String | js.Array[String] | Int] = js.undefined
 }
 
 trait CanvasHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var height: js.UndefOr[Int | String] = js.undefined
-  var width: js.UndefOr[String | Int]  = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
 }
 
 trait ColHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
@@ -995,104 +1004,104 @@ trait HtmlHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 }
 
 trait DelHTMLAtributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var cite: js.UndefOr[String]     = js.undefined
+  var cite: js.UndefOr[String] = js.undefined
   var dateTime: js.UndefOr[String] = js.undefined
 }
 
 trait EmbedHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var height: js.UndefOr[Int | String] = js.undefined
-  var src: js.UndefOr[String]          = js.undefined
-  var width: js.UndefOr[String | Int]  = js.undefined
-  var `type`: js.UndefOr[String]       = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
 }
 
 trait FieldsetHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var disabled: js.UndefOr[Boolean] = js.undefined
-  var form: js.UndefOr[String]      = js.undefined
-  var name: js.UndefOr[String]      = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
 }
 
 trait FormHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var acceptCharset: js.UndefOr[String] = js.undefined
-  var action: js.UndefOr[String]        = js.undefined
-  var autoComplete: js.UndefOr[String]  = js.undefined
-  var encType: js.UndefOr[String]       = js.undefined
-  var method: js.UndefOr[String]        = js.undefined
-  var name: js.UndefOr[String]          = js.undefined
-  var noValidate: js.UndefOr[Boolean]   = js.undefined
-  var target: js.UndefOr[String]        = js.undefined
+  var action: js.UndefOr[String] = js.undefined
+  var autoComplete: js.UndefOr[String] = js.undefined
+  var encType: js.UndefOr[String] = js.undefined
+  var method: js.UndefOr[String] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var noValidate: js.UndefOr[Boolean] = js.undefined
+  var target: js.UndefOr[String] = js.undefined
 }
 
 trait IframeHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var allowFullScreen: js.UndefOr[Boolean]   = js.undefined
+  var allowFullScreen: js.UndefOr[Boolean] = js.undefined
   var allowTransparency: js.UndefOr[Boolean] = js.undefined
-  var frameBorder: js.UndefOr[String | Int]  = js.undefined
-  var height: js.UndefOr[Int | String]       = js.undefined
-  var marginHeight: js.UndefOr[Int]          = js.undefined
-  var marginWidth: js.UndefOr[Int]           = js.undefined
-  var name: js.UndefOr[String]               = js.undefined
-  var sandbox: js.UndefOr[String]            = js.undefined
-  var scrolling: js.UndefOr[String]          = js.undefined
-  var seamless: js.UndefOr[Boolean]          = js.undefined
-  var src: js.UndefOr[String]                = js.undefined
-  var srcDoc: js.UndefOr[String]             = js.undefined
-  var width: js.UndefOr[String | Int]        = js.undefined
+  var frameBorder: js.UndefOr[String | Int] = js.undefined
+  var height: js.UndefOr[Int | String] = js.undefined
+  var marginHeight: js.UndefOr[Int] = js.undefined
+  var marginWidth: js.UndefOr[Int] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var sandbox: js.UndefOr[String] = js.undefined
+  var scrolling: js.UndefOr[String] = js.undefined
+  var seamless: js.UndefOr[Boolean] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var srcDoc: js.UndefOr[String] = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
 }
 
 trait ImgHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var alt: js.UndefOr[String]                   = js.undefined
+  var alt: js.UndefOr[String] = js.undefined
   var height: js.UndefOr[String | Double | Int] = js.undefined
-  var sizes: js.UndefOr[String]                 = js.undefined
-  var src: js.UndefOr[String]                   = js.undefined
-  var srcSet: js.UndefOr[String]                = js.undefined
-  var useMap: js.UndefOr[String]                = js.undefined
-  var width: js.UndefOr[String | Double | Int]  = js.undefined
+  var sizes: js.UndefOr[String] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var srcSet: js.UndefOr[String] = js.undefined
+  var useMap: js.UndefOr[String] = js.undefined
+  var width: js.UndefOr[String | Double | Int] = js.undefined
 }
 
 trait InputHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var accept: js.UndefOr[String]                      = js.undefined
-  var alt: js.UndefOr[String]                         = js.undefined
-  var autoComplete: js.UndefOr[String]                = js.undefined
-  var autoFocus: js.UndefOr[Boolean]                  = js.undefined
-  var capture: js.UndefOr[Boolean]                    = js.undefined
-  var checked: js.UndefOr[Boolean]                    = js.undefined
-  var crossOrigin: js.UndefOr[String]                 = js.undefined
-  var disabled: js.UndefOr[Boolean]                   = js.undefined
-  var form: js.UndefOr[String]                        = js.undefined
-  var formAction: js.UndefOr[String]                  = js.undefined
-  var formEncType: js.UndefOr[String]                 = js.undefined
-  var formNoValidate: js.UndefOr[Boolean]             = js.undefined
-  var formTarget: js.UndefOr[String]                  = js.undefined
-  var height: js.UndefOr[String | Int]                = js.undefined
-  var list: js.UndefOr[String]                        = js.undefined
-  var max: js.UndefOr[Int | String]                   = js.undefined
-  var maxLength: js.UndefOr[Int]                      = js.undefined
-  var min: js.UndefOr[Int | String]                   = js.undefined
-  var minLength: js.UndefOr[Int]                      = js.undefined
-  var multiple: js.UndefOr[Boolean]                   = js.undefined
-  var name: js.UndefOr[String]                        = js.undefined
-  var pattern: js.UndefOr[String]                     = js.undefined
-  var placeholder: js.UndefOr[String]                 = js.undefined
-  var readOnly: js.UndefOr[Boolean]                   = js.undefined
-  var required: js.UndefOr[Boolean]                   = js.undefined
-  var size: js.UndefOr[Int]                           = js.undefined
-  var src: js.UndefOr[String]                         = js.undefined
-  var step: js.UndefOr[String | Int]                  = js.undefined
-  var `type`: js.UndefOr[String]                      = js.undefined
+  var accept: js.UndefOr[String] = js.undefined
+  var alt: js.UndefOr[String] = js.undefined
+  var autoComplete: js.UndefOr[String] = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var capture: js.UndefOr[Boolean] = js.undefined
+  var checked: js.UndefOr[Boolean] = js.undefined
+  var crossOrigin: js.UndefOr[String] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var formAction: js.UndefOr[String] = js.undefined
+  var formEncType: js.UndefOr[String] = js.undefined
+  var formNoValidate: js.UndefOr[Boolean] = js.undefined
+  var formTarget: js.UndefOr[String] = js.undefined
+  var height: js.UndefOr[String | Int] = js.undefined
+  var list: js.UndefOr[String] = js.undefined
+  var max: js.UndefOr[Int | String] = js.undefined
+  var maxLength: js.UndefOr[Int] = js.undefined
+  var min: js.UndefOr[Int | String] = js.undefined
+  var minLength: js.UndefOr[Int] = js.undefined
+  var multiple: js.UndefOr[Boolean] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var pattern: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var readOnly: js.UndefOr[Boolean] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var size: js.UndefOr[Int] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var step: js.UndefOr[String | Int] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
-  var width: js.UndefOr[String | Int]                 = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
   var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
 }
 
 trait InsHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var cite: js.UndefOr[String]     = js.undefined
+  var cite: js.UndefOr[String] = js.undefined
   var dateTime: js.UndefOr[String] = js.undefined
 }
 
 trait LabelHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 
   /** @deprecated */
-  var form: js.UndefOr[String]    = js.undefined
+  var form: js.UndefOr[String] = js.undefined
   var htmlFor: js.UndefOr[String] = js.undefined
 }
 
@@ -1101,15 +1110,15 @@ trait LiHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 }
 
 trait LinkHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var as: js.UndefOr[String]          = js.undefined
+  var as: js.UndefOr[String] = js.undefined
   var crossOrigin: js.UndefOr[String] = js.undefined
-  var href: js.UndefOr[String]        = js.undefined
-  var hrefLang: js.UndefOr[String]    = js.undefined
-  var integrity: js.UndefOr[String]   = js.undefined
-  var media: js.UndefOr[String]       = js.undefined
-  var rel: js.UndefOr[String]         = js.undefined
-  var sizes: js.UndefOr[String]       = js.undefined
-  var `type`: js.UndefOr[String]      = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var hrefLang: js.UndefOr[String] = js.undefined
+  var integrity: js.UndefOr[String] = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var rel: js.UndefOr[String] = js.undefined
+  var sizes: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
 }
 
 trait MapHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
@@ -1117,15 +1126,15 @@ trait MapHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 }
 
 trait MediaHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var autoPlay: js.UndefOr[Boolean]    = js.undefined
-  var controls: js.UndefOr[Boolean]    = js.undefined
-  var crossOrigin: js.UndefOr[String]  = js.undefined
-  var loop: js.UndefOr[Boolean]        = js.undefined
-  var mediaGroup: js.UndefOr[String]   = js.undefined
-  var muted: js.UndefOr[Boolean]       = js.undefined
+  var autoPlay: js.UndefOr[Boolean] = js.undefined
+  var controls: js.UndefOr[Boolean] = js.undefined
+  var crossOrigin: js.UndefOr[String] = js.undefined
+  var loop: js.UndefOr[Boolean] = js.undefined
+  var mediaGroup: js.UndefOr[String] = js.undefined
+  var muted: js.UndefOr[Boolean] = js.undefined
   var playsInline: js.UndefOr[Boolean] = js.undefined
-  var preload: js.UndefOr[String]      = js.undefined
-  var src: js.UndefOr[String]          = js.undefined
+  var preload: js.UndefOr[String] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
 }
 
 trait MenuHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
@@ -1133,64 +1142,64 @@ trait MenuHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 }
 
 trait MetaHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var charSet: js.UndefOr[String]   = js.undefined
-  var content: js.UndefOr[String]   = js.undefined
+  var charSet: js.UndefOr[String] = js.undefined
+  var content: js.UndefOr[String] = js.undefined
   var httpEquiv: js.UndefOr[String] = js.undefined
-  var name: js.UndefOr[String]      = js.undefined
+  var name: js.UndefOr[String] = js.undefined
 }
 
 trait MeterHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var form: js.UndefOr[String]                        = js.undefined
-  var high: js.UndefOr[Int]                           = js.undefined
-  var low: js.UndefOr[Int]                            = js.undefined
-  var max: js.UndefOr[Int | String]                   = js.undefined
-  var min: js.UndefOr[Int | String]                   = js.undefined
-  var optimum: js.UndefOr[Int]                        = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var high: js.UndefOr[Int] = js.undefined
+  var low: js.UndefOr[Int] = js.undefined
+  var max: js.UndefOr[Int | String] = js.undefined
+  var min: js.UndefOr[Int | String] = js.undefined
+  var optimum: js.UndefOr[Int] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
 }
 
 trait ObjectHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var classID: js.UndefOr[String]      = js.undefined
-  var data: js.UndefOr[String]         = js.undefined
-  var form: js.UndefOr[String]         = js.undefined
+  var classID: js.UndefOr[String] = js.undefined
+  var data: js.UndefOr[String] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
   var height: js.UndefOr[String | Int] = js.undefined
-  var name: js.UndefOr[String]         = js.undefined
-  var `type`: js.UndefOr[String]       = js.undefined
-  var useMap: js.UndefOr[String]       = js.undefined
-  var width: js.UndefOr[String | Int]  = js.undefined
-  var wmode: js.UndefOr[String]        = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
+  var useMap: js.UndefOr[String] = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
+  var wmode: js.UndefOr[String] = js.undefined
 }
 
 trait OlHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var reversed: js.UndefOr[Boolean] = js.undefined
-  var start: js.UndefOr[Int]        = js.undefined
+  var start: js.UndefOr[Int] = js.undefined
 }
 
 trait OptgroupHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var disabled: js.UndefOr[Boolean] = js.undefined
-  var label: js.UndefOr[String]     = js.undefined
+  var label: js.UndefOr[String] = js.undefined
 }
 
 trait OptionHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var disabled: js.UndefOr[Boolean]                   = js.undefined
-  var label: js.UndefOr[String]                       = js.undefined
-  var selected: js.UndefOr[Boolean]                   = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var label: js.UndefOr[String] = js.undefined
+  var selected: js.UndefOr[Boolean] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
 }
 
 trait OutputHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var form: js.UndefOr[String]    = js.undefined
+  var form: js.UndefOr[String] = js.undefined
   var htmlFor: js.UndefOr[String] = js.undefined
-  var name: js.UndefOr[String]    = js.undefined
+  var name: js.UndefOr[String] = js.undefined
 }
 
 trait ParamHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var name: js.UndefOr[String]                        = js.undefined
+  var name: js.UndefOr[String] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
 }
 
 trait ProgressHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var max: js.UndefOr[Int | String]                   = js.undefined
+  var max: js.UndefOr[Int | String] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
 }
 
@@ -1199,39 +1208,39 @@ trait QuoteHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 }
 
 trait ScriptHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var async: js.UndefOr[Boolean]      = js.undefined
-  var charSet: js.UndefOr[String]     = js.undefined
+  var async: js.UndefOr[Boolean] = js.undefined
+  var charSet: js.UndefOr[String] = js.undefined
   var crossOrigin: js.UndefOr[String] = js.undefined
-  var defer: js.UndefOr[Boolean]      = js.undefined
-  var integrity: js.UndefOr[String]   = js.undefined
-  var nonce: js.UndefOr[String]       = js.undefined
-  var src: js.UndefOr[String]         = js.undefined
-  var `type`: js.UndefOr[String]      = js.undefined
+  var defer: js.UndefOr[Boolean] = js.undefined
+  var integrity: js.UndefOr[String] = js.undefined
+  var nonce: js.UndefOr[String] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var `type`: js.UndefOr[String] = js.undefined
 }
 
 trait SelectHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var autoFocus: js.UndefOr[Boolean]                  = js.undefined
-  var disabled: js.UndefOr[Boolean]                   = js.undefined
-  var form: js.UndefOr[String]                        = js.undefined
-  var multiple: js.UndefOr[Boolean]                   = js.undefined
-  var name: js.UndefOr[String]                        = js.undefined
-  var required: js.UndefOr[Boolean]                   = js.undefined
-  var size: js.UndefOr[Int]                           = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var multiple: js.UndefOr[Boolean] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var size: js.UndefOr[Int] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
   var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
 }
 
 trait SourceHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var media: js.UndefOr[String]  = js.undefined
-  var sizes: js.UndefOr[String]  = js.undefined
-  var src: js.UndefOr[String]    = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var sizes: js.UndefOr[String] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
   var srcSet: js.UndefOr[String] = js.undefined
   var `type`: js.UndefOr[String] = js.undefined
 }
 
 trait StyleHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var media: js.UndefOr[String]  = js.undefined
-  var nonce: js.UndefOr[String]  = js.undefined
+  var media: js.UndefOr[String] = js.undefined
+  var nonce: js.UndefOr[String] = js.undefined
   var scoped: js.UndefOr[String] = js.undefined
   var `type`: js.UndefOr[String] = js.undefined
 }
@@ -1239,40 +1248,40 @@ trait StyleHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 trait TableHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var cellPadding: js.UndefOr[String | Int] = js.undefined
   var cellSpacing: js.UndefOr[String | Int] = js.undefined
-  var summary: js.UndefOr[String]           = js.undefined
+  var summary: js.UndefOr[String] = js.undefined
 }
 
 trait TextAreaHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var autoComplete: js.UndefOr[String]                = js.undefined
-  var autoFocus: js.UndefOr[String]                   = js.undefined
-  var cols: js.UndefOr[Int]                           = js.undefined
-  var dirName: js.UndefOr[String]                     = js.undefined
-  var disabled: js.UndefOr[Boolean]                   = js.undefined
-  var form: js.UndefOr[String]                        = js.undefined
-  var maxLength: js.UndefOr[Int]                      = js.undefined
-  var minLength: js.UndefOr[Int]                      = js.undefined
-  var name: js.UndefOr[String]                        = js.undefined
-  var placeholder: js.UndefOr[String]                 = js.undefined
-  var readOnly: js.UndefOr[Boolean]                   = js.undefined
-  var required: js.UndefOr[Boolean]                   = js.undefined
-  var rows: js.UndefOr[Int]                           = js.undefined
+  var autoComplete: js.UndefOr[String] = js.undefined
+  var autoFocus: js.UndefOr[String] = js.undefined
+  var cols: js.UndefOr[Int] = js.undefined
+  var dirName: js.UndefOr[String] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var form: js.UndefOr[String] = js.undefined
+  var maxLength: js.UndefOr[Int] = js.undefined
+  var minLength: js.UndefOr[Int] = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var readOnly: js.UndefOr[Boolean] = js.undefined
+  var required: js.UndefOr[Boolean] = js.undefined
+  var rows: js.UndefOr[Int] = js.undefined
   var value: js.UndefOr[String | Array[String] | Int] = js.undefined
-  var wrap: js.UndefOr[String]                        = js.undefined
+  var wrap: js.UndefOr[String] = js.undefined
   var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
 }
 
 trait TdHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var colSpan: js.UndefOr[Int]    = js.undefined
+  var colSpan: js.UndefOr[Int] = js.undefined
   var headers: js.UndefOr[String] = js.undefined
-  var rowSpan: js.UndefOr[Int]    = js.undefined
-  var scope: js.UndefOr[String]   = js.undefined
+  var rowSpan: js.UndefOr[Int] = js.undefined
+  var scope: js.UndefOr[String] = js.undefined
 }
 
 trait ThHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var colSpan: js.UndefOr[Int]    = js.undefined
+  var colSpan: js.UndefOr[Int] = js.undefined
   var headers: js.UndefOr[String] = js.undefined
-  var rowSpan: js.UndefOr[Int]    = js.undefined
-  var scope: js.UndefOr[String]   = js.undefined
+  var rowSpan: js.UndefOr[Int] = js.undefined
+  var scope: js.UndefOr[String] = js.undefined
 }
 
 trait TimeHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
@@ -1281,35 +1290,35 @@ trait TimeHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
 
 trait TrackHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var default: js.UndefOr[Boolean] = js.undefined
-  var kind: js.UndefOr[String]     = js.undefined
-  var label: js.UndefOr[String]    = js.undefined
-  var src: js.UndefOr[String]      = js.undefined
-  var srcLang: js.UndefOr[String]  = js.undefined
+  var kind: js.UndefOr[String] = js.undefined
+  var label: js.UndefOr[String] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var srcLang: js.UndefOr[String] = js.undefined
 }
 
 trait VideoHTMLAttributes[+T <: dom.EventTarget] extends MediaHTMLAttributes[T] {
   var height: js.UndefOr[Int | String] = js.undefined
-  var poster: js.UndefOr[String]       = js.undefined
-  var width: js.UndefOr[String | Int]  = js.undefined
+  var poster: js.UndefOr[String] = js.undefined
+  var width: js.UndefOr[String | Int] = js.undefined
 }
 
 /** Electron support. */
 trait WebViewHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
-  var allowFullScreen: js.UndefOr[Boolean]     = js.undefined
-  var allowpopups: js.UndefOr[Boolean]         = js.undefined
-  var autoFocus: js.UndefOr[Boolean]           = js.undefined
-  var autosize: js.UndefOr[Boolean]            = js.undefined
-  var blinkfeatures: js.UndefOr[String]        = js.undefined
+  var allowFullScreen: js.UndefOr[Boolean] = js.undefined
+  var allowpopups: js.UndefOr[Boolean] = js.undefined
+  var autoFocus: js.UndefOr[Boolean] = js.undefined
+  var autosize: js.UndefOr[Boolean] = js.undefined
+  var blinkfeatures: js.UndefOr[String] = js.undefined
   var disableblinkfeatures: js.UndefOr[String] = js.undefined
-  var disableguestresize: js.UndefOr[Boolean]  = js.undefined
-  var disablewebsecurity: js.UndefOr[Boolean]  = js.undefined
-  var guestinstance: js.UndefOr[String]        = js.undefined
-  var httpreferrer: js.UndefOr[String]         = js.undefined
-  var nodeintegration: js.UndefOr[Boolean]     = js.undefined
-  var partition: js.UndefOr[Boolean]           = js.undefined
-  var plugins: js.UndefOr[Boolean]             = js.undefined
-  var preload: js.UndefOr[String]              = js.undefined
-  var src: js.UndefOr[String]                  = js.undefined
-  var useragent: js.UndefOr[String]            = js.undefined
-  var webpreferences: js.UndefOr[String]       = js.undefined
+  var disableguestresize: js.UndefOr[Boolean] = js.undefined
+  var disablewebsecurity: js.UndefOr[Boolean] = js.undefined
+  var guestinstance: js.UndefOr[String] = js.undefined
+  var httpreferrer: js.UndefOr[String] = js.undefined
+  var nodeintegration: js.UndefOr[Boolean] = js.undefined
+  var partition: js.UndefOr[Boolean] = js.undefined
+  var plugins: js.UndefOr[Boolean] = js.undefined
+  var preload: js.UndefOr[String] = js.undefined
+  var src: js.UndefOr[String] = js.undefined
+  var useragent: js.UndefOr[String] = js.undefined
+  var webpreferences: js.UndefOr[String] = js.undefined
 }

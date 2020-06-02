@@ -35,11 +35,12 @@ package object react extends react.React with When {
 
   /** General purpose type that grabs AnyVal and some js types. */
   type AllType =
-    Boolean | Byte | Short | Float | String | Double | Int | js.Object | js.Dictionary[_] | js.Symbol | js.Array[scala.Any] | Null | Unit
+    Boolean | Byte | Short | Float | String | Double | Int | js.Any /*js.Object*/ | js.Dictionary[_] | js.Symbol | js.Array[
+      scala.Any] | Null | Unit
 
-  /** Hook dependencies data structure. Should this be scala.Any? 
-  * The docs suggest otherwise.
-  */
+  /** Hook dependencies data structure. Should this be scala.Any?
+   * The docs suggest otherwise.
+   */
   type Dependencies = js.Array[AllType]
 
   /** Empty array which is different than undefinedDependencies. Typically
@@ -50,7 +51,11 @@ package object react extends react.React with When {
   /** Undefined array typically indicates per render hook computation. */
   val undefinedDependencies: js.UndefOr[Dependencies] = js.undefined
 
-  /** Create a dependencies array. With on args, its a zero-length array. */
+  /** Create a dependencies array. With no args, its a zero-length array.
+   * Use this to declare dependencies for effects if the dependency
+   * is an single array because otherwise the array elements are
+   * interpreted to be the dependencies vs the array itself.
+   */
   def deps(values: AllType*): Dependencies = values.toJSArray
 
   /** Escape hatch. Create a dependencies array from *any* list of scala
@@ -86,7 +91,6 @@ package object react extends react.React with When {
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E | Null, Unit]
 
- 
   /** For use with useRef() hook which is slightly different than the mutable
    * Ref. `current` is designed to be set directly or can be used on the `ref`
    * attribute for a component. Since you can provide an initial value, if you
@@ -102,17 +106,17 @@ package object react extends react.React with When {
   type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
 
   /* Like `refCB` but better named. */
-  def callbackAsRef[E](f: (E|Null => Unit)): Ref[E] = 
+  def callbackAsRef[E](f: (E | Null => Unit)): Ref[E] =
     js.Any.fromFunction1(f).asInstanceOf[Ref[E]]
 
   /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
-  def refCB[E](f: E | Null => Unit): Ref[E] = 
+  def refCB[E](f: E | Null => Unit): Ref[E] =
     js.Any.fromFunction1[E | Null, Unit](f).asInstanceOf[Ref[E]]
 
   /**
    * Something that can be rendered in reactjs. react allows this to
    * be quite flexible including strings, numbers, booleans in additon to
-   * classes or functions. Classes and functions are convered to 
+   * classes or functions. Classes and functions are convered to
    * a ReactNode by calling `createElement` on them however strings and
    * numbers can be rendered directly.
    */
@@ -120,8 +124,8 @@ package object react extends react.React with When {
   trait ReactNode extends js.Any
 
   /** Output from `react.createElement`. Subtype of ReactNode to indicate
-  * that the output came from `createElement` vs say, a string or number.
-  */
+   * that the output came from `createElement` vs say, a string or number.
+   */
   @js.native
   trait ReactElement extends ReactNode
   /*{
@@ -130,7 +134,7 @@ package object react extends react.React with When {
     /** Internal react. Do not use. */
     val `type`: String = js.native
   }
-  */
+   */
 
 //   object ReactElement {
 //     implicit class RichReactElement(el: ReactElement) {
@@ -231,10 +235,10 @@ package object react extends react.React with When {
   type ReactType =
     ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
 
-   /** Component type that can be used in HOCs. */
-   type ReactComponentType =
+  /** Component type that can be used in HOCs. */
+  type ReactComponentType =
     ReactClass | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
-    
+
   /**
    * This type is used only as a target for imported javascript authored components to
    * "tag" a component type or created via other js-interop mechanisms such as
@@ -386,10 +390,9 @@ package object react extends react.React with When {
     if (js.isUndefined(t) || t == null) None
     else Option(t.asInstanceOf[T])
 
-    
   /** Shorted version of `js.defined(blah)` */
   @inline def jsdef[A](a: A) = js.defined(a)
-  
+
   /** Short version of `js.undefined`. */
   val jsundef = js.undefined
 
@@ -435,31 +438,32 @@ package object react extends react.React with When {
   /** Memo a function component. */
   def memoWith[P <: js.Object](f: ReactFC[P]): ReactFC[P] =
     memo(f).asInstanceOf[ReactFC[P]]
-  
+
   /** Memo a function component. */
-  def memoWith[P <: js.Object](compare: js.Function2[js.UndefOr[P],js.UndefOr[P],Boolean])(f: ReactFC[P]): ReactFC[P] =
+  def memoWith[P <: js.Object](compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean])(
+    f: ReactFC[P]): ReactFC[P] =
     memo(f, compare).asInstanceOf[ReactFC[P]]
 
   /** Memo a function component. */
-  def memoWith[P <: js.Object](f: P => ReactNode): ReactFC[P] = 
+  def memoWith[P <: js.Object](f: P => ReactNode): ReactFC[P] =
     memo(js.Any.fromFunction1(f)).asInstanceOf[ReactFC[P]]
 
   /** Memo a function component. */
-  def memoWith[P <: js.Object](compare: (js.UndefOr[P], js.UndefOr[P]) => Boolean)(f: P => ReactNode): ReactFC[P] = 
+  def memoWith[P <: js.Object](compare: (js.UndefOr[P], js.UndefOr[P]) => Boolean)(f: P => ReactNode): ReactFC[P] =
     memo(js.Any.fromFunction1(f), js.Any.fromFunction2(compare)).asInstanceOf[ReactFC[P]]
-    
+
   /** A component that takes a ref as the second argument. */
   type RectFCWithRef[P <: js.Object, T <: js.Any] = js.Function2[P, ReactRef[T], ReactNode]
 
   /** A type used to drive type inference when declaring your component. */
   type ReactFC0 = js.Function0[ReactNode]
-  
+
   /** Type inference hepler. */
   val nullString = null.asInstanceOf[String]
-  
+
   /** Type inference helper. */
   val nullInt = null.asInstanceOf[Int]
-  
+
   /** Type inference helper. */
   val nullLong = null.asInstanceOf[Long]
 
@@ -468,16 +472,16 @@ package object react extends react.React with When {
 
   /** Type inference helper. */
   val nullFloat = null.asInstanceOf[Float]
-  
+
   /** Type inference helper. */
   val nullDouble = null.asInstanceOf[Double]
-  
+
   /** Type inference helper. */
   val nullJSObject = null.asInstanceOf[js.Object]
-  
+
   /** Type inference helper. */
   val nullDate = null.asInstanceOf[js.Date]
-  
+
   /** Empty array. Freshly allocated! */
   def emptyArray[T] = js.Array[T]()
 }

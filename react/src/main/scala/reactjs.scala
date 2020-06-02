@@ -52,9 +52,11 @@ trait Concurrent extends js.Object {
   val SuspenseList: ReactJSComponent = js.native
   // unstable_withSuspenseConfig
   def createMutableSource[S](source: scala.Any, getVersion: js.Function0[scala.Any]): MutableSource[S] = js.native
+
   /** subscribe 2nd arg is to be called whenever the value changes and is stable. Last is an unsubscribe for unmounting. */
-  def useMutableSource[S,A](source: MutableSource[S], 
-    getSnapshot: js.Function1[S, A], 
+  def useMutableSource[S, A](
+    source: MutableSource[S],
+    getSnapshot: js.Function1[S, A],
     subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A = js.native
 }
 
@@ -71,11 +73,11 @@ trait ReactJS extends js.Object with Concurrent {
   val Component: js.Dynamic = js.native
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending
-    * React.Component). P is kept very general here and public APIs should
-    * customize as needed. Props is js.Any to force public APIs to think about
-    * the props type before casting. Children can be in the props as well
-    * if I recall correctly so the varags is a convenience.
-    */
+   * React.Component). P is kept very general here and public APIs should
+   * customize as needed. Props is js.Any to force public APIs to think about
+   * the props type before casting. Children can be in the props as well
+   * if I recall correctly so the varags is a convenience.
+   */
   def createElement(el: ReactType, props: js.Any, children: ReactNode*): ReactElement = js.native
 
   // should not use rally ever...
@@ -100,14 +102,14 @@ trait ReactJS extends js.Object with Concurrent {
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent = js.native
 
   /** Takes a function component and optional props comparison func. This returns
-    * a function component as this is an HOC. The returned component still needs
-    * to be wrapped properly to use with this facade. `P` is kept general here
-    * but should be customized in the public API.
-    */
+   * a function component as this is an HOC. The returned component still needs
+   * to be wrapped properly to use with this facade. `P` is kept general here
+   * but should be customized in the public API.
+   */
   def memo[P](
-      f: js.Function1[P, ReactNode],
-      compare: js.UndefOr[js.Function2[js.Any, js.Any, Boolean]] = js.undefined
-    ): js.Function1[P, ReactElement] = js.native
+    f: js.Function1[P, ReactNode],
+    compare: js.UndefOr[js.Function2[js.Any, js.Any, Boolean]] = js.undefined
+  ): js.Function1[P, ReactElement] = js.native
 
   def isValidElement(obj: js.Object): Boolean = js.native
 }
@@ -121,8 +123,8 @@ trait DynamicImport extends js.Object {
 }
 
 /** Magnet pattern to create a friendly arg converter for effect hooks. As much
-  * as possible these need to be casts vs allocations.
-  */
+ * as possible these need to be casts vs allocations.
+ */
 @js.native
 trait EffectArg extends js.Object
 
@@ -134,24 +136,24 @@ trait EffectArg extends js.Object
 object EffectArg {
 
   /** Convert a scala EffectCallbackArg to js using a proxy approach.
-    * Use a general return of A vs unit to be more friendly. Requires
-    * 2 scala => js function conversions. Ugh!
-    */
-  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () => 
+   * Use a general return of A vs unit to be more friendly. Requires
+   * 2 scala => js function conversions. Ugh!
+   */
+  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () =>
     val rthunk = arg()
-    js.Any.fromFunction0(() => { rthunk(); () })
+    js.Any.fromFunction0 { () => rthunk(); () }
   }: js.Function0[js.Function0[Unit]]
 
-  /** No final callback. 
-  *
-  *  @todo Not sure inner definition is needed.
-  */
+  /** No final callback.
+   *
+   *  @todo Not sure inner definition is needed.
+   */
   @inline implicit def fromThunkJS[U](f: js.Function0[U]): EffectArg =
-    js.Any.fromFunction0[Unit](() => { f(); () }).asInstanceOf[EffectArg]
+    js.Any.fromFunction0[Unit] { () => f(); () }.asInstanceOf[EffectArg]
 
   /** No final callback. */
   @inline implicit def fromThunk[U](f: () => U): EffectArg =
-    js.Any.fromFunction0[Unit](() => { f(); () }).asInstanceOf[EffectArg]
+    js.Any.fromFunction0[Unit] { () => f(); () }.asInstanceOf[EffectArg]
 
   /** Return value from the callback is discarded. */
   @inline implicit def fromThunkCbA[A](f: () => (() => A)): EffectArg =
@@ -159,7 +161,7 @@ object EffectArg {
 
   /** Return value form the callback is discarded. */
   @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
-    ((() => { val rthunk = f(); js.Any.fromFunction0(() => {rthunk(); () })}): js.Function0[js.Function0[Unit]])
+    ((() => { val rthunk = f(); js.Any.fromFunction0 { () => rthunk(); () } }): js.Function0[js.Function0[Unit]])
       .asInstanceOf[EffectArg]
 }
 
@@ -168,17 +170,17 @@ trait Hooks extends js.Object {
 
   // expose imperative code on ref.current
   def useImperativeHandle[T, R <: js.Object](
-      ref: MutableRef[T],
-      thunk: js.Function0[R],
-      dependencies: js.UndefOr[Dependencies]
-    ): Unit = js.native
+    ref: MutableRef[T],
+    thunk: js.Function0[R],
+    dependencies: js.UndefOr[Dependencies]
+  ): Unit = js.native
 
   def useContext[T](context: ReactContext[T]): T = js.native
 
   def useDebugValue[T](value: T, format: js.UndefOr[js.Function1[T, String]] = js.undefined): Unit = js.native
 
   // callback and the return value will require extensive casting so this is a template
-  def useCallback(cb: js.Function, deps: js.UndefOr[Dependencies]=js.undefined): js.Any = js.native
+  def useCallback(cb: js.Function, deps: js.UndefOr[Dependencies] = js.undefined): js.Any = js.native
 
   def useMemo[T](value: js.Function0[T], dependencies: Dependencies | Unit): T = js.native
 
@@ -188,10 +190,10 @@ trait Hooks extends js.Object {
   def useReducer[S, A](reducer: js.Function2[S, A, S], initialState: S): js.Tuple2[S, Dispatch[A]] = js.native
 
   def useReducer[S, A, I](
-      reducer: js.Function2[S, A, S],
-      initialArg: I,
-      init: js.Function1[I, S]
-    ): js.Tuple2[S, Dispatch[A]] = js.native
+    reducer: js.Function2[S, A, S],
+    initialArg: I,
+    init: js.Function1[I, S]
+  ): js.Tuple2[S, Dispatch[A]] = js.native
 
   // js.Tuple2 is a shortcut to a 2 element array
   def useState[T](initialValue: js.Any): js.Tuple2[T, js.Any] = js.native
@@ -212,9 +214,9 @@ private[react] object ReactJS extends ReactJS with Hooks
 trait ReactModule extends js.Object
 
 /** A publically accessible react namespace import for those
-  *  interop scenarios where you need this. There are no
-  *  scala visible methods, etc.
-  */
+ *  interop scenarios where you need this. There are no
+ *  scala visible methods, etc.
+ */
 @js.native
 @JSImport("react", JSImport.Namespace)
 object ReactPublic extends ReactModule

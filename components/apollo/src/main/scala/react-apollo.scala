@@ -40,14 +40,14 @@ package object react_apollo {
 
   def useMutation[T, TVars <: js.Object](
     mutation: DocumentNode,
-    options: js.UndefOr[MutationHookOptions[T, TVars]|js.Dynamic] = js.undefined
+    options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): (js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]], MutationResult[T]) =
     react_apollo.module.useMutation[T, TVars](mutation, options)
-   
+
   def useLazyQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
-  ): (js.Function1[QueryLazyOptions[TVars],Unit], QueryResult[T, TVars]) =
+  ): (js.Function1[QueryLazyOptions[TVars], Unit], QueryResult[T, TVars]) =
     react_apollo.module.useLazyQuery[T, TVars](query, options)
 
   def useSubscription[T, TVars <: js.Object](

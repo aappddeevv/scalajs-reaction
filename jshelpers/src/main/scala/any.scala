@@ -24,6 +24,7 @@ package jshelpers
 import scala.scalajs.js
 import js.|
 
+/** Restrict T in subtype. */
 trait AnyOps[T] {
   protected def a: T
 
@@ -31,12 +32,36 @@ trait AnyOps[T] {
   def asJsAny: js.Any = a.asInstanceOf[js.Any]
   def asJsObj: js.Object = a.asInstanceOf[js.Object]
   def asDyn: js.Dynamic = a.asInstanceOf[js.Dynamic]
-  def asString: String = a.asInstanceOf[String]
+  
+  def asString = a.asInstanceOf[String]
+  def asNullString = a.asInstanceOf[String|Null]
+  def asUndefString = a.asInstanceOf[js.UndefOr[String]]
+  def asUndefNullString= a.asInstanceOf[js.UndefOr[String|Null]]
+  
   def asNumber: Number = a.asInstanceOf[Number]
-  def asInt: Int = a.asInstanceOf[Int]
-  def asDouble: Double = a.asInstanceOf[Double]
-  def asBoolean: Boolean = a.asInstanceOf[Boolean]
+  
+  def asInt = a.asInstanceOf[Int]
+  def asNullInt = a.asInstanceOf[Int|Null]
+  def asUndefInt = a.asInstanceOf[js.UndefOr[Int]]
+  def asUndefNullInt= a.asInstanceOf[js.UndefOr[Int|Null]]
+    
+  def asDouble = a.asInstanceOf[Double]
+  def asNullDouble = a.asInstanceOf[Double|Null]
+  def asUndefDouble = a.asInstanceOf[js.UndefOr[Double]]
+  def asUndefNullDouble = a.asInstanceOf[js.UndefOr[Double|Null]]
+  
+  def asBoolean = a.asInstanceOf[Boolean]
+  def asNullBoolean = a.asInstanceOf[Boolean|Null]
+  def asUndefBoolean = a.asInstanceOf[js.UndefOr[Boolean]]
+  def asUndefNullBoolean = a.asInstanceOf[js.UndefOr[Boolean|Null]]
+  
+  def asJSDate = a.asInstanceOf[js.Date]
+  def asNullJSDate= a.asInstanceOf[js.Date|Null]
+  def asUndefJSDate= a.asInstanceOf[js.UndefOr[js.Date]]
+  def asUndefNullJSDate= a.asInstanceOf[js.UndefOr[js.Date|Null]]
+    
   def asJsArray[A]: js.Array[A] = a.asInstanceOf[js.Array[A]]
+  
   def asJson: String = js.JSON.stringify(a.asInstanceOf[js.Object])
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
@@ -99,30 +124,31 @@ final class ScalaMappedOps[T <: scala.Any](protected val a: T) extends AnyOps[T]
 
 //trait ToLocaleStringOps..
 final class ToLocaleStringOps[A <: AnyVal](protected val a: A) extends AnyVal {
-  def toLocaleString(locale: js.UndefOr[String|js.Array[String]] = js.undefined, 
-    options: js.UndefOr[js.Object]= js.undefined): String = a.asInstanceOf[js.Object].toLocaleString
+  def toLocaleString(
+    locale: js.UndefOr[String | js.Array[String]] = js.undefined,
+    options: js.UndefOr[js.Object] = js.undefined): String = a.asInstanceOf[js.Object].toLocaleString
 }
 
 /*
-trait ToLocaleStringInstances { 
+trait ToLocaleStringInstances {
   implicit object intToLocaleString extends ToLocaleString[Int]
   implicit object floatToLocaleString extends ToLocaleString[Int]
   implicit object doubleToLocaleString extends ToLocaleString[Int]
 }
-*/
+ */
 
 /*
 final class ToLocaleStringInstanceOps[A <: AnyVal](private val a: A) extends AnyVal {
   def toLocaleString(implicit ev: ToLocaleString[A]) = ev.toLocaleString(a)
 }
-*/
+ */
 
 trait ScalaMappedSyntax {
   //@inline implicit def toLocaleStringOps[A <: AnyVal](a: A) = new ToLocaleStringInstanceOps[A](a)
   @inline implicit def toIntLocaleOps(a: Int) = new ToLocaleStringOps[Int](a)
   @inline implicit def toFloatLocaleOps(a: Float) = new ToLocaleStringOps[Float](a)
   @inline implicit def toDoubleLocaleOps(a: Double) = new ToLocaleStringOps[Double](a)
-  
+
   @inline implicit def stringScalaOpsSyntax[String](a: String): ScalaMappedOps[String] =
     new ScalaMappedOps[String](a)
   // all of these seem to conflict with the first String def above and are these needed if they are <: js.Any

@@ -101,16 +101,20 @@ final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[B
 
 /** Handled js.UndefOr[T|Null] directly vs needing to flatmap into it. Don't forget that
  * scala.js has `anUndefOr.orNull` to extract the value or return null which is *not*
- * what the methods below do.
+ * what the methods below do. Note that the input is really `T|Null|Unit`.
  */
 final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
   @inline private def forceGet: T = a.asInstanceOf[T]
 
-  /** Treat null as undefined and change type from T|Null to T. */
+  /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
   @inline def absorbNull: js.UndefOr[T] = a.flatMap { value =>
     if (value == null) js.undefined
     else value.asInstanceOf[js.UndefOr[T]]
   }
+
+  /** Collapse everything at once. */
+  @inline def toNonNullOption: Option[T] =
+    a.fold(Option.empty[T])(value => if (value != null) Option(value.asInstanceOf[T]) else Option.empty[T])
 
 //   /** Not a true flatMap because the Null is factored out along the way. */
 //   @inline def flatMapAbsorb[B](f: T => js.UndefOr[B|Null]): js.UndefOr[B] =
@@ -152,14 +156,18 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
   @inline def get: T =
     if (a == null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]")
     else forceGet
+    
+  /** Only works with another js.UndefOr[T|Null] and takes into account null. */
+  @inline def orDeepElse(that: js.UndefOr[T|Null]) = if(a.isDefined && a != null) a else that
 }
 
 /** Note that js.UndefOr and js.| already have a `.orNull` method. */
 final class JsUndefOrOps[A](val a: UndefOr[A]) extends UndefOrCommon[A] {}
 
 final class JsUndefOrJsObject[A <: js.Object](private val a: js.UndefOr[A]) extends AnyVal {
-    /** Duplicate inner value if it exists. Saves you a `.map`. */
-    @inline def duplicate = a.map(value => js.Object.assign(js.Object(), value.asInstanceOf[js.Object]).asInstanceOf[A])
+
+  /** Duplicate inner value if it exists. Saves you a `.map`. */
+  @inline def duplicate = a.map(value => js.Object.assign(js.Object(), value.asInstanceOf[js.Object]).asInstanceOf[A])
 }
 
 final class UndefMap2[A, B](private val tuple: (js.UndefOr[A], js.UndefOr[B])) extends AnyVal {
@@ -185,8 +193,10 @@ final class UndefMap4[A, B, C, D](private val tuple: (js.UndefOr[A], js.UndefOr[
 
 trait JsUndefLowerOrderImplicits {
   @inline implicit def jsUndefOrTuple2[A, B](a: (js.UndefOr[A], js.UndefOr[B])) = new UndefMap2[A, B](a)
-  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) = new UndefMap3[A, B, C](a)
-  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])) = new UndefMap4[A, B, C, D](a)
+  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) =
+    new UndefMap3[A, B, C](a)
+  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])) =
+    new UndefMap4[A, B, C, D](a)
 }
 
 trait JsUndefOrSyntax extends JsUndefLowerOrderImplicits {

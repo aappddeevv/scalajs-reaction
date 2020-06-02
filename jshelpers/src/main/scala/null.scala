@@ -33,8 +33,7 @@ x.fold[String | Unit](())(x => x)
  * It is common in interop code to model a value as A or null but not undefined
  * even though null and undefined may both mean "absent value." See `|.merge`
  * Many of these methods are already on `js.|` but they appear to be left biased
- * as near as I can tell. I'm happy to delete these methods of that's not right
- * and those methods use `js.UndefOr` in some way.
+ * as near as I can tell. I'm happy to delete these methods if that's not correct.
  *
  * Note that chaining many `js.|` together probably not work like you think and
  * sometimes its better to create a new target type then target implicits to
@@ -50,13 +49,18 @@ x.fold[String | Unit](())(x => x)
 final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
   @inline private def forceGet: A = a.asInstanceOf[A]
 
-  /** Convert an A|Null to a well formed Option. Should we check or undefined? */
-  @inline def toNonNullOption: Option[A] =
-    Option(forceGet)
+  /** Convert an A|Null to a well formed Option. Should we check for undefined?
+    * This method is not really needed here as `.toOption` is safe but
+    * we have this signature on other helpers so it shere for consistency.
+    */
+  @inline def toNonNullOption: Option[A] = Option(forceGet)
 
-  /** Like .toNonNullOption */
-  @inline def toOption: Option[A] =
-    Option(forceGet)
+  /** Like `.toNonNullOption`. */
+  @inline def toOption: Option[A] = {
+    val g = forceGet
+    if (g != null) Option(g)
+    else None
+  }
 
   /** If Null, then false, else true. */
   @inline def toTruthy: Boolean =

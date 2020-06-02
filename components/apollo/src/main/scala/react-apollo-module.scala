@@ -43,7 +43,7 @@ trait ObservableQueryFields[T, TVars <: js.Object] extends js.Object {
   val variables: TVars = js.native
 
   // from pick ObservableQuery
-  def refetch(variables: js.UndefOr[TVars]=js.undefined): js.Promise[ApolloQueryResult[T]] = js.native
+  def refetch(variables: js.UndefOr[TVars] = js.undefined): js.Promise[ApolloQueryResult[T]] = js.native
   // subscribeToMore
   def updateQuery(f: js.Function2[T, UpdateQueryOptions[TVars], T]): Unit = js.native
   def stopPolling(): Unit = js.native
@@ -59,9 +59,9 @@ trait QueryResult[T, TVars <: js.Object] extends ObservableQueryFields[T, TVars]
   val client: apollo_client.ApolloClient = js.native
   val error: js.UndefOr[ApolloError] = js.native
   // is this null or undefined when it is not present?, this is different than ApolloQueryResult!
-  // ts defs say T | undefined but not null !?!?  
+  // ts defs say T | undefined but not null !?!?
   //val data: T | Null = js.native
-  
+
   // only these are returned if lazy query or skip=true, but the type lies.
   // if called is true, then I think the other attributes are there
   val data: js.UndefOr[T] = js.native
@@ -114,8 +114,9 @@ trait ApolloClientOptionsMaker[T, TVars <: js.Object] {
   }
 }
 
-trait OptionsMaker[T, TVars <: js.Object] extends ApolloClientOptionsMaker[T,TVars] {
- /** Make QueryHookOptions */
+trait OptionsMaker[T, TVars <: js.Object] extends ApolloClientOptionsMaker[T, TVars] {
+
+  /** Make QueryHookOptions */
   def makeOptions(
     variables: js.UndefOr[TVars] = js.undefined,
     unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
@@ -175,10 +176,11 @@ case class UseLazyQuery[T, TVars <: js.Object]() extends ApolloClientOptionsMake
   type TArg = T
   type TVarsArg = TVars
 
-  def useLazyQuery(query: DocumentNode, options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined):
-  (js.Function1[QueryLazyOptions[TVars], Unit], QueryResult[T, TVars]) = module.useLazyQuery[T, TVars](query, options)
- 
- /** Make LazyQueryHookOptions for the hook, not for the lazy fetcher. */
+  def useLazyQuery(query: DocumentNode, options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined)
+    : (js.Function1[QueryLazyOptions[TVars], Unit], QueryResult[T, TVars]) =
+    module.useLazyQuery[T, TVars](query, options)
+
+  /** Make LazyQueryHookOptions for the hook, not for the lazy fetcher. */
   def makeOptions(
     variables: js.UndefOr[TVars] = js.undefined,
     unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
@@ -219,8 +221,7 @@ case class UseLazyQuery[T, TVars <: js.Object]() extends ApolloClientOptionsMake
     __obj.asInstanceOf[LazyQueryHookOptions[T, TVars]]
   }
 
-    
- /** Make LazyQueryHookOptions */
+  /** Make LazyQueryHookOptions */
   def makeLazyOptions(
     variables: js.UndefOr[TVars] = js.undefined,
     unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
@@ -248,16 +249,16 @@ private[react_apollo] object module extends js.Object {
   def useLazyQuery[T, TVars <: js.Object](
     query: DocumentNode,
     options: js.UndefOr[LazyQueryHookOptions[T, TVars] | js.Dynamic] = js.undefined
-  ): js.Tuple2[js.Function1[QueryLazyOptions[TVars],Unit], QueryResult[T, TVars]] = js.native
+  ): js.Tuple2[js.Function1[QueryLazyOptions[TVars], Unit], QueryResult[T, TVars]] = js.native
 
   // Need Ext for ExecutionResult...
   def useMutation[T, TVars <: js.Object](
     mutation: DocumentNode,
     options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): js.Tuple2[
-        js.Function1[MutationFunctionOptions[T, TVars], 
-        js.Promise[ExecutionResult[T]]], MutationResult[T]
-    ] = js.native
+    js.Function1[MutationFunctionOptions[T, TVars], js.Promise[ExecutionResult[T]]],
+    MutationResult[T]
+  ] = js.native
 
   def useSubscription[T, TVars <: js.Object](
     subscription: DocumentNode,
@@ -450,32 +451,33 @@ case class UseMutation[T, TVars <: js.Object]() {
     if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
     __obj.asInstanceOf[MutationHookOptions[T, TVars]]
   }
-  
+
   /** Options needed for the "caller" function return from the mutation hook.
    * Other config info, such as error policy and the operation itself are take
    * from the hook.
    */
   def makeFunctionOptions(
-  unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
-   variables: js.UndefOr[TVars] = js.undefined,
-  optimisticResponseStrict: js.UndefOr[T] = js.undefined,
-  optimisticResponse: js.UndefOr[js.Function1[TVars, T]] = js.undefined,
-  refetchQueriesByName: js.UndefOr[js.Array[String]] = js.undefined,
-  awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
-  update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
-  context: js.UndefOr[js.Object] = js.undefined,
-  fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
+    unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
+    variables: js.UndefOr[TVars] = js.undefined,
+    optimisticResponseStrict: js.UndefOr[T] = js.undefined,
+    optimisticResponse: js.UndefOr[js.Function1[TVars, T]] = js.undefined,
+    refetchQueriesByName: js.UndefOr[js.Array[String]] = js.undefined,
+    awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
+    update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined,
+    context: js.UndefOr[js.Object] = js.undefined,
+    fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
   ) = {
-  val __obj = js.Dynamic
-    .literal(
+    val __obj = js.Dynamic
+      .literal(
         "context" -> context,
         "fetchPolicy" -> fetchPolicy,
         "update" -> update,
         "refetchQueries" -> refetchQueriesByName,
         "awaitRefetchQueries" -> awaitRefetchQueries,
-    )
-    if(optimisticResponseStrict.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponseStrict.asInstanceOf[js.Any])
-    if(optimisticResponse.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponse)
+      )
+    if (optimisticResponseStrict.isDefined)
+      __obj.updateDynamic("optimisticResponse")(optimisticResponseStrict.asInstanceOf[js.Any])
+    if (optimisticResponse.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponse)
     if (variables.isDefined) __obj.updateDynamic("variables")(variables)
     if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
     __obj.asInstanceOf[MutationFunctionOptions[T, TVars]]

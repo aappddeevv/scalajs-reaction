@@ -21,9 +21,8 @@
 
 package jshelpers
 
-trait AllInstances 
-    extends JSPromiseInstances
-    //with ToLocaleStringInstances
+trait AllInstances extends JSPromiseInstances
+//with ToLocaleStringInstances
 
 /** Instances with everything but all so it can be subclassed elsewhere. */
 trait Instances {
@@ -36,5 +35,5 @@ trait Instances {
  * converters" would be better similiar to `JSConverters` in scala.js.
  */
 object instances extends Instances {
- object all extends AllInstances
+  object all extends AllInstances
 }

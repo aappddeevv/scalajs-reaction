@@ -93,6 +93,7 @@ trait module_base extends js.Object {
     oldSettings: Settings,
     newSettings: Settings | SettingsFunction
   ): Settings = js.native
+  
   def mergeScopedSettings(
     oldeSettings: Settings,
     newSettings: Settings | SettingsFunction
@@ -112,7 +113,7 @@ trait module_base extends js.Object {
     values: js.Any*
   ): String = js.native
 
-  /** Deep merge. */
+  /** Deep merge. Need to test this to make sure it works as expected. */
   def merge[T <: js.Object](args: T | js.Object | js.Dynamic | Null | Unit*): T = js.native
 }
 

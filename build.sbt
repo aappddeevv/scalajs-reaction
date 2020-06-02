@@ -29,6 +29,7 @@ val commonScalacOptions = Seq(
   "-Xlint:infer-any",
   "-Yrangepos"
 ,"-Ymacro-annotations"
+ //,"-Ywarn-dead-code"
 )
 
 lazy val jsSettings = Seq(
@@ -91,6 +92,7 @@ inThisBuild(
       ScmInfo(url("https://github.com/scalajs-reaction"), "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
     ),
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
+    //,scalafmtOnCompile := true,
   )
 )
 

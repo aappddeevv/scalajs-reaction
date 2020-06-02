@@ -28,21 +28,21 @@ import js.|
 
 @js.native
 trait SourceLocation extends js.Object {
-  val line: Int   = js.native
+  val line: Int = js.native
   val column: Int = js.native
 }
 
 @js.native
 trait Source extends js.Object {
-  val body: String                   = js.native
-  val name: String                   = js.native
+  val body: String = js.native
+  val name: String = js.native
   val locationOffset: SourceLocation = js.native
 }
 
 @js.native
 trait Location extends js.Object {
   val start: String = js.native
-  val end: String   = js.native
+  val end: String = js.native
   // startToken, endToken
   val source: Source = js.native
 }
@@ -54,19 +54,19 @@ trait ASTNode extends js.Object
 // AST element
 @js.native
 trait DocumentNode extends ASTNode {
-  val kind: String       = js.native // always "Document"
+  val kind: String = js.native // always "Document"
   val location: Location = js.native
 }
 
 @js.native
 trait GraphQLError extends js.Error {
   val locations: js.UndefOr[js.Array[SourceLocation]] = js.native
-  val path: js.UndefOr[js.Array[String | Int]]        = js.native
-  val nodes: js.UndefOr[js.Array[ASTNode]]            = js.native
-  val source: js.UndefOr[Source]                      = js.undefined
-  val positions: js.UndefOr[Int]                      = js.undefined
-  val originalError: js.UndefOr[js.Error | Null]      = js.undefined
-  val extensions: js.UndefOr[js.Dictionary[js.Any]]   = js.undefined
+  val path: js.UndefOr[js.Array[String | Int]] = js.native
+  val nodes: js.UndefOr[js.Array[ASTNode]] = js.native
+  val source: js.UndefOr[Source] = js.undefined
+  val positions: js.UndefOr[Int] = js.undefined
+  val originalError: js.UndefOr[js.Error | Null] = js.undefined
+  val extensions: js.UndefOr[js.Dictionary[js.Any]] = js.undefined
 }
 
 /** Return type T, Ext is not used alot so it remains member local. */
@@ -75,7 +75,7 @@ trait ExecutionResult[T] extends js.Object {
   val data: js.UndefOr[T] = js.native
   // could also just have this be a js.Dictionary[js.Any]
   def extensions[Ext <: js.Object]: js.UndefOr[Ext] = js.native
-  val errors: js.UndefOr[js.Array[GraphQLError]]    = js.native
+  val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
 }
 
 object ExecutionResult {
@@ -90,13 +90,8 @@ object ExecutionResult {
 @JSImport("graphql", JSImport.Namespace)
 object module extends js.Object {
   def formatError(error: GraphQLError): FormattedError = js.native
-  def printError(error: GraphQLError): String          = js.native
+  def printError(error: GraphQLError): String = js.native
 }
 
 @js.native
-trait FormattedError extends js.Object {
-  val message: String                               = js.native
-  val locations: js.UndefOr[SourceLocation]         = js.native
-  val path: js.UndefOr[js.Array[String]]            = js.native
-  val extensions: js.UndefOr[js.Dictionary[js.Any]] = js.native
-}
+trait FormattedError extends GraphQLError

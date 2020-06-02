@@ -25,18 +25,18 @@ import scala.scalajs.js
 import js.|
 import js.annotation._
 
-/** Extra things not specifically core react. */
+/** Extra things not specifically core react but mentioned in the FAQ. */
 package object extras {
 
   /** Create an expensive ref.
- *
- *  @see https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
- */
+   *
+   *  @see https://reactjs.org/docs/hooks-faq.html#how-to-create-expensive-objects-lazily
+   */
   def useExpensiveRef[T](value: => T) = {
-    val instanceRef = useRef[T|Null](null)
+    val instanceRef = useRef[T | Null](null)
     () => {
       val instance = instanceRef.current
-      if(instance != null) instance.asInstanceOf[T]
+      if (instance != null) instance.asInstanceOf[T]
       else {
         val x = value
         instanceRef.current = x
@@ -49,6 +49,28 @@ package object extras {
   def useForceRender() = {
     val (s, update) = useStateStrict[Boolean](true)
     () => update(!_)
+  }
+
+  /** Use previous value. */
+  def usePreviousValue[T](value: T) = {
+    val ref = useRef[T](value)
+    useEffect(value.hashCode)(() => ref.current = value)
+    ref.current
+  }
+
+  /** http://usehooks.com. Use inside your hooks to
+   * memo a value so callers don't have to. On first
+   * compare, value can be null.
+   *
+   * @param value Value to potentially memo.
+   * @param compare (old,new)=>Boolean
+   */
+  def useMemoCompare[T](value: T, compare: (T | Null, T) => Boolean) = {
+    val previousRef = useRef[T | Null](null)
+    val previous = previousRef.current
+    val isEqual = compare(previous, value)
+    useEffectAlways(() => if (!isEqual) previousRef.current = value)
+    if (isEqual) previous else value
   }
 
 }

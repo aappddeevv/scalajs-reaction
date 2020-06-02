@@ -23,22 +23,22 @@ package react
 
 import scala.scalajs.js
 
-import js.Dynamic.{literal => lit}
+import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js._
 import js.|
 
 /**
-  * Scala-side access to JSReact APIs. Some of these methods overlay the raw JS
-  * version to provide the convenience of using scala types as inputs and saving
-  * a few conversion nits.
-  *
-  * Some of the *N() hook functions like useCallback may be quite inefficient in
-  * their conversion from scala functions to js functions and back. Perhaps we
-  * need another parallel API function set with the js functions being assumed
-  * for those code bases that already have the js versions. Note that useCallback
-  * returns a js function so it can be used as a dependency.
-  */
+ * Scala-side access to JSReact APIs. Some of these methods overlay the raw JS
+ * version to provide the convenience of using scala types as inputs and saving
+ * a few conversion nits.
+ *
+ * Some of the *N() hook functions like useCallback may be quite inefficient in
+ * their conversion from scala functions to js functions and back. Perhaps we
+ * need another parallel API function set with the js functions being assumed
+ * for those code bases that already have the js versions. Note that useCallback
+ * returns a js function so it can be used as a dependency.
+ */
 trait React {
 
   def createContext[T](defaultValue: T): ReactContext[T] =
@@ -46,22 +46,22 @@ trait React {
 
   /** Clone a ReactElement and add new props. You should not use this if you can avoid it. */
   def cloneElement(
-      element: ReactElement,
-      props: js.Object
-    ): ReactElement =
+    element: ReactElement,
+    props: js.Object
+  ): ReactElement =
     ReactJS.cloneElement(element, props.asInstanceOf[js.Dynamic])
 
   /**
-    * Given a js.Object (or subclass), find a "children" property and assume its
-    * an array of ReactNodes. If not found, return an empty js array. This
-    * function is used for interop where your scala "make" method takes children
-    * as a separate parameter but your props (event JS friendly props) does not
-    * contain the children property--it's there if there are children on the js
-    * side. This is not needed in scalajs-react because the children are passed
-    * and managed explicitly.
-    *
-    * @todo Seems like this is an expensive call. Can we do better?
-    */
+   * Given a js.Object (or subclass), find a "children" property and assume its
+   * an array of ReactNodes. If not found, return an empty js array. This
+   * function is used for interop where your scala "make" method takes children
+   * as a separate parameter but your props (event JS friendly props) does not
+   * contain the children property--it's there if there are children on the js
+   * side. This is not needed in scalajs-react because the children are passed
+   * and managed explicitly.
+   *
+   * @todo Seems like this is an expensive call. Can we do better?
+   */
   @inline def extractChildren(item: js.UndefOr[js.Object]): js.Array[ReactNode] =
     if (item == null) js.Array() // need this since could be a "defined" null
     else
@@ -71,35 +71,35 @@ trait React {
 
   /** Create a DOM element using the string name e.g. "div". */
   def createDOMElement(
-      tag: String,
-      props: js.Object | js.Dynamic
-    )(
-      children: ReactNode*
-    ): ReactDOMElement =
+    tag: String,
+    props: js.Object | js.Dynamic
+  )(
+    children: ReactNode*
+  ): ReactDOMElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object], children: _*).asInstanceOf[ReactDOMElement]
 
   /** Create an element with props and 0 children. */
   def createElement0(
-      tag: ReactType,
-      props: js.Object | js.Dynamic
-    ): ReactElement =
+    tag: ReactType,
+    props: js.Object | js.Dynamic
+  ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object])
 
   /** Create an elemnt with 1 child only. */
   def createElement1(
-      tag: ReactType,
-      props: js.Object | js.Dynamic,
-      child: ReactNode
-    ): ReactElement =
+    tag: ReactType,
+    props: js.Object | js.Dynamic,
+    child: ReactNode
+  ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object], child)
 
   /** Create an element with props and children. */
   def createElementN(
-      tag: ReactType,
-      props: js.Object | js.Dynamic
-    )(
-      children: ReactNode*
-    ): ReactElement =
+    tag: ReactType,
+    props: js.Object | js.Dynamic
+  )(
+    children: ReactNode*
+  ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object], children: _*)
 
   /** Create an element without props but with children as a separate parameter. */
@@ -108,36 +108,36 @@ trait React {
 
   /** Create an element with some props. Children can be in the props. */
   def createElement[P <: js.Object](
-      component: ReactType,
-      props: P
-    ) =
+    component: ReactType,
+    props: P
+  ) =
     ReactJS.createElement(component, props)
 
   /** Create an element using the standard var args signature. */
   def createElement[P <: js.Object](component: ReactType, props: P, children: ReactNode*): ReactElement =
-    ReactJS.createElement(component, props, children:_*)
-    
+    ReactJS.createElement(component, props, children: _*)
+
   /** For creating quick ReactElements using js.Dynamic. Input is a scala function
-  * taking a single props argument.
-  */
+   * taking a single props argument.
+   */
   def unsafeCreateElement(component: () => ReactNode) = {
     val jsc = js.Any.fromFunction0(component).asInstanceOf[ReactType]
     createElement0(jsc, null)
   }
-  
+
   def unsafeCreateElement(component: js.Dynamic => ReactNode, props: js.Dynamic) = {
     val jsc = js.Any.fromFunction1(component).asInstanceOf[ReactType]
     createElement0(jsc, props)
   }
-  
+
   /** Create a react fragment. Fragments are created as an "element" with a
-    * specific tag (symbol or number if target does not support symbol) vs say,
-    * the string "div".
-    */
+   * specific tag (symbol or number if target does not support symbol) vs say,
+   * the string "div".
+   */
   def createFragment(
-      key: Option[String],
-      children: ReactNode*
-    ): ReactElement = {
+    key: Option[String],
+    children: ReactNode*
+  ): ReactElement = {
     val props = js.Dictionary.empty[js.Any]
     key.foreach(props("key") = _)
     ReactJS.createElement(ReactJS.Fragment, props, children: _*)
@@ -152,9 +152,9 @@ trait React {
 
   /** Memoize with a function and a comparator. */
   def memo[P <: js.Object](
-      fc: js.Function1[P, ReactNode],
-      compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]
-    ) =
+    fc: js.Function1[P, ReactNode],
+    compare: js.Function2[js.UndefOr[P], js.UndefOr[P], Boolean]
+  ) =
     ReactJS
       .memo(fc, compare.asInstanceOf[js.Function2[js.Any, js.Any, Boolean]])
       .asInstanceOf[js.Function1[P, ReactNode]]
@@ -162,33 +162,35 @@ trait React {
   def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
 
   /** Initial value is strict. Setter is an updater. */
-  def useStateStrict[T](initial: T): (T, js.Function1[js.Function1[T,T],Unit]) =
-    ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T,js.Function1[js.Function1[T, T], Unit]]]
+  def useStateStrict[T](initial: T): (T, js.Function1[js.Function1[T, T], Unit]) =
+    ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, js.Function1[js.Function1[T, T], Unit]]]
 
   /** Initial value is a "lazy". Setter is an updater. Use this one or
-    * useReducer.
-    */
-  def useState[T](initial: () => T): (T, js.Function1[js.Function1[T,T], Unit]) =
-    ReactJS.useState[T](js.Any.fromFunction0[T](initial)).asInstanceOf[js.Tuple2[T, js.Function1[js.Function1[T,T], Unit]]]
+   * useReducer.
+   */
+  def useState[T](initial: () => T): (T, js.Function1[js.Function1[T, T], Unit]) =
+    ReactJS
+      .useState[T](js.Any.fromFunction0[T](initial))
+      .asInstanceOf[js.Tuple2[T, js.Function1[js.Function1[T, T], Unit]]]
 
   /** Initial value is strict. Set new value directly. Don't use this. */
-  def useStateStrictDirect[T](initial: T): (T, js.Function1[T,Unit]) =
-     ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, js.Function1[T,Unit]]]
+  def useStateStrictDirect[T](initial: T): (T, js.Function1[T, Unit]) =
+    ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, js.Function1[T, Unit]]]
 
   /** Initial value is a "lazy". Set new value directly. Don't use this. */
-  def useStateDirect[T](initial: () => T): (T, js.Function1[T,Unit]) =
+  def useStateDirect[T](initial: () => T): (T, js.Function1[T, Unit]) =
     ReactJS.useState[T](js.Any.fromFunction0[T](initial)).asInstanceOf[js.Tuple2[T, js.Function1[T, Unit]]]
 
   def useReducer[S, A](
-      reducer: (S, A) => S,
-      initialState: S
-    ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialState)
+    reducer: (S, A) => S,
+    initialState: S
+  ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialState)
 
   def useReducer[S, A, I](
-      reducer: (S, A) => S,
-      initialArg: I,
-      init: I => S
-    ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialArg, init)
+    reducer: (S, A) => S,
+    initialArg: I,
+    init: I => S
+  ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialArg, init)
 
   /** Effect is always run on render, which is probably too much. */
   def useEffectAlways(didUpdate: EffectArg) =
@@ -215,12 +217,12 @@ trait React {
 
   def useEffectUnmounting(thunk: js.Function0[Unit]) =
     ReactJS.useEffect(js.Any.fromFunction0(() => thunk()), emptyDependencies)
-    
+
   /** Run before browser updates the screen. Kinda a "sync" effect. */
   def useLayoutEffect(
-      didUpdate: EffectArg,
-      dependencies: js.UndefOr[Dependencies]
-    ) =
+    didUpdate: EffectArg,
+    dependencies: js.UndefOr[Dependencies]
+  ) =
     ReactJS.useLayoutEffect(didUpdate, dependencies)
 
   def useMemo[T](value: () => T): T =
@@ -242,9 +244,9 @@ trait React {
     ReactJS.useDebugValue[T](value, js.undefined)
 
   def useDebugValue[T](
-      value: T,
-      format: T => String
-    ): Unit =
+    value: T,
+    format: T => String
+  ): Unit =
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
   def useCallbackMounting[T](callback: js.Function0[T]): js.Function0[T] =
@@ -252,10 +254,9 @@ trait React {
   def useCallbackA[T](dependencies: Dependencies | Unit)(callback: js.Function0[T]): js.Function0[T] =
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
   def useCallback[T](dependencies: AllType*)(callback: js.Function0[T]): js.Function0[T] =
-    if(dependencies.length == 0) ReactJS.useCallback(callback).asInstanceOf[js.Function0[T]]
+    if (dependencies.length == 0) ReactJS.useCallback(callback).asInstanceOf[js.Function0[T]]
     else ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function0[T]]
 
-        
   def useCallbackMounting1[A1, T](callback: js.Function1[A1, T]): js.Function1[A1, T] =
     ReactJS.useCallback(callback, emptyDependencies).asInstanceOf[js.Function1[A1, T]]
   def useCallback1A[A1, T](dependencies: Dependencies)(callback: js.Function1[A1, T]): js.Function1[A1, T] =
@@ -267,7 +268,6 @@ trait React {
         if (dependencies.length == 0) undefinedDependencies
         else dependencies.toJSArray)
       .asInstanceOf[js.Function1[A1, T]]
-
 
   def useCallbackMounting2[A1, A2, T](callback: js.Function2[A1, A2, T]): js.Function2[A1, A2, T] =
     ReactJS
@@ -283,16 +283,15 @@ trait React {
   def useCallback2A[A1, A2, T](dependencies: Dependencies)(callback: js.Function2[A1, A2, T]): js.Function2[A1, A2, T] =
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function2[A1, A2, T]]
 
-    
   def useCallbackMounting3[A1, A2, A3, T](callback: js.Function3[A1, A2, A3, T]): js.Function3[A1, A2, A3, T] =
     ReactJS
       .useCallback(js.Any.fromFunction3[A1, A2, A3, T](callback), emptyDependencies)
       .asInstanceOf[js.Function3[A1, A2, A3, T]]
   def useCallback3A[A1, A2, A3, T](
-      dependencies: Dependencies
-    )(
-      callback: (A1, A2, A3) => T
-    ): js.Function3[A1, A2, A3, T] =
+    dependencies: Dependencies
+  )(
+    callback: (A1, A2, A3) => T
+  ): js.Function3[A1, A2, A3, T] =
     ReactJS
       .useCallback(js.Any.fromFunction3[A1, A2, A3, T](callback), dependencies)
       .asInstanceOf[js.Function3[A1, A2, A3, T]]
@@ -305,25 +304,26 @@ trait React {
       )
       .asInstanceOf[js.Function3[A1, A2, A3, T]]
 
-  def useCallbackMounting4[A1, A2, A3, A4, T](callback: js.Function4[A1, A2, A3, A4, T]): js.Function4[A1, A2, A3, A4, T] =
+  def useCallbackMounting4[A1, A2, A3, A4, T](
+    callback: js.Function4[A1, A2, A3, A4, T]): js.Function4[A1, A2, A3, A4, T] =
     ReactJS
       .useCallback(js.Any.fromFunction4[A1, A2, A3, A4, T](callback), emptyDependencies)
       .asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
 
   def useCallback4A[A1, A2, A3, A4, T](
-      dependencies: Dependencies
-    )(
-      callback: (A1, A2, A3, A4) => T
-    ): js.Function4[A1, A2, A3, A4, T] =
+    dependencies: Dependencies
+  )(
+    callback: (A1, A2, A3, A4) => T
+  ): js.Function4[A1, A2, A3, A4, T] =
     ReactJS
       .useCallback(js.Any.fromFunction4[A1, A2, A3, A4, T](callback), dependencies)
       .asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
 
   def useCallback4[A1, A2, A3, A4, T](
-      dependencies: AllType*
-    )(
-      callback: (A1, A2, A3, A4) => T
-    ): js.Function4[A1, A2, A3, A4, T] =
+    dependencies: AllType*
+  )(
+    callback: (A1, A2, A3, A4) => T
+  ): js.Function4[A1, A2, A3, A4, T] =
     ReactJS
       .useCallback(
         js.Any.fromFunction4[A1, A2, A3, A4, T](callback),
@@ -333,26 +333,26 @@ trait React {
       .asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
 
   def useCallbackMounting5[A1, A2, A3, A4, A5, T](
-      callback: js.Function5[A1, A2, A3, A4, A5, T]
-    ): js.Function5[A1, A2, A3, A4, A5, T] =
+    callback: js.Function5[A1, A2, A3, A4, A5, T]
+  ): js.Function5[A1, A2, A3, A4, A5, T] =
     ReactJS
       .useCallback(js.Any.fromFunction5[A1, A2, A3, A4, A5, T](callback), emptyDependencies)
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
   def useCallback5[A1, A2, A3, A4, A5, T](
-      dependencies: Dependencies
-    )(
-      callback: (A1, A2, A3, A4, A5) => T
-    ): js.Function5[A1, A2, A3, A4, A5, T] =
+    dependencies: Dependencies
+  )(
+    callback: (A1, A2, A3, A4, A5) => T
+  ): js.Function5[A1, A2, A3, A4, A5, T] =
     ReactJS
       .useCallback(js.Any.fromFunction5[A1, A2, A3, A4, A5, T](callback), dependencies)
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
   def useCallback5[A1, A2, A3, A4, A5, T](
-      dependencies: AllType*
-    )(
-      callback: (A1, A2, A3, A4, A5) => T
-    ): js.Function5[A1, A2, A3, A4, A5, T] =
+    dependencies: AllType*
+  )(
+    callback: (A1, A2, A3, A4, A5) => T
+  ): js.Function5[A1, A2, A3, A4, A5, T] =
     ReactJS
       .useCallback(
         js.Any.fromFunction5[A1, A2, A3, A4, A5, T](callback),
@@ -365,38 +365,42 @@ trait React {
   def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
 
   /** Expose imperative functions in R to refs.
-    * @tparam T Ref type
-    * @tparam R js object whose properties are functions. This is not enforced in
-    * the type.
-    */
-  def useImperativeHandle[T, R <: js.Object](ref: MutableRef[T],  thunk: () => R, dependencies: js.UndefOr[Dependencies]): Unit =
+   * @tparam T Ref type
+   * @tparam R js object whose properties are functions. This is not enforced in
+   * the type.
+   */
+  def useImperativeHandle[T, R <: js.Object](
+    ref: MutableRef[T],
+    thunk: () => R,
+    dependencies: js.UndefOr[Dependencies]): Unit =
     ReactJS.useImperativeHandle[T, R](ref, thunk, dependencies)
 
   def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent =
     ReactJS.`lazy`(lazyComponent)
 
-  def useTransition(config: TransitionConfig): (js.Function1[js.Function0[Unit], Unit], Boolean) = 
+  def useTransition(config: TransitionConfig): (js.Function1[js.Function0[Unit], Unit], Boolean) =
     ReactJS.useTransition(config)
-  
+
   def useTransition(t: Int): (js.Function1[js.Function0[Unit], Unit], Boolean) =
-    ReactJS.useTransition(new TransitionConfig { timeoutMs = t})
+    ReactJS.useTransition(new TransitionConfig { timeoutMs = t })
 
   /** Use a deferred value. Config indicates how long the value is good for. */
-  def useDeferredValue[T]( value: T, config: DeferredValueConfig): T =
+  def useDeferredValue[T](value: T, config: DeferredValueConfig): T =
     ReactJS.useDeferredValue(value.asInstanceOf[js.Any], config).asInstanceOf[T]
-    
-  def useDeferredValue[T](value: T, t: Int): T = 
+
+  def useDeferredValue[T](value: T, t: Int): T =
     ReactJS.useDeferredValue(value.asInstanceOf[js.Any], new DeferredValueConfig { timeoutMs = t }).asInstanceOf[T]
 
-  def createMutableSource[S](source: scala.Any, getVersion: js.Function0[scala.Any]) = 
-        ReactJS.createMutableSource[S](source, getVersion)
-        
+  def createMutableSource[S](source: scala.Any, getVersion: js.Function0[scala.Any]) =
+    ReactJS.createMutableSource[S](source, getVersion)
+
   /** subscribe 2nd arg is to be called whenever the value changes and is stable. Last is an unsubscribe for unmounting. */
-  def useMutableSource[S,A](source: MutableSource[S], 
-    getSnapshot: js.Function1[S, A], 
+  def useMutableSource[S, A](
+    source: MutableSource[S],
+    getSnapshot: js.Function1[S, A],
     subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A =
-        ReactJS.useMutableSource[S,A](source, getSnapshot, subscribe)
-    
+    ReactJS.useMutableSource[S, A](source, getSnapshot, subscribe)
+
   //val Children = ReactJS.Children
 
   /** Create a React.fragment element. */
@@ -418,14 +422,11 @@ trait React {
   }
 
   /** Catch a thrown js.Promise from the child. Show fallback until the promise is
-    * resolved.
-    */
+   * resolved.
+   */
   object Suspense {
     def apply(fallback: => ReactNode /* | Null = null*/ )(children: ReactNode*) =
-      ReactJS.createElement(
-        ReactJS.Suspense,
-        lit("fallback" -> fallback.asInstanceOf[js.Any]),
-        children:_*)
+      ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback.asInstanceOf[js.Any]), children: _*)
   }
 
   object SuspenseList {
@@ -441,8 +442,8 @@ trait React {
 //object React extends React
 
 /**
-  * React's context object contains the consumer and provider "components".
-  */
+ * React's context object contains the consumer and provider "components".
+ */
 @js.native
 trait ReactContext[T] extends js.Object {
 
@@ -466,14 +467,15 @@ trait ReactContext[T] extends js.Object {
 }
 
 /** Instantiate this to sync types needed for both funcs. */
-case class UseMutableSource[S,A]() {
+case class UseMutableSource[S, A]() {
 
-  def create(source: scala.Any, getVersion: js.Function0[scala.Any]) = 
-        ReactJS.createMutableSource[S](source, getVersion)
-        
+  def create(source: scala.Any, getVersion: js.Function0[scala.Any]) =
+    ReactJS.createMutableSource[S](source, getVersion)
+
   /** subscribe 2nd arg is to be called whenever the value changes and is stable. Last is an unsubscribe for unmounting. */
-  def use(source: MutableSource[S], 
-    getSnapshot: js.Function1[S, A], 
+  def use(
+    source: MutableSource[S],
+    getSnapshot: js.Function1[S, A],
     subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A =
-        ReactJS.useMutableSource[S,A](source, getSnapshot, subscribe)
+    ReactJS.useMutableSource[S, A](source, getSnapshot, subscribe)
 }

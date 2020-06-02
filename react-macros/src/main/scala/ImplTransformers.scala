@@ -64,88 +64,84 @@ private[react] trait ImplTransformers {
   /** Given a symbol, create a string with is* methods evaluated. */
   def isValues(s: Symbol) =
     s"""|name = ${s.name}, fullname = ${s.fullName}, decodedName = ${s.name.decodedName}, encodedName = ${s.name.encodedName}
-    |owner = ${s.owner}, ${if (s.owner != NoSymbol) s.owner.fullName else "<no owner>"}
-    |info = ${s.info}, typeSymbol = ${s.info.typeSymbol}, termSymbol = ${s.info.termSymbol}, resultType = ${s.info.resultType}
-    |      typeArgs = ${s.info.typeArgs}, typeParams = ${s.info.typeParams}, class = ${s.info.getClass}
-    |      paramLists = ${s.info.paramLists}
-    |alternatives = ${s.alternatives}
-    |isAbstract = ${s.isAbstract}
-    |isAbstractOverride = ${s.isAbstractOverride}
-    |isClass = ${s.isClass}
-    |""".stripMargin +
+        |owner = ${s.owner}, ${if (s.owner != NoSymbol) s.owner.fullName else "<no owner>"}
+        |info = ${s.info}, typeSymbol = ${s.info.typeSymbol}, termSymbol = ${s.info.termSymbol}, resultType = ${s.info.resultType}
+        |      typeArgs = ${s.info.typeArgs}, typeParams = ${s.info.typeParams}, class = ${s.info.getClass}
+        |      paramLists = ${s.info.paramLists}
+        |alternatives = ${s.alternatives}
+        |isAbstract = ${s.isAbstract}
+        |isAbstractOverride = ${s.isAbstractOverride}
+        |isClass = ${s.isClass}
+        |""".stripMargin +
       (if (s.isClass) {
          val sc = s.asClass
          s"""|  isCaseClass = ${sc.isCaseClass}
-      |  isDerivedValueClass = ${sc.isDerivedValueClass}
-      |  isNumeric = ${sc.isNumeric}
-      |  isPrimitive = ${sc.isPrimitive}
-      |  isSleaed = ${sc.isSealed}
-      |  isTrait = ${sc.isTrait}""".stripMargin
-       }
-       else "") +
+             |  isDerivedValueClass = ${sc.isDerivedValueClass}
+             |  isNumeric = ${sc.isNumeric}
+             |  isPrimitive = ${sc.isPrimitive}
+             |  isSleaed = ${sc.isSealed}
+             |  isTrait = ${sc.isTrait}""".stripMargin
+       } else "") +
       s"""|isConstructor = ${s.isConstructor}
-  |isFinal = ${s.isFinal}
-  |isImplementationArtifact = ${s.isImplementationArtifact}
-  |isImplicit = ${s.isImplicit}
-  |isJava = ${s.isJava}
-  |isJavaAnnotation = ${s.isJavaAnnotation}
-  |isJavaEnum = ${s.isJavaEnum}
-  |isMacro = ${s.isMacro}
-  |isMethod = ${s.isMethod}
-  |""".stripMargin +
+          |isFinal = ${s.isFinal}
+          |isImplementationArtifact = ${s.isImplementationArtifact}
+          |isImplicit = ${s.isImplicit}
+          |isJava = ${s.isJava}
+          |isJavaAnnotation = ${s.isJavaAnnotation}
+          |isJavaEnum = ${s.isJavaEnum}
+          |isMacro = ${s.isMacro}
+          |isMethod = ${s.isMethod}
+          |""".stripMargin +
       (if (s.isMethod) {
          val sm = s.asMethod
          s"""|  returnType = ${sm.returnType}, class = ${sm.returnType.getClass}
-            |  isConstructor = ${sm.isConstructor}
-            |  isPrimaryConstructor = ${sm.isPrimaryConstructor}
-            |  isVarargs = ${sm.isVarargs}
-            |  paramLists = ${sm.paramLists}
-            |  typeParams = ${sm.typeParams}""".stripMargin
-       }
-       else "") +
+             |  isConstructor = ${sm.isConstructor}
+             |  isPrimaryConstructor = ${sm.isPrimaryConstructor}
+             |  isVarargs = ${sm.isVarargs}
+             |  paramLists = ${sm.paramLists}
+             |  typeParams = ${sm.typeParams}""".stripMargin
+       } else "") +
       s"""|isModule = ${s.isModule}
-  |isModuleClass = ${s.isModuleClass}
-  |isPackage = ${s.isPackage}
-  |isPackageClass = ${s.isPackageClass}
-  |isParameter = ${s.isParameter}
-  |isPrivate = ${s.isPrivate}
-  |isPrivateThis = ${s.isPrivateThis}
-  |isProtected = ${s.isProtected}
-  |isProtectedThis = ${s.isProtectedThis}
-  |isSpecialized = ${s.isSpecialized}
-  |isStatic = ${s.isStatic}
-  |isSnythetic = ${s.isSynthetic}
-  |isTerm = ${s.isTerm}
-  |""".stripMargin +
+          |isModuleClass = ${s.isModuleClass}
+          |isPackage = ${s.isPackage}
+          |isPackageClass = ${s.isPackageClass}
+          |isParameter = ${s.isParameter}
+          |isPrivate = ${s.isPrivate}
+          |isPrivateThis = ${s.isPrivateThis}
+          |isProtected = ${s.isProtected}
+          |isProtectedThis = ${s.isProtectedThis}
+          |isSpecialized = ${s.isSpecialized}
+          |isStatic = ${s.isStatic}
+          |isSnythetic = ${s.isSynthetic}
+          |isTerm = ${s.isTerm}
+          |""".stripMargin +
       (if (s.isTerm) {
          val st = s.asTerm
          s"""|  isAccessor = ${st.isAccessor}
-    |  isByNameParam = ${st.isByNameParam}
-    |  isCaseAccessor = ${st.isCaseAccessor}
-    |  isGetter = ${st.isGetter}
-    |  isLazy = ${st.isLazy}
-    |  isOverloaded = ${st.isOverloaded}
-    |  isParamAccessor = ${st.isParamAccessor}
-    |  isParamWithDefault = ${st.isParamWithDefault}
-    |  isSetter = ${st.isSetter}
-    |  isStable = ${st.isStable}
-    |  isVal = ${st.isVal}
-    |  isVar = ${st.isVar}
-    |  getter = ${st.getter}, ${if (st.getter != NoSymbol) st.getter.fullName else ""}
-    |  setter = ${st.setter}, ${if (st.setter != NoSymbol) st.setter.fullName else ""}
-    |  accessed = ${if (st.isAccessor) st.accessed.fullName else ""}""".stripMargin
-       }
-       else "") +
+             |  isByNameParam = ${st.isByNameParam}
+             |  isCaseAccessor = ${st.isCaseAccessor}
+             |  isGetter = ${st.isGetter}
+             |  isLazy = ${st.isLazy}
+             |  isOverloaded = ${st.isOverloaded}
+             |  isParamAccessor = ${st.isParamAccessor}
+             |  isParamWithDefault = ${st.isParamWithDefault}
+             |  isSetter = ${st.isSetter}
+             |  isStable = ${st.isStable}
+             |  isVal = ${st.isVal}
+             |  isVar = ${st.isVar}
+             |  getter = ${st.getter}, ${if (st.getter != NoSymbol) st.getter.fullName else ""}
+             |  setter = ${st.setter}, ${if (st.setter != NoSymbol) st.setter.fullName else ""}
+             |  accessed = ${if (st.isAccessor) st.accessed.fullName else ""}""".stripMargin
+       } else "") +
       s"""|isType = ${s.isType}
-      |""".stripMargin +
+          |""".stripMargin +
       (if (s.isType) {
          val st = s.asType
          s"""|  isAliasType = ${st.isAliasType}
-    |  isContravariant = ${st.isContravariant}
-    |  isCovariant = ${st.isCovariant}
-    |  isExistential = ${st.isExistential}""".stripMargin
-       }
-       else "")
+             |  isContravariant = ${st.isContravariant}
+             |  isCovariant = ${st.isCovariant}
+             |  isExistential = ${st.isExistential}""".stripMargin
+       } else "")
 
   implicit class XtensionAnnotteeTransformer(annottees: Seq[Tree]) {
     def transformAnnottees(transformer: ImplTransformer): Tree =
@@ -161,8 +157,7 @@ private[react] trait ImplTransformers {
       def isImplemented(body: => Any): Boolean =
         try {
           body; true
-        }
-        catch {
+        } catch {
           case _: NotImplementedError => false; case _: Throwable => true
         }
       val allowClasses = isImplemented(transformClass(null, null))
@@ -190,8 +185,7 @@ private[react] trait ImplTransformers {
           if (!(mods hasFlag TRAIT)) {
             if (!allowClasses) failUnexpectedAnnottees()
             transformClass(cdef, mdef) ++ rest
-          }
-          else {
+          } else {
             if (!allowTraits) failUnexpectedAnnottees()
             transformTrait(cdef, mdef) ++ rest
           }
@@ -200,8 +194,7 @@ private[react] trait ImplTransformers {
           if (!(mods hasFlag TRAIT)) {
             if (!allowClasses) failUnexpectedAnnottees()
             transformClass(cdef, syntheticMdef) ++ rest
-          }
-          else {
+          } else {
             if (!allowTraits) failUnexpectedAnnottees()
             transformTrait(cdef, syntheticMdef) ++ rest
           }

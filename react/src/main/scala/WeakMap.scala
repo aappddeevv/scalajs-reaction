@@ -30,7 +30,7 @@ import js.annotation._
 class WeakMap extends js.Object {
   // returned undefind if not present
   def get(k: js.Object): js.UndefOr[js.Any] = js.native
-  def set(k: js.Object, v: js.Any): js.Any  = js.native
-  def has(k: js.Object): Boolean            = js.native
-  def delete(k: js.Object): Unit            = js.native
+  def set(k: js.Object, v: js.Any): js.Any = js.native
+  def has(k: js.Object): Boolean = js.native
+  def delete(k: js.Object): Unit = js.native
 }

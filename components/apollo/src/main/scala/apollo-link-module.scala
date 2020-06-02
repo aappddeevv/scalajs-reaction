@@ -35,11 +35,11 @@ trait HttpLinkOptions extends js.Object {
   var uri: js.UndefOr[String] = js.undefined
   @JSName("uri")
   var uriThunk: js.UndefOr[js.Function1[Operation[js.Object], String]] = js.undefined
-  var includeExtensions: js.UndefOr[Boolean]                           = js.undefined
-  var fetch: js.UndefOr[js.Any]                                        = js.undefined
-  var headers: js.UndefOr[js.Any]                                      = js.undefined
-  var credentials: js.UndefOr[String]                                  = js.undefined
-  var fetchOption: js.UndefOr[js.Any]                                  = js.undefined
+  var includeExtensions: js.UndefOr[Boolean] = js.undefined
+  var fetch: js.UndefOr[js.Any] = js.undefined
+  var headers: js.UndefOr[js.Any] = js.undefined
+  var credentials: js.UndefOr[String] = js.undefined
+  var fetchOption: js.UndefOr[js.Any] = js.undefined
 }
 
 // apollo-link-http
@@ -51,30 +51,30 @@ trait FetchOptions extends Options
 
 @js.native
 trait GraphQLRequest[TVars <: js.Object] extends js.Object {
-  val query: DocumentNode               = js.native
-  val variables: js.UndefOr[TVars]      = js.native
+  val query: DocumentNode = js.native
+  val variables: js.UndefOr[TVars] = js.native
   val operationName: js.UndefOr[String] = js.native
-  val context: js.UndefOr[js.Object]    = js.native
+  val context: js.UndefOr[js.Object] = js.native
   val extensions: js.UndefOr[js.Object] = js.native
 }
 
 // Looks like GraphQLRequest but most members are guaranteed to exist. */
 @js.native
 trait Operation[TVars <: js.Object] extends js.Object {
-  val query: DocumentNode                                    = js.native
-  val variables: TVars                                       = js.native
-  val operationName: String                                  = js.native
-  val extensions: js.Object                                  = js.native
+  val query: DocumentNode = js.native
+  val variables: TVars = js.native
+  val operationName: String = js.native
+  val extensions: js.Object = js.native
   def setContext(context: js.Object | js.Dynamic): js.Object = js.native
-  def getContext(): js.Object                                = js.native
-  def toKey(): String                                        = js.native
+  def getContext(): js.Object = js.native
+  def toKey(): String = js.native
 }
 
 @js.native
 trait ApolloLinkCombinators extends js.Object {
-  def empty(): ApolloLink                                    = js.native
-  def from(links: js.Array[ApolloLink]): ApolloLink          = js.native
-  def split(): ApolloLink                                    = js.native
+  def empty(): ApolloLink = js.native
+  def from(links: js.Array[ApolloLink]): ApolloLink = js.native
+  def split(): ApolloLink = js.native
   def concat(lhs: ApolloLink, righs: ApolloLink): ApolloLink = js.native
   // execute???
 }
@@ -133,24 +133,24 @@ object setContextF extends js.Object {
 @js.native
 trait ServerError extends js.Error {
   val response: org.scalajs.dom.experimental.Response = js.native
-  val result: js.Dictionary[js.Any]                   = js.native
-  val statusCode: Int                                 = js.native
+  val result: js.Dictionary[js.Any] = js.native
+  val statusCode: Int = js.native
 }
 
 // apollo-link-http-common
 @js.native
 trait ServerParseError extends js.Error {
   val response: org.scalajs.dom.experimental.Response = js.native
-  val statusCode: Int                                 = js.native
-  val bodyText: String                                = js.native
+  val statusCode: Int = js.native
+  val bodyText: String = js.native
 }
 
 @js.native
 trait ErrorResponse extends js.Object {
-  val graphQLErrors: js.UndefOr[js.Array[GraphQLError]]            = js.native
-  val networkError: js.Error | ServerError | ServerParseError      = js.native
-  def response[T]: js.UndefOr[ExecutionResult[T]]        = js.native
-  val operation: Operation[js.Object]                              = js.native
+  val graphQLErrors: js.UndefOr[js.Array[GraphQLError]] = js.native
+  val networkError: js.Error | ServerError | ServerParseError = js.native
+  def response[T]: js.UndefOr[ExecutionResult[T]] = js.native
+  val operation: Operation[js.Object] = js.native
   def forward[TVars <: js.Object, T]: NextLink[TVars, T] = js.native
 }
 

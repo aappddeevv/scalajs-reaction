@@ -29,8 +29,8 @@ package object apollo_client {
   import apollo_link.FetchResult
 
   // apollo-client/core/types
-  type MutationQueryReducer[T, R <: js.Object]     = js.Function2[js.Object, MutationQueryReducerOptions[T], R]
-  type RefetchQueryDescription                               = js.Array[String] | PureQueryOptions
-  type MutationUpdaterFn[T]                        = js.Function2[DataProxy, FetchResult[T], Unit]
+  type MutationQueryReducer[T, R <: js.Object] = js.Function2[js.Object, MutationQueryReducerOptions[T], R]
+  type RefetchQueryDescription = js.Array[String] | PureQueryOptions
+  type MutationUpdaterFn[T] = js.Function2[DataProxy, FetchResult[T], Unit]
   type MutationQueryReducersMap[T, R <: js.Object] = js.Dictionary[MutationQueryReducer[T, R]]
 }

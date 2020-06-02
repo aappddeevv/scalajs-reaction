@@ -25,17 +25,17 @@ object createClass {
 
   val statics: Map[String, Any] = Map(
     "getDerivedStateFromProps" -> true,
-    "displayName"              -> "true"
+    "displayName" -> "true"
   )
 
   val lifecycle = Map(
-    "componentDidMount"     -> true,
-    "componentDidUpdate"    -> true,
-    "componentWillUpdate"   -> true,
+    "componentDidMount" -> true,
+    "componentDidUpdate" -> true,
+    "componentWillUpdate" -> true,
     "shouldComponentUpdate" -> true,
-    "componentDidCatch"     -> true,
-    "componentWillUnmount"  -> true,
-    "render"                -> true
+    "componentDidCatch" -> true,
+    "componentWillUnmount" -> true,
+    "render" -> true
   )
 
   /**

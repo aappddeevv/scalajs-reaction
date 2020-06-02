@@ -22,6 +22,7 @@
 package fabric
 
 import scala.scalajs.js
+import js.annotation._
 
 package object utilities {
   type SettingsFunction = Settings => Settings
@@ -34,4 +35,10 @@ package object utilities {
   }).asInstanceOf[ICustomizations]
 
   val NoScope: js.UndefOr[String] = js.undefined
+
+  /** string, serializable (has toString), dictionary, null, undefined, boolean...*/
+  @js.native
+  @JSImport("@uifabric/utilities", "css")
+  def css(various: js.Any*): String = js.native
+
 }

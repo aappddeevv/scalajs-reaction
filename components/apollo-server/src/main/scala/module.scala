@@ -26,11 +26,27 @@ import js.annotation._
 import js.|
 
 import graphql.GraphQLError
-
+@js.native
+@JSImport("apollo-server-errors", "ApolloErorr")
+class ApolloError(
+  message: String,
+  code: js.UndefOr[String] = js.undefined,
+  extensions: js.UndefOr[js.Object] = js.undefined)
+    extends js.Error(message)
+    with GraphQLError
 
 @js.native
 @JSImport("apollo-server-errors", "UserInputError")
-class UserInputError(message: String, 
-    code: js.UndefOr[String] = js.undefined, 
-    extensions: js.UndefOr[js.Object]=js.undefined) 
-    extends js.Error(message) with GraphQLError
+class UserInputError(
+  message: String,
+  code: js.UndefOr[String] = js.undefined,
+  extensions: js.UndefOr[js.Object] = js.undefined)
+    extends ApolloError(message, code, extensions)
+
+@js.native
+@JSImport("apollo-server-errors", "AuthenticationError")
+class AuthenticationError(message: String) extends ApolloError(message)
+
+@js.native
+@JSImport("apollo-server-errors", "ForbiddenError")
+class ForbiddenError(message: String) extends ApolloError(message)

@@ -25,7 +25,7 @@ import scala.scalajs.js
 import js.|
 
 /** The "combine" methods are shallow, mutable merges, this may not be what you want. */
-final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal  {
+final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal {
   @inline def asDict[B] = o.asInstanceOf[js.Dictionary[B]]
   @inline def asAnyDict = o.asInstanceOf[js.Dictionary[js.Any]]
   @inline def asDyn = o.asInstanceOf[js.Dynamic]
@@ -40,7 +40,8 @@ final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal  {
   @inline def combineDynamic(that: js.Dynamic) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with a generic js object or undefined. */
-  @inline def combineGeneric(that: js.UndefOr[js.Object]) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combineGeneric(that: js.UndefOr[js.Object]) =
+    js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Combine with something! Client takes ownership to make sure `that` is suitable to be combined. */
   @inline def unsafeCombine(that: js.Any) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
@@ -69,17 +70,25 @@ final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal  {
 }
 
 /** Dictionary casts. */
-final class JsDictionaryOps(private val self: js.Dictionary[_]) extends AnyVal {
+final class JsDictionaryOps[T <: js.Any](private val self: js.Dictionary[T]) extends AnyVal {
   @inline def asJsObj = self.asInstanceOf[js.Object]
   @inline def asDyn = self.asInstanceOf[js.Dynamic]
   @inline def asUndefOr = js.defined(self)
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
-  @inline def as[T <: js.Object] = self.asInstanceOf[T]
+  @inline def as[B <: js.Object] = self.asInstanceOf[B]
 
+  /** Duplicate. */
+  @inline def duplicate =
+    js.Object
+      .assign(
+        new js.Object,
+        self.asInstanceOf[js.Object]
+      )
+      .asInstanceOf[js.Dictionary[T]]
 }
 
 trait JsObjectSyntax {
   @inline implicit def jsObjectOpsSyntax[A <: js.Object](a: A) = new JsObjectOps(a)
-  @inline implicit def jsDictionaryOpsSyntax(a: js.Dictionary[_]) = new JsDictionaryOps(a)
+  @inline implicit def jsDictionaryOpsSyntax[T <: js.Any](a: js.Dictionary[T]) = new JsDictionaryOps[T](a)
 }
