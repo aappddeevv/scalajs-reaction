@@ -122,6 +122,7 @@ object Panel {
   
   type OnDismiss = js.Function1[ReactEvent[dom.html.Element], Unit]
   def OnDismiss(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OnDismiss]
+  def OnDismiss(f: js.Function0[Unit]) = f.asInstanceOf[OnDismiss]
   def OnDismiss(f: ReactEvent[dom.html.Element] => Unit) =
     js.Any.fromFunction1(f).asInstanceOf[OnDismiss]
 

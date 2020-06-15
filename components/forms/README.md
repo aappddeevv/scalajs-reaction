@@ -1,9 +1,21 @@
 # Forms
 
 Forms are tough things to do well and keep flexible. There are many
-different forms libraries, especially for react, e.g., https://github.com/jaredpalmer/formik
-or https://github.com/final-form/react-final-form#-react-final-form which uses
+different forms libraries, especially for react, e.g., 
+
+JS/TS:
+
+* https://github.com/jaredpalmer/formik
+* https://github.com/final-form/react-final-form#-react-final-form which uses
 https://final-form.org/ for form state management.
+
+ReasonML:
+
+* https://github.com/MinimalHQ/re-formality
+* https://github.com/Astrocoders/reform
+* ...many others...
+
+This library is mtuch like formik, which is quite popular.
 
 There are also dynamic generators that generate forms from metadata e.g. https://uniforms.tools/.
 

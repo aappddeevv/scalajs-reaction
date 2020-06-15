@@ -97,7 +97,7 @@ class Fetcher[F[_], P, E, T](Name: String) {
     */
   def apply(props: Props) = render.elementWith(Name, props)
 
-  val render: Props => ReactNode = props => {
+  val render: ReactFC[Props] = props => {
     import props._
     val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
@@ -115,6 +115,7 @@ class Fetcher[F[_], P, E, T](Name: String) {
 
     children(fstate, makeRequest)
   }
+  render.displayName(Name)
 }
 
 /** A Fetcher that keeps the runner at the class level. */
@@ -159,7 +160,6 @@ class FetcherHook[F[_], P, E](
   type FetchCallback = F[P] => Unit
 
   def useFetcher(remember: Boolean = false) = {
-    useDebugValue(Name)
     val (fstate, setFState) = useStateStrictDirect[FetchState](NotRequested)
     // setFState is guaranteed stable
     val makeRequest = useCallback1[F[P], Unit](unsafeDeps(fstate)) { f =>

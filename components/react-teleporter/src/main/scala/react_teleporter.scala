@@ -20,6 +20,7 @@
  */
 
 import scala.scalajs.js
+import js.annotation._
 
 package object react_teleporter {
   import react_teleporter._

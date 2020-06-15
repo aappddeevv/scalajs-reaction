@@ -26,6 +26,13 @@ import js.JSConverters._
 import js.|, js.annotation._
 import react._
 
+
+trait PersistenceSettings[T] { 
+    val `type`: String // "none" or "url"
+    var backButton: js.UndefOr[Boolean] = js.undefined
+    def validator(arg: Any, defaultValue: DefaultValue): T|DefaultValue
+}
+
 object RecoilRoot {
   @js.native
   @JSImport("recoil", "RecoilRoot")
@@ -47,9 +54,8 @@ object RecoilRoot {
 trait AtomOptions[T] extends js.Object {
   val key: String
   val default: FlexiValue[T]
-  // persistence
+  var persistence_UNSTABLE: js.UndefOr[PersistenceSettings[T]] = js.undefined
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
-
 }
 
 object AtomOptions {
@@ -78,9 +84,12 @@ trait ReadWriteAccessors extends ReadOnlyAccessors {
 trait ReadOnlySelectorOptions[T] extends js.Object {
   val key: NodeKey
   def get(accessors: ReadOnlyAccessors): Return[T]
+  var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
+}
 
-  /** If undefined, creates a readonly selector. */
-  //def set[A]: js.UndefOr[js.Function2[SetArgs, A, Unit]] = js.undefined
+trait ReadOnlySelectorOptions2[T] extends js.Object {
+  val key: NodeKey
+  val get: js.Function1[ReadOnlyAccessors, Return[T]]
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
 }
 
@@ -113,8 +122,13 @@ trait Accessors[+T] extends js.Object {
   def errorOrMaybe(): js.Error = js.native
   def promiseMaybe(): js.UndefOr[js.Promise[T]] = js.native
   def promiseOrThrow(): js.Promise[T] = js.native
-  //map ????
-  def map[S](thunk: js.Function1[Any, S | js.Thenable[S]]): Loadable[S] = js.native
+  /** Suppose to be a map function but its just a mess. */
+  @JSName("map")
+  def _map[S](thunk: js.Function1[Any, S | js.Thenable[S]]): Loadable[S] = js.native
+  @JSName("map")
+  def map[S](f: js.Function1[T,S]): Loadable[S] = js.native
+  @JSName("map")
+  def flatMap[S](f: js.Function1[T,LoadablePromise[S]]): Loadable[S] = js.native
 }
 
 @js.native
@@ -276,6 +290,7 @@ trait hooks {
 
   def atom[T](options: AtomOptions[T]) = module.atom[T](options)
 
+  def unsafeReadonlySelector[T](options: js.Dynamic) = module.readonlySelector[T](options.asInstanceOf[ReadOnlySelectorOptions[T]])
   def readonlySelector[T](options: ReadOnlySelectorOptions[T]) = module.readonlySelector[T](options)
   def writableSelector[T](options: WriteableSelectorOptions[T]) = module.writableSelector[T](options)
   

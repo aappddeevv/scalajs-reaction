@@ -295,7 +295,8 @@ trait RawStyleBase extends RawFontStyle {
   var columns: js.UndefOr[String] = js.undefined
   var columnCount: js.UndefOr[String] = js.undefined
   var columnFill: js.UndefOr[String] = js.undefined
-  var columnGap: js.UndefOr[String] = js.undefined
+  // also in grid
+  //var columnGap: js.UndefOr[String] = js.undefined
   var columnRule: js.UndefOr[String] = js.undefined
   var columnRuleColor: js.UndefOr[String] = js.undefined
   var columnRuleStyle: js.UndefOr[String] = js.undefined
@@ -420,17 +421,22 @@ trait RawStyleBase extends RawFontStyle {
   var gridAutoRows: js.UndefOr[Int | String] = js.undefined
   var gridColumn: js.UndefOr[Int | String] = js.undefined
   var gridColumnEnd: js.UndefOr[Int | String] = js.undefined
+  @deprecated
   var gridColumnGap: js.UndefOr[Int | String] = js.undefined
   var gridColumnStart: js.UndefOr[Int | String] = js.undefined
   var gridGap: js.UndefOr[Int | String] = js.undefined
   var gridRow: js.UndefOr[Int | String] = js.undefined
   var gridRowEnd: js.UndefOr[Int | String] = js.undefined
+  @deprecated
   var gridRowGap: js.UndefOr[Int | String] = js.undefined
   var gridRowStart: js.UndefOr[Int | String] = js.undefined
   var gridTemplate: js.UndefOr[String] = js.undefined
   var gridTemplateAreas: js.UndefOr[String] = js.undefined
   var gridTemplateColumns: js.UndefOr[Int | String] = js.undefined
   var gridTemplateRows: js.UndefOr[Int | String] = js.undefined
+  var columnGap: js.UndefOr[Int | String] = js.undefined
+  var rowGap: js.UndefOr[Int | String] = js.undefined
+  
   /* Will Change Level 1 - CR */
   var willChange: js.UndefOr[String] = js.undefined
   /* Text Level 3 - LC */

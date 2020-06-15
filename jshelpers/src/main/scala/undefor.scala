@@ -83,9 +83,18 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
   /** Return string's "zero" which is an empty string. */
   @inline def orEmpty: String = a.getOrElse("")
 
-  /** Filter out empty string and null. */
+  /** Filter out empty string and null. Same as filterTruthy. */
   @inline def filterEmpty = a.filter(str => str != "" && str != null)
 }
+
+// final case class JsUndefOrStringOrNullOps(val a: UndefOr[String|Null]) extends UndefOrCommon[String|Null] {
+// 
+//   /** Return string's "zero" which is an empty string. */
+//   @inline def orEmpty: String = if(a == null) "" else a.getOrElse("").asInstanceOf[String]
+// 
+//   /** Filter out empty string and null. Same as filterTruthy. */
+//   @inline def filterEmpty = a.filter(str => str != "" && str != null)
+// }
 
 final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
 
@@ -146,6 +155,7 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
     if (a.isDefined && a != null) a.asInstanceOf[js.UndefOr[T] | Null]
     else ().asInstanceOf[js.UndefOr[T] | Null]
 
+  /** Undestands UndefOr and Null to do the orElse. */
   @inline def getOrElse[B >: T](default: => T): T =
     if (a.isEmpty || a == null) default else a.asInstanceOf[T]
 
@@ -208,7 +218,8 @@ trait JsUndefOrSyntax extends JsUndefLowerOrderImplicits {
 
   @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A]) = new JsUndefOrOps(a)
   @inline implicit def jsUndefOrStringOps(a: js.UndefOr[String]) = new JsUndefOrStringOps(a)
-//  implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
+  //@inline implicit def jsUndefOrStringOrNullOps(a: js.UndefOr[String]) = new JsUndefOrStringOrNullOps(a)
+  //implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
   @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]) = new JsUndefOrNullOps[A](a)
   @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]) = new JsUndefOrBooleanOps(a)
   @inline implicit def jsUndefOrJsObject[A <: js.Object](a: js.UndefOr[A]) = new JsUndefOrJsObject[A](a)

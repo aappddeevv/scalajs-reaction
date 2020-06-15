@@ -22,6 +22,7 @@
 package jshelpers
 
 import scala.scalajs.js
+import js.|
 
 /** If you want js.UndefOr, use JSConverters `.toOption`and `.orUndefined`. */
 final class OptionOps[T](private val a: Option[T]) extends AnyVal {
@@ -46,6 +47,11 @@ final class OptionOps[T](private val a: Option[T]) extends AnyVal {
 
   def ??[B >: T](default: => B): B = a.getOrElse(default)
 
+  /** Changes type to T but does *not* add `|Null`. */
+  def orNull: T = a.getOrElse(null).asInstanceOf[T]
+  
+  /** Changes type to `T|Null`. */
+  def withNull: T|Null = a.getOrElse(null).asInstanceOf[T|Null]
 }
 
 trait OptionSyntax {

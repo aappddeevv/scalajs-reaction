@@ -25,18 +25,17 @@ import scala.scalajs.js
 
 /**
  *  Conditional rendering support. Uses by-name parameters to delay creating
- *  a react node if the condition idicates not to render.
+ *  a react node and allow a block to improve component rendering efficiency.
+ * Special support for Undef0r and Option values is provided including
+ * optional booleans where the boolean must also be true to render. You can 
+ * also just add an UndefOr[ReactNode] and it will be handled automatically,
+ * however, it potentially requires evaluation. Use these when combinators
+ * when you want to delay a computation and node creation processing is inside
+ * the by-name parameter.
  */
 trait When {
 
-  /** Render something or return a null element. Render is by name. Could just use fold. */
-  def when[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (cond.getOrElse(false)) render else nullNode
-
-  /** Render something or return a null element. Render is by name. Could just use fold. */
-  def when[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (cond.getOrElse(false)) render else nullNode
-
+  
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
     if (cond) render else nullElement
@@ -45,18 +44,31 @@ trait When {
   def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
     if (!cond) render else nullElement
 
-  /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
-  def whenNot[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (!cond.getOrElse(false)) render else nullElement
-
-  /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
-  def whenNot[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (!cond.getOrElse(false)) render else nullElement
-
   def when[T](cond: js.UndefOr[T])(render: => ReactNode): ReactNode =
     if (cond.isDefined) render else nullElement
 
   def whenNot[T](cond: js.UndefOr[T])(render: => ReactNode): ReactNode =
     if (cond.isEmpty) render else nullElement
+
+  // Had the Unwrap variants with the name when/whenNot but am trying this
+  // api so you could have a wrapped Boolean but only test its wrappiness
+  // versus auto unwrapping. I'll keep flipping back and forth until
+  // I have a stronger opinion.
+    
+  /** Render something or return a null element. Render is by name. Could just use fold. */
+  def whenUnwrap[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
+    if (cond.getOrElse(false)) render else nullNode
+
+  /** Render something or return a null element. Render is by name. Could just use fold. */
+  def whenUnwrap[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
+    if (cond.getOrElse(false)) render else nullNode
+    
+  /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
+  def whenNotUnwrap[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
+    if (!cond.getOrElse(false)) render else nullElement
+  
+  /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
+  def whenNotUnwrap[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
+    if (!cond.getOrElse(false)) render else nullElement
 
 }

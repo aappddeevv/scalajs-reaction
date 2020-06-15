@@ -59,18 +59,32 @@ package object extras {
   }
 
   /** http://usehooks.com. Use inside your hooks to
-   * memo a value so callers don't have to. On first
-   * compare, value can be null.
+   * memo a value so callers don't have to. Simplified via
+   * use-custom-compare-effect approach vs usehooks.
    *
-   * @param value Value to potentially memo.
+   * Needs testing!
+   *
+   * @param value Value to memoize.
    * @param compare (old,new)=>Boolean
    */
-  def useMemoCompare[T](value: T, compare: (T | Null, T) => Boolean) = {
-    val previousRef = useRef[T | Null](null)
+  def useMemoCompare[T](value: T, compare: (T, T) => Boolean) = {
+    val previousRef = useRef[T](value)
     val previous = previousRef.current
     val isEqual = compare(previous, value)
-    useEffectAlways(() => if (!isEqual) previousRef.current = value)
-    if (isEqual) previous else value
+//     useEffectAlways(() => if (!isEqual) previousRef.current = value)
+//     if (isEqual) previous else value
+    if (!isEqual) previousRef.current = value
+    previousRef.current
   }
 
+  //private useMemoCompareJS = js.Any.fromFunction2(useMemoCompare)
+
+  /** From use-custom-compare-effect.
+   *
+   * Needs testing!
+   */
+  def useCustomCompareEffect[T](create: EffectArg, input: T, compare: (T, T) => Boolean) =
+    useEffect(unsafeDeps(useMemoCompare(input, compare)))(create)
+
+    
 }

@@ -28,10 +28,9 @@ import js.|
 
 // To make a promise:
 // (resolve: js.Function1[Unit|js.Thenable[Unit],_], reject: js.Function1[scala.Any,_]) =>
-/** More ergonomic typed methods for js.Promise processing. Should just convert to Future
- * as the overhead is *not* that much and its much easier to use. You should not import the
- * implicit converters for js.Promise if you want to use map/flatMap on the promise itself:
- * `import scala.scalajs.js.Thenable.Implicits._`
+/** More ergonomic typed methods for js.Promise processing. It is easy to convert to js
+* Promise to a future (jspromiseInstance.toFuture) but if you have alot of js.Promise
+* API then you are converting alot of Futures :-).
  */
 final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
 
@@ -156,27 +155,27 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   }
 
   /** Tap into the result. */
-  def tapValue(f: A => Unit) = {
+  def tapValue(f: A => Any): js.Thenable[A] = {
     val onf = js.Any.fromFunction1 { (a: A) => f(a); a }.asInstanceOf[RESOLVE[A, A]]
     self.`then`[A](onf, js.undefined)
   }
 
   /** Tap into the result. */
-  def tapValueF[U >: A](f: U => js.Thenable[U]): js.Thenable[U] = {
+  def tapValueF[U >: A](f: U => js.Thenable[Any]): js.Thenable[U] = {
     val onf =
-      js.Any.fromFunction1((a: U) => f(a).`then`((_ => a): RESOLVE[U, U], js.undefined)).asInstanceOf[RESOLVE[U, U]]
+      js.Any.fromFunction1((a: U) => f(a).`then`((_ => a): RESOLVE[Any, U], js.undefined)).asInstanceOf[RESOLVE[U, U]]
     self.`then`[U](onf, js.undefined)
   }
 
   /** Tap into the error. */
-  def tapError(f: scala.Any => Unit) = {
+  def tapError(f: scala.Any => Any): js.Thenable[A] = {
     val onr = js.Any.fromFunction1 { (e: Any) => f(e); js.Promise.reject(e) }.asInstanceOf[REJECTED[A]]
     self.`then`[A]((), onr)
   }
 
-  def tapErrorF(f: scala.Any => js.Thenable[Unit]) = {
+  def tapErrorF(f: scala.Any => js.Thenable[Any]): js.Thenable[A] = {
     val onr = js.Any
-      .fromFunction1((e: Any) => f(e).`then`[Unit]((), js.defined((_: Any) => js.Promise.reject(e))))
+      .fromFunction1((e: Any) => f(e).`then`[Unit](().asInstanceOf[RESOLVE[Any,Unit]], js.defined((_: Any) => js.Promise.reject(e))))
       .asInstanceOf[REJECTED[A]]
     self.`then`[A]((), onr)
   }
@@ -251,7 +250,7 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   }
 
   /** While the result is still wrapped in a promise effect, the error has been
-   * pushed into `Either`.
+   * pushed into `Either`. It would be nice to enhance the types for Left.
    */
   def either = {
     val onf: RESOLVE[A, Either[scala.Any, A]] = (a: A) => Right(a)
@@ -387,6 +386,8 @@ private[jshelpers] object JSPromiseCreators {
 
   /** Saves you a few keystrokes. */
   def undefined[A]: js.Promise[js.UndefOr[A]] = from[js.UndefOr[A]](js.undefined)
+  
+  def defined[A](a: A): js.Promise[js.UndefOr[A]] = js.Promise.resolve(js.defined(a).asInstanceOf[A|js.Thenable[A]])
 
   def nullValue: js.Promise[Null] = js.Promise.resolve[Null](null)
 

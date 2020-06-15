@@ -84,12 +84,12 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
     else Option(jsdyn.asInstanceOf[T])
 
   /** Shallow combine into existing value. */
-  def combine(that: js.Dynamic) =
-    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+  def combine(that: js.Dynamic*) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[js.Dynamic]
 
   /** Combine and cast. */
-  def combineTo[B](that: js.Dynamic) =
-    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[B]
+  def combineTo[B](that: js.Dynamic*) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[B]
 
   /** Determine if truthy. Very tricky! */
   def toTruthy: Boolean = js.DynamicImplicits.truthValue(jsdyn)
@@ -108,12 +108,12 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
     js.Object.assign(new js.Object, jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[B]
 
   /** Combine with general js.Object */
-  def combineGeneric(that: js.UndefOr[js.Object]) =
-    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
+  def combineGeneric(that: js.Object|Unit*) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[js.Dynamic]
 
   /** Combine with general js.Object and cast. */
-  def combineGenericTo[B](that: js.UndefOr[js.Object]) =
-    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[js.Object]).asInstanceOf[B]
+  def combineGenericTo[B](that: js.Object|Unit*) =
+    js.Object.assign(jsdyn.asInstanceOf[js.Object], that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[B]
 
 }
 

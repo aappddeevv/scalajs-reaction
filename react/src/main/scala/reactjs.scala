@@ -165,6 +165,13 @@ object EffectArg {
       .asInstanceOf[EffectArg]
 }
 
+
+@js.native
+trait StateSetterOrUpdater[T] extends js.Object {
+  def apply(t: T): Unit = js.native
+  def apply(f: js.Function1[T, T]): Unit = js.native
+}
+
 @js.native
 trait Hooks extends js.Object {
 
@@ -196,7 +203,7 @@ trait Hooks extends js.Object {
   ): js.Tuple2[S, Dispatch[A]] = js.native
 
   // js.Tuple2 is a shortcut to a 2 element array
-  def useState[T](initialValue: js.Any): js.Tuple2[T, js.Any] = js.native
+  def useState[T](initialValue: js.Any): js.Tuple2[T, StateSetterOrUpdater[T]] = js.native
 
   // didUpdate is () => Unit or () => (() => Unit)
   def useEffect(didUpdate: js.Any, dependencies: Dependencies | Unit): Unit = js.native

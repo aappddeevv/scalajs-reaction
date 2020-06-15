@@ -162,22 +162,22 @@ trait React {
   def useContext[T](context: ReactContext[T]): T = ReactJS.useContext(context)
 
   /** Initial value is strict. Setter is an updater. */
-  def useStateStrict[T](initial: T): (T, js.Function1[js.Function1[T, T], Unit]) =
-    ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, js.Function1[js.Function1[T, T], Unit]]]
+  def useStateStrict[T](initial: T): (T, StateSetterOrUpdater[T]) =
+    ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, StateSetterOrUpdater[T]]]
 
-  /** Initial value is a "lazy". Setter is an updater. Use this one or
+  /** Initial value is a "lazy". Update thunk is a setter or updater. Use this one or
    * useReducer.
    */
-  def useState[T](initial: () => T): (T, js.Function1[js.Function1[T, T], Unit]) =
+  def useState[T](initial: () => T): (T, StateSetterOrUpdater[T]) =
     ReactJS
       .useState[T](js.Any.fromFunction0[T](initial))
-      .asInstanceOf[js.Tuple2[T, js.Function1[js.Function1[T, T], Unit]]]
+      .asInstanceOf[js.Tuple2[T, StateSetterOrUpdater[T]]]
 
-  /** Initial value is strict. Set new value directly. Don't use this. */
+  /** Initial value is strict. Set new value directly. */
   def useStateStrictDirect[T](initial: T): (T, js.Function1[T, Unit]) =
     ReactJS.useState[T](initial.asInstanceOf[js.Any]).asInstanceOf[js.Tuple2[T, js.Function1[T, Unit]]]
 
-  /** Initial value is a "lazy". Set new value directly. Don't use this. */
+  /** Initial value is a "lazy". Set new value directly. */
   def useStateDirect[T](initial: () => T): (T, js.Function1[T, Unit]) =
     ReactJS.useState[T](js.Any.fromFunction0[T](initial)).asInstanceOf[js.Tuple2[T, js.Function1[T, Unit]]]
 

@@ -24,7 +24,7 @@ import js.|
 import js.JSConverters._
 import react._
 
-package object recoil extends recoil.hooks {
+package object recoil extends recoil.hooks with utils_exports {
   import recoil._
 
   type NodeKey = String
@@ -51,5 +51,13 @@ package object recoil extends recoil.hooks {
   type GetRecoilValue[T] = js.Function1[RecoilValue[T], T]
   type SetRecoilState[T] = js.Function2[RecoilState[T], T | DefaultValue | js.Function1[T, T | DefaultValue], Unit]
   type ResetRecoilState[T] = js.Function1[RecoilState[T], Unit]
+  
+  
+  type Primitive = Boolean | Int | Float | Double | String | Null | Unit
+  /** For *Family getter args. Must be stringifable for a serializable key. We need to use this but am not currently. */
+  type SerializableParameter = Boolean | Int | Float | Double | String | Null | Unit | js.Array[Primitive] | js.Object | js.Dictionary[Primitive]
+
+  implicit object jsfDictionary extends JSF[js.Dictionary]
+  implicit object jsfArray extends JSF[js.Array]
 
 }

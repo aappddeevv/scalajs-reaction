@@ -31,28 +31,30 @@ final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal {
   @inline def asDyn = o.asInstanceOf[js.Dynamic]
   @inline def asUndefOr: js.UndefOr[A] = js.defined(o)
 
-  /** Shallow merge ! If you are merging multiple levels of props, this is not
-   * what you want to use.
+  /** Shallow merge.
    */
-  @inline def combine(that: js.UndefOr[A]) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combine(that: A|Unit*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
 
   /** Combine with a js.Dynamic explicitly. */
-  @inline def combineDynamic(that: js.Dynamic) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combineDynamic(that: js.Dynamic*) = 
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
 
   /** Combine with a generic js object or undefined. */
-  @inline def combineGeneric(that: js.UndefOr[js.Object]) =
-    js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  @inline def combineGeneric(that: js.Object|Unit*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
 
-  /** Combine with something! Client takes ownership to make sure `that` is suitable to be combined. */
-  @inline def unsafeCombine(that: js.Any) = js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+  /** Combine with something!?! */
+  @inline def unsafeCombine(that: js.Any*) = 
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
 
   /** Combine with a generic js object and cast. */
-  @inline def combineGenericTo[B](that: js.UndefOr[js.Object]) =
-    js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[B]
+  @inline def combineGenericTo[B](that: js.Object|Unit*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[B]
 
   /** Combine with a dynamic and cast. */
-  @inline def combineDynamicTo[B](that: js.Dynamic) =
-    js.Object.assign(o, that.asInstanceOf[js.Object]).asInstanceOf[B]
+  @inline def combineDynamicTo[B](that: js.Dynamic*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[B]
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
   @inline def as[T] = o.asInstanceOf[T]
@@ -65,7 +67,7 @@ final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal {
     js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
   /** Duplicate then combineDynamic then cast :-). */
-  @inline def duplicateCombineTo[B](that: js.Dynamic) =
+  @inline def duplicateCombineTo[B](that: js.Dynamic*) =
     js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[B]
 }
 

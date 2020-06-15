@@ -223,10 +223,14 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * fabric (office-ui-fabric-react): Custom and ergonomic facade.
 * fabric-experiments
 * forms: Advanced, all-scala.js forms package.
+  * In transition so its not currently available.
+* formik
 * helmet
 * jshelpers: Helpers for working with js data. Includes full js.Promise extension methods to avoid Future.
 * jss
+* lodash
 * loglevel
+* luxon (datetime library, evolved from moment)
 * msal
 * mssql
 * mui
@@ -252,6 +256,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * react-router-dom (5 and 6)
 * recoil (facebook state management)
 * use-query-params
+* use-deep-compare-effect
 * vdom
 * whydidyourender (use include/exclude regexs, see the readme in that directory)
 
