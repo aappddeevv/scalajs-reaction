@@ -40,8 +40,19 @@ object Text {
 
   def apply(variant: Variant, text: String) =
     createElement(JS, js.Dynamic.literal("variant" -> variant), text.asInstanceOf[ReactNode])
-    
-    
+
+  def block(text: String) = 
+    createElement(JS, js.Dynamic.literal("block" -> true), text.asInstanceOf[ReactNode])
+  
+  def block(variant: Variant, text: String) = 
+    createElement(JS, js.Dynamic.literal("variant" -> variant, "block" -> true), text.asInstanceOf[ReactNode])
+  
+  def nowrap(text: String) = 
+    createElement(JS, js.Dynamic.literal("nowrap" -> true), text.asInstanceOf[ReactNode])
+  
+  def ellipsis(text: String) = 
+    createElement(JS, js.Dynamic.literal("block" -> true, "nowrap" -> true), text.asInstanceOf[ReactNode])
+  
   // from ReactJsProps
   trait Props extends ReactJSProps with HTMLAttributes[dom.html.Element]{
     var variant: js.UndefOr[Variant] = js.undefined

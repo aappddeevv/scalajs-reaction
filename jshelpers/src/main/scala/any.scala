@@ -106,6 +106,14 @@ trait AnyOps[T] {
   def toTruthyUndefOr: js.UndefOr[T] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
     else js.undefined
+    
+    
+  //
+  // Some type tests, some of these may not work in all circumstances so you need
+  // to know what you are doing to ensure they meet your needs.
+  //
+  
+    
 }
 
 final class JsAnyOps[T <: js.Any](protected val a: T) extends AnyOps[T] {}

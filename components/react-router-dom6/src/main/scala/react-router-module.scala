@@ -37,7 +37,7 @@ object Action {
 
 // history
 trait PathPieces { 
-    var pathName: js.UndefOr[String] = js.undefined
+    var pathname: js.UndefOr[String] = js.undefined
     var search:  js.UndefOr[String] = js.undefined
     var hash:   js.UndefOr[String] = js.undefined
 }
@@ -54,8 +54,12 @@ trait LocationInit[S] extends LocationPieces[S]
 
 // history
 object LocationInit {
-  def apply[S](pathname: String) = 
-    js.Dynamic.literal("pathname" -> pathname).asInstanceOf[LocationInit[S]]
+  /** Create LocationInit from a pathname. */
+  def apply[S](p: String) = 
+    new LocationInit[S] { 
+        pathname = p
+    }
+    //js.Dynamic.literal("pathName" -> pathname).asInstanceOf[LocationInit[S]]
 }
 
 // history
