@@ -40,14 +40,14 @@ object TextField {
 
   @js.native
   trait ITextField extends Focusable with ClassAttributes[dom.html.Input] {
-    var value: js.UndefOr[String]                       = js.native
-    var select: js.Function0[Unit]                      = js.native
-    var blur: js.Function0[Unit]                        = js.native
-    var setSelectionStart: js.Function1[Int, Unit]      = js.native
-    var setSelectionEnd: js.Function1[Int, Unit]        = js.native
+    var value: js.UndefOr[String] = js.native
+    var select: js.Function0[Unit] = js.native
+    var blur: js.Function0[Unit] = js.native
+    var setSelectionStart: js.Function1[Int, Unit] = js.native
+    var setSelectionEnd: js.Function1[Int, Unit] = js.native
     var setSelectionRange: js.Function2[Int, Int, Unit] = js.native
-    var selectionStart: Int                             = js.native
-    var selectionEnd: Int                               = js.native
+    var selectionStart: Int = js.native
+    var selectionEnd: Int = js.native
   }
 
   trait StyleProps extends js.Object {}
@@ -56,34 +56,35 @@ object TextField {
 
   //export interface ITextFieldProps extends React.AllHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   // withDisabled
-  
-  type BI = dom.html.Input|dom.html.TextArea
+
+  type BI = dom.html.Input | dom.html.TextArea
 
   // should also included attributes from dom.html.TextArea
   trait Props extends WithIconProps with Theme with ComponentRef[ITextField] with AllHTMLAttributes[dom.html.Input] {
     var autoAdjustHeight: js.UndefOr[Boolean] = js.undefined
-    var ariaLabel: js.UndefOr[String]         = js.undefined
-    var addonString: js.UndefOr[String]       = js.undefined
-    var borderless: js.UndefOr[Boolean]       = js.undefined
-    var componentId: js.UndefOr[String]       = js.undefined
+    var ariaLabel: js.UndefOr[String] = js.undefined
+    var addonString: js.UndefOr[String] = js.undefined
+    //var autoComplete: js.UndefOr[Boolean] = js.undefined    
+    var borderless: js.UndefOr[Boolean] = js.undefined
+    var componentId: js.UndefOr[String] = js.undefined
     //var label: js.UndefOr[String] = js.undefined
-    var description: js.UndefOr[String]          = js.undefined
+    var description: js.UndefOr[String] = js.undefined
     var deferredValidationTime: js.UndefOr[Long] = js.undefined
     //var iconProps?: IIconProps;
     // defined in HTMLAttributes
     //var defaultValue: js.UndefOr[String] = js.undefined
     //var value: js.UndefOr[String] = js.undefined
-    var errorMessage: js.UndefOr[String]                 = js.undefined
-    var inputClassName: js.UndefOr[String]               = js.undefined
-    var mask: js.UndefOr[String]                         = js.undefined
-    var maskChar: js.UndefOr[String]                     = js.undefined
+    var errorMessage: js.UndefOr[String] = js.undefined
+    var inputClassName: js.UndefOr[String] = js.undefined
+    var mask: js.UndefOr[String] = js.undefined
+    var maskChar: js.UndefOr[String] = js.undefined
     var maskFormat: js.UndefOr[js.Dictionary[js.RegExp]] = js.undefined
-    var multiline: js.UndefOr[Boolean]                   = js.undefined
+    var multiline: js.UndefOr[Boolean] = js.undefined
     // should this be js.UndefOr[String] ?
     //var readOnly: js.UndefOr[Boolean] = js.undefined
     //var disabled: js.UndefOr[Boolean] = js.undefined
     // scroll events
-    
+
     var onChange: js.UndefOr[OnChange] = js.undefined
     @JSName("onChange")
     var onChangeInput: js.UndefOr[js.Function2[dom.html.Input, js.UndefOr[String], Unit]] = js.undefined
@@ -94,36 +95,43 @@ object TextField {
 
     /** error message, value */
     var onNotifyValidationResult: js.UndefOr[js.Function2[String, String, Unit]] = js.undefined
-    var onRenderLabel: js.UndefOr[IRenderFunction[Props]]                        = js.undefined
-    var onGetErrorMessage: js.UndefOr[String => js.Promise[String]]              = js.undefined
+    var onRenderLabel: js.UndefOr[IRenderFunction[Props]] = js.undefined
+    var onGetErrorMessage: js.UndefOr[String => js.Promise[String]] = js.undefined
     //: string) => string | PromiseLike<string> | undefined;
     var onRenderAddon: js.UndefOr[IRenderFunction[Props]] = js.undefined
-    var prefix: js.UndefOr[String]                        = js.undefined
+    var prefix: js.UndefOr[String] = js.undefined
     //var className: js.UndefOr[String] = js.undefined
 
     var resizable: js.UndefOr[Boolean] = js.undefined
 
-    var underlined: js.UndefOr[Boolean]         = js.undefined
-    var validateOnFocusIn: js.UndefOr[Boolean]  = js.undefined
+    var underlined: js.UndefOr[Boolean] = js.undefined
+    var validateOnFocusIn: js.UndefOr[Boolean] = js.undefined
     var validateOnFocusOut: js.UndefOr[Boolean] = js.undefined
-    var validateOnLoad: js.UndefOr[Boolean]     = js.undefined
+    var validateOnLoad: js.UndefOr[Boolean] = js.undefined
 
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] =
       js.undefined
     //var autoComplete: js.UndefOr[String] = js.undefined
   }
-  
+
   @deprecated
   type OC2 = OnChange
   type OnChange = js.Function2[SyntheticFormEvent[dom.EventTarget], js.UndefOr[String], Unit]
   //type OnChange = js.Function2[SyntheticFormEvent[dom.html.Input|dom.html.TextArea], js.UndefOr[String], Unit]
 
-  def OnChangeInput(f: (SyntheticFormEvent[dom.html.Input], js.UndefOr[String]) => Unit) = 
+  def OnChangeInput(f: (SyntheticFormEvent[dom.html.Input], js.UndefOr[String]) => Unit) =
     js.Any.fromFunction2(f).asInstanceOf[OnChange]
-    
-  def OnChangeTextArea(f: (SyntheticFormEvent[dom.html.TextArea], js.UndefOr[String]) => Unit) = 
+
+  def OnChangeTextArea(f: (SyntheticFormEvent[dom.html.TextArea], js.UndefOr[String]) => Unit) =
     js.Any.fromFunction2(f).asInstanceOf[OnChange]
-    
+
   def OnChange(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OnChange]
-  
+
+  object Masked {
+    @js.native
+    @JSImport("office-ui-fabric-react/lib/TextField", "MaskedTextField")
+    object JS extends ReactJSComponent
+    def apply(props: Props) = createElement(JS, props)
+  }
+
 }

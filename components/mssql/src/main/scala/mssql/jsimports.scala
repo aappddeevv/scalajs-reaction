@@ -25,9 +25,20 @@ import scala.scalajs.js
 import js.|
 import js.annotation._
 
+/** Node event emmitter. */
 @js.native
 trait MSSQLEventEmitter extends js.Object {
-  def on(name: String, cb: js.Any): Unit = js.native
+  def on(name: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def off(name: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def once(naem: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def listenerCount(): Int = js.native
+  def eventNames(): js.Array[String|js.Symbol] = js.native
+  def getMaxListeners(): Int = js.native
+  def setMaxListeners(v: Int): MSSQLEventEmitter = js.native
+  def listenerCount(name: String|js.Symbol): Int = js.native
+  def listeners(name: String|js.Symbol): js.Array[js.Function] = js.native
+  def removeAllListeners(name: String|js.Symbol): MSSQLEventEmitter = js.native
+  def removeListener(name: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
 }
 
 trait PoolConfig extends js.Object {
@@ -67,6 +78,18 @@ class ConnectionPool(config: Config) extends MSSQLEventEmitter {
 }
 
 @js.native
+trait RequestParameter extends js.Object {
+    val name: String = js.native
+    val `type`: js.Function0[SQLType]|SQLType = js.native
+    val io: Int = js.native
+    val value: js.Any = js.native
+    val length: Int = js.native 
+    val scale: Int = js.native
+    val precision: Int = js.native
+    val tvpType: js.Any = js.native
+}
+
+@js.native
 @JSImport("mssql", "Request")
 class Request(pool: js.UndefOr[ConnectionPool] = js.undefined) extends MSSQLEventEmitter {
   def query(q: String): js.Promise[Result] = js.native
@@ -78,7 +101,16 @@ class Request(pool: js.UndefOr[ConnectionPool] = js.undefined) extends MSSQLEven
   def pipe(stream: js.Any): Request = js.native
   def batch(query: String): js.Promise[Result] = js.native
   def bulk(t: Table, options: js.UndefOr[BulkOptions] = js.undefined): js.Promise[BulkResult] = js.native
-  def cancel(): Boolean = js.native
+  // stream related
+  def pause(): Boolean = js.native
+  def resume(): Boolean = js.native
+  def cancel(): Unit = js.native
+  var stream: Boolean = js.native
+  var verbose: Boolean = js.native
+  var canceled: Boolean = js.native
+  var multiple: Boolean = js.native
+  val transaction: Transaction = js.native
+  val requestParameters: js.Dictionary[js.Dynamic] = js.native
 }
 
 trait BulkOptions extends js.Object {
@@ -119,13 +151,18 @@ class Transaction(pool: js.UndefOr[ConnectionPool] = js.undefined) extends MSSQL
   def request(): Request = js.native
 }
 
-/** No type constraints on the recordsets, use with care. */
+/** Result returned from EventEmitter "done" event. */
 @js.native
-trait Result extends js.Object {
-  def recordset[T]: RecordSet[T] = js.native
-  def recordsets[T]: js.Array[RecordSet[T]] = js.native
+trait BaseResult extends js.Object {
   val rowsAffected: js.Array[Int] = js.native
   val output: js.Object = js.native
+}
+
+/** No type constraints on the recordsets, use with care. */
+@js.native
+trait Result extends BaseResult {
+  def recordset[T]: RecordSet[T] = js.native
+  def recordsets[T]: js.Array[RecordSet[T]] = js.native
 }
 
 /** No type constraints on the recordsets, use with care. */
@@ -183,6 +220,20 @@ trait Table extends js.Object {}
 
 @js.native
 trait SQLType extends js.Object
+
+@js.native
+trait SchemaColumn extends js.Object {
+    val index: Int = js.native
+    val name: String = js.native
+    val `type`: SQLType = js.native
+    val length: Int = js.native
+    val scale: Int = js.native
+    val precision: Int = js.native
+    val nullable: Boolean = js.native
+    val caseSensitive: Boolean = js.native
+    val identity: Boolean = js.native
+    val readOnly: Boolean = js.native
+}
 
 @js.native
 trait IMap extends js.Array[js.Any] {

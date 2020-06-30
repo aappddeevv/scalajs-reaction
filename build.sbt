@@ -111,6 +111,7 @@ lazy val root = project
     fabric,
     `fabric-experiments`,
     formik,
+    handlebars,
     helmet,
     jss,
     jshelpers,
@@ -457,6 +458,13 @@ lazy val plotlyjs = project
   .settings(std_settings("plotlyjs", "plotly.js"))
   .settings(buildinfo_settings("plotlyjs"))
 
+lazy val handlebars = project
+  .in(file("components/handlebars"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react)
+  .settings(std_settings("handlebars", "handlebars"))
+  .settings(buildinfo_settings("handlebars"))
+
 lazy val `react-plotlyjs` = project
   .in(file("components/react-plotlyjs"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -540,6 +548,7 @@ lazy val docs = project
     `react-dom`,
     `prop-types`,
     bootstrap,
+   handlebars,
    lodash,
     mui,
     `react-macros`,

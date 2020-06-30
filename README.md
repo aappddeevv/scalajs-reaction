@@ -225,6 +225,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 * forms: Advanced, all-scala.js forms package.
   * In transition so its not currently available.
 * formik
+* handlebars
 * helmet
 * jshelpers: Helpers for working with js data. Includes full js.Promise extension methods to avoid Future.
 * jss

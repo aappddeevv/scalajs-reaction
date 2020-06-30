@@ -47,7 +47,12 @@ trait AnyOps[T] {
   def asNullInt = a.asInstanceOf[Int|Null]
   def asUndefInt = a.asInstanceOf[js.UndefOr[Int]]
   def asUndefNullInt= a.asInstanceOf[js.UndefOr[Int|Null]]
-    
+  
+  def asFloat = a.asInstanceOf[Float]
+  def asNullFloat= a.asInstanceOf[Float|Null]
+  def asUndefFloat= a.asInstanceOf[js.UndefOr[Float]]
+  def asUndefNullFloat= a.asInstanceOf[js.UndefOr[Float|Null]]
+  
   def asDouble = a.asInstanceOf[Double]
   def asNullDouble = a.asInstanceOf[Double|Null]
   def asUndefDouble = a.asInstanceOf[js.UndefOr[Double]]

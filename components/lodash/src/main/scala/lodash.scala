@@ -18,9 +18,9 @@ package object lodash {
   def safeGet[T: scala.reflect.ClassTag](
       o: js.Any,
       path: js.UndefOr[String] | js.Array[js.UndefOr[String]],
-      defaultValue: js.UndefOr[T] = js.undefined
+      //defaultValue: js.UndefOr[T] = js.undefined
     ) =
-    lodash.get[T](o, path, defaultValue).flatMap {
+    lodash.get[T](o, path).flatMap {
       case t: T => js.defined(t)
       case _    => js.undefined
     }
@@ -64,9 +64,17 @@ package object lodash {
   def get[T](
     o: js.Any,
     path: js.UndefOr[String] | js.Array[js.UndefOr[String]],
-    defaultValue: js.UndefOr[T] = js.undefined
+    //defaultValue: js.UndefOr[T] = js.undefined
   ): js.UndefOr[T] = js.native
 
+   @js.native
+  @JSImport("lodash", "get")
+  def getOrElse[T](
+    o: js.Any,
+    path: js.UndefOr[String] | js.Array[js.UndefOr[String]],
+    defaultValue: T = js.undefined
+  ): T = js.native
+  
   @js.native
   @JSImport("lodash", "has")
   def has(o: js.Any, path: String | js.Array[String]): Boolean = js.native

@@ -25,6 +25,7 @@ package components
 import scala.scalajs.js
 import js.Dynamic.literal
 import js.annotation._
+import js.JSConverters._
 import js.|
 import org.scalajs.dom
 import react._
@@ -244,6 +245,13 @@ trait IColumnResizeDetails extends js.Object {
 
 trait IContextualMenuProps extends KeyAndRef {
   val items: js.Array[IContextualMenuItem]
+}
+
+object IContextualMenuProps { 
+    def apply(all: IContextualMenuItem*) = 
+        new IContextualMenuProps {
+            val items = all.toJSArray
+        }
 }
 
 @js.native

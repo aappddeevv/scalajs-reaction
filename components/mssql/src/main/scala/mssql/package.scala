@@ -19,6 +19,9 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import scala.scalajs.js
+ 
 package object mssql {
-   
+   import mssql.SchemaColumn
+   type Schema = js.Dictionary[SchemaColumn]
 }
