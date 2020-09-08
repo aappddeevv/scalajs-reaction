@@ -191,6 +191,11 @@ trait HTMLTagsX {
   ) = div(new DivProps { `key` = key; className = cn })(children: _*)
 
   def divWithProps(props: DivProps) = div(props)()
+  
+  def divWithHTML(html: String) = 
+    div(new DivProps {
+        dangerouslySetInnerHTML = SetInnerHTML(html)
+    })()
 
   // should be dom.html.Dl
   type DlProps = ElementAttributesOnly

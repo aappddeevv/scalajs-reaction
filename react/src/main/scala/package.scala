@@ -33,7 +33,7 @@ package object react extends react.React with When {
   /** A js dispatch function for side effects. Used in useState. */
   type Dispatch[A] = js.Function1[A, Unit]
 
-  /** General purpose type that grabs AnyVal and some js types. */
+  /** General purpose type that grabs AnyVal and some js types. Using just js.Any is not ergonomic. */
   type AllType =
     Boolean | Byte | Short | Float | String | Double | Int | js.Any /*js.Object*/ | js.Dictionary[_] | js.Symbol | js.Array[
       scala.Any] | Null | Unit
@@ -44,11 +44,11 @@ package object react extends react.React with When {
   type Dependencies = js.Array[AllType]
 
   /** Empty array which is different than undefinedDependencies. Typically
-   * indicates mount/unmount hook processing.
+   * indicates mount/unmount hook processing. `=== []`
    */
   val emptyDependencies: Dependencies = js.Array()
 
-  /** Undefined array typically indicates per render hook computation. */
+  /** Undefined array typically indicates per render hook computation. Typically *not* what you want. */
   val undefinedDependencies: js.UndefOr[Dependencies] = js.undefined
 
   /** Create a dependencies array. With no args, its a zero-length array.
@@ -87,6 +87,13 @@ package object react extends react.React with When {
      */
     val current: T | Null = js.native
   }
+  
+  object ReactRef { 
+    implicit class RichReactRef[T](private val r: ReactRef[T]) extends AnyVal {
+      /** If needed to satisfy API constraints, convert to a ReactRef. */
+      def toMutableRef = r.asInstanceOf[MutableRef[T]]
+    }
+  }
 
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E | Null, Unit]
@@ -97,9 +104,18 @@ package object react extends react.React with When {
    * want `null` to be valid, either use `null` directly or model it explicitly
    * as `T|Null` to force client's to deal with the explict null value (otherwise
    * they need to check for the `null` value directly).
+   *
+   * Reconcile with ReactRef perhaps rename the member to something like `unsafe`.
    */
   trait MutableRef[T] extends js.Object {
     var current: T
+  }
+  
+  object MutableRef { 
+    implicit class RichMutableRef[T](private val r: MutableRef[T]) extends AnyVal {
+      /** If needed to satisfy API constraints, convert to a ReactRef. */
+      def toReactRef = r.asInstanceOf[ReactRef[T]]
+    }
   }
 
   /** Combine the callback and the createRef models. Also include the newer hooks model. */

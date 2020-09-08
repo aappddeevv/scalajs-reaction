@@ -117,7 +117,7 @@ object DatePicker {
     //var ariaLabel
     var underlined: js.UndefOr[Boolean] = js.undefined
     var pickerAriaLabel: js.UndefOr[String] = js.undefined
-    var isMonthPickeVisible: js.UndefOr[Boolean] = js.undefined
+    var isMonthPickerVisible: js.UndefOr[Boolean] = js.undefined
     var showMonthPickerAsOverlay: js.UndefOr[Boolean] = js.undefined
     var allowTextInput: js.UndefOr[Boolean] = js.undefined
     var disableAutoFocus: js.UndefOr[Boolean] = js.undefined

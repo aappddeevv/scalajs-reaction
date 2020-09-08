@@ -52,7 +52,7 @@ object Button {
     
     /** Simplest callback. () => Unit. */
     @JSName("onClick")
-    var onClickSimple: js.UndefOr[js.Function0[Unit]] = js.undefined
+    var onClickSimple: js.UndefOr[js.Function0[Any]] = js.undefined
     // having variance problems
     //dom.html.Anchor|FabricNS.BaseButton|FabricNS.Button] {
     //var href: js.UndefOr[String] = js.undefined
@@ -116,11 +116,14 @@ object Button {
   type OC = OnClick
   type OnClick = MouseEventHandler[dom.html.Button]
   
-  def OnClick(f: MouseEventHandler[dom.html.Button] => Unit) = 
+  def OnClick(f: MouseEventHandler[dom.html.Button] => Any) = 
     js.Any.fromFunction1(f).asInstanceOf[OnClick]
     
-  def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OnClick]
+  @deprecated("Use OnClickNoArg")
+  def OnClick(f: () => Any) = js.Any.fromFunction0(f).asInstanceOf[OnClick]
 
+  def OnClickNoArg(f: () => Any) = js.Any.fromFunction0(f).asInstanceOf[OnClick]
+  
   object Default {
     @js.native
     @JSImport("office-ui-fabric-react/lib/Button", "DefaultButton")

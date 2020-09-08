@@ -20,19 +20,20 @@ trait ${1}Props extends js.Object {
 }
 
 object ${1:enumerate} {
-  val Nam = "$1"
+  val Name = "$1"
 
   trait Props extends js.Object {
   }
 
-  def apply(props: Props) = sfc1(props)
+  def apply(props: Props) = render.elementWith(props)
 
-  val sfc = SFC1[Props] { props =>
+  val render = ReactFC[Props] = props => {
      val styles = getStyles(props.map(_.styles).getOrElse(js.undefined))
      val cn = getClassNams(props.map(_.className), styles)
      div(new IDivProps {
          className = cn.root
      })("component $1")
    }
+   render.displayName(Name)
 
 }

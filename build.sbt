@@ -79,7 +79,7 @@ def std_settings(p: String, d: String) =
 
 inThisBuild(
   List(
-    scalaVersion := "2.13.2",
+    scalaVersion := "2.13.3",
     organization := "ttg",
     organizationName := "The Trapelo Group",
     startYear := Some(2018),
@@ -93,7 +93,7 @@ inThisBuild(
     ),
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
-    ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.3.10" cross CrossVersion.full)
+    ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.3.18" cross CrossVersion.full)
 
   )
 )
@@ -120,6 +120,7 @@ lazy val root = project
     luxon,
     mui,
     msal,
+    `azure-msal-browser`,
     mssql,
     //examples,
     //docs,
@@ -167,6 +168,12 @@ lazy val msal = project
   .in(file("components/msal"))
   .settings(std_settings("azure.msal", "Microsoft Authentication Library msal"))
   .settings(buildinfo_settings("msal"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+
+lazy val `azure-msal-browser` = project
+  .in(file("components/azure-msal-browser"))
+  .settings(std_settings("azure-msal-browser", "@azure/msal-browser (aka msal v2)"))
+  .settings(buildinfo_settings("azure_msal_browser"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val lodash = project
@@ -568,6 +575,7 @@ lazy val docs = project
     pathtoregexp,
     dataValidationJS,
     msal,
+    `azure-msal-browser`,
     mssql,
     express,
     loglevel,

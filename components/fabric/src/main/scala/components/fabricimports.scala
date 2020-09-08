@@ -98,6 +98,9 @@ trait ClassName extends js.Object {
 
 /** Base properties less those that are required. */
 trait IColumnBase extends ClassName {
+  var currentWidth: js.UndefOr[Double] = js.undefined
+  var calculatedWidth: js.UndefOr[Double] = js.undefined
+
   var ariaLabel: js.UndefOr[String] = js.undefined
   //className
   var columnActionMode: js.UndefOr[ColumnActionMode] = js.undefined
@@ -121,7 +124,7 @@ trait IColumnBase extends ClassName {
   var maxWidth: js.UndefOr[Double] = js.undefined
   var onColumnClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] = js.undefined
   var onColumnContextMenu: js.UndefOr[js.Function2[js.Any, js.Any, Unit]] = js.undefined
-  var onColumnResize: js.UndefOr[js.Function1[Int, Unit]] = js.undefined
+  var onColumnResize: js.UndefOr[js.Function1[Int,Unit]] = js.undefined
   var onRender: js.UndefOr[js.Function3[js.Any, Int, js.Any, ReactNode]] = js.undefined
   var onRenderDivider: js.UndefOr[IRenderFunction[Details.ColumnProps]] = js.undefined
   var sortAscendingAriaLabel: js.UndefOr[String] = js.undefined
@@ -154,7 +157,6 @@ object IColumnInit {
 
 /** IColumn with required properties. */
 @jsenrich trait IColumn extends IColumnBase {
-
   /** In ts, this is String|Int */
   val key: String
   val name: String
@@ -162,7 +164,11 @@ object IColumnInit {
 }
 
 object IColumn {
-
+  type OnColumnResize = js.Function1[Int,Unit]
+ 
+  /** Smart constructor for `DetailsList.onColumnResize`. */
+  def OnColumnResize(f: Int => Unit): js.UndefOr[OnColumnResize] = js.defined(f(_))
+  
   /** Smart constructor for `IColumn.onColumnClick` */
   def OnColumnClick(
       f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit
@@ -174,10 +180,6 @@ object IColumn {
       f: (IColumn, ReactMouseEvent[dom.html.Element]) => Unit
     ): js.UndefOr[js.Function2[js.Any, js.Any, Unit]] =
     js.defined((c, e) => f(c.asInstanceOf[IColumn], e.asInstanceOf[ReactMouseEvent[dom.html.Element]]))
-
-  /** Smart constructor for `IColumn.onColumnResize`. */
-  def OnColumnResize(f: Int => Unit): js.UndefOr[js.Function1[Int, Unit]] =
-    js.defined(f(_))
 
   /** Smart constructor for `IColumn.onRender`. */
   def OnRender[T <: js.Any](
@@ -244,6 +246,31 @@ trait IColumnResizeDetails extends js.Object {
 }
 
 trait IContextualMenuProps extends KeyAndRef {
+  var className: js.UndefOr[String] = js.undefined
+  var gapSpace: js.UndefOr[Int] = js.undefined
+  var beakWidth: js.UndefOr[Int] = js.undefined
+  var useTargetWidth: js.UndefOr[Boolean] = js.undefined
+  var useTargetAsMinWidth: js.UndefOr[Boolean] = js.undefined
+  var isBeakVisible : js.UndefOr[Boolean] = js.undefined
+  var coverTarget: js.UndefOr[Boolean] = js.undefined
+  var alignTargetEdge: js.UndefOr[Boolean] = js.undefined
+  var labelElementId: js.UndefOr[String] = js.undefined
+  var shouldFocusOnMount: js.UndefOr[Boolean] = js.undefined
+  var shouldFocusOnContainer: js.UndefOr[Boolean] = js.undefined
+  //val onDismiss
+  var isSubMenu: js.UndefOr[Boolean] = js.undefined
+  var id: js.UndefOr[String] = js.undefined
+  var ariaLabel: js.UndefOr[String] = js.undefined
+  var doNotLayer: js.UndefOr[Boolean] = js.undefined
+  var directionHintFixed: js.UndefOr[Boolean] = js.undefined
+  
+  var title: js.UndefOr[String] = js.undefined
+  //var onRenderMenuList
+  var submenuHoverDelay: js.UndefOr[String] = js.undefined
+  
+  var hidden: js.UndefOr[Boolean] = js.undefined
+  var shouldUpdateWhenHidden: js.UndefOr[Boolean] = js.undefined
+  var delayUpdateFocusOnHover: js.UndefOr[Boolean] = js.undefined
   val items: js.Array[IContextualMenuItem]
 }
 
@@ -280,6 +307,8 @@ trait IContextualMenuItemBase extends WithIconProps {
   var split: js.UndefOr[Boolean] = js.undefined
   var data: js.UndefOr[scala.Any] = js.undefined
   var onClick: js.UndefOr[OnClick] = js.undefined
+  @JSName("onClick")
+  var onClickSimple: js.UndefOr[js.Function0[Any]] = js.undefined
   var href: js.UndefOr[String] = js.undefined
   var target: js.UndefOr[String] = js.undefined
   var rel: js.UndefOr[String] = js.undefined
@@ -405,7 +434,7 @@ trait IBasePickerSuggestionsProps extends js.Object {
   var showRemoveButtons: js.UndefOr[Boolean] = js.undefined
 }
 
-trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Element]
+trait ISelectableDroppableTextPropsInit[I <: ISelectableOption, T <: dom.html.Element]
     extends HTMLAttributes[T]
     with ComponentRef[T] {
   var label: js.UndefOr[String] = js.undefined
@@ -419,8 +448,6 @@ trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Elemen
 
   var multiSelect: js.UndefOr[Boolean] = js.undefined
 
-  /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
-  val options: js.Array[I] | js.Array[_ <: js.Dynamic]
   //@JSName("options")
   //var unsafeOptions: js.UndefOr[js.Array[js.Dynamic]] = js.undefined
   // onChanged?: (option: ISelectableOption, index?: number) => void;
@@ -436,6 +463,12 @@ trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Elemen
   var errorMessage: js.UndefOr[String] = js.undefined
   var placeholder: js.UndefOr[String] = js.undefined
   var selectedKeys: js.UndefOr[js.Array[String] | js.Array[Int] | Null] = js.undefined
+}
+
+trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Element]
+    extends ISelectableDroppableTextPropsInit[I,T] {
+  /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
+  val options: js.Array[I] | js.Array[_ <: js.Dynamic]
 }
 
 @js.native

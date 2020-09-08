@@ -90,11 +90,16 @@ trait ReactJS extends js.Object with Concurrent {
   def createContext[T](defaultValue: T, calculateChangedBits: js.UndefOr[js.Function2[T, T, Int]]): ReactContext[T] =
     js.native
 
-  /** Create a ref to be assigned to a "ref" property on a component. */
-  def createRef[T](): react.ReactRef[T] = js.native
+  /** Create a ref to be assigned to a "ref" property on a component. If you are using
+   * function components and hooks, use `useRef` to get a `MutableRef`. 
+   */
+  def createRef[T](defaultValue: T): react.ReactRef[T] = js.native
 
-  // needs better typing :-)
-  def forwardRef[T](): js.Object = js.native
+  /** Create a component that forwards a ref. You need to ensure your P (props)
+  * has a `ref` variable in it so its available when passed along. The variable
+  * should be a `react.ReactRef` instead of a `MutableRef`.
+  */
+  def forwardRef[P <: js.Object,T](inner: js.Function2[P, react.MutableRef[T], ReactNode]): ReactFC[P] = js.native
 
   val version: String = js.native
 

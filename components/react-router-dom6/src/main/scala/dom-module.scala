@@ -83,9 +83,11 @@ object Link {
   def apply[P <: Props](props: P)(children: ReactNode*) = createElement(JS, props, children: _*)
   def apply[P <: Props](props: P) = createElement0(JS, props)
 
+  // should drop href according react-router-dom docs because its
+  // set by the component
   trait Props extends AnchorHTMLAttributes[sdom.html.Anchor] {
     var replace: js.UndefOr[Boolean] = js.undefined
-    var state: js.UndefOr[Any] = js.undefined
+    var state: js.UndefOr[js.Object|Null] = js.undefined
     var to: js.UndefOr[To] = js.undefined
   }
 }
@@ -120,5 +122,17 @@ object Prompt {
   trait Props extends js.Object {
     var when: js.UndefOr[Boolean] = js.undefined
     var message: js.UndefOr[String ] = js.undefined
+  }
+}
+
+object StaticRouter {
+  @js.native
+  @JSImport("react-router-dom", "StaticRouter")
+  object JS extends ReactJSComponent
+
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+  
+  trait Props extends js.Object {
+    var location: js.UndefOr[LocationInit[_]] = js.undefined
   }
 }

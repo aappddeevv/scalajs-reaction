@@ -21,17 +21,22 @@ object AtomBuilder {
   def apply[T](key: String, default: T) = new AtomWithKeyAndDefault[T](key, default)
 }
 
-class ReadOnlySelectorWithKeyAndThunk[T](_key: String, _thunk: ReadOnlyAccessors => FlexiValue[T]) {
+class ReadOnlySelectorWithKeyAndThunk[T](_key: String, _thunk: ReadOnlyAccessorsWithOutput[T] => FlexiValue[T]) {
   def build =
     recoil.unsafeReadonlySelector[T](
       js.Dynamic.literal(
         "key" -> _key,
-        "get" -> (_thunk: js.Function1[ReadOnlyAccessors, FlexiValue[T]])
+        "get" -> (_thunk: js.Function1[ReadOnlyAccessorsWithOutput[T], FlexiValue[T]])
       ))
 }
 
+/** Create a read only selector. Accessors has `Output` type that matches the apply
+ * type parameter for convenience if the output type is wordy and you are too lazy
+ * to define your own type alias. There is a small processing
+ * cost for using the builder pattern.
+ */
 object ReadOnlySelectorBuilder {
-  def apply[T](key: String)(thunk: ReadOnlyAccessors => FlexiValue[T]) =
+  def apply[T](key: String)(thunk: ReadOnlyAccessorsWithOutput[T] => FlexiValue[T]) =
     new ReadOnlySelectorWithKeyAndThunk[T](key, thunk)
 }
 

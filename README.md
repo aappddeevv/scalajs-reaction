@@ -104,17 +104,17 @@ or with types and extension methods:
 object MyComponent {
   trait Props ...
 
-  // A standard scala function is a val
+  // A standard scala function is a val, but its better to type it as ReactFC[Props]
   val render: Props => ReactNode = props => div(s"hello ${props.name}")
 
-  // A standard def scala function
-  def render(props: Props): ReactNode = div(s"hello ${props.name}")
+  // A standard def scala function, it's better to use a val
+  //def render(props: Props): ReactNode = div(s"hello ${props.name}")
 
   // ReactElementTuple causes scala=>js function conversion using standard scala methods
   def apply(props: Props): ReactElementTuple = (render, props)
 
   // r convert using the `.elementWith` extension method which reads nicely
-  // This is what I use alot.
+  // This is what I usually use.
   def apply(props: Props) = render.elementWith(props)
 }
 ````

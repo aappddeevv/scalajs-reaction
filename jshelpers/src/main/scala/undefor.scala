@@ -115,6 +115,9 @@ final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[B
 final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
   @inline private def forceGet: T = a.asInstanceOf[T]
 
+  @inline def isDefined: Boolean = if(a.isDefined && a != null) true else false
+  @inline def isEmpty: Boolean = !isDefined
+  
   /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
   @inline def absorbNull: js.UndefOr[T] = a.flatMap { value =>
     if (value == null) js.undefined

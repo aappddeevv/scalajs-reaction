@@ -30,11 +30,10 @@ import scala.scalajs.js
  * optional booleans where the boolean must also be true to render. You can 
  * also just add an UndefOr[ReactNode] and it will be handled automatically,
  * however, it potentially requires evaluation. Use these when combinators
- * when you want to delay a computation and node creation processing is inside
- * the by-name parameter.
+ * when you want to delay a computation. Node creation processing is a 
+ * by-name parameter.
  */
 trait When {
-
   
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
@@ -54,7 +53,10 @@ trait When {
   // api so you could have a wrapped Boolean but only test its wrappiness
   // versus auto unwrapping. I'll keep flipping back and forth until
   // I have a stronger opinion.
-    
+  
+//   def whenUnwrap(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
+//     if (cond.getOrElse(false)) render else nullNode
+//   
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def whenUnwrap[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
     if (cond.getOrElse(false)) render else nullNode

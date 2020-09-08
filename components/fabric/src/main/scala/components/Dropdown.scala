@@ -44,7 +44,7 @@ object Dropdown {
     var selectedOptions: js.Array[IDropdownOption]
   }
 
-  trait Props extends ISelectableDroppableTextProps[IDropdownOption, dom.html.Div] with ReactJSProps {
+  trait PropsInit extends ISelectableDroppableTextPropsInit[IDropdownOption, dom.html.Div] with ReactJSProps {
     //var placeholder: js.UndefOr[String] = js.undefined
     var onChange: js.UndefOr[js.Function3[ReactFormEvent[dom.html.Div], js.UndefOr[IDropdownOption], js.UndefOr[Int], Unit]] = js.undefined
     var onDismiss: js.UndefOr[js.Function0[Unit]] = js.undefined
@@ -64,6 +64,10 @@ object Dropdown {
 
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var theme: js.UndefOr[ITheme] = js.undefined
+  }
+  
+  trait Props extends PropsInit {
+    val options: js.Array[IDropdownOption] | js.Array[_ <: js.Dynamic]
   }
 
   def OnChange(

@@ -45,6 +45,11 @@ object Label {
   def apply(children: ReactNode*) =
     createElementN(JS, null)(children: _*)
 
+  def keyAndText(k: String, text: String) = 
+    createElement(JS, new Props { 
+      key = k
+    }, text.asInstanceOf[ReactNode])
+    
   trait Props extends LabelHTMLAttributes[html.Label]
       with ComponentRef[js.Any]
       with Disabled

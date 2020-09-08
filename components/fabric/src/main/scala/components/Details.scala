@@ -37,6 +37,11 @@ import fabric.styling._
 
 object Details {
 
+    type OnColumnResize = js.Function3[IColumn, Double, Int, Unit]
+    
+    def OnColumnResize(f: (IColumn, Double, Int) => Unit): js.UndefOr[OnColumnResize] = 
+        js.defined(f(_,_,_))
+
   @js.native
   sealed trait LayoutMode extends js.Any
   object LayoutMode {
@@ -327,6 +332,7 @@ object Details {
       /** You can still be "active" but not deselected. */
       var onActiveItemChanged: js.UndefOr[components.List.OAIC[T]] = js.undefined
       var onColumnHeaderClick: js.UndefOr[components.List.OCHC[T]] = js.undefined
+      var onColumnResize: js.UndefOr[OnColumnResize] = js.undefined
       var onItemInvoked: js.UndefOr[components.List.OII[T]] = js.undefined
       var renderedWindowsAhead: js.UndefOr[Int] = js.undefined
       var renderedWindowsBehind: js.UndefOr[Int] = js.undefined

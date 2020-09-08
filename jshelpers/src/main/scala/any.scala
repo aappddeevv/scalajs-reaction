@@ -142,7 +142,7 @@ final class ScalaMappedOps[T <: scala.Any](protected val a: T) extends AnyOps[T]
 final class ToLocaleStringOps[A <: AnyVal](protected val a: A) extends AnyVal {
   def toLocaleString(
     locale: js.UndefOr[String | js.Array[String]] = js.undefined,
-    options: js.UndefOr[js.Object] = js.undefined): String = a.asInstanceOf[js.Object].toLocaleString
+    options: js.UndefOr[js.Object] = js.undefined): String = a.asInstanceOf[js.Object].toLocaleString()
 }
 
 /*

@@ -1,17 +1,17 @@
 package apollo
 package client3
-package inmemory
-package core
+package cache_module
+package core_module
+package cache_module
 
 import scala.scalajs.js
-import js.annotation._
 import js.|
-
-import graphql.DocumentNode
+import js.annotation._
+import graphql._
 
 @js.native
-@JSImport("@apollo/client/cache/core", "ApolloCache")
-class ApolloCache[T]() extends DataProxy {
+@JSImport("@apollo/client/cache/core/cache", "ApolloCache")
+class ApolloCache[T]() extends types_module.DataProxy_module.DataProxy {
     /*
      abstract read<T, TVariables = any>(query: Cache.ReadOptions<TVariables>): T | null;
     abstract write<TResult = any, TVariables = any>(write: Cache.WriteOptions<TResult, TVariables>): void;
@@ -35,36 +35,4 @@ class ApolloCache[T]() extends DataProxy {
     writeQuery<TData = any, TVariables = any>(options: Cache.WriteQueryOptions<TData, TVariables>): void;
     writeFragment<TData = any, TVariables = any>(options: Cache.WriteFragmentOptions<TData, TVariables>): void;
     */
-}
-
-trait Query[TVars] extends js.Object {
-    val query: DocumentNode
-    var variables: js.UndefOr[TVars] = js.undefined
-    var id: js.UndefOr[String] = js.undefined
-}
-
-trait Fragment[TVars] extends js.Object {
-    val id: String
-    val fragment: DocumentNode
-    var fragmentName: js.UndefOr[String] = js.undefined
-    var variables: js.UndefOr[TVars] = js.undefined
-}
-
-trait WriteQueryOptions[T, TVars] extends Query[TVars] { 
-    val data: T
-    var broadcast: js.UndefOr[Boolean] = js.undefined
-}
-
-trait WriteFragmentOptions[T,TVars] extends Fragment[TVars] { 
-    val data: T
-    var broadcast: js.UndefOr[Boolean] = js.undefined
-}
-
-@js.native
-trait DataProxy extends js.Object {
-    def readQuery[QueryType, TVars](options: Query[TVars], optimistic: js.UndefOr[Boolean] = js.undefined): QueryType|Null = js.native
-    def readFragment[FragmentType, TVars](options: Fragment[TVars], optimistic: js.UndefOr[Boolean] = js.undefined): FragmentType|Null = js.native
-    def writeQuery[T, TVars](options: WriteQueryOptions[T, TVars]): Unit = js.native
-    def writeFragment[T, TVars](options: WriteFragmentOptions[T,TVars]): Unit = js.native
-
 }

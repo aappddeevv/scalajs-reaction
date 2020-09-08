@@ -20,6 +20,7 @@
  */
 
 import scala.scalajs.js
+import js.annotation._
 import js.|
 
 package object react_router6 {
@@ -42,13 +43,16 @@ package object react_router6 {
   
   type RouteSpec = js.Array[RouteSpecElement | RouteSpecRouteTo]
   
-  /** LocationDescriptor is Location but all vars are optional. */
-  implicit class Location2LocationDescriptor[S](location: Location[S]) {
-    def toLocationInit: LocationInit[S] = location.asInstanceOf[LocationInit[S]]
-  }
+  // ...
+  // in process--migrating defs to natives defined in the package object
+  // ...
 
   def useBlocker[S](blocker: Blocker[S], when: js.UndefOr[Boolean] = js.undefined) = module.useBlocker(blocker, when)
-  def useHref[S](to: To) = module.useHref[S](to)
+  
+  @js.native
+  @JSImport("react-router", "useHref")
+  def useHref[S](to: To): String = js.native
+  
   def useInRouterContext() = module.useInRouterContext()
   def useLocation[S]() = module.useLocation[S]()
   def useLocationPending() = module.useLocationPending()
@@ -57,8 +61,14 @@ package object react_router6 {
   def useOutlet() = module.useOutlet()
   def useParams[P <: js.Object]() = module.useParams[P]()
   def useParamsDict() = module.useParamsDict()
-  def useResolvedLocation(to: To) = module.useResolvedLocation(to)
+  //def useResolvedLocation(to: To) = module.useResolvedLocation(to)
+  def useResolvedPath(to: To) = module.useResolvedPath(to)
   def useRoutes(
     routes: js.Array[PartialRouteObject],
     basename: js.UndefOr[String] = js.undefined) = module.useRoutes(routes, basename)
+    
+  @js.native
+  @JSImport("react-router", "resolvePath")
+  def resolvePath(to: To, fromPathname: js.UndefOr[String]=js.undefined): PathPieces = js.native
+    
 }

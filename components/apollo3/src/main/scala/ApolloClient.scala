@@ -33,7 +33,7 @@ trait DefaultOptions extends js.Object {
   var mutate: js.UndefOr[MutationOptions[_, _]]    = js.undefined
 }
 
-trait ApolloClientOptions[Shape <: js.Object] extends js.Object {
+trait ApolloClientOptions[Shape] extends js.Object {
   var uri: js.UndefOr[String|UriFunction] = js.undefined
   var credentials: js.UndefOr[String] = js.undefined
   var headers: js.UndefOr[js.Object|js.Dictionary[String]] = js.undefined
@@ -52,55 +52,38 @@ trait ApolloClientOptions[Shape <: js.Object] extends js.Object {
 }
 
 @js.native
-@JSImport("apollo-client", "ApolloClient")
-class ApolloClient[Shape <: js.Object](
-    options: js.UndefOr[ApolloClientOptions[Shape]] = js.undefined) extends DataProxy {
-    
-    def query[T <: js.Any, TVars <: js.Object](options: QueryOptions[TVars]): js.Promise[ApolloQueryResult[T]] = js.native
-  
-  def mutate[T <: js.Any, TVars <: js.Object](options: MutationOptions[T, TVars]): js.Promise[FetchResult[T]] =
-    js.native
+@JSImport("@apollo/client", "ApolloClient")
+class ApolloClient[Shape](options: ApolloClientOptions[Shape]) extends DataProxy {
 
-  def readQuery[QueryType <: js.Object, TVars <: js.Object](
-    options: Query[TVars],
-    optimistic: js.UndefOr[Boolean] = js.undefined
-  ): QueryType | Null = js.native
-  
-  def readFragment[TVars <: js.Object, FragmentType <: js.Object](
-    options: Fragment[TVars],
-    optimistic: js.UndefOr[Boolean] = js.undefined
-  ): FragmentType | Null                                                                            = js.native
-  
-  def writeQuery[T <: js.Any, TVars <: js.Object](options: WriteQueryOptions[T, TVars]): Unit       = js.native
-  def writeFragment[T <: js.Any, TVars <: js.Object](options: WriteFragmentOptions[T, TVars]): Unit = js.native
-  def writeData[T <: js.Any](options: WriteDataOptions[T]): Unit                                    = js.native
-  
-  
-   val   link: ApolloLink = js.native
+   val link: ApolloLink = js.native
    val cache: ApolloCache[CacheShape] = js.native
-   val  disableNetworkFetches: Boolean = js.native
+   val disableNetworkFetches: Boolean = js.native
     val version: String = js.native
     val queryDeduplication: Boolean = js.native
     val defaultOptions: DefaultOptions = js.native
-    val typeDefs: ApolloClientOptions<TCacheShape>['typeDefs'];
+    //val typeDefs: ApolloClientOptions<TCacheShape>['typeDefs'];
     def stop(): Unit = js.native
-    def watchQuery[T, TVariables = OperationVariables](options: WatchQueryOptions<TVariables>): ObservableQuery<T, TVariables>;
-    def query[T, TVariables = OperationVariables](options: QueryOptions<TVariables>): Promise<ApolloQueryResult<T>>;
-    def mutate[T, TVariables = OperationVariables](options: MutationOptions<T, TVariables>): Promise<FetchResult<T>>;
-    def subscribe[T, TVariables = OperationVariables](options: SubscriptionOptions<TVariables>): Observable<FetchResult<T>>;
-    def readQuery[T, TVariables = OperationVariables](options: DataProxy.Query<TVariables>, optimistic?: boolean): T | null;
-    def readFragment[T, TVariables = OperationVariables](options: DataProxy.Fragment<TVariables>, optimistic?: boolean): T | null;
-    def writeQuery<TData = any, TVariables = OperationVariables>(options: DataProxy.WriteQueryOptions<TData, TVariables>): void;
-    def writeFragment<TData = any, TVariables = OperationVariables>(options: DataProxy.WriteFragmentOptions<TData, TVariables>): void;
-    def resetStore(): js.Promise<ApolloQueryResult<any>[] | null> = js.native
-    def clearStore(): js.Promise<any[]> = js.native
-    def onResetStore(cb: js.Function0[js.Promise[js.Any]]: js.Function0[Unit] = js.native
-    def onClearStore(cb: js.Function0[js.Promise[js.Any]]: js.Function0[Unit] = js.native
-    def reFetchObservableQueries(includeStandby: js.UndefOr[Boolean] = js.undefined): Promise<ApolloQueryResult<any>[]>;
-    def extract(optimistic?: boolean): Shape = js.native
-    def restore(serializedState: Shape): ApolloCache<Shap>;
-    def addResolvers(resolvers: Resolvers | Resolvers[]): Unit = js.native
-    def setResolvers(resolvers: Resolvers | Resolvers[]): Unit = js.native
-    def getResolvers(): Resolvers = js.native
-    def setLocalStateFragmentMatcher(fragmentMatcher: FragmentMatcher): Unit = js.native
+
+    def watchQuery[T, TVars](options: WatchQueryOptions[TVars]): ObservableQuery[T, TVars] = js.native
+    def query[T, TVars](options: QueryOptions[TVars]): js.Promise[ApolloQueryResult[T]] = js.native
+    def mutate[T, TVars](options: MutationOptions[T, TVars]): js.Promise[FetchResult[T]] = js.native
+    def subscribe[T, TVars](options: SubscriptionOptions[TVars]): Observable[FetchResult[T]] = js.native
+
+    // def readQuery[T, TVariables = OperationVariables](options: DataProxy.Query<TVariables>, optimistic?: boolean): T | null;
+    // def readFragment[T, TVariables = OperationVariables](options: DataProxy.Fragment<TVariables>, optimistic?: boolean): T | null;
+    // def writeQuery<TData = any, TVariables = OperationVariables>(options: DataProxy.WriteQueryOptions<TData, TVariables>): void;
+    // def writeFragment<TData = any, TVariables = OperationVariables>(options: DataProxy.WriteFragmentOptions<TData, TVariables>): void;
+
+    // def resetStore(): js.Promise<ApolloQueryResult<any>[] | null> = js.native
+    // def clearStore(): js.Promise<any[]> = js.native
+    // def onResetStore(cb: js.Function0[js.Promise[js.Any]]: js.Function0[Unit] = js.native
+    // def onClearStore(cb: js.Function0[js.Promise[js.Any]]: js.Function0[Unit] = js.native
+    // def reFetchObservableQueries(includeStandby: js.UndefOr[Boolean] = js.undefined): Promise<ApolloQueryResult<any>[]>;
+    // def extract(optimistic?: boolean): Shape = js.native
+    // def restore(serializedState: Shape): ApolloCache<Shap>;
+    // def addResolvers(resolvers: Resolvers | Resolvers[]): Unit = js.native
+    // def setResolvers(resolvers: Resolvers | Resolvers[]): Unit = js.native
+    // def getResolvers(): Resolvers = js.native
+    // def setLocalStateFragmentMatcher(fragmentMatcher: FragmentMatcher): Unit = js.native
+    // def setLink(newLink: ApolloLink): Unit = js.native
 }

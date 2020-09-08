@@ -22,12 +22,9 @@
 package react_dom
 
 import scala.scalajs.js
-
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
 
 @js.native
@@ -53,6 +50,17 @@ trait Concurrent extends js.Object {
     options: js.UndefOr[CreateRootOptions] = js.undefined
   ): Renderable = js.native
 
+}
+
+@js.native
+@JSImport("react-dom/server", JSImport.Default)
+object ReactDOMServer extends js.Object {
+  def renderToString(element: ReactNode): String = js.native
+  def renderToStaticMarkup(element: ReactNode): String = js.native
+  /** Only available on a node server. */
+  def renderToNodeStream(element: ReactNode): js.Any = js.native
+  /** Only available on a node server. */
+  def renderToStaticNodeStream(element: ReactNode): js.Any = js.native
 }
 
 @js.native

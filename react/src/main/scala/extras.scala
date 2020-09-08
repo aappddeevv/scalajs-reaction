@@ -48,13 +48,24 @@ package object extras {
   /** Force a render. */
   def useForceRender() = {
     val (s, update) = useStateStrict[Boolean](true)
-    () => update(!_)
+    val fr = useCallbackMounting(() =>
+        update(!_)
+        )
+    //() => update(!_)
+    fr
   }
 
-  /** Use previous value. */
-  def usePreviousValue[T](value: T) = {
+  /** Use previous value using `.hashCode` as the equality test. */
+  def usePreviousScalaValue[T](value: T) = {
     val ref = useRef[T](value)
     useEffect(value.hashCode)(() => ref.current = value)
+    ref.current
+  }
+  
+  /** Use previous value using reference equality (I think). */
+  def usePreviousValue[T <: js.Any](value: T) = {
+    val ref = useRef[T](value)
+    useEffect(value)(() => ref.current = value)
     ref.current
   }
 

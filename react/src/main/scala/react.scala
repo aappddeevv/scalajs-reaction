@@ -134,17 +134,20 @@ trait React {
    * specific tag (symbol or number if target does not support symbol) vs say,
    * the string "div".
    */
-  def createFragment(
-    key: Option[String],
-    children: ReactNode*
-  ): ReactElement = {
-    val props = js.Dictionary.empty[js.Any]
-    key.foreach(props("key") = _)
-    ReactJS.createElement(ReactJS.Fragment, props, children: _*)
-  }
+//   def createFragment(
+//     key: Option[String],
+//     children: ReactNode*
+//   ): ReactElement = {
+//     val props = js.Dictionary.empty[js.Any]
+//     key.foreach(props("key") = _)
+//     ReactJS.createElement(ReactJS.Fragment, props, children: _*)
+//   }
 
-  /** Create a `ReactRef`. */
-  def createRef[T](): react.ReactRef[T] = ReactJS.createRef[T]()
+  /** Create a `ReactRef`. If you are using function components 
+  * and hooks, use `useRef` to get a `MutableRef`. This returns
+  * a different ref type.
+  */
+  def createRef[T](initialValue: T): react.ReactRef[T] = ReactJS.createRef[T](initialValue)
 
   /** Memoize a function. */
   def memo[P <: js.Object](fc: js.Function1[P, ReactNode]) =
@@ -360,7 +363,7 @@ trait React {
         else dependencies.toJSArray
       )
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-
+      
   /** Do not include `Null` in your type parameter as it added to `MutableRef.current` automatically. */
   def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
 
@@ -405,12 +408,12 @@ trait React {
 
   /** Create a React.fragment element. */
   object Fragment {
-    def apply(key: Option[String] = None)(children: ReactNode*) =
-      createFragment(key, children: _*)
+    def apply(key: String)(children: ReactNode*) =
+      createElement(ReactJS.Fragment, js.Dynamic.literal("key"->key), children:_*)
 
     /** Preferred creation function. */
     def apply(children: ReactNode*) =
-      createFragment(None, children: _*)
+      createElement(ReactJS.Fragment, null, children:_*)
   }
 
   /** Strict element. Wraps your root component typically. */

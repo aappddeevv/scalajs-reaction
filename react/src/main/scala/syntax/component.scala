@@ -42,7 +42,7 @@ trait ComponentSyntax {
   implicit def thunkToSFC(f: () => ReactNode): ReactNode =
     ReactJS.createElement(js.Any.fromFunction0(f), null)
 
-  /** Convert a plain js function to an element using some syntax. */
+  /** Convert a plain js no-arg function to an element using some syntax. */
   implicit class RichJSFunction0(private val f: js.Function0[ReactNode]) {
     def element: ReactNode = ReactJS.createElement(f, null)
     def toEl: ReactNode = ReactJS.createElement(f, null)

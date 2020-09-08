@@ -24,8 +24,9 @@ package react_device_detect
 import scala.scalajs.js
 import js.|
 import js.annotation._
-
 import react._
+
+// probably should do some of those views as well...
 
 @js.native
 @JSImport("react-device-detect", JSImport.Namespace)
@@ -49,7 +50,6 @@ object module extends js.Object {
   val isChromium: Boolean = js.native
   val isMobileSafari: Boolean = js.native
   val osVersion: String = js.native
-
   val osName: String = js.native
   val fullBrowserVersion: String = js.native
   val browserVersion: String = js.native
@@ -60,24 +60,127 @@ object module extends js.Object {
   val engineVersion: String = js.native
   val getUA: String = js.native
   val deviceType: String = js.native
-
   val isIOS13: Boolean = js.native
-
   val isIPhone13: Boolean = js.native
-
   val isIPad13: Boolean = js.native
-
   val isIPod13: Boolean = js.native
-
   val isElectron: Boolean = js.native
-
-  def deviceDetect(): Unit = js.native
+  val isEdgeChromium: Boolean = js.native
+  val isEdgeLegacy: Boolean = js.native
+  val isWindows: Boolean = js.native
+  val isMacOs: Boolean = js.native
+  def deviceDetect(): js.Dynamic = js.native
   def withOrientationChange(component: ReactComponentType): ReactType = js.native
 
 }
 
-trait Props extends js.Object {
+trait ViewProps extends js.Object {
   var viewClassName: js.UndefOr[String] = js.undefined
   var style: js.UndefOr[js.Object] = js.undefined
   var renderWithFragment: js.UndefOr[Boolean] = js.undefined
 }
+
+class BrowserView{
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "BrowserView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class MobileView{
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "MobileView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class Android {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "Android")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class IEView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "IEView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class IOSView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "IOSView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class TabletView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "TabletView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class WinPhoneView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "WinPhoneView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class MobileOnlyView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "MobileOnlyView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class SmartTVView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "SmartTVView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class WearableView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "WearableView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+class CustomView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "CustomView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+
+
+class ConsoleView {
+  trait Props = ViewProps
+  @js.native
+  @JSImport("react-device-detect", "ConsoleView")
+  object JS extends ReactJSComponent
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
+}
+
+
+
+
+
+
+

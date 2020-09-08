@@ -112,4 +112,19 @@ package object lodash {
     directions: js.UndefOr[js.Array[String]] = js.undefined
   ): js.Array[T] = js.native
 
+  @js.native
+  @JSImport("lodash", "round")
+  def roundDouble(value: Double, precision: js.UndefOr[Int] = js.undefined): Double = js.native
+  
+  @js.native
+  @JSImport("lodash", "round")
+  def roundFloat(value: Float, precision: js.UndefOr[Int] = js.undefined): Float= js.native
+
+  @js.native
+  @JSImport("lodash", "round")
+  def roundLong(value: Long, precision: js.UndefOr[Int] = js.undefined): Long = js.native
+
+  @js.native
+  @JSImport("lodash", "round")
+  def roundInt(value: Int, precision: js.UndefOr[Int] = js.undefined): Int = js.native
 }

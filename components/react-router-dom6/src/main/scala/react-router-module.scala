@@ -36,10 +36,10 @@ object Action {
 }
 
 // history
-trait PathPieces { 
+trait PathPieces extends js.Object { 
     var pathname: js.UndefOr[String] = js.undefined
-    var search:  js.UndefOr[String] = js.undefined
-    var hash:   js.UndefOr[String] = js.undefined
+    var search: js.UndefOr[String] = js.undefined
+    var hash: js.UndefOr[String] = js.undefined
 }
 
 // history
@@ -59,7 +59,11 @@ object LocationInit {
     new LocationInit[S] { 
         pathname = p
     }
-    //js.Dynamic.literal("pathName" -> pathname).asInstanceOf[LocationInit[S]]
+   
+   implicit class RichLocationInit[S](private val li: LocationInit[S]) extends AnyVal {
+     /** Attesting for LocationInit having all required fields to be a Location. */
+     def hasRequired: Location[S] = li.asInstanceOf[Location[S]]
+   }
 }
 
 // history
@@ -77,12 +81,20 @@ trait Location[+S] extends js.Object {
 }
 */
 
+/** More specific types when returning from `useLocation`. */
 trait Location[S] extends js.Object {
   val pathname: Pathname
   val search: Search
   def state[U >: S]: U
   val hash: Hash
   val key: LocationKey
+}
+
+object Location {
+  implicit class RichLocation[S](private val location: Location[S]) extends AnyVal { 
+    def toLocationInit: LocationInit[S] = location.asInstanceOf[LocationInit[S]]
+    def toLocationPieces: LocationPieces[S] = location.asInstanceOf[LocationPieces[S]]
+  }
 }
 
 @js.native
@@ -158,6 +170,7 @@ trait NavigateFunction extends js.Object {
    @JSName("apply")
    def apply(delta: Int): Unit = js.native
    
+   /** to includes Path(string) and PathPieces! */
    @JSName("apply")
    def to(to: To): Unit = js.native
    
@@ -186,18 +199,27 @@ trait PathMatch extends js.Object {
   val paramsDict: js.Dictionary[String] = js.native
 }
 
-trait PartialRouteObject {
+trait PartialRouteObject extends js.Object {
   var path: js.UndefOr[String] = js.undefined
   var caseSensitive: js.UndefOr[Boolean] = js.undefined
   var element: js.UndefOr[ReactNode] = js.undefined
-  var preload: js.UndefOr[RoutePreloadFunction[_]] = js.undefined
+  //var preload: js.UndefOr[RoutePreloadFunction[_]] = js.undefined
   var children: js.UndefOr[js.Array[PartialRouteObject]] = js.undefined
 }
 
 @js.native
+trait RouteObject extends js.Object {
+  var path: String = js.native
+  var caseSensitive: Boolean = js.native
+  var element: ReactNode = js.native
+  var children: js.UndefOr[js.Array[PartialRouteObject]] = js.native
+}
+
+/** Some hooks are defined in the package itself. */
+@js.native
 trait Hooks extends js.Object {
   def useBlocker[S](blocker: Blocker[S], when: js.UndefOr[Boolean] = js.undefined): Unit = js.native
-  def useHref[S](to: To): String = js.native
+  //def useHref[S](to: To): String = js.native
   def useInRouterContext(): Boolean = js.native
   
   /** Should not need to use this according to docs. */
@@ -211,17 +233,19 @@ trait Hooks extends js.Object {
   def useParams[P <: js.Object](): P = js.native
   @JSName("useParams")
   def useParamsDict(): js.Dictionary[String] = js.native
-  def useResolvedLocation(to: To): ResolvedLocation = js.native
+  //def useResolvedLocation(to: To): ResolvedLocation = js.native
+  def useResolvedPath(to: To): ResolvedLocation = js.native
   def useRoutes(
     routes: js.Array[PartialRouteObject],
     basename: js.UndefOr[String] = js.undefined
     ): ReactNode = js.native
-
 }
 
 @js.native
 trait Utils extends js.Object {
-  def createRoutesFromChildren(children: js.UndefOr[js.Any] = js.undefined): js.Array[js.Any] = js.native
+  def createRoutesFromChildren(children: js.UndefOr[js.Any] = js.undefined): js.Array[RouteObject] = js.native
+  def createRoutesFromArray(array: js.Array[PartialRouteObject]): js.Array[RouteObject] = js.native
+  def matchPath(pattern: PathPattern, pathname: String): PathMatch | Null  = js.native
   def matchRoutes[S](
     routes: RouteSpec,
     location: Location[S] | String,
@@ -323,6 +347,9 @@ object Route {
   def apply(path: String, element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element))
 
+  def withKey(key: String, path: String, element: ReactNode) = 
+    createElement(JS, js.Dynamic.literal("key" -> key, "path" -> path, "element" -> element))
+    
   /** Children should be `Route` nodes. `element` should use `Outlet` to show selected child. */
   def nested(path: String, element: ReactNode)(children: ReactNode*) =
     createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element), children:_*)
@@ -345,7 +372,7 @@ object Route {
   def indexNested(element: ReactNode)(children: ReactNode*) = 
     createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children:_*)
     
-  trait Props extends js.Object {
+  trait Props extends MaybeHasStrKey {
     var caseSensitive: js.UndefOr[Boolean] = js.undefined
     var path: js.UndefOr[String] = js.undefined
     var element: js.UndefOr[ReactNode] = js.undefined

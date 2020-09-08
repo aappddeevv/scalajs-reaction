@@ -31,4 +31,9 @@ package object fabric {
   /** Used frequently in fabric so you can customize rendering. */
   type IRenderFunction[P <: js.Object] =
     js.Function2[js.UndefOr[P], js.UndefOr[RenderForProps[P]], ReactNode]
+    
+  /** Make a render function with better scala type inference. */
+  def RenderFunction[P <: js.Object](f: (js.UndefOr[P], js.UndefOr[RenderForProps[P]]) =>  ReactNode) =
+    js.Any.fromFunction2(f).asInstanceOf[IRenderFunction[P]]
+    
 }

@@ -73,6 +73,17 @@ trait ReadOnlyAccessors extends js.Object {
   def value[A](rvalue: RecoilValue[A]): A = js.native
 }
 
+/** Accessors but with a type definition that can be convenient if
+ * the output type is long.
+ */
+@js.native
+trait ReadOnlyAccessorsWithOutput[T] extends js.Object {
+  type Output = T
+  def get[A](value: RecoilValue[A]): A = js.native
+  @JSName("get")
+  def value[A](rvalue: RecoilValue[A]): A = js.native
+}
+
 @js.native
 trait ReadWriteAccessors extends ReadOnlyAccessors {
   def set[A](atom: RecoilState[A], newValue: A | DefaultValue | js.Function1[A, A | DefaultValue]): Unit = js.native
@@ -93,7 +104,7 @@ trait ReadOnlySelectorOptions2[T] extends js.Object {
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
 }
 
-trait WriteableSelectorOptions[T] extends ReadOnlySelectorOptions[T] {
+trait WritableSelectorOptions[T] extends ReadOnlySelectorOptions[T] {
   def set[A](accessors: ReadWriteAccessors, value: A | DefaultValue): Unit
 }
 
@@ -196,6 +207,24 @@ trait CallbackInterface extends js.Object {
   def reset(value: RecoilState[_]): Unit = js.native
 }
 
+// looks like CallbackInterface
+@js.native
+@JSImport("recoil", "Snapshot")
+class Snapshot extends CallbackInterface {
+    def getID(): js.Any = js.native
+    //def getLoadable[T](recoilValue: RecoilValue[T]): Loadable[T] = js.native
+    //def getPromise[T](recoilValue: RecoilValue[T]): js.Proimse[T] = js.native
+    //def map
+    //def asyncMap
+}
+
+@js.native
+@JSImport("recoil", "MutableSnapshot")
+class MutableSnapshot extends Snapshot {
+  //val set: SetRecoilState = js.native
+  //val reset: ResetRecoilState
+}
+
 @js.native
 trait recoil_module extends js.Object {
   def atom[T](options: AtomOptions[T]): RecoilState[T] = js.native
@@ -203,7 +232,7 @@ trait recoil_module extends js.Object {
   @JSName("selector")
   def readonlySelector[T](options: ReadOnlySelectorOptions[T]): RecoilValueReadOnly[T] = js.native
   @JSName("selector")
-  def writableSelector[T](options: WriteableSelectorOptions[T]): RecoilState[T] = js.native
+  def writableSelector[T](options: WritableSelectorOptions[T]): RecoilState[T] = js.native
   
   def useRecoilState[T](atom: RecoilState[T]): js.Tuple2[T, SetterOrUpdater[T]] = js.native
   
@@ -292,7 +321,7 @@ trait hooks {
 
   def unsafeReadonlySelector[T](options: js.Dynamic) = module.readonlySelector[T](options.asInstanceOf[ReadOnlySelectorOptions[T]])
   def readonlySelector[T](options: ReadOnlySelectorOptions[T]) = module.readonlySelector[T](options)
-  def writableSelector[T](options: WriteableSelectorOptions[T]) = module.writableSelector[T](options)
+  def writableSelector[T](options: WritableSelectorOptions[T]) = module.writableSelector[T](options)
   
   def useRecoilState[T](atom: RecoilState[T]): (T, SetterOrUpdater[T]) =
     module.useRecoilState[T](atom)

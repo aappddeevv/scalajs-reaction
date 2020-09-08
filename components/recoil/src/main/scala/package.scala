@@ -34,6 +34,7 @@ package object recoil extends recoil.hooks with utils_exports {
   //type RecoilValue[T] = Lambda[X => RecoilValueReadOnly[X] | RecoilState[X]]
   type RecoilValue[T] = RecoilValueReadOnly[T] | RecoilState[T]
 
+  /** Default has reduced type range. If you have something funky, use `atom` directly. */
   def makeAtom[T](k: String, d: FlexiValue[T]) =
     module.atom[T](new AtomOptions[T] {
       val key = k

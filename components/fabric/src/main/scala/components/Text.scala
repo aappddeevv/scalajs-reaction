@@ -36,7 +36,7 @@ object Text {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(text: js.UndefOr[String] = js.undefined) =
-    createElementN(JS, props)(text.asInstanceOf[ReactNode])
+    createElement(JS, props, text.asInstanceOf[ReactNode])
 
   def apply(variant: Variant, text: String) =
     createElement(JS, js.Dynamic.literal("variant" -> variant), text.asInstanceOf[ReactNode])

@@ -78,6 +78,7 @@ object Pivot {
     var linkFormat: js.UndefOr[LinkFormat] = js.undefined
     var headersOnly: js.UndefOr[Boolean]                          = js.undefined
     var getTabId: js.UndefOr[js.Function2[String, Int, String]] = js.undefined
+    var overflowBehavior: js.UndefOr[OverflowBehavior] = js.undefined
   }
   
   type LinkClickHandler = js.Function2[js.UndefOr[PivotItem.PivotItemLike],js.UndefOr[ReactMouseEvent[dom.html.Element]], Unit]
@@ -99,6 +100,13 @@ object Pivot {
   object LinkFormat {
     val link = 0.asInstanceOf[LinkFormat]
     val tabs = 1.asInstanceOf[LinkFormat]
+  }
+  
+  @js.native
+  abstract trait OverflowBehavior extends js.Any
+  object OverflowBehavior {
+    val none = "none".asInstanceOf[OverflowBehavior]
+    val menu = "menu".asInstanceOf[OverflowBehavior]
   }
   
 }

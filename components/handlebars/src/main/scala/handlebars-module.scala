@@ -48,7 +48,7 @@ trait TemplateOptions extends js.Object {
 
 @js.native
 trait Template extends js.Object {
-  def apply(context: TemplateOptions| js.Dynamic): String = js.native
+  def apply(context: js.Object|js.Dynamic, options: js.UndefOr[TemplateOptions| js.Object | js.Dynamic]=js.undefined): String = js.native
 }
 
 @js.native

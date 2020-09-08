@@ -31,11 +31,13 @@ trait CacheImplementation[T] extends js.Object {
     def put(key: Any, a: T): CacheImplementation[T]
 }
 
-// should inherit from AtomOptions
+/** P should be < SerializableParameter. */
 trait AtomFamilyOptions[P, T] extends js.Object {
   val key: NodeKey
+  var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
+  // break some of these out even though with real union types we would not need as much
   val default: T | RecoilValue[T] | js.Thenable[T] | js.Function1[Primitive, Return[T]] | js.Function1[P, Return[T]] | js.Function1[
-    js.Array[P],
+    js.Array[P] | js.Function1[P, RecoilValue[T]],
     Return[T]] | js.Function1[js.Dictionary[P], Return[T]]
 }
 

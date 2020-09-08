@@ -10,7 +10,6 @@ import react._
 import implicits._
 
 import vdom._
-import tags._
 import vdom.styling._
 
 import fabric._
