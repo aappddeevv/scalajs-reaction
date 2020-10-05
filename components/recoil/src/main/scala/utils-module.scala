@@ -29,6 +29,9 @@ import js.annotation._
 trait CacheImplementation[T] extends js.Object {
     def get(key: Any): js.UndefOr[T]
     def put(key: Any, a: T): CacheImplementation[T]
+    def delete(key: Any): CacheImplementation[T]
+    def entries(): js.Iterator[Any]
+    def toBuiltInMap(): js.Map[Any,Any]
 }
 
 /** P should be < SerializableParameter. */
@@ -43,11 +46,11 @@ trait AtomFamilyOptions[P, T] extends js.Object {
 
 trait ReadOnlySelectorFamilyOptions[P,T] extends js.Object {
   val key: String
-  def get(args: P): js.Function1[GetRecoilValue[T], Return[T]]
+  //def get(args: P): js.Function1[GetRecoilValue[T], Return[T]]
+  //def get(args: P): js.Function1[ReadOnlyAccessors, Return[T]]
+  val get: js.Function1[P, js.Function1[ReadOnlyAccessors, Return[T]]]
   
-  var cacheImplementation_UNSTABLE: js.UndefOr[js.Function0[CacheImplementation[Loadable[T]]]] = js.undefined
-  var cacheImplementationForParams_UNSTABLE: js.UndefOr[js.Function0[CacheImplementation[RecoilValue[T]]]] = js.undefined
-  
+  //var cacheImplementationForParams_UNSTABLE: js.UndefOr[js.Function0[CacheImplementation[RecoilValue[T]]]] = js.undefined
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
 }
 

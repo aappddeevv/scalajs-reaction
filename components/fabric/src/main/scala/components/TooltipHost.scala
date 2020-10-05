@@ -93,7 +93,6 @@ object Tooltip {
     }
 
     trait Props extends ReactJSProps with ComponentRef[ITooltipHost] with HTMLAttributes[dom.html.Div] {
-
       var calloutProps: js.UndefOr[CalloutProps] = js.undefined
       var closeDelay: js.UndefOr[Int] = js.undefined
       var content: js.UndefOr[String|ReactNode] = js.undefined
@@ -117,8 +116,10 @@ object Tooltip {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children:_*)
+      createElement(JS, props, children:_*)
 
+    def apply(props: js.UndefOr[Props]) = createElement(JS, props.asInstanceOf[js.Object])
+      
     trait StyleProps extends js.Object {
       var theme: js.UndefOr[ITheme] = js.undefined
       var className: js.UndefOr[String] = js.undefined

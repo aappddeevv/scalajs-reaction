@@ -42,6 +42,14 @@ object Details {
     def OnColumnResize(f: (IColumn, Double, Int) => Unit): js.UndefOr[OnColumnResize] = 
         js.defined(f(_,_,_))
 
+    type OnActiveItemChanged[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
+    
+    def OnActiveItemChanged[T <: js.Object](f: (T,Int,ReactFocusEvent[dom.html.Element]) => Unit) =
+        js.Any.fromFunction3(f).asInstanceOf[OnActiveItemChanged[T]]
+    
+    type OnColumnHeaderClick = js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]
+    type OnItemInvoked[T <: js.Object] = js.Function3[T, Int, ReactEvent[_], Unit]
+    
   @js.native
   sealed trait LayoutMode extends js.Any
   object LayoutMode {
@@ -75,7 +83,9 @@ object Details {
     var styles: js.UndefOr[IStyleFunctionOrObject[ColumnStyleProps, ColumnStyles]] = js.undefined
   }
 
-  trait ColumnRenderTooltipProps extends js.Object {}
+  trait ColumnRenderTooltipProps extends Tooltip.Host.Props {
+    var column: js.UndefOr[IColumn] = js.undefined
+  }
 
   trait ColumnStyleProps extends js.Object {
     var headerClassName: js.UndefOr[String] = js.undefined
@@ -175,9 +185,11 @@ object Details {
     @JSImport("office-ui-fabric-react/lib/DetailsList", "DetailsHeader")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
-
+//     def apply(props: Props = null)(children: ReactNode*) =
+//       createElementN(JS, props)(children: _*)
+      
+    def apply(props: Props) = createElement(JS, props)
+      
     @js.native
     trait IDetailsHeader extends Focusable2
 
@@ -193,7 +205,7 @@ object Details {
       var onColumnAutoResized: js.UndefOr[js.Function2[IColumn, Int, Unit]] = js.undefined
       var onColumnClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]] = js.undefined
       // onColumnContextMenu
-      // onRenderColumnHeaderTooltip
+      var onRenderColumnHeaderTooltip: js.UndefOr[IRenderFunction[ColumnRenderTooltipProps]] = js.undefined
       // collapseAllVisibility
       var isAllCollapsed: js.UndefOr[Boolean] = js.undefined
       // onToggleCollapseAll
@@ -203,6 +215,16 @@ object Details {
       var columnReorderOptions: js.UndefOr[IColumnReorderOptions] = js.undefined
       var minimumPixelsForDrag: js.UndefOr[Int] = js.undefined
     }
+    
+    /** Use for reation without the vals. */
+    trait PropsInit extends BaseProps { 
+    }
+    
+    object PropsInit {
+        implicit class RichPropsInit(private val props: PropsInit) extends AnyVal {
+            def required = props.asInstanceOf[Props]
+        }
+    }
 
     // trait Props extends ComponentRef[IDetailsHeader] {
     //   var columns: js.Array[IColumn]
@@ -210,9 +232,9 @@ object Details {
     //   var groupNestingDepth: js.UndefOr[Int] = js.undefined
     // }
     trait Props extends BaseProps {
-      var selectionMode: SelectionMode
-      var selection: ISelection[js.Object]
-      var columns: js.Array[IColumn]
+      val selectionMode: SelectionMode
+      val selection: ISelection[js.Object]
+      val columns: js.Array[IColumn]
     }
 
     @js.native
@@ -330,10 +352,10 @@ object Details {
       var onRenderDetailsHeader: js.UndefOr[IRenderFunction[Details.Header.Props]] = js.undefined
 
       /** You can still be "active" but not deselected. */
-      var onActiveItemChanged: js.UndefOr[components.List.OAIC[T]] = js.undefined
-      var onColumnHeaderClick: js.UndefOr[components.List.OCHC[T]] = js.undefined
+      var onActiveItemChanged: js.UndefOr[OnActiveItemChanged[T]] = js.undefined
+      var onColumnHeaderClick: js.UndefOr[OnColumnHeaderClick] = js.undefined
       var onColumnResize: js.UndefOr[OnColumnResize] = js.undefined
-      var onItemInvoked: js.UndefOr[components.List.OII[T]] = js.undefined
+      var onItemInvoked: js.UndefOr[OnItemInvoked[T]] = js.undefined
       var renderedWindowsAhead: js.UndefOr[Int] = js.undefined
       var renderedWindowsBehind: js.UndefOr[Int] = js.undefined
       var onShouldVirtualize: js.UndefOr[js.Function1[components.List.Props[T], Boolean]] = js.undefined

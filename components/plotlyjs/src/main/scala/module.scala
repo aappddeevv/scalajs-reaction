@@ -28,6 +28,26 @@ import vdom._
 import org.scalajs.dom
 import react._
 
+/** Typeclass to convert some arrays to datum arrays */
+class PlotlyJSArrayOps[T](private val arr: js.Array[T]) extends AnyVal {
+    def asDatumArr: js.Array[Datum] = arr.asInstanceOf[js.Array[Datum]]
+}
+
+trait syntax {
+  /*implicit def intArrayToDatumArray(arr: js.Array[Int]) = new JSArrayOps[Int](arr)
+  implicit def longArrayToDatumArray(arr: js.Array[Long]) = new JSArrayOps[Long](arr)
+  implicit def floatArrayToDatumArray(arr: js.Array[Float]) = new JSArrayOps[Float](arr)
+  implicit def doubleArrayToDatumArray(arr: js.Array[Double]) = new JSArrayOps[Double](arr)
+  implicit def stringArrayToDatumArray(arr: js.Array[String]) = new JSArrayOps[String](arr)
+  implicit def dateArrayToDatumArray(arr: js.Array[js.Date]) = new JSArrayOps[js.Date](arr)
+  implicit def nullArrayToDatumArray(arr: js.Array[Null]) = new JSArrayOps[Null](arr)
+  implicit def anyArrayToDatumArray(arr: js.Array[Any]) = new JSArrayOps[Any](arr)
+  */
+  implicit def arrayToDatumArray[T](arr: js.Array[T]) = new PlotlyJSArrayOps[T](arr)
+}
+
+object syntax extends syntax
+
 @jsenrich trait Font extends js.Object {
   var family: js.UndefOr[String] = js.undefined
   var size: js.UndefOr[Int] = js.undefined
@@ -42,6 +62,12 @@ import react._
   var xanchor: js.UndefOr[Double] = js.undefined
   var y: js.UndefOr[Double] = js.undefined
   var yanchor: js.UndefOr[Double] = js.undefined
+}
+
+@jsenrich trait DataTitle extends js.Object {
+ var text: js.UndefOr[String] = js.undefined
+ var font: js.UndefOr[Font] = js.undefined
+ var position: js.UndefOr[String] = js.undefined
 }
 
 trait Margin extends js.Object {
@@ -149,12 +175,57 @@ object Ordering {
   val tracesFirst = "traces first".asInstanceOf[Ordering]
 }
 
-trait HoverLabel extends js.Object {
+trait Label extends js.Object {
   var bgcolor: js.UndefOr[Color] = js.undefined
   var bordercolor: js.UndefOr[Color] = js.undefined
   var font: js.UndefOr[Font] = js.undefined
+
+}
+
+trait HoverLabel extends Label {
   var align: js.UndefOr[Align] = js.undefined
   var namelength: js.UndefOr[Int] = js.undefined
+}
+
+trait Annotation extends Label {
+  var visible: js.UndefOr[Boolean] = js.undefined
+  var text: js.UndefOr[String] = js.undefined
+  var textangle: js.UndefOr[String] = js.undefined
+  var width: js.UndefOr[Double] = js.undefined
+  var height: js.UndefOr[Double] = js.undefined
+  var opacity: js.UndefOr[Double] = js.undefined
+  var align: js.UndefOr[Align] = js.undefined
+  var valign: js.UndefOr[Align] = js.undefined
+  var borderpad: js.UndefOr[Double] = js.undefined
+  var borderwidth: js.UndefOr[Double] = js.undefined
+  var showarrow: js.UndefOr[Boolean] = js.undefined
+  var arrowcolor: js.UndefOr[String] = js.undefined
+  var arrowhead: js.UndefOr[Double] = js.undefined
+  var startarrowhead: js.UndefOr[Double] = js.undefined
+  var arrowsize: js.UndefOr[Double] = js.undefined
+  var startarrowsize: js.UndefOr[Double] = js.undefined
+  var arrowwidth: js.UndefOr[Double] = js.undefined
+  var standoff: js.UndefOr[Double] = js.undefined
+  var startstandoff: js.UndefOr[Double] = js.undefined
+  var ax: js.UndefOr[Double] = js.undefined
+  var ay: js.UndefOr[Double] = js.undefined
+//var axref
+//var ayref
+//var xref
+  var x: js.UndefOr[Double | String] = js.undefined
+  var xanchor: js.UndefOr[String] = js.undefined
+  var xshift: js.UndefOr[Double] = js.undefined
+//var yref
+  var y: js.UndefOr[Double | String] = js.undefined
+  var yanchor: js.UndefOr[String] = js.undefined
+  var yshift: js.UndefOr[Double] = js.undefined
+  var clicktoshow: js.UndefOr[Boolean] = js.undefined
+  var xclick: js.UndefOr[js.Any] = js.undefined
+  var yclick: js.UndefOr[js.Any] = js.undefined
+  var hovertext: js.UndefOr[String] = js.undefined
+//var hoverlabel
+  var captureevents: js.UndefOr[Boolean] = js.undefined
+
 }
 
 trait Transition extends js.Object {
@@ -355,6 +426,29 @@ object Side {
 }
 
 @js.native
+abstract trait Dash extends js.Any
+object Dash {
+  val solid = "solid".asInstanceOf[Dash]
+  val dot = "dot".asInstanceOf[Dash]
+  val dash = "dash".asInstanceOf[Dash]
+  val longdash = "longdash".asInstanceOf[Dash]
+  val dashdot = "dashdot".asInstanceOf[Dash]
+  val longdashdot = "longdashdot".asInstanceOf[Dash]
+}
+
+
+trait Line extends js.Object {
+    var color: js.UndefOr[Color] = js.undefined
+    var width: js.UndefOr[Double] = js.undefined
+    var dash: js.UndefOr[Dash] = js.undefined
+    var shape: js.UndefOr[String] = js.undefined
+    var smoothing: js.UndefOr[Double] = js.undefined
+    var simplify: js.UndefOr[Boolean] = js.undefined
+}
+
+trait ScatterLine extends Line
+
+@js.native
 abstract trait Layer extends js.Any
 object Layer {
   val aboveTrace = "above traces".asInstanceOf[Layer]
@@ -395,7 +489,7 @@ object Layer {
   var nticks: js.UndefOr[Int] = js.undefined
   var overlaying: js.UndefOr[String] = js.undefined
   var position: js.UndefOr[Double] = js.undefined
-  var range: js.UndefOr[js.Array[js.Date | String | Double]] = js.undefined
+  var range: js.UndefOr[js.Array[AxisRange]] = js.undefined
   //var rangeslider
   //var rangeseselector
   var rangemode: js.UndefOr[RangeMode] = js.undefined
@@ -496,7 +590,7 @@ object BarNorm {
   //var images
   var meta: js.UndefOr[String | Int] = js.undefined
   var margin: js.UndefOr[Margin] = js.undefined
-  var orientation: js.UndefOr[String] = js.undefined // v or h
+  var orientation: js.UndefOr[Orientation] = js.undefined // v or h
   var paper_bgcolor: js.UndefOr[String] = js.undefined
   var plot_bgcolor: js.UndefOr[String] = js.undefined
   var piecolorway: js.UndefOr[js.Array[Color]] = js.undefined
@@ -550,7 +644,7 @@ object BarNorm {
   var name: js.UndefOr[String] = js.undefined
   var traces: js.UndefOr[js.Array[Int]] = js.undefined
   var baseframe: js.UndefOr[String] = js.undefined
-  //var data: js.Array[Data] = js.undefined
+  val data: js.Array[Data]
   var layout: js.UndefOr[Layout] = js.undefined
 }
 
@@ -562,7 +656,7 @@ object BarNorm {
 @jsenrich trait Config extends js.Object {
   var autosizable: js.UndefOr[Boolean] = js.undefined
   var displayModeBar: js.UndefOr[String | Boolean] = js.undefined // hover
-  var displayLogo: js.UndefOr[Boolean] = js.undefined
+  var displaylogo: js.UndefOr[Boolean] = js.undefined
   var editable: js.UndefOr[Boolean] = js.undefined
   var fillFrame: js.UndefOr[Boolean] = js.undefined
   var frameMargins: js.UndefOr[Int] = js.undefined
@@ -622,6 +716,24 @@ trait PlotMouseEvent extends js.Object {
 }
 
 @js.native
+abstract trait HoverInfo extends js.Any
+object HoverInfo { 
+    val all = "all".asInstanceOf[HoverInfo]
+    val none = "none".asInstanceOf[HoverInfo]
+    val skip = "skip".asInstanceOf[HoverInfo]
+    val name = "name".asInstanceOf[HoverInfo]
+    val text = "text".asInstanceOf[HoverInfo]
+    val x= "x".asInstanceOf[HoverInfo]
+    val y= "y".asInstanceOf[HoverInfo]
+    val z = "z".asInstanceOf[HoverInfo]
+    
+    implicit class RichHoverInfo(private val hi: HoverInfo) extends AnyVal {
+        def and(that: HoverInfo) = s"$hi+$that"
+    }
+}
+
+// need to add the rest here
+@js.native
 abstract trait PlotType extends js.Any
 object PlotType {
   val bar = "bar".asInstanceOf[PlotType]
@@ -637,58 +749,106 @@ object PlotType {
   val splom = "splom".asInstanceOf[PlotType]
 }
 
+trait PlotMarker extends js.Object
+
 trait Trace extends js.Object {
-  //@JSName("type")
-  //val plotType: PlotType
-  val `type`: PlotType
+  /*@JSName("type")
+  val plotType: PlotType
+  */
+  val `type`: PlotType|String
 }
 
-trait Data extends Trace {
+trait TraceInit extends js.Object {
+  //@JSName("type")
+  //var plotType: js.UndefOr[PlotType] = js.undefined
+  var `type`: js.UndefOr[PlotType|String] = js.undefined
+}
+
+@js.native
+abstract trait Orientation extends js.Any
+object Orientation {
+  val horizontal = "h".asInstanceOf[Orientation]
+  val vertical = "v".asInstanceOf[Orientation]
+}
+
+
+
+trait PlotData extends js.Object {
   var boxmean: js.UndefOr[String | Boolean] = js.undefined
+  //var branchvalues
+  //var colorscale
   var connectgaps: js.UndefOr[Boolean] = js.undefined
   var customdata: js.UndefOr[js.Array[Datum]] = js.undefined
+  //var delta
+  //var domain
   var direction: js.UndefOr[String] = js.undefined
-  //var `type`: js.UndefOr[PlotType] = js.undefined
-  // @JSName("type")
-  // var plotType: js.UndefOr[PlotType] = js.undefined
-  //var x
-  //var y
-  //var z
   var fill: js.UndefOr[String] = js.undefined
   var fillcolor: js.UndefOr[String] = js.undefined
+  //var gauge
   var hole: js.UndefOr[Double] = js.undefined
-  var hoverOn: js.UndefOr[String] = js.undefined
-  var hoverTemplate: js.UndefOr[String | js.Array[String]] = js.undefined
+  var hoveron: js.UndefOr[String] = js.undefined
+  var hoverinfo: js.UndefOr[String|HoverInfo] = js.undefined
+  var hoverlabel: js.UndefOr[Any] = js.undefined
+  var hovertemplate: js.UndefOr[String | js.Array[String]] = js.undefined
+  var hovertext: js.UndefOr[String | js.Array[String]] = js.undefined
   var labels: js.UndefOr[js.Array[Datum]] = js.undefined
+  var lat: js.UndefOr[js.Array[Datum]] = js.undefined
+  var legendgroup: js.UndefOr[String] = js.undefined
+  var line: js.UndefOr[Line] = js.undefined
+  var long: js.UndefOr[js.Array[Datum]] = js.undefined
+  var marker: js.UndefOr[PlotMarker] = js.undefined
   var mode: js.UndefOr[String] = js.undefined
   var name: js.UndefOr[String] = js.undefined
-  var orientation: js.UndefOr[String] = js.undefined
+  //var number
+  var opacity: js.UndefOr[Double] = js.undefined
+  var orientation: js.UndefOr[Orientation] = js.undefined
   var parents: js.UndefOr[js.Array[String]] = js.undefined
   var r: js.UndefOr[js.Array[Datum]] = js.undefined
   var rotation: js.UndefOr[Double] = js.undefined
+  //var selectedpoints
+  var showscale: js.UndefOr[Boolean] = js.undefined
   var showlegend: js.UndefOr[Boolean] = js.undefined
   var stackgroup: js.UndefOr[String] = js.undefined
   var text: js.UndefOr[String | js.Array[String]] = js.undefined
   var textinfo: js.UndefOr[String] = js.undefined
-  var textdpositionInfo: js.UndefOr[String] = js.undefined
+  var textposition: js.UndefOr[String] = js.undefined
+  var textfont: js.UndefOr[Font] = js.undefined
+  var title: js.UndefOr[DataTitle] = js.undefined
   var theta: js.UndefOr[js.Array[Datum]] = js.undefined
   var transpose: js.UndefOr[Boolean] = js.undefined
+  //var transforms
   var visible: js.UndefOr[Boolean | String] = js.undefined // legendonly
-  var width: js.UndefOr[Int | js.Array[Int]] = js.undefined // legendonly
+  var width: js.UndefOr[Double | js.Array[Double]] = js.undefined // legendonly
+  var xaxis: js.UndefOr[String] = js.undefined
   var xgap: js.UndefOr[Int] = js.undefined // legendonly
+  var yaxis: js.UndefOr[String] = js.undefined
   var ygap: js.UndefOr[Int] = js.undefined // legendonly
   var value: js.UndefOr[Double] = js.undefined
   var values: js.UndefOr[js.Array[Datum]] = js.undefined
+  //var visible: js.UndefOr[Boolean] = js.undefined
+  //var zsmooth
+}
+
+trait PlotDataInit extends PlotData with TraceInit {
+  var x: js.UndefOr[js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]] = js.undefined
+  var y: js.UndefOr[js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]] = js.undefined
+}
+
+object PlotDataInit {
+  implicit class RichPlotDataInit(private val p: PlotDataInit) extends AnyVal {
+    def hasRequired: Data = p.asInstanceOf[Data]
+  }
+}
+
+trait Data extends PlotData with Trace { 
+  
 }
 
 trait BarTrace extends Data {
-  val x: js.Array[Datum]
+  val x: js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]
+  val y: js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]
   var x0: js.UndefOr[Datum] = js.undefined
-
-  val y: js.Array[Datum]
   var y0: js.UndefOr[Datum] = js.undefined
-
-  var opacity: js.UndefOr[Float] = js.undefined
   var ids: js.UndefOr[js.Array[String]] = js.undefined
 }
 
@@ -703,17 +863,17 @@ object module extends js.Object {
   // ...
 
   def plot(
-      root: Root,
-      data: DatumArray,
-      layout: js.UndefOr[Layout] = js.undefined,
-      config: js.UndefOr[Config] = js.undefined
-    ): js.Promise[PlotlyHTMLElement] = js.native
+    root: Root,
+    data: DatumArray,
+    layout: js.UndefOr[Layout] = js.undefined,
+    config: js.UndefOr[Config] = js.undefined
+  ): js.Promise[PlotlyHTMLElement] = js.native
   def newPlot(
-      root: Root,
-      data: js.Array[Data],
-      layout: js.UndefOr[Layout] = js.undefined,
-      config: js.UndefOr[Config] = js.undefined
-    ): js.Promise[PlotlyHTMLElement] = js.native
+    root: Root,
+    data: js.Array[Data],
+    layout: js.UndefOr[Layout] = js.undefined,
+    config: js.UndefOr[Config] = js.undefined
+  ): js.Promise[PlotlyHTMLElement] = js.native
   def redraw(root: Root): js.Promise[PlotlyHTMLElement] = js.native
 
   def purge(root: Root): Unit = js.native

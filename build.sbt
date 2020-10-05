@@ -409,6 +409,13 @@ lazy val apollo = project
   .settings(std_settings("apollo", "Combination of apollo-boost, graphql, react-apollo"))
   .settings(buildinfo_settings("apollo"))
 
+lazy val apollo3 = project
+  .in(file("components/apollo3"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .dependsOn(react, vdom)
+  .settings(std_settings("apollo3", "Combination of apollo-boost, graphql, react-apollo"))
+  .settings(buildinfo_settings("apollo3"))
+
 lazy val fabric = project
   .in(file("components/fabric"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)

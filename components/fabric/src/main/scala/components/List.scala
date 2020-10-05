@@ -23,80 +23,79 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
 import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
 
 object List {
+
+    trait PageSpecification extends js.Object {
+    }
+    
+    @js.native
+    trait Page[T <: js.Object] extends js.Object { 
+    }
+    
+    @js.native
+    trait PageProps[T <: js.Object] extends js.Object { 
+    }
+    
+    @js.native
+    trait ListOnRenderRootProps[T <: js.Object] extends js.Object {
+    }
+    
+    @js.native
+    trait ListOnRenderSurfaceProps[T <: js.Object] extends js.Object {
+    }
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/List", "List")
   object JS extends ReactJSComponent
 
-  def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+//   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
+//     createElement(JS, props, children: _*)
 
-  trait Props[T <: js.Object] extends IViewportProps with ComponentRef[IList] {
-
+  def apply[T <: js.Object](props: Props[T] = null) = createElement(JS, props)
+    
+  trait Props[T <: js.Object] extends ComponentRef[IList] {
+    var className: js.UndefOr[String] = js.undefined
+    var getItemCountForPage: js.UndefOr[js.Function2[Int, js.Any, Int]] = js.undefined
     var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] =
       js.undefined
-    val items: js.Array[T]
-    var setKey: js.UndefOr[String] = js.undefined
-    var className: js.UndefOr[String] = js.undefined
-    var initialFocusedIndex: js.UndefOr[Int] = js.undefined
-    // do the groups thing
-    var selection: js.UndefOr[ISelection[T]] = js.undefined
-    var selectionMode: js.UndefOr[SelectionMode] = js.undefined
-    var selectionPreservedOnEmptyClick: js.UndefOr[Boolean] = js.undefined
-    var layoutMode: js.UndefOr[Int] = js.undefined
-    // checkbox visibility....
-    var isHeaderVisible: js.UndefOr[Boolean] = js.undefined
-    var columns: js.UndefOr[js.Array[IColumn] | js.Array[js.Object] | js.Array[js.Dynamic]] =
-      js.undefined
-    var constrainMode: js.UndefOr[Int] = js.undefined
-
-    var onItemInvoked: js.UndefOr[OII[T]] = js.undefined
-
-    var onRenderRow: js.UndefOr[IRenderFunction[Details.Row.Props]] = js.undefined
-    var onRenderMissingItem: js.UndefOr[js.Function1[Int, js.Any]] = js.undefined
-    var onRenderDetailsHeader: js.UndefOr[IRenderFunction[Details.Header.Props]] = js.undefined
-
-    /** You can still be "active" but not deselected. */
-    var onActiveItemChanged: js.UndefOr[OAIC[T]] = js.undefined
-
-    var onColumnHeaderClick: js.UndefOr[OCHC[T]] = js.undefined
-
-    var maximumPixelsForDrag: js.UndefOr[Int] = js.undefined
-    var compact: js.UndefOr[Boolean] = js.undefined
-    var checkboxCellClassName: js.UndefOr[String] = js.undefined
-    var enterModelSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
-
-    var usePageCache: js.UndefOr[Boolean] = js.undefined
+    @JSName("getKey")
+      var getKeyString: js.UndefOr[js.Function2[js.UndefOr[T],Int,String]] = js.undefined
+      @JSName("getKey")
+      var getKeyInt: js.UndefOr[js.Function2[js.UndefOr[T],Int,Int]] = js.undefined
+    var getPageHeight: js.UndefOr[js.Function3[Int, js.Any, Int, Int]] = js.undefined
+    var getPageSpecification: js.UndefOr[js.Function2[Int, js.Any, PageSpecification]] = js.undefined
+    var getPageSyle: js.UndefOr[js.Function1[Page[T], js.Any]] = js.undefined
+    var ignoreScrollingState: js.UndefOr[Boolean] = js.undefined
+    var items: js.UndefOr[js.Array[T]] = js.undefined
+    var onPageAdded: js.UndefOr[js.Function1[Page[T], Unit]] = js.undefined
+    var onPageRemoved: js.UndefOr[js.Function1[Page[T], Unit]] = js.undefined
+    var onPagesUpdated: js.UndefOr[js.Function1[js.Array[Page[T]], Unit]] = js.undefined
+    
+    var onRenderCell: js.UndefOr[OnRenderCell[T]] = js.undefined
+    var onRenderPage: js.UndefOr[IRenderFunction[PageProps[T]]] = js.undefined
+    var onRenderRoot: js.UndefOr[IRenderFunction[ListOnRenderRootProps[T]]] = js.undefined
+    var onRenderSurface: js.UndefOr[IRenderFunction[ListOnRenderSurfaceProps[T]]] = js.undefined
+    var onShouldVirtualize: js.UndefOr[Boolean] = js.undefined
     var renderCount: js.UndefOr[Int] = js.undefined
+    var renderWindowsAhead: js.UndefOr[Int] = js.undefined
+    var renderWindowsBehind: js.UndefOr[Int] = js.undefined
+    var role: js.UndefOr[String] = js.undefined
+    var startIndex: js.UndefOr[Int] = js.undefined
+    var usePageCache: js.UndefOr[Boolean] = js.undefined
+    var version: js.UndefOr[js.Object] = js.undefined
   }
 
-  def OnItemInvoked[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => Unit): OII[T] =
-    js.Any.fromFunction3(f)
-
-  type OII[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
-
-  def OnActiveItemChanged[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => _): OAIC[T] =
-    js.Any.fromFunction3((t:T, i: Int, e: ReactFocusEvent[dom.html.Element]) => {f(t,i,e); ()})
-
-  type OAIC[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
-
-  def OnColumnHeaderClick[T <: js.Object](f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit): OCHC[T] =
-    js.Any.fromFunction2(f)
-
-  type OCHC[T <: js.Object] =
-    js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]
-
+    type OnRenderCell[T] = js.Function3[T,Int,Boolean,react.ReactNode]
+    
+    def OnRenderCell[T](f: (T,Int,Boolean) => react.ReactNode) = 
+        js.Any.fromFunction3(f).asInstanceOf[OnRenderCell[T]]
+  
   @js.native
   trait IList extends js.Object {
     def forceUpdate(): Unit = js.native

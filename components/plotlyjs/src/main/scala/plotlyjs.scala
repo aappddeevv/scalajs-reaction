@@ -21,14 +21,17 @@
 
 import scala.scalajs.js
 import js.|
+import js.annotation._
 import org.scalajs.dom
 import js.JSConverters._
+import org.scalajs.dom
 
 package object plotlyjs {
+  type Root = String|dom.html.Element
   type Color = String | Int
   type ColorScaleItem = js.Tuple2[Double, String] // e.g. String => js.Array(0.2, "rgb(245,195,157)")
-  type Root = String | dom.html.Element
   type Datum = Double | Int | String | js.Date | Null
+  type AxisRange = js.Date | String | Double
 
   /** Create a datum array. */
   def datumArray(args: Datum*) = args.toJSArray
@@ -40,4 +43,10 @@ package object plotlyjs {
 
   /** Helper to create traces array. */
   def traces(traces: Trace*) = traces.toJSArray
+  
+  @js.native
+  @JSImport("plotly.js", "Plots")
+  object Plots extends js.Object {
+    def resize(root: Root): Unit = js.native
+  }
 }

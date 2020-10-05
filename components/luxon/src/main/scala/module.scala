@@ -52,15 +52,15 @@ object DurationUnit {
   val milliseconds = "milliseconds".asInstanceOf[DurationUnit]
 }
 @jsenrich trait DurationInit extends js.Object {
-  var days: js.UndefOr[Int] = js.undefined
-  var months: js.UndefOr[Int] = js.undefined
-  var quarters: js.UndefOr[Int] = js.undefined
-  var years: js.UndefOr[Int] = js.undefined
-  var weeks: js.UndefOr[Int] = js.undefined
-  var hours: js.UndefOr[Int] = js.undefined
-  var minutes: js.UndefOr[Int] = js.undefined
-  var seconds: js.UndefOr[Int] = js.undefined
-  var milliseconds: js.UndefOr[Int] = js.undefined
+  var days: js.UndefOr[Double] = js.undefined
+  var months: js.UndefOr[Double] = js.undefined
+  var quarters: js.UndefOr[Double] = js.undefined
+  var years: js.UndefOr[Double] = js.undefined
+  var weeks: js.UndefOr[Double] = js.undefined
+  var hours: js.UndefOr[Double] = js.undefined
+  var minutes: js.UndefOr[Double] = js.undefined
+  var seconds: js.UndefOr[Double] = js.undefined
+  var milliseconds: js.UndefOr[Double] = js.undefined
   var locale: js.UndefOr[String] = js.undefined
   var numberingSystem: js.UndefOr[String] = js.undefined
   var conversionAccuracy: js.UndefOr[String] = js.undefined
@@ -119,7 +119,7 @@ object ConversionAccuracy {
 object Duration extends js.Object {
   def fromISO(text: String, options: js.UndefOr[DurationOptions] = js.undefined): Duration = js.native
   def fromMillis(count: Double, options: js.UndefOr[DurationOptions] = js.undefined): Duration = js.native
-  def fromObject(arg: DurationInit): Duration = js.native
+  def fromObject(arg: DurationInit|js.Dynamic): Duration = js.native
   def invalid(reason: String, explanation: String): Duration = js.native
   def isDuration(o: js.Object): Boolean = js.native
   def isDUration(o: js.Any): Boolean = js.native
@@ -198,8 +198,8 @@ trait DateTime extends js.Object {
   val offsetNameShort: String = js.native
   val ordinal: Int = js.native
   val outputCalendar: String = js.native
-  def plus(dur: Duration | DurationInit): DateTime = js.native
-  def minus(dur: Duration | DurationInit): DateTime = js.native
+  def plus(dur: Duration | DurationInit | Double): DateTime = js.native
+  def minus(dur: Duration | DurationInit | Double): DateTime = js.native
   def startOf(part: DurationUnit): DateTime = js.native
   def endOf(part: DurationUnit): DateTime = js.native
   def set(parts: DateTimeUnits): DateTime = js.native

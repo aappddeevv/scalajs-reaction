@@ -1,0 +1,1 @@
+Very skinny graphql, just enough for @apollo/client.

@@ -28,7 +28,7 @@ package object fabric {
   /** Use this to help define render functions in scala code easier. */
   type RenderForProps[P <: js.Object] = js.Function1[js.UndefOr[P], ReactNode]
 
-  /** Used frequently in fabric so you can customize rendering. */
+  /** General purpose renderer override. */
   type IRenderFunction[P <: js.Object] =
     js.Function2[js.UndefOr[P], js.UndefOr[RenderForProps[P]], ReactNode]
     

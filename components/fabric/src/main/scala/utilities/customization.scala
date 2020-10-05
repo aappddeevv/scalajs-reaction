@@ -93,7 +93,7 @@ object Customizer {
   @JSImport("@uifabric/utilities/lib/customizations/Customizer", "Customizer")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(props: Props|ICustomizations)(children: ReactNode*) = createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
     var settings: js.UndefOr[Settings | SettingsFunction] = js.undefined

@@ -421,19 +421,21 @@ trait RawStyleBase extends RawFontStyle {
   var gridAutoRows: js.UndefOr[Int | String] = js.undefined
   var gridColumn: js.UndefOr[Int | String] = js.undefined
   var gridColumnEnd: js.UndefOr[Int | String] = js.undefined
-  @deprecated
+  @deprecated("Use column-gap")
   var gridColumnGap: js.UndefOr[Int | String] = js.undefined
   var gridColumnStart: js.UndefOr[Int | String] = js.undefined
+  @deprecated("Use gap")
   var gridGap: js.UndefOr[Int | String] = js.undefined
   var gridRow: js.UndefOr[Int | String] = js.undefined
   var gridRowEnd: js.UndefOr[Int | String] = js.undefined
-  @deprecated
+  @deprecated("Use row-gap")
   var gridRowGap: js.UndefOr[Int | String] = js.undefined
   var gridRowStart: js.UndefOr[Int | String] = js.undefined
   var gridTemplate: js.UndefOr[String] = js.undefined
   var gridTemplateAreas: js.UndefOr[String] = js.undefined
   var gridTemplateColumns: js.UndefOr[Int | String] = js.undefined
   var gridTemplateRows: js.UndefOr[Int | String] = js.undefined
+  var gap: js.UndefOr[Int | String] = js.undefined
   var columnGap: js.UndefOr[Int | String] = js.undefined
   var rowGap: js.UndefOr[Int | String] = js.undefined
   

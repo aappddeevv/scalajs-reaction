@@ -26,6 +26,21 @@ import js.JSConverters._
 import js.|, js.annotation._
 import react._
 
+// Should be creatable so can set snapshot on root when needed rework this.
+@js.native
+trait Snapshot extends js.Object {
+  def getLoadable[T](recoilValue: RecoilValue[T]): Loadable[T] = js.native
+  def getPromise[T](recoilValue: RecoilValue[T]): js.Promise[T] = js.native
+  def map(cb: js.Function1[MutableSnapshot, Unit]): Snapshot = js.native
+  def asyncMap(cb: js.Function1[MutableSnapshot, js.Thenable[Unit]]): js.Promise[Snapshot] = js.native
+}
+
+// keep in sync with SetRecoilState, ResetRecoilState
+@js.native
+trait MutableSnapshot extends Snapshot {
+  def set[T](state: RecoilState[T], value: T | DefaultValue | js.Function1[T, T | DefaultValue]): Unit = js.native
+  def reset[T](state: RecoilState[T]): Unit = js.native
+}
 
 trait PersistenceSettings[T] { 
     val `type`: String // "none" or "url"
@@ -96,6 +111,7 @@ trait ReadOnlySelectorOptions[T] extends js.Object {
   val key: NodeKey
   def get(accessors: ReadOnlyAccessors): Return[T]
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
+  var cacheImplementation_UNSTABLE: js.UndefOr[js.Function0[CacheImplementation[Loadable[T]]]] = js.undefined
 }
 
 trait ReadOnlySelectorOptions2[T] extends js.Object {
@@ -201,28 +217,10 @@ abstract trait RecoilValueReadOnly[+T] extends AbstractRecoilValueReadOnly[T]
 
 @js.native
 trait CallbackInterface extends js.Object {
-  def getPromise[A](value: RecoilValue[A]): js.Promise[A] = js.native
-  def getLoadable[A](value: RecoilValue[A]): Loadable[A] = js.native
+  val snapshot: Snapshot = js.native
+  def gotoSnapshot(snapshot: Snapshot): Unit = js.native
   def set[A](value: RecoilState[A], valOrUpdater: SetValOrUpdater[A]): Unit = js.native
   def reset(value: RecoilState[_]): Unit = js.native
-}
-
-// looks like CallbackInterface
-@js.native
-@JSImport("recoil", "Snapshot")
-class Snapshot extends CallbackInterface {
-    def getID(): js.Any = js.native
-    //def getLoadable[T](recoilValue: RecoilValue[T]): Loadable[T] = js.native
-    //def getPromise[T](recoilValue: RecoilValue[T]): js.Proimse[T] = js.native
-    //def map
-    //def asyncMap
-}
-
-@js.native
-@JSImport("recoil", "MutableSnapshot")
-class MutableSnapshot extends Snapshot {
-  //val set: SetRecoilState = js.native
-  //val reset: ResetRecoilState
 }
 
 @js.native
@@ -260,62 +258,61 @@ object module extends recoil_module
 trait hooks {
 
   def useRecoilCallbackMounting[T](f: js.Function1[CallbackInterface, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function0[T]]
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function1[CallbackInterface, js.Function0[T]]]
   def useRecoilCallback[T](deps: AllType*)(f: js.Function1[CallbackInterface, Return[T]]) =
-    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function0[T]]
-    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function0[T]]
+    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[CallbackInterface, js.Function0[T]]]
+    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function1[CallbackInterface, js.Function0[T]]]
   def useRecoilCallbackA[T](deps: Dependencies)(f: js.Function1[CallbackInterface, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function0[T]]
+    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function1[CallbackInterface, js.Function0[T]]]
 
     
   def useRecoilCallbackMounting1[A1, T](f: js.Function2[CallbackInterface, A1, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function1[A1, T]]
+    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function1[CallbackInterface, js.Function1[A1, T]]]
   def useRecoilCallback1[A1, T](deps: AllType*)(f: js.Function2[CallbackInterface, A1, Return[T]]) =
-    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[A1, T]]
-    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function1[A1, T]]
+    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[CallbackInterface, js.Function1[A1, T]]]
+    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function1[CallbackInterface, js.Function1[A1, T]]]
   def useRecoilCallback1A[A1, T](deps: Dependencies)(f: js.Function2[CallbackInterface, A1, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function1[A1, T]]
+    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function1[CallbackInterface, js.Function1[A1, T]]]
 
     
-  def useRecoilCallbackMounting2[A1, A2, T](f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function2[A1, A2, T]]
-  def useRecoilCallback2[A1, A2, T](deps: AllType*)(f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
-    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function2[A1, A2, T]]
-    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function2[A1, A2, T]]
-  def useRecoilCallback2A[A1, A2, T](deps: Dependencies)(f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function2[A1, A2, T]]
-
-    
-  def useRecoilCallbackMounting3[A1, A2, A3, T](f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function3[A1, A2, A3, T]]
-  def useRecoilCallback3[A1, A2, A3, T](deps: AllType*)(f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
-    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function3[A1, A2, A3, T]]
-    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function3[A1, A2, A3, T]]
-  def useRecoilCallback3A[A1, A2, A3, T](deps: Dependencies)(
-    f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function3[A1, A2, A3, T]]
-
-    
-  def useRecoilCallbackMounting4[A1, A2, A3, A4, T](f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
-  def useRecoilCallback4[A1, A2, A3, A4, T](deps: AllType*)(
-    f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
-    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
-    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
-  def useRecoilCallback4A[A1, A2, A3, A4, T](deps: Dependencies)(
-    f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
-
-    
-  def useRecoilCallbackMounting5[A1, A2, A3, A4, A5, T](f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-  def useRecoilCallback5[A1, A2, A3, A4, A5, T](deps: AllType*)(
-    f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
-    if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-    else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-  def useRecoilCallback5A[A1, A2, A3, A4, A5, T](deps: Dependencies)(
-    f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
-    module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
+//   def useRecoilCallbackMounting2[A1, A2, T](f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function2[A1, A2, T]]
+//   def useRecoilCallback2[A1, A2, T](deps: AllType*)(f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
+//     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function2[A1, A2, T]]
+//     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function2[A1, A2, T]]
+//   def useRecoilCallback2A[A1, A2, T](deps: Dependencies)(f: js.Function3[CallbackInterface, A1, A2, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function2[A1, A2, T]]
+// 
+//     
+//   def useRecoilCallbackMounting3[A1, A2, A3, T](f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function3[A1, A2, A3, T]]
+//   def useRecoilCallback3[A1, A2, A3, T](deps: AllType*)(f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
+//     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function3[A1, A2, A3, T]]
+//     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function3[A1, A2, A3, T]]
+//   def useRecoilCallback3A[A1, A2, A3, T](deps: Dependencies)(
+//     f: js.Function4[CallbackInterface, A1, A2, A3, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function3[A1, A2, A3, T]]
+// 
+//     
+//   def useRecoilCallbackMounting4[A1, A2, A3, A4, T](f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
+//   def useRecoilCallback4[A1, A2, A3, A4, T](deps: AllType*)(
+//     f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
+//     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
+//     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
+//   def useRecoilCallback4A[A1, A2, A3, A4, T](deps: Dependencies)(
+//     f: js.Function5[CallbackInterface, A1, A2, A3, A4, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function4[A1, A2, A3, A4, T]] 
+//     
+//   def useRecoilCallbackMounting5[A1, A2, A3, A4, A5, T](f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, emptyDependencies).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
+//   def useRecoilCallback5[A1, A2, A3, A4, A5, T](deps: AllType*)(
+//     f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
+//     if (deps.length == 0) module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
+//     else module.useRecoilCallback_UNTYPED[T](f, deps.toJSArray).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
+//   def useRecoilCallback5A[A1, A2, A3, A4, A5, T](deps: Dependencies)(
+//     f: js.Function6[CallbackInterface, A1, A2, A3, A4, A5, Return[T]]) =
+//     module.useRecoilCallback_UNTYPED[T](f, deps).asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
   def atom[T](options: AtomOptions[T]) = module.atom[T](options)
 

@@ -245,7 +245,7 @@ final class OrUndefOrNullOps[A](private val a: js.UndefOr[A] | Null) extends Any
 
 class OrNullStringOps(private val a: String | Null) extends AnyVal {
 
-  /** Return string's "zero" which is an empty string. */
+  /** Return string's "zero" which is an empty string. Could be called orBlank. */
   @inline def orEmpty: String = if (a == null) "" else a.asInstanceOf[String]
 }
 

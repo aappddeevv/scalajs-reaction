@@ -36,14 +36,21 @@ object Plot {
   @JSImport("react-plotly.js", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props) = createElement0(JS, props)
+  def apply(props: Props) = createElement(JS, props)
 
   /** Call back type, opaque. See `OnCallback`. */
-  trait CallbackFn extends js.Object
+  type CallbackFn = js.Function2[Figure, dom.html.Div, Unit]
 
-  def OnCallback(f: (js.Object, dom.html.Div) => Unit) =
-    js.Any.fromFunction2(f)
+  def OnCallback(f: (Figure, dom.html.Div) => Unit) =
+    js.Any.fromFunction2(f).asInstanceOf[CallbackFn]
 
+    
+  trait Figure extends js.Object { 
+    val frames: js.Array[Frame]|Null
+    val data: js.Array[Data]
+    val layout: Layout
+  }
+    
   trait PropsBase extends js.Object {
     var key: js.UndefOr[String] = js.undefined
     var className: js.UndefOr[String] = js.undefined
@@ -52,12 +59,13 @@ object Plot {
     var debug: js.UndefOr[Boolean] = js.undefined
     var divId: js.UndefOr[String] = js.undefined
     var frames: js.UndefOr[js.Array[Frame]] = js.undefined
-    var layout: js.UndefOr[Layout] = js.undefined
+    
     var revision: js.UndefOr[Int] = js.undefined
     var useResizeHandler: js.UndefOr[Boolean] = js.undefined
 
     var onInitialized: js.UndefOr[CallbackFn] = js.undefined
     var onUpdate: js.UndefOr[CallbackFn] = js.undefined
+    var onPurge: js.UndefOr[CallbackFn] = js.undefined
 
     var onError: js.UndefOr[js.Function1[js.Error, Unit]] = js.undefined
 
@@ -70,12 +78,27 @@ object Plot {
     var onAutoSize: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onBeforeExport: js.UndefOr[js.Function0[Unit]] = js.undefined
 
+    //var onButtonClicked
+    //var onClick
+    //var onClickAnnotation
     var onDeselect: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onDoubleClick: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onFramework: js.UndefOr[js.Function0[Unit]] = js.undefined
-
+    //var onHover
+    //var onLegendClick
+    //var onLegendDoubleClick
+    //var onRelayout
+    //var onRestyle
     var onRedraw: js.UndefOr[js.Function0[Unit]] = js.undefined
-
+    //var onSelected
+    //var onSelecting
+    //var onSliderChange
+    //var onSliderEnd
+    //var onSliderStart
+    //var onTransitioning
+    //var onTransitionInterrupted
+    //var onUnhover
+    
     var onTransitioning: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onTransitionInterrupted: js.UndefOr[js.Function0[Unit]] = js.undefined
 
@@ -83,7 +106,8 @@ object Plot {
   }
 
   trait PropsInit extends PropsBase {
-    var data: js.UndefOr[js.Array[Trace]] = js.undefined
+    var data: js.UndefOr[js.Array[Data]] = js.undefined
+    var layout: js.UndefOr[Layout] = js.undefined
   }
 
   object PropsInit {
@@ -93,6 +117,7 @@ object Plot {
   }
 
   trait Props extends PropsBase {
-     val data: js.Array[Trace]
+     val data: js.Array[Data]
+     val layout: Layout]
   }
 }

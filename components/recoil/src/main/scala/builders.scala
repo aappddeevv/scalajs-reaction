@@ -42,11 +42,14 @@ object ReadOnlySelectorBuilder {
 
 object SelectorFamilyROBuilder {
 
-  class SelectorFamilyROBuilderWithKey[P, T](_key: String, _thunk: P => GetRecoilValue[T] => Return[T]) {
+  class SelectorFamilyROBuilderWithKey[P, T](_key: String, _thunk: P => ReadOnlyAccessors => Return[T]) {
     def build =
       utils_module.selectorFamilyRO[P, T](new ReadOnlySelectorFamilyOptions[P, T] {
         val key = _key
-        def get(arg: P) = _thunk(arg): js.Function1[GetRecoilValue[T], Return[T]]
+        //def get(arg: P) = _thunk(arg): js.Function1[ReadOnlyAccessors, Return[T]]
+        val get = { (args: P) => 
+            _thunk(args):js.Function1[ReadOnlyAccessors, Return[T]]
+        }: js.Function1[P, js.Function1[ReadOnlyAccessors, Return[T]]]
       })
   }
 
@@ -60,6 +63,6 @@ object SelectorFamilyROBuilder {
 //   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
   }
 
-  def apply[P, T](key: String, thunk: P => GetRecoilValue[T] => Return[T]) =
+  def apply[P, T](key: String, thunk: P => ReadOnlyAccessors => Return[T]) =
     new SelectorFamilyROBuilderWithKey[P, T](key, thunk)
 }
