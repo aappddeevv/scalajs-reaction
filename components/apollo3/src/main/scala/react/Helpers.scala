@@ -239,7 +239,6 @@ case class UseMutation[T, TVars]() {
         "onCompleted" -> onCompleted,
         "onError" -> onError,
         "update" -> update,
-        //"variables" -> variables.asInstanceOf[js.Any],
       )
     if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
     if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
@@ -300,7 +299,6 @@ case class UseMutation[T, TVars]() {
         "context" -> context,
         "fetchPolicy" -> fetchPolicy,
         "errorPolicy" -> errorPolicy,
-        //"variables" -> variables.asInstanceOf[js.Any],
         "update" -> update,
         "awaitRefetchQueries" -> awaitRefetchQueries,
         "updateQueries" -> updateQueries,

@@ -18,6 +18,7 @@ object URIRemap extends AutoPlugin {
         val a = baseDirectory.value.toURI
         val process_result = sys.process
           .Process("git rev-parse HEAD")
+          //.Process("git tag --list | head")
           .lineStream_!
           .head
         val g = "https://raw.githubusercontent.com/aappddeevv/scalajs-reaction"

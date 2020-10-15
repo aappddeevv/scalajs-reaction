@@ -35,7 +35,7 @@ package object react extends react.React with When {
 
   /** General purpose type that grabs AnyVal and some js types. Using just js.Any is not ergonomic. */
   type AllType =
-    Boolean | Byte | Short | Float | String | Double | Int | js.Any /*js.Object*/ | js.Dictionary[_] | js.Symbol | js.Array[
+    Boolean | Byte | Short | Float | String | Long | Double | Int | js.Any /*js.Object*/ | js.Dictionary[_] | js.Symbol | js.Array[
       scala.Any] | Null | Unit
 
   /** Hook dependencies data structure. Should this be scala.Any?

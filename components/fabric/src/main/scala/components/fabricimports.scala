@@ -121,7 +121,7 @@ trait IColumnBase extends ClassName {
   var isResizable: js.UndefOr[Boolean] = js.undefined
   var isPadded: js.UndefOr[Boolean] = js.undefined
   var isFiltered: js.UndefOr[Boolean] = js.undefined
-  var maxWidth: js.UndefOr[Double] = js.undefined
+  var maxWidth: js.UndefOr[Int] = js.undefined
   var onColumnClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] = js.undefined
   var onColumnContextMenu: js.UndefOr[js.Function2[js.Any, js.Any, Unit]] = js.undefined
   var onColumnResize: js.UndefOr[js.Function1[Int,Unit]] = js.undefined
@@ -189,6 +189,14 @@ object IColumn {
 
   /** Unsafe conversion. */
   def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
+  
+  /** Uses js.Object.assign so its *not* hierarchical merging. */
+  implicit class ExtraRichIColumn(private val col: IColumn) extends AnyVal {
+    /** Takes current (minWidth, maxWidth) argument. */
+    def modifyMaxWidth(f: (js.UndefOr[Int], js.UndefOr[Int]) => js.UndefOr[Int]) = 
+        js.Object.assign(new js.Object, col, 
+            js.Dynamic.literal("maxWidth" -> f(col.minWidth, col.maxWidth).asInstanceOf[js.Any])).asInstanceOf[IColumn]
+  }
 }
 
 trait IColumnReorderOptions extends js.Object {

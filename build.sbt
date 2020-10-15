@@ -103,6 +103,7 @@ lazy val root = project
   .settings(skip in publish := true)
   .aggregate(
     apollo,
+    apollo3,
     `apollo-server`,
     bootstrap,
     dataloader,
