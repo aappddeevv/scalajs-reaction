@@ -11,4 +11,4 @@ jobs:
       with:
         java-version: openjdk@1.14
     - name: Compile
-      run: sbt fastOptJS
+      run: sbt compile 

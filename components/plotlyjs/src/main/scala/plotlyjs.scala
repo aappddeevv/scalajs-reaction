@@ -27,7 +27,7 @@ import js.JSConverters._
 import org.scalajs.dom
 
 package object plotlyjs {
-  type Root = String|dom.html.Element
+  type Root = String | dom.html.Element
   type Color = String | Int
   type ColorScaleItem = js.Tuple2[Double, String] // e.g. String => js.Array(0.2, "rgb(245,195,157)")
   type Datum = Double | Int | String | js.Date | Null
@@ -35,7 +35,7 @@ package object plotlyjs {
 
   /** Create a datum array. */
   def datumArray(args: Datum*) = args.toJSArray
-  
+
   /** List of Datums */
   type DatumArray = js.Array[Datum]
 
@@ -43,7 +43,7 @@ package object plotlyjs {
 
   /** Helper to create traces array. */
   def traces(traces: Trace*) = traces.toJSArray
-  
+
   @js.native
   @JSImport("plotly.js", "Plots")
   object Plots extends js.Object {

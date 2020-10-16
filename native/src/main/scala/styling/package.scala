@@ -27,8 +27,8 @@ import scala.scalajs.js.|
 
 package object styling {
   type ComponentStyle = ViewStyle | TextStyle | ImageStyle
-  type DynamicStyle   = js.Object | js.Dynamic
-  type StyleAny       = ComponentStyle | DynamicStyle
+  type DynamicStyle = js.Object | js.Dynamic
+  type StyleAny = ComponentStyle | DynamicStyle
 
   /** Individual stytle object or an array of them. */
   type Style = StyleAny | js.Array[StyleAny]

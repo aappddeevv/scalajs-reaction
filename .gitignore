@@ -42,3 +42,5 @@ project/secret
 *.swp
 scalajs-reaction-docs
 *swp
+.bsp
+/*.yml

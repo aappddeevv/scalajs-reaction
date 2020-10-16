@@ -44,11 +44,11 @@ object MarqueeSelection {
   trait IMarqueeSelection extends js.Object
 
   trait Props[T <: js.Object] extends ComponentRef[IMarqueeSelection] with Attributes {
-    var selection: js.UndefOr[ISelection[T]]                              = js.undefined
-    var rootProps: js.UndefOr[HTMLAttributes[dom.html.Div]]               = js.undefined
+    var selection: js.UndefOr[ISelection[T]] = js.undefined
+    var rootProps: js.UndefOr[HTMLAttributes[dom.html.Div]] = js.undefined
     var onShouldStartSelection: js.UndefOr[js.Function1[js.Any, Boolean]] = js.undefined
-    var isEnabled: js.UndefOr[Boolean]                                    = js.undefined
-    var isDraggingConstrainedToRoot: js.UndefOr[Boolean]                  = js.undefined
+    var isEnabled: js.UndefOr[Boolean] = js.undefined
+    var isDraggingConstrainedToRoot: js.UndefOr[Boolean] = js.undefined
 
   }
 }

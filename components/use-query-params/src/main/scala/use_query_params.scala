@@ -25,12 +25,15 @@ package object use_query_params {
   import use_query_params._
   type QueryConfig = js.Dictionary[Param]
 
-  def useQueryParam[T](name: String, encoder: Param): (js.UndefOr[T], js.Function2[T, js.UndefOr[UrlUpdateType], Unit]) = 
-        module.useQueryParam[T](name, encoder)
-    
+  def useQueryParam[T](
+    name: String,
+    encoder: Param): (js.UndefOr[T], js.Function2[T, js.UndefOr[UrlUpdateType], Unit]) =
+    module.useQueryParam[T](name, encoder)
 
-  def useQueryParams(name: String, encoders: QueryConfig): (String, js.Function2[js.Dictionary[js.Any], UrlUpdateType, Unit]) =
-   module.useQueryParams(name, encoders)
+  def useQueryParams(
+    name: String,
+    encoders: QueryConfig): (String, js.Function2[js.Dictionary[js.Any], UrlUpdateType, Unit]) =
+    module.useQueryParams(name, encoders)
 
   val NumberParam: Param = module.NumberParam
   val StringParam: Param = module.StringParam

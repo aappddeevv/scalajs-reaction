@@ -23,7 +23,7 @@ package fabric
 package components
 
 import scala.scalajs.js
-import js.annotation._ 
+import js.annotation._
 
 import org.scalajs.dom
 

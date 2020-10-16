@@ -30,18 +30,18 @@ import scala.scalajs.js.annotation.{ JSImport, JSName }
 @js.native
 @JSImport("react-native", "AsyncStorage")
 object AsyncStorage extends js.Object {
-  def getItem(key: String): js.Promise[String]                = js.native
-  def setItem(key: String, value: String): js.Promise[Unit]   = js.native
-  def removeItem(key: String): js.Promise[Unit]               = js.native
+  def getItem(key: String): js.Promise[String] = js.native
+  def setItem(key: String, value: String): js.Promise[Unit] = js.native
+  def removeItem(key: String): js.Promise[Unit] = js.native
   def mergeItem(key: String, value: String): js.Promise[Unit] = js.native
   // clears everything!
   @JSName("clear")
   def unsafe_clear_everything(): js.Promise[Unit] = js.native
-  def getAllKeys(): js.Promise[js.Array[String]]  = js.native
+  def getAllKeys(): js.Promise[js.Array[String]] = js.native
   // ???
-  def flushGetRequests(): js.Object                                            = js.native
+  def flushGetRequests(): js.Object = js.native
   def multiGet(keys: js.Array[String]): js.Promise[js.Array[js.Array[String]]] = js.native
-  def multiSet(keyValuesPairs: js.Array[js.Array[String]]): js.Promise[Unit]   = js.native
-  def multiRemove(keys: js.Array[String]): js.Promise[Unit]                    = js.native
-  def multiMerge(keyValuePairs: js.Array[js.Array[String]]): js.Promise[Unit]  = js.native
+  def multiSet(keyValuesPairs: js.Array[js.Array[String]]): js.Promise[Unit] = js.native
+  def multiRemove(keys: js.Array[String]): js.Promise[Unit] = js.native
+  def multiMerge(keyValuePairs: js.Array[js.Array[String]]): js.Promise[Unit] = js.native
 }

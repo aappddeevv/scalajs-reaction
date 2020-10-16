@@ -77,7 +77,7 @@ object QueryOptions {
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
     variables: js.UndefOr[TVars | js.Object | js.Dynamic] = js.undefined,
     context: js.UndefOr[Any] = js.undefined
-  ) = 
+  ) =
     js.Dynamic
       .literal(
         "query" -> query,

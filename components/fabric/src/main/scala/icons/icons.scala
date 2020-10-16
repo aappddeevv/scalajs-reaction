@@ -30,9 +30,9 @@ import fabric.styling.IIconOptions
 @js.native
 private[fabric] trait module_icons extends js.Object {
   def initializeIcons(
-      baseUrl: js.UndefOr[String] = js.undefined,
-      options: js.UndefOr[IIconOptions] = js.undefined
-    ): Unit = js.native
+    baseUrl: js.UndefOr[String] = js.undefined,
+    options: js.UndefOr[IIconOptions] = js.undefined
+  ): Unit = js.native
 }
 
 @js.native

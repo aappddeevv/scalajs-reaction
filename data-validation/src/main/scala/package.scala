@@ -39,7 +39,7 @@ package object validation {
 
   object Path {
     def apply(segments: String*): Path = segments.toVector
-    def empty                          = Nil
+    def empty = Nil
   }
 
   /** Allow multiple errors if invalid, Validated has rich combinators including

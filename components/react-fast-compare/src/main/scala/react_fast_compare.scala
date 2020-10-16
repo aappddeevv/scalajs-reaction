@@ -27,4 +27,3 @@ package object react_fast_compare {
   @JSImport("react-fast-compare", JSImport.Default)
   def isEqual(lhs: js.UndefOr[js.Any], rhs: js.UndefOr[js.Any]): Boolean = js.native
 }
-

@@ -43,8 +43,8 @@ object Link {
     createElementN(JS, props)(children: _*)
 
   trait StyleProps extends js.Object {
-    var className: js.UndefOr[String]   = js.undefined
-    var isButton: js.UndefOr[Boolean]   = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var isButton: js.UndefOr[Boolean] = js.undefined
     var isDisabled: js.UndefOr[Boolean] = js.undefined
   }
 

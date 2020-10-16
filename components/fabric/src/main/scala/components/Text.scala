@@ -41,41 +41,41 @@ object Text {
   def apply(variant: Variant, text: String) =
     createElement(JS, js.Dynamic.literal("variant" -> variant), text.asInstanceOf[ReactNode])
 
-  def block(text: String) = 
+  def block(text: String) =
     createElement(JS, js.Dynamic.literal("block" -> true), text.asInstanceOf[ReactNode])
-  
-  def block(variant: Variant, text: String) = 
+
+  def block(variant: Variant, text: String) =
     createElement(JS, js.Dynamic.literal("variant" -> variant, "block" -> true), text.asInstanceOf[ReactNode])
-  
-  def nowrap(text: String) = 
+
+  def nowrap(text: String) =
     createElement(JS, js.Dynamic.literal("nowrap" -> true), text.asInstanceOf[ReactNode])
-  
-  def ellipsis(text: String) = 
+
+  def ellipsis(text: String) =
     createElement(JS, js.Dynamic.literal("block" -> true, "nowrap" -> true), text.asInstanceOf[ReactNode])
-  
+
   // from ReactJsProps
-  trait Props extends ReactJSProps with HTMLAttributes[dom.html.Element]{
+  trait Props extends ReactJSProps with HTMLAttributes[dom.html.Element] {
     var variant: js.UndefOr[Variant] = js.undefined
-    var nowrap: js.UndefOr[Boolean]  = js.undefined
-    var block: js.UndefOr[Boolean]   = js.undefined
+    var nowrap: js.UndefOr[Boolean] = js.undefined
+    var block: js.UndefOr[Boolean] = js.undefined
   }
 
   /** These need to match IFontStyles. */
   @js.native
   abstract trait Variant extends js.Any
   object Variant {
-    val large       = "large".asInstanceOf[Variant]
-    val medium      = "medium".asInstanceOf[Variant]
-    val mediumPlus  = "mediumPlus".asInstanceOf[Variant]
-    val mega        = "mega".asInstanceOf[Variant]
-    val small       = "small".asInstanceOf[Variant]
-    val smallPlus   = "smallPlus".asInstanceOf[Variant]
-    val superLarge  = "superLarge".asInstanceOf[Variant]
-    val tiny        = "tiny".asInstanceOf[Variant]
-    val xLarge      = "xLarge".asInstanceOf[Variant]
-    val xLargePlus  = "xLargePlus".asInstanceOf[Variant]
-    val xSmall      = "xSmall".asInstanceOf[Variant]
-    val xxLarge     = "xxLarge".asInstanceOf[Variant]
+    val large = "large".asInstanceOf[Variant]
+    val medium = "medium".asInstanceOf[Variant]
+    val mediumPlus = "mediumPlus".asInstanceOf[Variant]
+    val mega = "mega".asInstanceOf[Variant]
+    val small = "small".asInstanceOf[Variant]
+    val smallPlus = "smallPlus".asInstanceOf[Variant]
+    val superLarge = "superLarge".asInstanceOf[Variant]
+    val tiny = "tiny".asInstanceOf[Variant]
+    val xLarge = "xLarge".asInstanceOf[Variant]
+    val xLargePlus = "xLargePlus".asInstanceOf[Variant]
+    val xSmall = "xSmall".asInstanceOf[Variant]
+    val xxLarge = "xxLarge".asInstanceOf[Variant]
     val xxLargePlus = "xxLargePlus".asInstanceOf[Variant]
   }
 

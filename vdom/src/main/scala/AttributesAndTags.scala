@@ -191,10 +191,10 @@ trait HTMLTagsX {
   ) = div(new DivProps { `key` = key; className = cn })(children: _*)
 
   def divWithProps(props: DivProps) = div(props)()
-  
-  def divWithHTML(html: String) = 
+
+  def divWithHTML(html: String) =
     div(new DivProps {
-        dangerouslySetInnerHTML = SetInnerHTML(html)
+      dangerouslySetInnerHTML = SetInnerHTML(html)
     })()
 
   // should be dom.html.Dl
@@ -770,8 +770,7 @@ trait HTMLAttributesBase[+T <: dom.EventTarget] extends js.Object {
   var willChange: js.UndefOr[String] = js.undefined;
 }
 
-trait HTMLAttributes[+T <: dom.EventTarget] 
-    extends HTMLAttributesBase[T] with AriaAttributes[T] with DOMAttributes[T]
+trait HTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributesBase[T] with AriaAttributes[T] with DOMAttributes[T]
 
 trait AriaAttributes[+T <: dom.EventTarget] extends js.Object {
 
@@ -1101,8 +1100,7 @@ trait InputHTMLAttributesBase[+T <: dom.EventTarget] extends js.Object {
   var onChange: js.UndefOr[ChangeEventHandler[T @uv]] = js.undefined
 }
 
-trait InputHTMLAttributes[+T <: dom.EventTarget] 
-    extends InputHTMLAttributesBase[T] with HTMLAttributes[T]
+trait InputHTMLAttributes[+T <: dom.EventTarget] extends InputHTMLAttributesBase[T] with HTMLAttributes[T]
 
 trait InsHTMLAttributes[+T <: dom.EventTarget] extends HTMLAttributes[T] {
   var cite: js.UndefOr[String] = js.undefined

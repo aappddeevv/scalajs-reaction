@@ -29,27 +29,27 @@ import scala.scalajs.js
 @js.native
 sealed trait InjectionMode extends js.Any
 object InjectionMode {
-  val none        = 0.asInstanceOf[InjectionMode]
-  val insertMode  = 1.asInstanceOf[InjectionMode]
+  val none = 0.asInstanceOf[InjectionMode]
+  val insertMode = 1.asInstanceOf[InjectionMode]
   val appendChild = 2.asInstanceOf[InjectionMode]
 }
 
 trait IStylesheetConfig extends js.Object {
-  var injectionMode: js.UndefOr[InjectionMode]             = js.undefined
-  var defaultPrefix: js.UndefOr[String]                    = js.undefined
+  var injectionMode: js.UndefOr[InjectionMode] = js.undefined
+  var defaultPrefix: js.UndefOr[String] = js.undefined
   var onInsertRule: js.UndefOr[js.Function1[String, Unit]] = js.undefined
 }
 
 @js.native
 trait Stylesheet extends js.Object {
-  def getInstance(): Stylesheet                                       = js.native
-  def setConfig(config: js.UndefOr[IStylesheetConfig]): Unit          = js.native
-  def reset(): Unit                                                   = js.native
-  def resetKeys(): Unit                                               = js.native
-  def getRules(): String                                              = js.native
-  def argsFromClassName(className: String): js.Array[IStyle]          = js.native
+  def getInstance(): Stylesheet = js.native
+  def setConfig(config: js.UndefOr[IStylesheetConfig]): Unit = js.native
+  def reset(): Unit = js.native
+  def resetKeys(): Unit = js.native
+  def getRules(): String = js.native
+  def argsFromClassName(className: String): js.Array[IStyle] = js.native
   def insertedRulesFromClassName(className: String): js.Array[String] = js.native
-  def insertRule(rule: String): Unit                                  = js.native
-  def getClassName(displayName: js.UndefOr[String]): String           = js.native
-  def onReset(callback: js.Function0[Unit]): Unit                     = js.native
+  def insertRule(rule: String): Unit = js.native
+  def getClassName(displayName: js.UndefOr[String]): String = js.native
+  def onReset(callback: js.Function0[Unit]): Unit = js.native
 }

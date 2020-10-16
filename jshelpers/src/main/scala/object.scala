@@ -33,28 +33,28 @@ final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal {
 
   /** Shallow merge.
    */
-  @inline def combine(that: A|Unit*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
+  @inline def combine(that: A | Unit*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
   /** Combine with a js.Dynamic explicitly. */
-  @inline def combineDynamic(that: js.Dynamic*) = 
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
+  @inline def combineDynamic(that: js.Dynamic*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
   /** Combine with a generic js object or undefined. */
-  @inline def combineGeneric(that: js.Object|Unit*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
+  @inline def combineGeneric(that: js.Object | Unit*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
   /** Combine with something!?! */
-  @inline def unsafeCombine(that: js.Any*) = 
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[A]
+  @inline def unsafeCombine(that: js.Any*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
   /** Combine with a generic js object and cast. */
-  @inline def combineGenericTo[B](that: js.Object|Unit*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[B]
+  @inline def combineGenericTo[B](that: js.Object | Unit*) =
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[B]
 
   /** Combine with a dynamic and cast. */
   @inline def combineDynamicTo[B](that: js.Dynamic*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]:_*).asInstanceOf[B]
+    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[B]
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
   @inline def as[T] = o.asInstanceOf[T]

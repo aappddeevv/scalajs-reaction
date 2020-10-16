@@ -48,9 +48,7 @@ package object extras {
   /** Force a render. */
   def useForceRender() = {
     val (s, update) = useStateStrict[Boolean](true)
-    val fr = useCallbackMounting(() =>
-        update(!_)
-        )
+    val fr = useCallbackMounting(() => update(!_))
     //() => update(!_)
     fr
   }
@@ -61,7 +59,7 @@ package object extras {
     useEffect(value.hashCode)(() => ref.current = value)
     ref.current
   }
-  
+
   /** Use previous value using reference equality (I think). */
   def usePreviousValue[T <: js.Any](value: T) = {
     val ref = useRef[T](value)
@@ -97,5 +95,4 @@ package object extras {
   def useCustomCompareEffect[T](create: EffectArg, input: T, compare: (T, T) => Boolean) =
     useEffect(unsafeDeps(useMemoCompare(input, compare)))(create)
 
-    
 }

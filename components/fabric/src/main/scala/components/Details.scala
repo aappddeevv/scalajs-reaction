@@ -37,19 +37,19 @@ import fabric.styling._
 
 object Details {
 
-    type OnColumnResize = js.Function3[IColumn, Double, Int, Unit]
-    
-    def OnColumnResize(f: (IColumn, Double, Int) => Unit): js.UndefOr[OnColumnResize] = 
-        js.defined(f(_,_,_))
+  type OnColumnResize = js.Function3[IColumn, Double, Int, Unit]
 
-    type OnActiveItemChanged[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
-    
-    def OnActiveItemChanged[T <: js.Object](f: (T,Int,ReactFocusEvent[dom.html.Element]) => Unit) =
-        js.Any.fromFunction3(f).asInstanceOf[OnActiveItemChanged[T]]
-    
-    type OnColumnHeaderClick = js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]
-    type OnItemInvoked[T <: js.Object] = js.Function3[T, Int, ReactEvent[_], Unit]
-    
+  def OnColumnResize(f: (IColumn, Double, Int) => Unit): js.UndefOr[OnColumnResize] =
+    js.defined(f(_, _, _))
+
+  type OnActiveItemChanged[T <: js.Object] = js.Function3[T, Int, ReactFocusEvent[dom.html.Element], Unit]
+
+  def OnActiveItemChanged[T <: js.Object](f: (T, Int, ReactFocusEvent[dom.html.Element]) => Unit) =
+    js.Any.fromFunction3(f).asInstanceOf[OnActiveItemChanged[T]]
+
+  type OnColumnHeaderClick = js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]
+  type OnItemInvoked[T <: js.Object] = js.Function3[T, Int, ReactEvent[_], Unit]
+
   @js.native
   sealed trait LayoutMode extends js.Any
   object LayoutMode {
@@ -187,9 +187,9 @@ object Details {
 
 //     def apply(props: Props = null)(children: ReactNode*) =
 //       createElementN(JS, props)(children: _*)
-      
+
     def apply(props: Props) = createElement(JS, props)
-      
+
     @js.native
     trait IDetailsHeader extends Focusable2
 
@@ -215,15 +215,14 @@ object Details {
       var columnReorderOptions: js.UndefOr[IColumnReorderOptions] = js.undefined
       var minimumPixelsForDrag: js.UndefOr[Int] = js.undefined
     }
-    
+
     /** Use for reation without the vals. */
-    trait PropsInit extends BaseProps { 
-    }
-    
+    trait PropsInit extends BaseProps {}
+
     object PropsInit {
-        implicit class RichPropsInit(private val props: PropsInit) extends AnyVal {
-            def required = props.asInstanceOf[Props]
-        }
+      implicit class RichPropsInit(private val props: PropsInit) extends AnyVal {
+        def required = props.asInstanceOf[Props]
+      }
     }
 
     // trait Props extends ComponentRef[IDetailsHeader] {
@@ -311,11 +310,11 @@ object Details {
     @js.native
     trait IDetailsList extends components.List.IList {
       def focusIndex(
-          index: Int,
-          forceIntoFirstElement: js.UndefOr[Boolean] = js.undefined,
-          measureItem: js.UndefOr[js.Function1[Int, Int]] = js.undefined,
-          scrollToMode: js.UndefOr[components.List.ScrollToMode] = js.undefined
-        ): Unit = js.native
+        index: Int,
+        forceIntoFirstElement: js.UndefOr[Boolean] = js.undefined,
+        measureItem: js.UndefOr[js.Function1[Int, Int]] = js.undefined,
+        scrollToMode: js.UndefOr[components.List.ScrollToMode] = js.undefined
+      ): Unit = js.native
     }
 
     trait PropsBase[T <: js.Object]
@@ -331,15 +330,15 @@ object Details {
       //var className: js.UndefOr[String] = js.undefined
       //var groups: js.UndefOr[js.Array[IGroup]] = js.undefined
       var checkboxCellClassName: js.UndefOr[String] = js.undefined
-    var checkboxVisibility: js.UndefOr[CheckboxVisibility] = js.undefined
+      var checkboxVisibility: js.UndefOr[CheckboxVisibility] = js.undefined
       var compact: js.UndefOr[Boolean] = js.undefined
       var columns: js.UndefOr[js.Array[IColumn]] = js.undefined
       var enterModalSelectionOnTouch: js.UndefOr[Boolean] = js.undefined
-      var getKey: js.UndefOr[js.Function2[js.UndefOr[T], Int, String|Int]] = js.undefined
+      var getKey: js.UndefOr[js.Function2[js.UndefOr[T], Int, String | Int]] = js.undefined
       @JSName("getKey")
-      var getKeyString: js.UndefOr[js.Function2[js.UndefOr[T],Int,String]] = js.undefined
+      var getKeyString: js.UndefOr[js.Function2[js.UndefOr[T], Int, String]] = js.undefined
       @JSName("getKey")
-      var getKeyInt: js.UndefOr[js.Function2[js.UndefOr[T],Int,Int]] = js.undefined
+      var getKeyInt: js.UndefOr[js.Function2[js.UndefOr[T], Int, Int]] = js.undefined
       var indentWidth: js.UndefOr[Double] = js.undefined
       var initialFocusedIndex: js.UndefOr[Int] = js.undefined
       var isHeaderVisible: js.UndefOr[Boolean] = js.undefined
@@ -433,7 +432,7 @@ object Details {
     }
     trait PropsInit[T <: js.Object] extends PropsBase[T] {
       var items: js.UndefOr[js.Array[T]] = js.undefined
-  }
+    }
 
     object PropsInit {
       private implicit class RichPropsInit[T <: js.Object](private val item: PropsInit[T]) extends AnyVal {
@@ -451,7 +450,7 @@ object Details {
 
     trait Props[T <: js.Object] extends PropsBase[T] {
       val items: js.Array[T]
-  }
+    }
 
   }
 

@@ -28,12 +28,12 @@ import scala.scalajs.js.annotation.JSImport
 @js.native
 sealed trait KeyboardEventName extends js.Any
 object KeyboardEventName {
-  val keyboardWillShow        = "keyboardWillShow".asInstanceOf[KeyboardEventName]
-  val keyboardDidShow         = "keyboardDidShow".asInstanceOf[KeyboardEventName]
-  val keyboardWillHide        = "keyboardWillHide".asInstanceOf[KeyboardEventName]
-  val keyboardDidHide         = "keyboardDidHide".asInstanceOf[KeyboardEventName]
+  val keyboardWillShow = "keyboardWillShow".asInstanceOf[KeyboardEventName]
+  val keyboardDidShow = "keyboardDidShow".asInstanceOf[KeyboardEventName]
+  val keyboardWillHide = "keyboardWillHide".asInstanceOf[KeyboardEventName]
+  val keyboardDidHide = "keyboardDidHide".asInstanceOf[KeyboardEventName]
   val keyboardWillChangeFrame = "keyboardWillChangeFrame".asInstanceOf[KeyboardEventName]
-  val keyboardDidChangeFrame  = "keyboardDidChangeFrame".asInstanceOf[KeyboardEventName]
+  val keyboardDidChangeFrame = "keyboardDidChangeFrame".asInstanceOf[KeyboardEventName]
 }
 
 @js.native
@@ -47,6 +47,6 @@ object Keyboard extends js.Object {
   def addListener(eventName: KeyboardEventName, cb: js.Function0[Unit]): NativeEventListener = js.native
   // use Listener.remove()
   def removeListener(eventName: KeyboardEventName, cb: js.Function0[Unit]): Unit = js.native
-  def removeAllListeners(): Unit                                                 = js.native
-  def dismiss(): Unit                                                            = js.native
+  def removeAllListeners(): Unit = js.native
+  def dismiss(): Unit = js.native
 }

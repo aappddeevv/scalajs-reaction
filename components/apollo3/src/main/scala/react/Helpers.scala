@@ -113,7 +113,7 @@ trait OptionsMaker[T, TVars] extends ApolloClientOptionsMaker[T, TVars] {
  * Instantiate the object then use values and methods in it without
  * need to always specify the types.
  */
-case class UseQuery[T, TVars]() extends OptionsMaker[T,TVars] with ApolloClientOptionsMaker[T,TVars]{
+case class UseQuery[T, TVars]() extends OptionsMaker[T, TVars] with ApolloClientOptionsMaker[T, TVars] {
   type TArg = T
   type TVarsArg = TVars
   def useQuery(
@@ -205,8 +205,8 @@ case class UseMutation[T, TVars]() {
     mutation: DocumentNode,
     options: js.UndefOr[MutationHookOptions[T, TVars] | js.Dynamic] = js.undefined
   ): (
-      js.Function1[MutationFunctionOptions[T, TVars], js.Promise[StandardFetchResult[T]]],
-      MutationResult[T]
+    js.Function1[MutationFunctionOptions[T, TVars], js.Promise[StandardFetchResult[T]]],
+    MutationResult[T]
   ) = apollo.client3.react.useMutation[T, TVars](mutation, options)
 
   /** Make MutationHookOptions */

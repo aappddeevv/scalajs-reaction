@@ -79,6 +79,7 @@ trait QueryResult[T, TVars] extends ObservableQueryFields[T, TVars] {
   var error: js.UndefOr[ApolloError] = js.native
   var loading: Boolean = js.native
   var networkStatus: NetworkStatus = js.native
+
   /** Only true with lazy query. */
   var called: Boolean = js.native
 }
@@ -95,7 +96,6 @@ object QueryResult {
       !qr.loading && qr.networkStatus == NetworkStatus.ready
   }
 }
-
 
 trait QueryDataOptions[T, TVars] extends QueryFunctionOptions[T, TVars] {
   var query: DocumentNode
@@ -163,6 +163,7 @@ trait MutationFunctionOptions[T, TVars] extends js.Object {
 
 @js.native
 trait MutationResult[T] extends js.Object {
+
   /** Unlike QueryResul,t this is js.UndefOr[T|Null] */
   val data: js.UndefOr[T | Null] = js.native
   val error: js.UndefOr[ApolloError] = js.native
@@ -196,6 +197,7 @@ trait BaseSubscriptionOptions[T, TVars] extends js.Object {
 @js.native
 trait SubscriptionResult[T] extends js.Object {
   val loading: Boolean = js.native
+
   /** Matches QueryResult.data but not MutationResult.data. */
   val data: js.UndefOr[T] = js.native
   val error: js.UndefOr[ApolloError] = js.native

@@ -80,7 +80,7 @@ object stylelist {
 object StyleSheet extends js.Object {
   @JSName("create")
   def unsafeCreate[T <: js.Object](styleSet: T): RegisteredStyleSet[T] = js.native
-  def create[T <: StyleSet](styles: T): RegisteredStyleSet[T]          = js.native
+  def create[T <: StyleSet](styles: T): RegisteredStyleSet[T] = js.native
   // this operates an the style level, not styleset. func cannot take var args!
   def flatten[T <: js.Object](style: T | js.Array[T] | Style): js.UndefOr[T] = js.native
 
@@ -88,16 +88,16 @@ object StyleSheet extends js.Object {
   // this does not seem to work well for typing...who makes this stuff up?
   //def compose[T <: js.Object](style1: T | Style, style2: T | Style): T | js.Array[T] = js.native
 
-  val hairlineWidth: Double                               = js.native
-  val absoluteFillObject: AbsoluteFillStyle               = js.native
+  val hairlineWidth: Double = js.native
+  val absoluteFillObject: AbsoluteFillStyle = js.native
   val absoluteFill: RegisteredStyleSet[AbsoluteFillStyle] = js.native
 }
 
 @js.native
 trait AbsoluteFillStyle extends js.Object {
   val position: js.UndefOr[String] = js.undefined
-  val left: js.UndefOr[Int]        = js.undefined
-  val right: js.UndefOr[Int]       = js.undefined
-  val top: js.UndefOr[Int]         = js.undefined
-  val bottom: js.UndefOr[Int]      = js.undefined
+  val left: js.UndefOr[Int] = js.undefined
+  val right: js.UndefOr[Int] = js.undefined
+  val top: js.UndefOr[Int] = js.undefined
+  val bottom: js.UndefOr[Int] = js.undefined
 }

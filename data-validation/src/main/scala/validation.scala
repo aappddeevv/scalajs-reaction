@@ -66,7 +66,7 @@ trait Algebra[F[_]] {
 trait ApplicativeAlgebra[F[_], E] extends Algebra[F] {
   implicit val A: ApplicativeError[F, E]
   def succeed[I]: Validator[F, I, I] = pure(A.pure)
-  def fail[I]: Validator[F, I, I]    = failure(_ => "failed")
+  def fail[I]: Validator[F, I, I] = failure(_ => "failed")
 
   // is this needed? potentially remove...requires knowing details of E
   // which you may know only in a specific implementation of the interpreter
@@ -111,7 +111,7 @@ object StrictApplicativeAlgebra {
   // https://stackoverflow.com/questions/42126125/merging-multiple-validated-into-single-one
   implicit object validatedAlg extends StrictApplicativeAlgebra[ValidatedNec[String, *], NonEmptyChain[String]] {
     type FF[T] = ValidatedNec[String, T]
-    type EE    = NonEmptyChain[String]
+    type EE = NonEmptyChain[String]
     val A = ApplicativeError[ValidatedNec[String, *], EE]
     val logic = new Logic {
       import Validated.{ invalid, Invalid, Valid }
@@ -139,7 +139,7 @@ object StrictApplicativeAlgebra {
 
   implicit object optionAlg extends StrictApplicativeAlgebra[Option, Unit] {
     type FF[T] = Option[T]
-    val A                                = ApplicativeError[Option, Unit]
+    val A = ApplicativeError[Option, Unit]
     def failure[I](message: I => String) = pure(t => A.raiseError(()))
     val logic = new Logic {
       val AndSemigroupK = new SemigroupK[FF] {
@@ -160,7 +160,7 @@ object StrictApplicativeAlgebra {
 
   implicit object eitherAlg extends StrictApplicativeAlgebra[Either[String, *], String] {
     type FF[T] = Either[String, T]
-    val A                                = ApplicativeError[Either[String, *], String]
+    val A = ApplicativeError[Either[String, *], String]
     def failure[I](message: I => String) = pure(t => A.raiseError(message(t)))
     val logic = new Logic {
       val AndSemigroupK = new SemigroupK[FF] {
@@ -183,7 +183,7 @@ object StrictApplicativeAlgebra {
 
   implicit object eitherNecAlg
       extends StrictApplicativeAlgebra[Either[NonEmptyChain[String], *], NonEmptyChain[String]] {
-    type EE    = NonEmptyChain[String]
+    type EE = NonEmptyChain[String]
     type FF[T] = Either[EE, T]
     val A = ApplicativeError[FF, EE]
     def failure[I](message: I => String) =
@@ -217,14 +217,14 @@ trait LogicOps[F[_], E] {
   /** *and* the results, if one fails, return invalid. Collects *all* messages if failed. */
   def andAll[T](left: Validator[F, T, T], right: Validator[F, T, T]*): Validator[F, T, T] = pure { t =>
     val combine = logic.AndSemigroupK.algebra[T].combine _
-    val list    = NonEmptyChain(left, right: _*).map(_(t))
+    val list = NonEmptyChain(left, right: _*).map(_(t))
     list.tail.foldLeft(list.head)(combine)
   }
 
   /** *or* the results, if one succeeds, return valid. Collects *all* messages if failed. */
   def orAll[T](left: Validator[F, T, T], right: Validator[F, T, T]*): Validator[F, T, T] = pure { t =>
     val combine = logic.OrSemigroupK.algebra[T].combine _
-    val list    = NonEmptyChain(left, right: _*).map(_(t))
+    val list = NonEmptyChain(left, right: _*).map(_(t))
     list.tail.foldLeft(list.head)(combine)
   }
 }
@@ -275,9 +275,8 @@ trait StringOps[F[_], E] {
   import alg._
 
   def startsWith(prefix: String) =
-    test[String]("ttg.startsWith", failure(_ => s"must start with '$prefix'"))(
-      t => if (t startsWith prefix) true else false
-    )
+    test[String]("ttg.startsWith", failure(_ => s"must start with '$prefix'"))(t =>
+      if (t startsWith prefix) true else false)
 
   def endsWith(prefix: String) =
     test[String]("ttg.endsWith", failure(_ => s"must end with '$prefix'"))(
@@ -301,16 +300,12 @@ trait StringOps[F[_], E] {
   def matchRegexPattern(pattern: Pattern, partialMatchAllowed: Boolean = true) =
     test[String](
       "ttg.matchRegexPattern",
-      failure(
-        _ =>
-          if (partialMatchAllowed) s"must match regular expression '$pattern'"
-          else s"must full match regular expression '$pattern'"
-      )
-    )(
-      t =>
-        if (partialMatchAllowed) pattern.matcher(t).find()
-        else pattern.matcher(t).matches()
-    )
+      failure(_ =>
+        if (partialMatchAllowed) s"must match regular expression '$pattern'"
+        else s"must full match regular expression '$pattern'")
+    )(t =>
+      if (partialMatchAllowed) pattern.matcher(t).find()
+      else pattern.matcher(t).matches())
 
   def matchRegexString(regex: String, partial: Boolean = true) =
     matchRegex(regex.r, partial)
@@ -404,15 +399,13 @@ trait NumberOps[F[_], E] {
 
   /** Inclusive */
   def between[T: Ordering](lower: T, upper: T, prefix: String = "Got") =
-    test[T]("ttg.between", failure(t => s"$prefix $t, should be between [$lower, $upper]"))(
-      t => Ordering[T].gteq(t, lower) && Ordering[T].lteq(t, upper)
-    )
+    test[T]("ttg.between", failure(t => s"$prefix $t, should be between [$lower, $upper]"))(t =>
+      Ordering[T].gteq(t, lower) && Ordering[T].lteq(t, upper))
 
   /** Exclsive. */
   def within[T: Ordering](lower: T, upper: T, prefix: String = "Got") =
-    test[T]("ttg.within", failure(t => s"$prefix $t, shoud be between ($lower, $upper)"))(
-      t => Ordering[T].gt(t, lower) && Ordering[T].lt(t, upper)
-    )
+    test[T]("ttg.within", failure(t => s"$prefix $t, shoud be between ($lower, $upper)"))(t =>
+      Ordering[T].gt(t, lower) && Ordering[T].lt(t, upper))
 }
 
 trait ValidationAlgebra[F[_], E]

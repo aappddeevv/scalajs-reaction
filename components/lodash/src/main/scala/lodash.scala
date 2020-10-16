@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 // Copyright (c) 2019 The Trapelo Group LLC - All Rights Reserved
 // Unauthorized copying of this file, via any medium is strictly prohibited.
 // Proprietary and confidential.
@@ -16,10 +37,10 @@ package object lodash {
 
   /** Safe get something by matching on the type after using a ClassTag. */
   def safeGet[T: scala.reflect.ClassTag](
-      o: js.Any,
-      path: js.UndefOr[String] | js.Array[js.UndefOr[String]],
-      //defaultValue: js.UndefOr[T] = js.undefined
-    ) =
+    o: js.Any,
+    path: js.UndefOr[String] | js.Array[js.UndefOr[String]],
+    //defaultValue: js.UndefOr[T] = js.undefined
+  ) =
     lodash.get[T](o, path).flatMap {
       case t: T => js.defined(t)
       case _    => js.undefined
@@ -42,9 +63,9 @@ package object lodash {
   def intersection[T](lhs: js.Array[T]*): js.Array[T] = js.native
 
   // brutal to rewrite the args
-  def intersectionBy[T](thunk: js.Function1[T,T]|String, arr: js.Array[T]*) =
+  def intersectionBy[T](thunk: js.Function1[T, T] | String, arr: js.Array[T]*) =
     intersectionBy_UNSAFE(
-      Seq(arr.asInstanceOf[js.Any], thunk.asInstanceOf[js.Any]):_*
+      Seq(arr.asInstanceOf[js.Any], thunk.asInstanceOf[js.Any]): _*
     )
 
   @js.native
@@ -67,14 +88,14 @@ package object lodash {
     //defaultValue: js.UndefOr[T] = js.undefined
   ): js.UndefOr[T] = js.native
 
-   @js.native
+  @js.native
   @JSImport("lodash", "get")
   def getOrElse[T](
     o: js.Any,
     path: js.UndefOr[String] | js.Array[js.UndefOr[String]],
     defaultValue: T = js.undefined
   ): T = js.native
-  
+
   @js.native
   @JSImport("lodash", "has")
   def has(o: js.Any, path: String | js.Array[String]): Boolean = js.native
@@ -115,10 +136,10 @@ package object lodash {
   @js.native
   @JSImport("lodash", "round")
   def roundDouble(value: Double, precision: js.UndefOr[Int] = js.undefined): Double = js.native
-  
+
   @js.native
   @JSImport("lodash", "round")
-  def roundFloat(value: Float, precision: js.UndefOr[Int] = js.undefined): Float= js.native
+  def roundFloat(value: Float, precision: js.UndefOr[Int] = js.undefined): Float = js.native
 
   @js.native
   @JSImport("lodash", "round")

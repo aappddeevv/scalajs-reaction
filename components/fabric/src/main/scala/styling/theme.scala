@@ -28,39 +28,39 @@ import fabric.styling._
 /** Color values, typically hex. */
 @js.native
 trait ISemanticTextColors extends js.Object {
-  val bodyText: js.UndefOr[String]                  = js.native
-  val bodyTextChecked: js.UndefOr[String]           = js.native
-  val bodySubtext: js.UndefOr[String]               = js.native
-  val actionLink: js.UndefOr[String]                = js.native
-  val actionLinkHovered: js.UndefOr[String]         = js.native
-  val link: js.UndefOr[String]                      = js.native
-  val linkHovered: js.UndefOr[String]               = js.native
-  val disabledText: js.UndefOr[String]              = js.native
-  val disabledBodyText: js.UndefOr[String]          = js.native
-  val disabledSubtext: js.UndefOr[String]           = js.native
-  val errorText: js.UndefOr[String]                 = js.native
-  val warningText: js.UndefOr[String]               = js.native
-  val inputPlaceholderText: js.UndefOr[String]      = js.native
-  val buttonText: js.UndefOr[String]                = js.native
-  val buttonTextHovered: js.UndefOr[String]         = js.native
-  val buttonTextChecked: js.UndefOr[String]         = js.native
-  val buttonTextCheckedHovered: js.UndefOr[String]  = js.native
-  val buttonTextPressed: js.UndefOr[String]         = js.native
-  val buttonTextDisabled: js.UndefOr[String]        = js.native
-  val primaryButtonText: js.UndefOr[String]         = js.native
-  val primaryButtonTextHovered: js.UndefOr[String]  = js.native
-  val primaryButtonTextPressed: js.UndefOr[String]  = js.native
+  val bodyText: js.UndefOr[String] = js.native
+  val bodyTextChecked: js.UndefOr[String] = js.native
+  val bodySubtext: js.UndefOr[String] = js.native
+  val actionLink: js.UndefOr[String] = js.native
+  val actionLinkHovered: js.UndefOr[String] = js.native
+  val link: js.UndefOr[String] = js.native
+  val linkHovered: js.UndefOr[String] = js.native
+  val disabledText: js.UndefOr[String] = js.native
+  val disabledBodyText: js.UndefOr[String] = js.native
+  val disabledSubtext: js.UndefOr[String] = js.native
+  val errorText: js.UndefOr[String] = js.native
+  val warningText: js.UndefOr[String] = js.native
+  val inputPlaceholderText: js.UndefOr[String] = js.native
+  val buttonText: js.UndefOr[String] = js.native
+  val buttonTextHovered: js.UndefOr[String] = js.native
+  val buttonTextChecked: js.UndefOr[String] = js.native
+  val buttonTextCheckedHovered: js.UndefOr[String] = js.native
+  val buttonTextPressed: js.UndefOr[String] = js.native
+  val buttonTextDisabled: js.UndefOr[String] = js.native
+  val primaryButtonText: js.UndefOr[String] = js.native
+  val primaryButtonTextHovered: js.UndefOr[String] = js.native
+  val primaryButtonTextPressed: js.UndefOr[String] = js.native
   val primaryButtonTextDisabled: js.UndefOr[String] = js.native
-  val listText: js.UndefOr[String]                  = js.native
+  val listText: js.UndefOr[String] = js.native
 }
 
 @js.native
 trait IScheme extends js.Object {
   val rtl: js.UndefOr[Boolean] = js.native
-  val palette: IPalette               = js.native
-  val fonts: IFontStyles              = js.native
+  val palette: IPalette = js.native
+  val fonts: IFontStyles = js.native
   val semanticColors: ISemanticColors = js.native
-  val isInverted: Boolean             = js.native
+  val isInverted: Boolean = js.native
   val disableGlobalClassNames: Boolean = js.native
   val spacing: ISpacing = js.native
   val effects: IEffects = js.native
@@ -75,10 +75,10 @@ trait ITheme extends IScheme {
 trait ThemeLike extends js.Object {
 
   /** Reurn the singleton theme object. */
-  def getTheme(depComments: Boolean = false): ITheme                      = js.native
+  def getTheme(depComments: Boolean = false): ITheme = js.native
   def registerOnThemeChangeCallback(cb: js.Function1[ITheme, Unit]): Unit = js.native
-  def removeOnThemeChangeCallback(cb: js.Function1[ITheme, Unit]): Unit   = js.native
-  def loadTheme(theme: ITheme, depComments: Boolean = false): ITheme      = js.native
-  def createTheme(partial: ITheme, depComments: Boolean = false): ITheme  = js.native
-  val ThemeSettingName: String                                            = js.native
+  def removeOnThemeChangeCallback(cb: js.Function1[ITheme, Unit]): Unit = js.native
+  def loadTheme(theme: ITheme, depComments: Boolean = false): ITheme = js.native
+  def createTheme(partial: ITheme, depComments: Boolean = false): ITheme = js.native
+  val ThemeSettingName: String = js.native
 }

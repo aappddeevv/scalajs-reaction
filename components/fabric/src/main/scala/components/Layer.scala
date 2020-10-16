@@ -44,13 +44,13 @@ object Layer {
     createElementN(JS, props)(children: _*)
 
   trait Styles extends IStyleSetTag with Theme {
-    var root: js.UndefOr[IStyle]    = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
     var content: js.UndefOr[IStyle] = js.undefined
   }
 
   trait StyleProps extends js.Object {
-    var theme: js.UndefOr[ITheme]      = js.undefined
-    var className: js.UndefOr[String]  = js.undefined
+    var theme: js.UndefOr[ITheme] = js.undefined
+    var className: js.UndefOr[String] = js.undefined
     var isNotHost: js.UndefOr[Boolean] = js.undefined
   }
 
@@ -60,11 +60,11 @@ object Layer {
   trait Props extends HTMLAttributes[dom.html.Div] with ComponentRef[ILayer] {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     //var className: js.UndefOr[String] = js.undefined
-    var onLayerMounted: js.UndefOr[js.Function0[Unit]]     = js.undefined
-    var onLayerDidMount: js.UndefOr[js.Function0[Unit]]    = js.undefined
+    var onLayerMounted: js.UndefOr[js.Function0[Unit]] = js.undefined
+    var onLayerDidMount: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onLayerWillUnmount: js.UndefOr[js.Function0[Unit]] = js.undefined
-    var hostId: js.UndefOr[String]                         = js.undefined
-    var eventBubblingEnabled: js.UndefOr[Boolean]          = js.undefined
+    var hostId: js.UndefOr[String] = js.undefined
+    var eventBubblingEnabled: js.UndefOr[Boolean] = js.undefined
   }
 
 }

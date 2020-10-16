@@ -29,17 +29,17 @@ import js.|
 @js.native
 sealed trait PlatformOSType extends js.Any
 object PlatformOSType {
-  val ios     = "ios".asInstanceOf[PlatformOSType]
+  val ios = "ios".asInstanceOf[PlatformOSType]
   val android = "android".asInstanceOf[PlatformOSType]
-  val macos   = "macos".asInstanceOf[PlatformOSType]
+  val macos = "macos".asInstanceOf[PlatformOSType]
   val windows = "windows".asInstanceOf[PlatformOSType]
-  val web     = "web".asInstanceOf[PlatformOSType]
+  val web = "web".asInstanceOf[PlatformOSType]
 }
 
 @js.native
 trait PlatformValues extends js.Object {
-  val OS: PlatformOSType                      = js.native
-  val Version: Double | String                = js.native
+  val OS: PlatformOSType = js.native
+  val Version: Double | String = js.native
   def select[T](selects: js.Dictionary[T]): T = js.native
 }
 @js.native
@@ -49,6 +49,6 @@ object Platform extends PlatformValues
 @js.native
 @JSImport("react-native", "PlatformIOS")
 object PlatformIOS extends PlatformValues {
-  val isPad: Boolean  = js.native
+  val isPad: Boolean = js.native
   val isTVOS: Boolean = js.native
 }

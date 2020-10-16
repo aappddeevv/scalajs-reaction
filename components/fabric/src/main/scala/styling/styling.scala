@@ -45,7 +45,7 @@ package object styling {
   type ISelectorSet = js.Dictionary[js.Any]
 
   trait IRawStyle extends IRawStyleBase {
-    var displayName: js.UndefOr[String]     = js.undefined
+    var displayName: js.UndefOr[String] = js.undefined
     var selectors: js.UndefOr[ISelectorSet] = js.undefined
   }
 
@@ -73,7 +73,7 @@ package object styling {
 
   private[styling] trait MakeStyles {
     def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
-    def apply(): IStyle                = js.Array[IStyle]().asInstanceOf[IStyle]
+    def apply(): IStyle = js.Array[IStyle]().asInstanceOf[IStyle]
   }
 
   /** Create an array of styles. This should really have IStyleBase as input. */
@@ -174,7 +174,7 @@ package object styling {
   /** @deprecated("Use IStyleFunction") */
   type IStyleFn[SP <: js.Any, SS <: IStyleSetTag] = js.Function1[SP, SS]
 
-  /** Smart constructor with better type inference to define a IStyleFunction as a val. 
+  /** Smart constructor with better type inference to define a IStyleFunction as a val.
    * Use this whene you need to keep the type as a function.
    */
   def stylingFunction[SP <: js.Any, SS <: IStyleSetTag](f: SP => SS): IStyleFunction[SP, SS] = f
@@ -217,14 +217,13 @@ package object styling {
   type IStyleFunctionOrObject[SP <: js.Any, SS <: IStyleSetTag] =
     IStyleFunction[SP, SS] | SS
 
-    
   /** Combine IStyleFunction, IStyleFunctionOrObject into a single array of type StyleSetArg
-    * needed for the args in concatStyleSets or concatStyleSetsWithProps. Helps with type inference
-    * and composing args for varargs.
-    */
+   * needed for the args in concatStyleSets or concatStyleSetsWithProps. Helps with type inference
+   * and composing args for varargs.
+   */
   def toStyleSetArgs[StyleProps <: js.Object, Styles <: IStyleSetTag](
     args: Seq[js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]]]) = args.asInstanceOf[Seq[StyleSetArg]]
-    
+
   /**
    * Given some props and a list of IStyleFunctionOrObjects, resolve to a single
    * (string->IStyle) by either calling the style function with the props or

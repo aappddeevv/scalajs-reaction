@@ -46,22 +46,22 @@ import js.|
 // }
 
 trait PathToRegexOptions extends js.Object {
-  var sensitive: js.UndefOr[Boolean]                      = js.undefined
-  var strict: js.UndefOr[Boolean]                         = js.undefined
-  var end: js.UndefOr[Boolean]                            = js.undefined
-  var start: js.UndefOr[Boolean]                          = js.undefined
-  var delimiter: js.UndefOr[String]                       = js.undefined
-  var endsWith: js.UndefOr[String | js.Array[String]]     = js.undefined
+  var sensitive: js.UndefOr[Boolean] = js.undefined
+  var strict: js.UndefOr[Boolean] = js.undefined
+  var end: js.UndefOr[Boolean] = js.undefined
+  var start: js.UndefOr[Boolean] = js.undefined
+  var delimiter: js.UndefOr[String] = js.undefined
+  var endsWith: js.UndefOr[String | js.Array[String]] = js.undefined
   var whiteList: js.UndefOr[String | js.Array[Character]] = js.undefined
 }
 
 trait Key extends js.Object {
   var name: js.UndefOr[String | Int] = js.undefined
-  var prefix: js.UndefOr[String]     = js.undefined
-  var delimiter: js.UndefOr[String]  = js.undefined
-  var optional: js.UndefOr[Boolean]  = js.undefined
-  var repeat: js.UndefOr[Boolean]    = js.undefined
-  var pattern: js.UndefOr[String]    = js.undefined
+  var prefix: js.UndefOr[String] = js.undefined
+  var delimiter: js.UndefOr[String] = js.undefined
+  var optional: js.UndefOr[Boolean] = js.undefined
+  var repeat: js.UndefOr[Boolean] = js.undefined
+  var pattern: js.UndefOr[String] = js.undefined
 }
 
 trait ParseOptions extends js.Object {
@@ -76,7 +76,7 @@ object PathToRegexp extends js.Object {
     path: String | js.RegExp | js.Array[String | js.RegExp],
     keys: js.UndefOr[js.Array[Key]],
     options: js.UndefOr[PathToRegexOptions]
-  ): js.RegExp                                                                = js.native
+  ): js.RegExp = js.native
   def apply(path: String, options: js.UndefOr[PathToRegexOptions]): js.RegExp = js.native
   //def compile()
   //def parse()

@@ -55,44 +55,45 @@ object Pivot {
   }
 
   trait Styles extends IStyleSetTag {
-    var root: js.UndefOr[IStyle]           = js.undefined
-    var link: js.UndefOr[IStyle]           = js.undefined
-    var linkContent: js.UndefOr[IStyle]    = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
+    var link: js.UndefOr[IStyle] = js.undefined
+    var linkContent: js.UndefOr[IStyle] = js.undefined
     var linkIsSelected: js.UndefOr[IStyle] = js.undefined
-    var itemContainer: js.UndefOr[IStyle]  = js.undefined
-    var text: js.UndefOr[IStyle]           = js.undefined
-    var count: js.UndefOr[IStyle]          = js.undefined
-    var icon: js.UndefOr[IStyle]           = js.undefined
+    var itemContainer: js.UndefOr[IStyle] = js.undefined
+    var text: js.UndefOr[IStyle] = js.undefined
+    var count: js.UndefOr[IStyle] = js.undefined
+    var icon: js.UndefOr[IStyle] = js.undefined
   }
 
   trait Props extends Attributes with Theme with ComponentRef[IPivot] {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-    var className: js.UndefOr[String]                                  = js.undefined
+    var className: js.UndefOr[String] = js.undefined
 
     var defaultSelectedKey: js.UndefOr[String] = js.undefined
-    var defaultSelectedIndex: js.UndefOr[Int]  = js.undefined
-    var selectedKey: js.UndefOr[String]        = js.undefined
+    var defaultSelectedIndex: js.UndefOr[Int] = js.undefined
+    var selectedKey: js.UndefOr[String] = js.undefined
     var selectedIndex: js.UndefOr[Int] = js.undefined
     var onLinkClick: js.UndefOr[LinkClickHandler] = js.undefined
-    var linkSize: js.UndefOr[LinkSize]                            = js.undefined
+    var linkSize: js.UndefOr[LinkSize] = js.undefined
     var linkFormat: js.UndefOr[LinkFormat] = js.undefined
-    var headersOnly: js.UndefOr[Boolean]                          = js.undefined
+    var headersOnly: js.UndefOr[Boolean] = js.undefined
     var getTabId: js.UndefOr[js.Function2[String, Int, String]] = js.undefined
     var overflowBehavior: js.UndefOr[OverflowBehavior] = js.undefined
   }
-  
-  type LinkClickHandler = js.Function2[js.UndefOr[PivotItem.PivotItemLike],js.UndefOr[ReactMouseEvent[dom.html.Element]], Unit]
-  
+
+  type LinkClickHandler =
+    js.Function2[js.UndefOr[PivotItem.PivotItemLike], js.UndefOr[ReactMouseEvent[dom.html.Element]], Unit]
+
   def OnLinkClick(f: (js.UndefOr[PivotItem.PivotItemLike], js.UndefOr[ReactMouseEvent[dom.html.Element]]) => Unit) =
     js.Any.fromFunction2(f).asInstanceOf[LinkClickHandler]
-  
+
   def OnLinkClickHandlerNoArg(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[LinkClickHandler]
-  
+
   @js.native
   sealed trait LinkSize extends js.Any
   object LinkSize {
     val normal = 0.asInstanceOf[LinkSize]
-    val large  = 1.asInstanceOf[LinkSize]
+    val large = 1.asInstanceOf[LinkSize]
   }
 
   @js.native
@@ -101,12 +102,12 @@ object Pivot {
     val link = 0.asInstanceOf[LinkFormat]
     val tabs = 1.asInstanceOf[LinkFormat]
   }
-  
+
   @js.native
   abstract trait OverflowBehavior extends js.Any
   object OverflowBehavior {
     val none = "none".asInstanceOf[OverflowBehavior]
     val menu = "menu".asInstanceOf[OverflowBehavior]
   }
-  
+
 }

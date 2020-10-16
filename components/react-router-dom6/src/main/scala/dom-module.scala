@@ -26,7 +26,7 @@ import scala.scalajs.js
 
 import js.annotation._
 import js.|
-import org.scalajs.{dom => sdom}
+import org.scalajs.{ dom => sdom }
 
 import react._
 import vdom._
@@ -34,7 +34,8 @@ import vdom._
 @js.native
 trait Hooks extends js.Object {
   def usePrompt(message: String, when: js.UndefOr[Boolean] = js.undefined): Unit = js.native
-  def useSearchParams(init: js.UndefOr[URLSearchParamsInit] = js.undefined): sdom.experimental.URLSearchParams = js.native
+  def useSearchParams(init: js.UndefOr[URLSearchParamsInit] = js.undefined): sdom.experimental.URLSearchParams =
+    js.native
 }
 
 @js.native
@@ -87,7 +88,7 @@ object Link {
   // set by the component
   trait Props extends AnchorHTMLAttributes[sdom.html.Anchor] {
     var replace: js.UndefOr[Boolean] = js.undefined
-    var state: js.UndefOr[js.Object|Null] = js.undefined
+    var state: js.UndefOr[js.Object | Null] = js.undefined
     var to: js.UndefOr[To] = js.undefined
   }
 }
@@ -116,12 +117,12 @@ object Prompt {
   object JS extends ReactJSComponent
 
   def apply(props: Props) = createElement0(JS, props)
-  
+
   def apply(m: String, w: Boolean) = createElement0(JS, new Props { message = m; when = w })
 
   trait Props extends js.Object {
     var when: js.UndefOr[Boolean] = js.undefined
-    var message: js.UndefOr[String ] = js.undefined
+    var message: js.UndefOr[String] = js.undefined
   }
 }
 
@@ -130,8 +131,8 @@ object StaticRouter {
   @JSImport("react-router-dom", "StaticRouter")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
-  
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+
   trait Props extends js.Object {
     var location: js.UndefOr[LocationInit[_]] = js.undefined
   }

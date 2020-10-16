@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package azure
 package msal
 package common
@@ -54,7 +75,7 @@ trait AuthorizationUrlRequest extends BaseAuthRequest {
 trait EndSessionRequest extends js.Object {
   // I think this is required
   var account: js.UndefOr[AccountInfo] = js.undefined
-  var postlogoutRedirectUri: js.UndefOr[String] = js.undefined  
+  var postlogoutRedirectUri: js.UndefOr[String] = js.undefined
   var authority: js.UndefOr[String] = js.undefined
   var correlationId: js.UndefOr[String] = js.undefined
 }
@@ -91,14 +112,13 @@ trait CodeDesc extends js.Object {
 
 @js.native
 trait AuthErrorMessageValue extends js.Object {
-  val unexpectedError: CodeDesc =js.native
+  val unexpectedError: CodeDesc = js.native
 }
 
 // msal-common/error
 @js.native
 @JSImport("@azure/msal-common", "ClientAuthError")
-class ClientAuthError(code: String, message: js.UndefOr[String] = js.undefined)
-    extends AuthError(code, message)
+class ClientAuthError(code: String, message: js.UndefOr[String] = js.undefined) extends AuthError(code, message)
 
 // msal-common/error
 @js.native
@@ -119,7 +139,10 @@ class InteractionRequiredAuthError(code: String, message: js.UndefOr[String] = j
 object InteractionRequiredAuthError extends js.Object {
   // static creators...
   // checkers
-  def isInteractionRequiredError(errorCode: String, errorString: String, subError: js.UndefOr[String] = js.undefined): Boolean = js.native
+  def isInteractionRequiredError(
+    errorCode: String,
+    errorString: String,
+    subError: js.UndefOr[String] = js.undefined): Boolean = js.native
 }
 
 // msal-common/error
@@ -132,7 +155,7 @@ class AuthError(val errorCode: String, val errorMessage: js.UndefOr[String] = js
 @js.native
 @JSImport("@azure/msal-common", "AuthError")
 object AuthError extends js.Object {
-  def createUnexpectedError(desc: String): AuthError     = js.native
+  def createUnexpectedError(desc: String): AuthError = js.native
   def createNoWindowObjectError(desc: String): AuthError = js.native
 }
 
@@ -152,8 +175,7 @@ object ClientConfigurationError extends js.Object {
 // msal-common/error
 @js.native
 @JSImport("@azure/msal-common", "ServerError")
-class ServerError(code: String, message: js.UndefOr[String] = js.undefined)
-    extends AuthError(code, message)
+class ServerError(code: String, message: js.UndefOr[String] = js.undefined) extends AuthError(code, message)
 
 // msal-common/error
 @js.native
@@ -179,14 +201,18 @@ trait INetworkRequestOptions extends js.Object {
 // msal-common/network
 // make these properties not methods
 trait INetworkModule extends js.Object {
-  def sendGetRequestAsync[T](url: String, options: js.UndefOr[INetworkRequestOptions] = js.undefined): js.Promise[NetworkResponse[T]]
-  def sendPostRequestAsync[T](url: String, options: js.UndefOr[INetworkRequestOptions] = js.undefined): js.Promise[NetworkResponse[T]]
+  def sendGetRequestAsync[T](
+    url: String,
+    options: js.UndefOr[INetworkRequestOptions] = js.undefined): js.Promise[NetworkResponse[T]]
+  def sendPostRequestAsync[T](
+    url: String,
+    options: js.UndefOr[INetworkRequestOptions] = js.undefined): js.Promise[NetworkResponse[T]]
 }
 
 // msal-common/config
 trait LoggerOptions extends js.Object {
   var loggerCallback: js.UndefOr[LoggerCallback] = js.undefined
-  var logLevel: js.UndefOr[LogLevel]         = js.undefined
+  var logLevel: js.UndefOr[LogLevel] = js.undefined
   var piiLoggingEnabled: js.UndefOr[Boolean] = js.undefined
 }
 
@@ -199,17 +225,15 @@ trait SystemOptions extends js.Object {
 @js.native
 sealed trait LogLevel extends js.Any
 object LogLevel {
-  val Error   = 0.asInstanceOf[LogLevel]
+  val Error = 0.asInstanceOf[LogLevel]
   val Warning = 1.asInstanceOf[LogLevel]
-  val Info    = 2.asInstanceOf[LogLevel]
+  val Info = 2.asInstanceOf[LogLevel]
   val Verbose = 3.asInstanceOf[LogLevel]
 }
 
 // msal-common/logger
 @js.native
 @JSImport("@azure/msal-common", "Logger")
-class Logger(cb: LoggerCallback, options: js.UndefOr[LoggerOptions] = js.undefined)
-    extends js.Object {
+class Logger(cb: LoggerCallback, options: js.UndefOr[LoggerOptions] = js.undefined) extends js.Object {
   def isPiiLoggingEnabled(): Boolean = js.native
 }
-

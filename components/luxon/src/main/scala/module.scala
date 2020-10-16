@@ -119,7 +119,7 @@ object ConversionAccuracy {
 object Duration extends js.Object {
   def fromISO(text: String, options: js.UndefOr[DurationOptions] = js.undefined): Duration = js.native
   def fromMillis(count: Double, options: js.UndefOr[DurationOptions] = js.undefined): Duration = js.native
-  def fromObject(arg: DurationInit|js.Dynamic): Duration = js.native
+  def fromObject(arg: DurationInit | js.Dynamic): Duration = js.native
   def invalid(reason: String, explanation: String): Duration = js.native
   def isDuration(o: js.Object): Boolean = js.native
   def isDUration(o: js.Any): Boolean = js.native

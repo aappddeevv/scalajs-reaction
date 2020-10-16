@@ -29,9 +29,9 @@ import scala.scalajs.js.|
 @js.native
 @JSImport("react-native", "Linking")
 object Linking extends js.Object {
-  def openURL(url: String): js.Promise[Unit]                                        = js.native
-  def canOpenURL(url: String): js.Promise[Boolean]                                  = js.native
-  def getInitialURL(): js.Promise[String | Null]                                    = js.native
-  def addEventHandler(url: String, handler: js.Function1[js.Dynamic, Unit]): Unit   = js.native
+  def openURL(url: String): js.Promise[Unit] = js.native
+  def canOpenURL(url: String): js.Promise[Boolean] = js.native
+  def getInitialURL(): js.Promise[String | Null] = js.native
+  def addEventHandler(url: String, handler: js.Function1[js.Dynamic, Unit]): Unit = js.native
   def removeEventHandler(url: String, andler: js.Function1[js.Dynamic, Unit]): Unit = js.native
 }

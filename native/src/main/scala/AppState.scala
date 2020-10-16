@@ -28,9 +28,9 @@ import scala.scalajs.js.annotation.JSImport
 @js.native
 sealed trait AppStateValue extends js.Any
 object AppStateValue {
-  val active     = "active".asInstanceOf[AppStateValue]
+  val active = "active".asInstanceOf[AppStateValue]
   val background = "background".asInstanceOf[AppStateValue]
-  val inactive   = "inactive".asInstanceOf[AppStateValue]
+  val inactive = "inactive".asInstanceOf[AppStateValue]
 }
 
 @js.native
@@ -38,7 +38,7 @@ object AppStateValue {
 object AppState extends js.Object {
   val currentState: AppStateValue = js.native
   // use "change"
-  def addEventListener(t: String, cb: js.Function1[AppStateValue, Unit]): Unit    = js.native
+  def addEventListener(t: String, cb: js.Function1[AppStateValue, Unit]): Unit = js.native
   def removeEventListener(t: String, cb: js.Function1[AppStateValue, Unit]): Unit = js.native
 
 }

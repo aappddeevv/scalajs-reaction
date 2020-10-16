@@ -33,7 +33,7 @@ package object react_redux {
   }
 
   /** A listener in redux is very coarse grained. You receive all events. */
-  type Listener     = js.Function0[Unit]
+  type Listener = js.Function0[Unit]
   type Unsubscriber = js.Function0[Unit]
 
   /** Dispatch an action via the store. */
@@ -44,10 +44,10 @@ package object react_redux {
 
   import react_redux.module
 
-  def createProvider(storeKey: String)                = module.createProvider(storeKey)
-  val Provider                                        = module.Provider
-  def shallowEqual(lhs: js.Any, rhs: js.Any)          = module.shallowEqual(lhs, rhs)
-  def useDispatch[A <: Action]()                      = module.useDispatch[A]()
+  def createProvider(storeKey: String) = module.createProvider(storeKey)
+  val Provider = module.Provider
+  def shallowEqual(lhs: js.Any, rhs: js.Any) = module.shallowEqual(lhs, rhs)
+  def useDispatch[A <: Action]() = module.useDispatch[A]()
   def useSelector[S, A](selector: js.Function1[S, A]) = module.useSelector[S, A](selector)
   def useSelector[S, A](selector: js.Function1[S, A], equalityFn: js.Function2[A, A, Boolean]) =
     module.useSelector[S, A](selector, equalityFn)

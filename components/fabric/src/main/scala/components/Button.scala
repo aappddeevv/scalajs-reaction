@@ -49,7 +49,7 @@ object Button {
       with AllHTMLAttributes[dom.html.Button]
       with Theme
       with ReactJSProps {
-    
+
     /** Simplest callback. () => Unit. */
     @JSName("onClick")
     var onClickSimple: js.UndefOr[js.Function0[Any]] = js.undefined
@@ -111,26 +111,26 @@ object Button {
     var persistMenu: js.UndefOr[Boolean] = js.undefined
     var description: js.UndefOr[IStyle] = js.undefined
   }
-  
+
   @deprecated("Use OnClick")
   type OC = OnClick
   type OnClick = MouseEventHandler[dom.html.Button]
-  
-  def OnClick(f: MouseEventHandler[dom.html.Button] => Any) = 
+
+  def OnClick(f: MouseEventHandler[dom.html.Button] => Any) =
     js.Any.fromFunction1(f).asInstanceOf[OnClick]
-    
+
   @deprecated("Use OnClickNoArg")
   def OnClick(f: () => Any) = js.Any.fromFunction0(f).asInstanceOf[OnClick]
 
   def OnClickNoArg(f: () => Any) = js.Any.fromFunction0(f).asInstanceOf[OnClick]
-  
+
   object Default {
     @js.native
     @JSImport("office-ui-fabric-react/lib/Button", "DefaultButton")
     object JS extends ReactJSComponent
 
     def apply(props: Props = null)(children: ReactNode*) = createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
 
   }
 
@@ -141,7 +141,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
 
   }
 
@@ -152,7 +152,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
 
   }
 
@@ -163,7 +163,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
   }
 
   object Command {
@@ -173,7 +173,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
 
   }
 
@@ -184,7 +184,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
   }
 
   object MessageBar {
@@ -194,7 +194,7 @@ object Button {
 
     def apply(props: Props = null)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
-    def only(props: Props) = createElement0(JS,props)
+    def only(props: Props) = createElement0(JS, props)
   }
 
   object Icon {

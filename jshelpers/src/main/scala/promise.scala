@@ -29,8 +29,8 @@ import js.|
 // To make a promise:
 // (resolve: js.Function1[Unit|js.Thenable[Unit],_], reject: js.Function1[scala.Any,_]) =>
 /** More ergonomic typed methods for js.Promise processing. It is easy to convert to js
-* Promise to a future (jspromiseInstance.toFuture) but if you have alot of js.Promise
-* API then you are converting alot of Futures :-).
+ * Promise to a future (jspromiseInstance.toFuture) but if you have alot of js.Promise
+ * API then you are converting alot of Futures :-).
  */
 final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
 
@@ -75,8 +75,8 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   /** Map on error. Use the value in the effect and redirect to the error in self. */
   def flatMapError(f: scala.Any => js.Thenable[scala.Any]) = {
     val onf: REJECTED[A] = (err: scala.Any) => f(err).asInstanceOf[RVAL[A]]
-      //f(err).`then`(nerrIsPromise => nerrIsPromise.asInstanceOf[RVAL[A]], js.undefined).asInstanceOf[RVAL[A]]
-      //f(err).`then`(nerrIsPromise => nerrIsPromise.asInstanceOf[RVAL[A]], js.undefined).asInstanceOf[RVAL[A]]
+    //f(err).`then`(nerrIsPromise => nerrIsPromise.asInstanceOf[RVAL[A]], js.undefined).asInstanceOf[RVAL[A]]
+    //f(err).`then`(nerrIsPromise => nerrIsPromise.asInstanceOf[RVAL[A]], js.undefined).asInstanceOf[RVAL[A]]
     self.`then`[A]((), onf)
   }
 
@@ -175,7 +175,8 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
 
   def tapErrorF(f: scala.Any => js.Thenable[Any]): js.Promise[A] = {
     val onr = js.Any
-      .fromFunction1((e: Any) => f(e).`then`[Unit](().asInstanceOf[RESOLVE[Any,Unit]], js.defined((_: Any) => js.Promise.reject(e))))
+      .fromFunction1((e: Any) =>
+        f(e).`then`[Unit](().asInstanceOf[RESOLVE[Any, Unit]], js.defined((_: Any) => js.Promise.reject(e))))
       .asInstanceOf[REJECTED[A]]
     self.`then`[A]((), onr).asInstanceOf[js.Promise[A]]
   }
@@ -364,8 +365,9 @@ final class JSArrayPromiseOps[A](private val arr: js.Array[js.Promise[A]]) exten
 }
 
 trait JSPromiseSyntax extends JSPromiseLowerOrderImplicits {
-  @inline implicit def jsArrayToPromiseThenable[A](arr: js.Array[js.Thenable[A]]) = new JSArrayPromiseOpsThenable[A](arr)
-  @inline implicit def jsArrayToPromise[A](arr: js.Array[js.Promise[A]]) = new JSArrayPromiseOps[A](arr)  
+  @inline implicit def jsArrayToPromiseThenable[A](arr: js.Array[js.Thenable[A]]) =
+    new JSArrayPromiseOpsThenable[A](arr)
+  @inline implicit def jsArrayToPromise[A](arr: js.Array[js.Promise[A]]) = new JSArrayPromiseOps[A](arr)
   @inline implicit def anyToJSPromise[A](a: A) = new JSPromiseObjectOps[A](a)
   @inline implicit def anyToJSPromiseFail(a: scala.Any) = new JSPromiseFailObjectOps(a)
   @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
@@ -394,8 +396,8 @@ private[jshelpers] object JSPromiseCreators {
 
   /** Saves you a few keystrokes. This should be js.Promise... */
   def undefined[A]: js.Promise[js.UndefOr[A]] = from[js.UndefOr[A]](js.undefined)
-  
-  def defined[A](a: A): js.Promise[js.UndefOr[A]] = js.Promise.resolve(js.defined(a).asInstanceOf[A|js.Thenable[A]])
+
+  def defined[A](a: A): js.Promise[js.UndefOr[A]] = js.Promise.resolve(js.defined(a).asInstanceOf[A | js.Thenable[A]])
 
   def nullValue: js.Promise[Null] = js.Promise.resolve[Null](null)
 

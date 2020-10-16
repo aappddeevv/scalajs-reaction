@@ -27,8 +27,8 @@ import js.annotation._
 package object utilities {
   type SettingsFunction = Settings => Settings
   type Settings = js.Dictionary[js.Any]
-  
-  val NO_CUSTOMIZATIONS: ICustomizations = (new js.Object { 
+
+  val NO_CUSTOMIZATIONS: ICustomizations = (new js.Object {
     val settings = js.Dynamic.literal()
     val scopedSettings = js.Dynamic.literal()
     val inCustomizerContext = false

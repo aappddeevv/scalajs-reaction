@@ -31,24 +31,19 @@ import vdom._
 
 object List {
 
-    trait PageSpecification extends js.Object {
-    }
-    
-    @js.native
-    trait Page[T <: js.Object] extends js.Object { 
-    }
-    
-    @js.native
-    trait PageProps[T <: js.Object] extends js.Object { 
-    }
-    
-    @js.native
-    trait ListOnRenderRootProps[T <: js.Object] extends js.Object {
-    }
-    
-    @js.native
-    trait ListOnRenderSurfaceProps[T <: js.Object] extends js.Object {
-    }
+  trait PageSpecification extends js.Object {}
+
+  @js.native
+  trait Page[T <: js.Object] extends js.Object {}
+
+  @js.native
+  trait PageProps[T <: js.Object] extends js.Object {}
+
+  @js.native
+  trait ListOnRenderRootProps[T <: js.Object] extends js.Object {}
+
+  @js.native
+  trait ListOnRenderSurfaceProps[T <: js.Object] extends js.Object {}
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/List", "List")
@@ -58,16 +53,16 @@ object List {
 //     createElement(JS, props, children: _*)
 
   def apply[T <: js.Object](props: Props[T] = null) = createElement(JS, props)
-    
+
   trait Props[T <: js.Object] extends ComponentRef[IList] {
     var className: js.UndefOr[String] = js.undefined
     var getItemCountForPage: js.UndefOr[js.Function2[Int, js.Any, Int]] = js.undefined
     var getKey: js.UndefOr[js.Function2[T, js.UndefOr[Int], String | Int] | js.Function1[T, String | Int]] =
       js.undefined
     @JSName("getKey")
-      var getKeyString: js.UndefOr[js.Function2[js.UndefOr[T],Int,String]] = js.undefined
-      @JSName("getKey")
-      var getKeyInt: js.UndefOr[js.Function2[js.UndefOr[T],Int,Int]] = js.undefined
+    var getKeyString: js.UndefOr[js.Function2[js.UndefOr[T], Int, String]] = js.undefined
+    @JSName("getKey")
+    var getKeyInt: js.UndefOr[js.Function2[js.UndefOr[T], Int, Int]] = js.undefined
     var getPageHeight: js.UndefOr[js.Function3[Int, js.Any, Int, Int]] = js.undefined
     var getPageSpecification: js.UndefOr[js.Function2[Int, js.Any, PageSpecification]] = js.undefined
     var getPageSyle: js.UndefOr[js.Function1[Page[T], js.Any]] = js.undefined
@@ -76,7 +71,7 @@ object List {
     var onPageAdded: js.UndefOr[js.Function1[Page[T], Unit]] = js.undefined
     var onPageRemoved: js.UndefOr[js.Function1[Page[T], Unit]] = js.undefined
     var onPagesUpdated: js.UndefOr[js.Function1[js.Array[Page[T]], Unit]] = js.undefined
-    
+
     var onRenderCell: js.UndefOr[OnRenderCell[T]] = js.undefined
     var onRenderPage: js.UndefOr[IRenderFunction[PageProps[T]]] = js.undefined
     var onRenderRoot: js.UndefOr[IRenderFunction[ListOnRenderRootProps[T]]] = js.undefined
@@ -91,19 +86,19 @@ object List {
     var version: js.UndefOr[js.Object] = js.undefined
   }
 
-    type OnRenderCell[T] = js.Function3[T,Int,Boolean,react.ReactNode]
-    
-    def OnRenderCell[T](f: (T,Int,Boolean) => react.ReactNode) = 
-        js.Any.fromFunction3(f).asInstanceOf[OnRenderCell[T]]
-  
+  type OnRenderCell[T] = js.Function3[T, Int, Boolean, react.ReactNode]
+
+  def OnRenderCell[T](f: (T, Int, Boolean) => react.ReactNode) =
+    js.Any.fromFunction3(f).asInstanceOf[OnRenderCell[T]]
+
   @js.native
   trait IList extends js.Object {
     def forceUpdate(): Unit = js.native
     def scrollToIndex(
-        index: Int,
-        measureItem: js.UndefOr[js.Function1[Int, Int]] = js.undefined,
-        scrollToMode: js.UndefOr[ScrollToMode] = js.undefined
-      ): Unit = js.native
+      index: Int,
+      measureItem: js.UndefOr[js.Function1[Int, Int]] = js.undefined,
+      scrollToMode: js.UndefOr[ScrollToMode] = js.undefined
+    ): Unit = js.native
     def getTotalListHeight(): Int = js.native
     def getStartItemIndexInView(): Int = js.native
   }

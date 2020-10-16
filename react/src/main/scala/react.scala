@@ -143,10 +143,10 @@ trait React {
 //     ReactJS.createElement(ReactJS.Fragment, props, children: _*)
 //   }
 
-  /** Create a `ReactRef`. If you are using function components 
-  * and hooks, use `useRef` to get a `MutableRef`. This returns
-  * a different ref type.
-  */
+  /** Create a `ReactRef`. If you are using function components
+   * and hooks, use `useRef` to get a `MutableRef`. This returns
+   * a different ref type.
+   */
   def createRef[T](initialValue: T): react.ReactRef[T] = ReactJS.createRef[T](initialValue)
 
   /** Memoize a function. */
@@ -363,7 +363,7 @@ trait React {
         else dependencies.toJSArray
       )
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
-      
+
   /** Do not include `Null` in your type parameter as it added to `MutableRef.current` automatically. */
   def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
 
@@ -409,11 +409,11 @@ trait React {
   /** Create a React.fragment element. */
   object Fragment {
     def apply(key: String)(children: ReactNode*) =
-      createElement(ReactJS.Fragment, js.Dynamic.literal("key"->key), children:_*)
+      createElement(ReactJS.Fragment, js.Dynamic.literal("key" -> key), children: _*)
 
     /** Preferred creation function. */
     def apply(children: ReactNode*) =
-      createElement(ReactJS.Fragment, null, children:_*)
+      createElement(ReactJS.Fragment, null, children: _*)
   }
 
   /** Strict element. Wraps your root component typically. */

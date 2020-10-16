@@ -63,6 +63,7 @@ trait ComponentRef[T] extends js.Object {
   var componentRefMutable: js.UndefOr[MutableRef[T]] = js.undefined
   @JSName("componentRef")
   var componentRefReact: js.UndefOr[ReactRef[T]] = js.undefined
+
   /** Take any kind of `Ref[T]`. */
   var componentRef: js.UndefOr[Ref[T]] = js.undefined
 }
@@ -84,7 +85,7 @@ trait Themable extends js.Object {
 
 /** Use this not Themable. :-) */
 trait HasTheme extends js.Object {
-    var theme: js.UndefOr[ITheme] = js.undefined
+  var theme: js.UndefOr[ITheme] = js.undefined
 }
 
 /** Adds an iconProps member. */
@@ -124,7 +125,7 @@ trait IColumnBase extends ClassName {
   var maxWidth: js.UndefOr[Int] = js.undefined
   var onColumnClick: js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] = js.undefined
   var onColumnContextMenu: js.UndefOr[js.Function2[js.Any, js.Any, Unit]] = js.undefined
-  var onColumnResize: js.UndefOr[js.Function1[Int,Unit]] = js.undefined
+  var onColumnResize: js.UndefOr[js.Function1[Int, Unit]] = js.undefined
   var onRender: js.UndefOr[js.Function3[js.Any, Int, js.Any, ReactNode]] = js.undefined
   var onRenderDivider: js.UndefOr[IRenderFunction[Details.ColumnProps]] = js.undefined
   var sortAscendingAriaLabel: js.UndefOr[String] = js.undefined
@@ -157,6 +158,7 @@ object IColumnInit {
 
 /** IColumn with required properties. */
 @jsenrich trait IColumn extends IColumnBase {
+
   /** In ts, this is String|Int */
   val key: String
   val name: String
@@ -164,38 +166,43 @@ object IColumnInit {
 }
 
 object IColumn {
-  type OnColumnResize = js.Function1[Int,Unit]
- 
+  type OnColumnResize = js.Function1[Int, Unit]
+
   /** Smart constructor for `DetailsList.onColumnResize`. */
   def OnColumnResize(f: Int => Unit): js.UndefOr[OnColumnResize] = js.defined(f(_))
-  
+
   /** Smart constructor for `IColumn.onColumnClick` */
   def OnColumnClick(
-      f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit
-    ): js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] =
+    f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit
+  ): js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] =
     js.defined((e, c) => f(e.asInstanceOf[ReactMouseEvent[dom.html.Element]], c.asInstanceOf[IColumn]))
 
   /** Smart constructor for `IColumn.onColumnContextMenu` */
   def OnColumnContextMenu(
-      f: (IColumn, ReactMouseEvent[dom.html.Element]) => Unit
-    ): js.UndefOr[js.Function2[js.Any, js.Any, Unit]] =
+    f: (IColumn, ReactMouseEvent[dom.html.Element]) => Unit
+  ): js.UndefOr[js.Function2[js.Any, js.Any, Unit]] =
     js.defined((c, e) => f(c.asInstanceOf[IColumn], e.asInstanceOf[ReactMouseEvent[dom.html.Element]]))
 
   /** Smart constructor for `IColumn.onRender`. */
   def OnRender[T <: js.Any](
-      f: (T, Int, IColumn) => ReactNode
-    ): js.UndefOr[js.Function3[js.Any, Int, js.Any, ReactNode]] =
+    f: (T, Int, IColumn) => ReactNode
+  ): js.UndefOr[js.Function3[js.Any, Int, js.Any, ReactNode]] =
     js.defined((t, i, c) => f(t.asInstanceOf[T], i, c.asInstanceOf[IColumn]))
 
   /** Unsafe conversion. */
   def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
-  
+
   /** Uses js.Object.assign so its *not* hierarchical merging. */
   implicit class ExtraRichIColumn(private val col: IColumn) extends AnyVal {
+
     /** Takes current (minWidth, maxWidth) argument. */
-    def modifyMaxWidth(f: (js.UndefOr[Int], js.UndefOr[Int]) => js.UndefOr[Int]) = 
-        js.Object.assign(new js.Object, col, 
-            js.Dynamic.literal("maxWidth" -> f(col.minWidth, col.maxWidth).asInstanceOf[js.Any])).asInstanceOf[IColumn]
+    def modifyMaxWidth(f: (js.UndefOr[Int], js.UndefOr[Int]) => js.UndefOr[Int]) =
+      js.Object
+        .assign(
+          new js.Object,
+          col,
+          js.Dynamic.literal("maxWidth" -> f(col.minWidth, col.maxWidth).asInstanceOf[js.Any]))
+        .asInstanceOf[IColumn]
   }
 }
 
@@ -259,7 +266,7 @@ trait IContextualMenuProps extends KeyAndRef {
   var beakWidth: js.UndefOr[Int] = js.undefined
   var useTargetWidth: js.UndefOr[Boolean] = js.undefined
   var useTargetAsMinWidth: js.UndefOr[Boolean] = js.undefined
-  var isBeakVisible : js.UndefOr[Boolean] = js.undefined
+  var isBeakVisible: js.UndefOr[Boolean] = js.undefined
   var coverTarget: js.UndefOr[Boolean] = js.undefined
   var alignTargetEdge: js.UndefOr[Boolean] = js.undefined
   var labelElementId: js.UndefOr[String] = js.undefined
@@ -271,43 +278,43 @@ trait IContextualMenuProps extends KeyAndRef {
   var ariaLabel: js.UndefOr[String] = js.undefined
   var doNotLayer: js.UndefOr[Boolean] = js.undefined
   var directionHintFixed: js.UndefOr[Boolean] = js.undefined
-  
+
   var title: js.UndefOr[String] = js.undefined
   //var onRenderMenuList
   var submenuHoverDelay: js.UndefOr[String] = js.undefined
-  
+
   var hidden: js.UndefOr[Boolean] = js.undefined
   var shouldUpdateWhenHidden: js.UndefOr[Boolean] = js.undefined
   var delayUpdateFocusOnHover: js.UndefOr[Boolean] = js.undefined
   val items: js.Array[IContextualMenuItem]
 }
 
-object IContextualMenuProps { 
-    def apply(all: IContextualMenuItem*) = 
-        new IContextualMenuProps {
-            val items = all.toJSArray
-        }
+object IContextualMenuProps {
+  def apply(all: IContextualMenuItem*) =
+    new IContextualMenuProps {
+      val items = all.toJSArray
+    }
 }
 
 @js.native
 abstract trait ContextualMenuItemType extends js.Any
 object ContextualMenuItemType {
-    val Normal = 0.asInstanceOf[ContextualMenuItemType]
-    val Divider = 1.asInstanceOf[ContextualMenuItemType]
-    val Header = 2.asInstanceOf[ContextualMenuItemType]
-    val Section = 3.asInstanceOf[ContextualMenuItemType]
+  val Normal = 0.asInstanceOf[ContextualMenuItemType]
+  val Divider = 1.asInstanceOf[ContextualMenuItemType]
+  val Header = 2.asInstanceOf[ContextualMenuItemType]
+  val Section = 3.asInstanceOf[ContextualMenuItemType]
 }
 
 trait IContextualMenuItemBase extends WithIconProps {
   import IContextualMenuItem._
-  
+
   // key
   var text: js.UndefOr[String] = js.undefined
   var secondaryText: js.UndefOr[String] = js.undefined
   var itemType: js.UndefOr[ContextualMenuItemType] = js.undefined
   // iconProps
   var onRenderIcon: js.UndefOr[IRenderFunction[_ <: IContextualMenuItemBase]] = js.undefined
-  var submenuIconProps: js.UndefOr[Icon.Props|js.Dynamic] = js.undefined
+  var submenuIconProps: js.UndefOr[Icon.Props | js.Dynamic] = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
   var primaryDisabled: js.UndefOr[Boolean] = js.undefined
   var canCheck: js.UndefOr[Boolean] = js.undefined
@@ -323,7 +330,7 @@ trait IContextualMenuItemBase extends WithIconProps {
   var subMenuProps: js.UndefOr[IContextualMenuProps] = js.undefined
   var itemProps: js.UndefOr[IContextualMenuProps] = js.undefined
   //getSplitButtonVerticalDividerClassNames
-  var sectionProps: js.UndefOr[js.Object/*IContextualMenuSection*/] = js.undefined
+  var sectionProps: js.UndefOr[js.Object /*IContextualMenuSection*/ ] = js.undefined
   var className: js.UndefOr[String] = js.undefined
   var ariaLabel: js.UndefOr[String] = js.undefined
   var title: js.UndefOr[String] = js.undefined
@@ -350,6 +357,7 @@ trait IContextualMenuItem extends IContextualMenuItemBase {
 }
 
 object IContextualMenuItem {
+
   /** Callback with the react synthetic event. OC = onClick. Should be Mouse or Keyboard event! */
   type OnClick = js.Function2[ReactMouseEvent[dom.html.Element], IContextualMenuItem, js.UndefOr[Boolean]]
   @deprecated("Use OnClick")
@@ -359,15 +367,15 @@ object IContextualMenuItem {
     js.Any.fromFunction2(f).asInstanceOf[OC]
 
   def OnClick(f: () => Unit) = js.Any.fromFunction0(f).asInstanceOf[OC]
-    
+
   type RenderFunction = js.Function2[js.Object, js.Function2[js.Any, js.UndefOr[Boolean], Unit], ReactNode]
   @deprecated("Use RenderFunction")
   type RF = RenderFunction
-  
+
   type OnMouseDown = js.Function2[IContextualMenuItem, ReactMouseEvent[dom.html.Element], Unit]
   @deprecated("Use OnMouseDown")
   type OMD = OnMouseDown
-  
+
 }
 
 // from @uifabric/utilities
@@ -474,7 +482,8 @@ trait ISelectableDroppableTextPropsInit[I <: ISelectableOption, T <: dom.html.El
 }
 
 trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Element]
-    extends ISelectableDroppableTextPropsInit[I,T] {
+    extends ISelectableDroppableTextPropsInit[I, T] {
+
   /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
   val options: js.Array[I] | js.Array[_ <: js.Dynamic]
 }

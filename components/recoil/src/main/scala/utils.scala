@@ -29,6 +29,4 @@ import js.|
  *
  * @todo Allow multi-param family thunks.
  */
-package object utils {
- 
-}
+package object utils {}

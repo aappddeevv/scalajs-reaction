@@ -30,7 +30,7 @@ import react._
 
 /** Typeclass to convert some arrays to datum arrays */
 class PlotlyJSArrayOps[T](private val arr: js.Array[T]) extends AnyVal {
-    def asDatumArr: js.Array[Datum] = arr.asInstanceOf[js.Array[Datum]]
+  def asDatumArr: js.Array[Datum] = arr.asInstanceOf[js.Array[Datum]]
 }
 
 trait syntax {
@@ -42,7 +42,7 @@ trait syntax {
   implicit def dateArrayToDatumArray(arr: js.Array[js.Date]) = new JSArrayOps[js.Date](arr)
   implicit def nullArrayToDatumArray(arr: js.Array[Null]) = new JSArrayOps[Null](arr)
   implicit def anyArrayToDatumArray(arr: js.Array[Any]) = new JSArrayOps[Any](arr)
-  */
+   */
   implicit def arrayToDatumArray[T](arr: js.Array[T]) = new PlotlyJSArrayOps[T](arr)
 }
 
@@ -65,9 +65,9 @@ object syntax extends syntax
 }
 
 @jsenrich trait DataTitle extends js.Object {
- var text: js.UndefOr[String] = js.undefined
- var font: js.UndefOr[Font] = js.undefined
- var position: js.UndefOr[String] = js.undefined
+  var text: js.UndefOr[String] = js.undefined
+  var font: js.UndefOr[Font] = js.undefined
+  var position: js.UndefOr[String] = js.undefined
 }
 
 trait Margin extends js.Object {
@@ -436,14 +436,13 @@ object Dash {
   val longdashdot = "longdashdot".asInstanceOf[Dash]
 }
 
-
 trait Line extends js.Object {
-    var color: js.UndefOr[Color] = js.undefined
-    var width: js.UndefOr[Double] = js.undefined
-    var dash: js.UndefOr[Dash] = js.undefined
-    var shape: js.UndefOr[String] = js.undefined
-    var smoothing: js.UndefOr[Double] = js.undefined
-    var simplify: js.UndefOr[Boolean] = js.undefined
+  var color: js.UndefOr[Color] = js.undefined
+  var width: js.UndefOr[Double] = js.undefined
+  var dash: js.UndefOr[Dash] = js.undefined
+  var shape: js.UndefOr[String] = js.undefined
+  var smoothing: js.UndefOr[Double] = js.undefined
+  var simplify: js.UndefOr[Boolean] = js.undefined
 }
 
 trait ScatterLine extends Line
@@ -717,19 +716,19 @@ trait PlotMouseEvent extends js.Object {
 
 @js.native
 abstract trait HoverInfo extends js.Any
-object HoverInfo { 
-    val all = "all".asInstanceOf[HoverInfo]
-    val none = "none".asInstanceOf[HoverInfo]
-    val skip = "skip".asInstanceOf[HoverInfo]
-    val name = "name".asInstanceOf[HoverInfo]
-    val text = "text".asInstanceOf[HoverInfo]
-    val x= "x".asInstanceOf[HoverInfo]
-    val y= "y".asInstanceOf[HoverInfo]
-    val z = "z".asInstanceOf[HoverInfo]
-    
-    implicit class RichHoverInfo(private val hi: HoverInfo) extends AnyVal {
-        def and(that: HoverInfo) = s"$hi+$that"
-    }
+object HoverInfo {
+  val all = "all".asInstanceOf[HoverInfo]
+  val none = "none".asInstanceOf[HoverInfo]
+  val skip = "skip".asInstanceOf[HoverInfo]
+  val name = "name".asInstanceOf[HoverInfo]
+  val text = "text".asInstanceOf[HoverInfo]
+  val x = "x".asInstanceOf[HoverInfo]
+  val y = "y".asInstanceOf[HoverInfo]
+  val z = "z".asInstanceOf[HoverInfo]
+
+  implicit class RichHoverInfo(private val hi: HoverInfo) extends AnyVal {
+    def and(that: HoverInfo) = s"$hi+$that"
+  }
 }
 
 // need to add the rest here
@@ -754,14 +753,14 @@ trait PlotMarker extends js.Object
 trait Trace extends js.Object {
   /*@JSName("type")
   val plotType: PlotType
-  */
-  val `type`: PlotType|String
+   */
+  val `type`: PlotType | String
 }
 
 trait TraceInit extends js.Object {
   //@JSName("type")
   //var plotType: js.UndefOr[PlotType] = js.undefined
-  var `type`: js.UndefOr[PlotType|String] = js.undefined
+  var `type`: js.UndefOr[PlotType | String] = js.undefined
 }
 
 @js.native
@@ -770,8 +769,6 @@ object Orientation {
   val horizontal = "h".asInstanceOf[Orientation]
   val vertical = "v".asInstanceOf[Orientation]
 }
-
-
 
 trait PlotData extends js.Object {
   var boxmean: js.UndefOr[String | Boolean] = js.undefined
@@ -787,7 +784,7 @@ trait PlotData extends js.Object {
   //var gauge
   var hole: js.UndefOr[Double] = js.undefined
   var hoveron: js.UndefOr[String] = js.undefined
-  var hoverinfo: js.UndefOr[String|HoverInfo] = js.undefined
+  var hoverinfo: js.UndefOr[String | HoverInfo] = js.undefined
   var hoverlabel: js.UndefOr[Any] = js.undefined
   var hovertemplate: js.UndefOr[String | js.Array[String]] = js.undefined
   var hovertext: js.UndefOr[String | js.Array[String]] = js.undefined
@@ -830,8 +827,8 @@ trait PlotData extends js.Object {
 }
 
 trait PlotDataInit extends PlotData with TraceInit {
-  var x: js.UndefOr[js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]] = js.undefined
-  var y: js.UndefOr[js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]] = js.undefined
+  var x: js.UndefOr[js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]] = js.undefined
+  var y: js.UndefOr[js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]] = js.undefined
 }
 
 object PlotDataInit {
@@ -840,13 +837,11 @@ object PlotDataInit {
   }
 }
 
-trait Data extends PlotData with Trace { 
-  
-}
+trait Data extends PlotData with Trace {}
 
 trait BarTrace extends Data {
-  val x: js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]
-  val y: js.Array[Datum]|js.Array[js.Array[Datum]]|js.typedarray.TypedArray[_,_]
+  val x: js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]
+  val y: js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]
   var x0: js.UndefOr[Datum] = js.undefined
   var y0: js.UndefOr[Datum] = js.undefined
   var ids: js.UndefOr[js.Array[String]] = js.undefined

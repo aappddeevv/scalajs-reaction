@@ -46,12 +46,11 @@ package object react_dom {
   }
 
   /* Render into an elemen given by its id. Prefer this over `renderToElementWithId`. */
-  def renderToElement(id: String, cb: Option[() => Unit]=None): Either[String, ReactNode => Unit] = {
+  def renderToElement(id: String, cb: Option[() => Unit] = None): Either[String, ReactNode => Unit] =
     Option(dom.document.getElementById(id))
       .fold[Either[String, ReactNode => Unit]](
-       Left(s"Element with id $id not found.")
-    )(htmlel => Right(node => ReactDOMJS.render(node, htmlel, cb.map(js.Any.fromFunction0(_)).orUndefined)))
-  }
+        Left(s"Element with id $id not found.")
+      )(htmlel => Right(node => ReactDOMJS.render(node, htmlel, cb.map(js.Any.fromFunction0(_)).orUndefined)))
 
   /** Render the DOM given an element id using react's portal. */
   def createPortalInElementWithId(
@@ -69,15 +68,13 @@ package object react_dom {
   def createRoot(id: String): Either[String, ReactNode => Unit] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(htmlel =>
-      Right(ReactDOMJS.createRoot(htmlel).render(_))
-    )
+      Right(ReactDOMJS.createRoot(htmlel).render(_)))
   }
 
   def createBlockingRoot(id: String): Either[String, ReactNode => Unit] = {
     val target = Option(dom.document.getElementById(id))
     target.fold[Either[String, ReactNode => Unit]](Left(s"No element with id $id found."))(htmlel =>
-      Right(ReactDOMJS.createBlockingRoot(htmlel).render(_))
-    )
+      Right(ReactDOMJS.createBlockingRoot(htmlel).render(_)))
   }
 
   def render(node: ReactNode, target: dom.Element) = ReactDOMJS.render(node, target)

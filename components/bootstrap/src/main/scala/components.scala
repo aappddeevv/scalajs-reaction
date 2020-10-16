@@ -30,18 +30,18 @@ import js.|
 @js.native
 @JSImport("react-bootstrap", JSImport.Namespace)
 object BootstrapNS extends js.Object {
-  val Button: ReactJSComponent            = js.native
-  val ButtonToolbar: ReactJSComponent     = js.native
-  val ButtonGroup: ReactJSComponent       = js.native
+  val Button: ReactJSComponent = js.native
+  val ButtonToolbar: ReactJSComponent = js.native
+  val ButtonGroup: ReactJSComponent = js.native
   val ToggleButtonGroup: ReactJSComponent = js.native
-  val ToggleButton: ReactJSComponent      = js.native
+  val ToggleButton: ReactJSComponent = js.native
 
   val FormControl: ReactJSComponent = js.native
-  val FormLabel: ReactJSComponent   = js.native
-  val FormGroup: ReactJSComponent   = js.native
+  val FormLabel: ReactJSComponent = js.native
+  val FormGroup: ReactJSComponent = js.native
 
   val Checkbox: ReactJSComponent = js.native
-  val Radio: ReactJSComponent    = js.native
+  val Radio: ReactJSComponent = js.native
   //val FormControl.Static: ReactJSComponent = js.native
   //val HelpBlock: ReactJSComponent = js.native
 }
@@ -73,25 +73,25 @@ object components {
 @js.native
 sealed trait Variant extends js.Any
 object Variant {
-  val primary   = "primary".asInstanceOf[Variant]
+  val primary = "primary".asInstanceOf[Variant]
   val secondary = "primary".asInstanceOf[Variant]
-  val success   = "success".asInstanceOf[Variant]
-  val danger    = "danger".asInstanceOf[Variant]
-  val warning   = "warning".asInstanceOf[Variant]
-  val info      = "info".asInstanceOf[Variant]
-  val dark      = "link".asInstanceOf[Variant]
-  val light     = "link".asInstanceOf[Variant]
-  val link      = "link".asInstanceOf[Variant]
+  val success = "success".asInstanceOf[Variant]
+  val danger = "danger".asInstanceOf[Variant]
+  val warning = "warning".asInstanceOf[Variant]
+  val info = "info".asInstanceOf[Variant]
+  val dark = "link".asInstanceOf[Variant]
+  val light = "link".asInstanceOf[Variant]
+  val link = "link".asInstanceOf[Variant]
 }
 
 @js.native
 sealed trait Size extends js.Any
 object Size {
-  val lg     = "lg".asInstanceOf[Size]
-  val large  = "large".asInstanceOf[Size]
-  val sm     = "sm".asInstanceOf[Size]
-  val small  = "small".asInstanceOf[Size]
-  val xs     = "xs".asInstanceOf[Size]
+  val lg = "lg".asInstanceOf[Size]
+  val large = "large".asInstanceOf[Size]
+  val sm = "sm".asInstanceOf[Size]
+  val small = "small".asInstanceOf[Size]
+  val xs = "xs".asInstanceOf[Size]
   val xsmall = "xsmall".asInstanceOf[Size]
 }
 
@@ -99,29 +99,29 @@ object Size {
 sealed trait ButtonType extends js.Any
 object ButtonType {
   val button = "button".asInstanceOf[ButtonType]
-  val reset  = "reset".asInstanceOf[ButtonType]
+  val reset = "reset".asInstanceOf[ButtonType]
   val submit = "submit".asInstanceOf[ButtonType]
   val `null` = null.asInstanceOf[ButtonType]
 }
 
 trait IButtonProps extends js.Object {
-  var active: js.UndefOr[Boolean]                      = js.undefined
-  var disabled: js.UndefOr[Boolean]                    = js.undefined
-  var block: js.UndefOr[Boolean]                       = js.undefined
-  var `type`: js.UndefOr[ButtonType]                   = js.undefined
-  var href: js.UndefOr[String]                         = js.undefined
-  var variant: js.UndefOr[Variant]                     = js.undefined
-  var size: js.UndefOr[Size]                           = js.undefined
-  var className: js.UndefOr[String]                    = js.undefined
+  var active: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var block: js.UndefOr[Boolean] = js.undefined
+  var `type`: js.UndefOr[ButtonType] = js.undefined
+  var href: js.UndefOr[String] = js.undefined
+  var variant: js.UndefOr[Variant] = js.undefined
+  var size: js.UndefOr[Size] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
   var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
-  var bsPrefix: js.UndefOr[String]                     = js.undefined
+  var bsPrefix: js.UndefOr[String] = js.undefined
 }
 
 trait IButtonGroupProps extends js.Object {
-  var vertical: js.UndefOr[Boolean]  = js.undefined
+  var vertical: js.UndefOr[Boolean] = js.undefined
   var justified: js.UndefOr[Boolean] = js.undefined
-  var block: js.UndefOr[Boolean]     = js.undefined
-  var bsClass: js.UndefOr[String]    = js.undefined
+  var block: js.UndefOr[Boolean] = js.undefined
+  var bsClass: js.UndefOr[String] = js.undefined
 }
 
 trait IButtonToolbarProps extends js.Object {
@@ -132,23 +132,23 @@ trait IButtonToolbarProps extends js.Object {
 sealed trait ToggleButtonGroupType extends js.Any
 object ToggleButtonGroupType {
   val checkbox = "checkbox".asInstanceOf[ToggleButtonGroupType]
-  val radio    = "radio".asInstanceOf[ToggleButtonGroupType]
+  val radio = "radio".asInstanceOf[ToggleButtonGroupType]
 }
 
 trait IToggleButtonGroupProps extends js.Object {
-  var name: js.UndefOr[String]                         = js.undefined
-  var value: js.UndefOr[js.Any]                        = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var value: js.UndefOr[js.Any] = js.undefined
   var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
   //var `type`: js.UndefOr[ToggleButtonGroupType] = js.undefined
 }
 
 trait IToggleButtonProps extends js.Object {
   //var `type`: js.UndefOr[String] = js.undefined
-  var name: js.UndefOr[String]                         = js.undefined
-  var checked: js.UndefOr[Boolean]                     = js.undefined
-  var disabled: js.UndefOr[Boolean]                    = js.undefined
-  var block: js.UndefOr[Boolean]                       = js.undefined
-  var value: js.UndefOr[js.Any]                        = js.undefined
+  var name: js.UndefOr[String] = js.undefined
+  var checked: js.UndefOr[Boolean] = js.undefined
+  var disabled: js.UndefOr[Boolean] = js.undefined
+  var block: js.UndefOr[Boolean] = js.undefined
+  var value: js.UndefOr[js.Any] = js.undefined
   var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
 }
 
@@ -157,14 +157,14 @@ sealed trait ValidationState extends js.Any
 object ValidationState {
   val success = "success".asInstanceOf[ValidationState]
   val warning = "warning".asInstanceOf[ValidationState]
-  val error   = "error".asInstanceOf[ValidationState]
+  val error = "error".asInstanceOf[ValidationState]
 }
 
 trait IFormGroupProps extends js.Object {
-  var controlId: js.UndefOr[String]                       = js.undefined
+  var controlId: js.UndefOr[String] = js.undefined
   var validationState: js.UndefOr[ValidationState | Null] = js.undefined
-  var bsSize: js.UndefOr[Size]                            = js.undefined
-  var bsClass: js.UndefOr[String]                         = js.undefined
+  var bsSize: js.UndefOr[Size] = js.undefined
+  var bsClass: js.UndefOr[String] = js.undefined
 }
 
 @js.native
@@ -176,7 +176,7 @@ object FormControlType {
 @js.native
 sealed trait As extends js.Any
 object As {
-  val input    = "input".asInstanceOf[As]
+  val input = "input".asInstanceOf[As]
   val textarea = "textarea".asInstanceOf[As]
 }
 
@@ -184,22 +184,22 @@ trait IFormControlProps extends js.Object {
   var componentClass: js.UndefOr[String] = js.undefined
 
   /** Relevant if as = input */
-  var `type`: js.UndefOr[FormControlType]              = js.undefined
-  var id: js.UndefOr[String]                           = js.undefined
-  var size: js.UndefOr[Size]                           = js.undefined
-  var className: js.UndefOr[String]                    = js.undefined
-  var placeholder: js.UndefOr[String]                  = js.undefined
-  var value: js.UndefOr[scala.Any]                     = js.undefined
+  var `type`: js.UndefOr[FormControlType] = js.undefined
+  var id: js.UndefOr[String] = js.undefined
+  var size: js.UndefOr[Size] = js.undefined
+  var className: js.UndefOr[String] = js.undefined
+  var placeholder: js.UndefOr[String] = js.undefined
+  var value: js.UndefOr[scala.Any] = js.undefined
   var onChange: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined
-  var as: js.UndefOr[As | ReactJSComponent | String]   = js.undefined
+  var as: js.UndefOr[As | ReactJSComponent | String] = js.undefined
 
-  var isValid: js.UndefOr[Boolean]   = js.undefined
+  var isValid: js.UndefOr[Boolean] = js.undefined
   var isInvalid: js.UndefOr[Boolean] = js.undefined
 }
 
 trait IFormLabelProps extends js.Object {
-  var htmlFor: js.UndefOr[String]   = js.undefined
-  var srOnly: js.UndefOr[Boolean]   = js.undefined
+  var htmlFor: js.UndefOr[String] = js.undefined
+  var srOnly: js.UndefOr[Boolean] = js.undefined
   var className: js.UndefOr[String] = js.undefined
   // innerRef?
   var column: js.UndefOr[Boolean] = js.undefined

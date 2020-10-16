@@ -87,9 +87,10 @@ package object react extends react.React with When {
      */
     val current: T | Null = js.native
   }
-  
-  object ReactRef { 
+
+  object ReactRef {
     implicit class RichReactRef[T](private val r: ReactRef[T]) extends AnyVal {
+
       /** If needed to satisfy API constraints, convert to a ReactRef. */
       def toMutableRef = r.asInstanceOf[MutableRef[T]]
     }
@@ -110,9 +111,10 @@ package object react extends react.React with When {
   trait MutableRef[T] extends js.Object {
     var current: T
   }
-  
-  object MutableRef { 
+
+  object MutableRef {
     implicit class RichMutableRef[T](private val r: MutableRef[T]) extends AnyVal {
+
       /** If needed to satisfy API constraints, convert to a ReactRef. */
       def toReactRef = r.asInstanceOf[ReactRef[T]]
     }

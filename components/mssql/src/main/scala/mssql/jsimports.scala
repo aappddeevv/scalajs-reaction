@@ -28,17 +28,17 @@ import js.annotation._
 /** Node event emmitter. */
 @js.native
 trait MSSQLEventEmitter extends js.Object {
-  def on(name: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
-  def off(name: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
-  def once(naem: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def on(name: String | js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def off(name: String | js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def once(naem: String | js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
   def listenerCount(): Int = js.native
-  def eventNames(): js.Array[String|js.Symbol] = js.native
+  def eventNames(): js.Array[String | js.Symbol] = js.native
   def getMaxListeners(): Int = js.native
   def setMaxListeners(v: Int): MSSQLEventEmitter = js.native
-  def listenerCount(name: String|js.Symbol): Int = js.native
-  def listeners(name: String|js.Symbol): js.Array[js.Function] = js.native
-  def removeAllListeners(name: String|js.Symbol): MSSQLEventEmitter = js.native
-  def removeListener(name: String|js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
+  def listenerCount(name: String | js.Symbol): Int = js.native
+  def listeners(name: String | js.Symbol): js.Array[js.Function] = js.native
+  def removeAllListeners(name: String | js.Symbol): MSSQLEventEmitter = js.native
+  def removeListener(name: String | js.Symbol, cb: js.Function): MSSQLEventEmitter = js.native
 }
 
 trait PoolConfig extends js.Object {
@@ -79,14 +79,14 @@ class ConnectionPool(config: Config) extends MSSQLEventEmitter {
 
 @js.native
 trait RequestParameter extends js.Object {
-    val name: String = js.native
-    val `type`: js.Function0[SQLType]|SQLType = js.native
-    val io: Int = js.native
-    val value: js.Any = js.native
-    val length: Int = js.native 
-    val scale: Int = js.native
-    val precision: Int = js.native
-    val tvpType: js.Any = js.native
+  val name: String = js.native
+  val `type`: js.Function0[SQLType] | SQLType = js.native
+  val io: Int = js.native
+  val value: js.Any = js.native
+  val length: Int = js.native
+  val scale: Int = js.native
+  val precision: Int = js.native
+  val tvpType: js.Any = js.native
 }
 
 @js.native
@@ -143,7 +143,7 @@ object ISOLATION_LEVEL extends js.Object {
 @JSImport("mssql", "Transaction")
 class Transaction(pool: js.UndefOr[ConnectionPool] = js.undefined) extends MSSQLEventEmitter {
   // ts indicates this is js.Promise[Unit] but that's wrong...and causes issues around Unit in scala
-  def begin(isolationLevel: js.UndefOr[Int]=js.undefined): js.Promise[Transaction] = js.native
+  def begin(isolationLevel: js.UndefOr[Int] = js.undefined): js.Promise[Transaction] = js.native
   //def commitCB(err: js.UndefOr[js.Function1[scala.Any, Unit]] = js.undefined): Unit = js.native
   def commit(): js.Promise[Unit] = js.native
   def rollback(): js.Promise[Unit] = js.native
@@ -183,25 +183,21 @@ trait ColumnMetadata extends js.Object {
 
 @js.native
 @JSImport("mssql", "MSSQLError")
-class MSSQLError(messageOrError: String | js.Error, val code: String)
-    extends js.Error() {
+class MSSQLError(messageOrError: String | js.Error, val code: String) extends js.Error() {
   val originalError: js.UndefOr[js.Object] = js.native
 }
 
 @js.native
 @JSImport("mssql", "ConnectionError")
-class ConnectionError(messageOrError: String | js.Error, code: String)
-    extends MSSQLError(messageOrError, code)
+class ConnectionError(messageOrError: String | js.Error, code: String) extends MSSQLError(messageOrError, code)
 
 @js.native
 @JSImport("mssql", "TransactionError")
-class TransactionError(messageOrError: String | js.Error, code: String)
-    extends MSSQLError(messageOrError, code)
+class TransactionError(messageOrError: String | js.Error, code: String) extends MSSQLError(messageOrError, code)
 
 @js.native
 @JSImport("mssql", "RequestError")
-class RequestError(messageOrError: String | js.Error, code: String)
-    extends MSSQLError(messageOrError, code) {
+class RequestError(messageOrError: String | js.Error, code: String) extends MSSQLError(messageOrError, code) {
   val number: js.UndefOr[Int] = js.native
   val state: js.UndefOr[Int] = js.native
   val `class`: js.UndefOr[js.Any] = js.native
@@ -212,8 +208,7 @@ class RequestError(messageOrError: String | js.Error, code: String)
 
 @js.native
 @JSImport("mssql", "PreparedStatementError")
-class PreparedStatementError(messageOrError: String | js.Error, code: String)
-    extends MSSQLError(messageOrError, code)
+class PreparedStatementError(messageOrError: String | js.Error, code: String) extends MSSQLError(messageOrError, code)
 
 @js.native
 trait Table extends js.Object {}
@@ -223,16 +218,16 @@ trait SQLType extends js.Object
 
 @js.native
 trait SchemaColumn extends js.Object {
-    val index: Int = js.native
-    val name: String = js.native
-    val `type`: SQLType = js.native
-    val length: Int = js.native
-    val scale: Int = js.native
-    val precision: Int = js.native
-    val nullable: Boolean = js.native
-    val caseSensitive: Boolean = js.native
-    val identity: Boolean = js.native
-    val readOnly: Boolean = js.native
+  val index: Int = js.native
+  val name: String = js.native
+  val `type`: SQLType = js.native
+  val length: Int = js.native
+  val scale: Int = js.native
+  val precision: Int = js.native
+  val nullable: Boolean = js.native
+  val caseSensitive: Boolean = js.native
+  val identity: Boolean = js.native
+  val readOnly: Boolean = js.native
 }
 
 @js.native

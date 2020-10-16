@@ -59,11 +59,11 @@ object ChoiceGroup {
   }
 
   type OnChangeEvent = js.Function2[ReactFormEvent[dom.html.Element], js.UndefOr[Option], Unit]
-  
+
   def OnChangeEvent(
     f: (ReactFormEvent[dom.html.Element], js.UndefOr[Option]) => Unit
-    ): js.UndefOr[OnChangeEvent] =
-        js.defined((e, o) => f(e, o))
+  ): js.UndefOr[OnChangeEvent] =
+    js.defined((e, o) => f(e, o))
 
   trait Styles extends IStyleSetTag {
 

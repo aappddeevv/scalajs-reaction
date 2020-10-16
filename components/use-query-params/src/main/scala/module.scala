@@ -66,11 +66,15 @@ trait module_Params extends js.Object {
 private[use_query_params] trait module_hooks extends js.Object {
 
   /** You need to match the param to the scala type independently :-(. */
-  def useQueryParam[T](name: String, encoder: Param): js.Tuple2[js.UndefOr[T], js.Function2[T, js.UndefOr[UrlUpdateType], Unit]] =
+  def useQueryParam[T](
+    name: String,
+    encoder: Param): js.Tuple2[js.UndefOr[T], js.Function2[T, js.UndefOr[UrlUpdateType], Unit]] =
     js.native
 
   /** 2nd param in callback is UrlUpdateType e.g. "push" */
-  def useQueryParams(name: String, encoders: QueryConfig): js.Tuple2[String, js.Function2[js.Dictionary[js.Any], UrlUpdateType, Unit]] = js.native
+  def useQueryParams(
+    name: String,
+    encoders: QueryConfig): js.Tuple2[String, js.Function2[js.Dictionary[js.Any], UrlUpdateType, Unit]] = js.native
 }
 
 @js.native
@@ -96,7 +100,7 @@ object QueryParamProvider {
 
   def apply(router: ReactJSComponent, children: ReactNode) =
     createElementN(JS, new Props { ReactRouterRoute = router })(children)
-    
+
 }
 
 // object QueryParams {

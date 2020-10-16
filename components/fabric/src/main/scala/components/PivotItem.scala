@@ -36,7 +36,7 @@ object PivotItem {
 
   @js.native
   trait PivotItemLike extends js.Object {
-     val props: Props
+    val props: Props
   }
 
   @js.native
@@ -47,14 +47,14 @@ object PivotItem {
     createElementN(JS, props)(children: _*)
 
   trait Props extends HTMLAttributes[dom.html.Div] with MaybeHasStrKey {
-    var headerText: js.UndefOr[String]                       = js.undefined
-    var itemKey: js.UndefOr[String]                          = js.undefined
-    var headerButtonProps: js.UndefOr[js.Object]             = js.undefined
-    var itemCount: js.UndefOr[Int]                           = js.undefined
-    var itemIcon: js.UndefOr[String]                         = js.undefined
-    var ariaLabel: js.UndefOr[String]                        = js.undefined
+    var headerText: js.UndefOr[String] = js.undefined
+    var itemKey: js.UndefOr[String] = js.undefined
+    var headerButtonProps: js.UndefOr[js.Object] = js.undefined
+    var itemCount: js.UndefOr[Int] = js.undefined
+    var itemIcon: js.UndefOr[String] = js.undefined
+    var ariaLabel: js.UndefOr[String] = js.undefined
     var onRenderItemLink: js.UndefOr[IRenderFunction[Props]] = js.undefined
-    var keytipProps: js.UndefOr[IKeytipProps]                = js.undefined
+    var keytipProps: js.UndefOr[IKeytipProps] = js.undefined
   }
 
 }

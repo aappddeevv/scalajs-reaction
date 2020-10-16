@@ -35,10 +35,10 @@ object KeyboardAvoidingView {
     createElementN(JS, props)(children: _*)
 
   trait Props extends View.Props {
-    var keyboardVerticalOffset: js.UndefOr[Double]   = js.undefined
-    var behavior: js.UndefOr[Behavior]               = js.undefined
+    var keyboardVerticalOffset: js.UndefOr[Double] = js.undefined
+    var behavior: js.UndefOr[Behavior] = js.undefined
     var contentContainerStyle: js.UndefOr[ViewStyle] = js.undefined
-    var enabled: js.UndefOr[Boolean]                 = js.undefined
+    var enabled: js.UndefOr[Boolean] = js.undefined
   }
 
 }
@@ -46,7 +46,7 @@ object KeyboardAvoidingView {
 @js.native
 sealed trait Behavior extends js.Any
 object Behavior {
-  val height   = "height".asInstanceOf[Behavior]
+  val height = "height".asInstanceOf[Behavior]
   val position = "position".asInstanceOf[Behavior]
-  val padding  = "padding".asInstanceOf[Behavior]
+  val padding = "padding".asInstanceOf[Behavior]
 }

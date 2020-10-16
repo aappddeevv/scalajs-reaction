@@ -44,13 +44,12 @@ object Plot {
   def OnCallback(f: (Figure, dom.html.Div) => Unit) =
     js.Any.fromFunction2(f).asInstanceOf[CallbackFn]
 
-    
-  trait Figure extends js.Object { 
-    val frames: js.Array[Frame]|Null
+  trait Figure extends js.Object {
+    val frames: js.Array[Frame] | Null
     val data: js.Array[Data]
     val layout: Layout
   }
-    
+
   trait PropsBase extends js.Object {
     var key: js.UndefOr[String] = js.undefined
     var className: js.UndefOr[String] = js.undefined
@@ -59,7 +58,7 @@ object Plot {
     var debug: js.UndefOr[Boolean] = js.undefined
     var divId: js.UndefOr[String] = js.undefined
     var frames: js.UndefOr[js.Array[Frame]] = js.undefined
-    
+
     var revision: js.UndefOr[Int] = js.undefined
     var useResizeHandler: js.UndefOr[Boolean] = js.undefined
 
@@ -98,7 +97,7 @@ object Plot {
     //var onTransitioning
     //var onTransitionInterrupted
     //var onUnhover
-    
+
     var onTransitioning: js.UndefOr[js.Function0[Unit]] = js.undefined
     var onTransitionInterrupted: js.UndefOr[js.Function0[Unit]] = js.undefined
 
@@ -117,7 +116,7 @@ object Plot {
   }
 
   trait Props extends PropsBase {
-     val data: js.Array[Data]
-     val layout: Layout]
+    val data: js.Array[Data]
+    val layout: Layout
   }
 }

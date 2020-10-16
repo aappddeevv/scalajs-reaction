@@ -53,7 +53,7 @@ class ApolloLink(request: js.UndefOr[RequestHandler[_]] = js.undefined) extends 
     right: js.UndefOr[ApolloLink | RequestHandler[_]] = js.undefined): ApolloLink = js.native
   def empty(): ApolloLink = js.native
   def from(links: js.Array[ApolloLink | RequestHandler[_]]): ApolloLink = js.native
-  def execute[T](link: ApolloLink, operation: GraphQLRequest): Observable[StandardFetchResult[T]] = js.native    
+  def execute[T](link: ApolloLink, operation: GraphQLRequest): Observable[StandardFetchResult[T]] = js.native
 }
 
 @js.native
@@ -67,5 +67,5 @@ object ApolloLink extends js.Object {
     test: js.Function1[Operation, Boolean],
     left: ApolloLink | RequestHandler[_],
     right: js.UndefOr[ApolloLink | RequestHandler[_]] = js.undefined): ApolloLink = js.native
-    
+
 }

@@ -47,8 +47,8 @@ object StylesContext extends ReactContext[StylesProvider.Props]
 @JSImport("@material-ui/styles", JSImport.Namespace)
 object styles extends js.Object {
   val StylesProvider: ReactJSComponent = js.native
-  val ThemeProvider: ReactJSComponent  = js.native
-  def jssPreset(): JssOptions          = js.native
+  val ThemeProvider: ReactJSComponent = js.native
+  def jssPreset(): JssOptions = js.native
   // more...
 }
 
@@ -56,7 +56,7 @@ object StylesProvider {
 
   trait Props extends js.Object {
     var disableGeneration: js.UndefOr[Boolean] = js.undefined
-    var injectFirst: js.UndefOr[Boolean]       = js.undefined
+    var injectFirst: js.UndefOr[Boolean] = js.undefined
     @JSName("jss")
     var _jss: js.UndefOr[JSS] = js.undefined
     // generateClassName...

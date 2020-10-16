@@ -44,7 +44,7 @@ object Tabs {
   @js.native
   sealed trait IndicatorColor extends js.Any
   object IndicatorColor {
-    val primary   = "primary".asInstanceOf[IndicatorColor]
+    val primary = "primary".asInstanceOf[IndicatorColor]
     val secondary = "secondary".asInstanceOf[IndicatorColor]
   }
 
@@ -52,21 +52,21 @@ object Tabs {
   sealed trait ScrollButtons extends js.Any
   object ScrollButtons {
     var auto = "auto".asInstanceOf[ScrollButtons]
-    var on   = "on".asInstanceOf[ScrollButtons]
-    var off  = "off".asInstanceOf[ScrollButtons]
+    var on = "on".asInstanceOf[ScrollButtons]
+    var off = "off".asInstanceOf[ScrollButtons]
   }
 
   trait Props extends js.Object {
-    var action: js.UndefOr[js.Any]                                            = js.undefined
-    var centered: js.UndefOr[Boolean]                                         = js.undefined
-    var classes: js.UndefOr[js.Object]                                        = js.undefined
-    var component: js.UndefOr[String]                                         = js.undefined
-    var fullWidth: js.UndefOr[Boolean]                                        = js.undefined
-    var indicatorColor: js.UndefOr[IndicatorColor]                            = js.undefined
+    var action: js.UndefOr[js.Any] = js.undefined
+    var centered: js.UndefOr[Boolean] = js.undefined
+    var classes: js.UndefOr[js.Object] = js.undefined
+    var component: js.UndefOr[String] = js.undefined
+    var fullWidth: js.UndefOr[Boolean] = js.undefined
+    var indicatorColor: js.UndefOr[IndicatorColor] = js.undefined
     var onChange: js.UndefOr[js.Function2[ReactEvent[org.scalajs.dom.html.Input], Int, Unit]] = js.undefined
-    var scrollable: js.UndefOr[Boolean]                                       = js.undefined
-    var scrollButtons: js.UndefOr[ScrollButtons]                              = js.undefined
-    var textColor: js.UndefOr[Tab.TextColor]                                  = js.undefined
+    var scrollable: js.UndefOr[Boolean] = js.undefined
+    var scrollButtons: js.UndefOr[ScrollButtons] = js.undefined
+    var textColor: js.UndefOr[Tab.TextColor] = js.undefined
     var value: js.Any // can be false
   }
 }

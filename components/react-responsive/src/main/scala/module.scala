@@ -52,7 +52,7 @@ trait MediaQueryFeatures extends js.Object {
   var maxResolution: js.UndefOr[String | Int] = js.undefined
 }
 
-trait MediaQueryTypes extends js.Object  {
+trait MediaQueryTypes extends js.Object {
   var all: js.UndefOr[Boolean] = js.undefined
   var grid: js.UndefOr[Boolean] = js.undefined
   var aural: js.UndefOr[Boolean] = js.undefined

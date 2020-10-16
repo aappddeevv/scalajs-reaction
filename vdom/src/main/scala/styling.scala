@@ -438,7 +438,7 @@ trait RawStyleBase extends RawFontStyle {
   var gap: js.UndefOr[Int | String] = js.undefined
   var columnGap: js.UndefOr[Int | String] = js.undefined
   var rowGap: js.UndefOr[Int | String] = js.undefined
-  
+
   /* Will Change Level 1 - CR */
   var willChange: js.UndefOr[String] = js.undefined
   /* Text Level 3 - LC */

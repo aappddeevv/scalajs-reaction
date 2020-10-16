@@ -41,8 +41,8 @@ trait ProviderProps extends js.Object {
  */
 @js.native
 trait Store[S, A <: Action] extends js.Object {
-  def getState(): S                                   = js.native
-  val dispatch: Dispatch[A]                           = js.native
+  def getState(): S = js.native
+  val dispatch: Dispatch[A] = js.native
   val subscribe: js.Function1[Listener, Unsubscriber] = js.native
 
   /** Reducer replacement is untyped. */
@@ -52,7 +52,7 @@ trait Store[S, A <: Action] extends js.Object {
 @js.native
 trait ReactReduxContextValue[S, A <: Action] extends js.Object {
   val store: Store[S, A] = js.native
-  val storeState: S      = js.native
+  val storeState: S = js.native
 }
 
 @js.native

@@ -28,15 +28,9 @@ import js.|
 /** Immutable Response builder. */
 case class ResponseBuilder(run: Response => Response) { subject =>
   def underlying(next: Response => Response) = ResponseBuilder(run andThen next)
-  def status(s: Int) = subject.underlying { r =>
-    r.status(s); r
-  }
-  def json(v: js.Any | String) = subject.underlying { r =>
-    r.json(v.asInstanceOf[js.Any]); r
-  }
-  def header(k: String, v: String) = subject.underlying { r =>
-    r.set(k, v); r
-  }
+  def status(s: Int) = subject.underlying { r => r.status(s); r }
+  def json(v: js.Any | String) = subject.underlying { r => r.json(v.asInstanceOf[js.Any]); r }
+  def header(k: String, v: String) = subject.underlying { r => r.set(k, v); r }
 }
 
 object ResponseBuilder {

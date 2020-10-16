@@ -31,7 +31,7 @@ import react.implicits._
 //
 @js.native
 trait ReactErrorInfo extends js.Object {
-    val componentStack: String = js.native
+  val componentStack: String = js.native
 }
 
 /** Object tag so we can add extension methods. */
@@ -39,28 +39,30 @@ trait ReactErrorInfo extends js.Object {
 trait ReactJSComponentErrorBoundary extends ReactJSComponent
 
 trait Props extends js.Object {
+
   /** Rendered if there is no error. Could also use `render. `*/
   var children: js.UndefOr[ReactNode] = js.undefined
+
   /** Render when no error. */
   var render: js.UndefOr[js.Function0[ReactNode]] = js.undefined
+
   /** Fallback, render when there is an error. */
   var renderError: js.UndefOr[js.Function1[scala.Any, ReactNode]] = js.undefined
 }
 
 @js.native
 trait HookValue extends js.Object {
-    val ErrorBoundary: ReactJSComponentErrorBoundary = js.native
-    val didCatch: Boolean = js.native
-    /** Most of the time js.Error but could be anything. */
-    val error: scala.Any | Null = js.native
-    val errorInfo: ReactErrorInfo | Null = js.native
+  val ErrorBoundary: ReactJSComponentErrorBoundary = js.native
+  val didCatch: Boolean = js.native
+
+  /** Most of the time js.Error but could be anything. */
+  val error: scala.Any | Null = js.native
+  val errorInfo: ReactErrorInfo | Null = js.native
 }
 
 //
 @js.native
 @JSImport("use-error-boundary", JSImport.Namespace)
 object module extends js.Object {
-    def useErrorBoundary(): HookValue = js.native
+  def useErrorBoundary(): HookValue = js.native
 }
-
-

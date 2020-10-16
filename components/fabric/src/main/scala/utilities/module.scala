@@ -93,7 +93,7 @@ trait module_base extends js.Object {
     oldSettings: Settings,
     newSettings: Settings | SettingsFunction
   ): Settings = js.native
-  
+
   def mergeScopedSettings(
     oldeSettings: Settings,
     newSettings: Settings | SettingsFunction
@@ -127,9 +127,9 @@ object module extends module_base with customizer_base {
 //trait module_exports
 
 trait AddEventListenerOptions extends js.Object {
-    var capture: js.UndefOr[Boolean] = js.undefined
-    var once: js.UndefOr[Boolean] = js.undefined
-    var passive: js.UndefOr[Boolean] = js.undefined
+  var capture: js.UndefOr[Boolean] = js.undefined
+  var once: js.UndefOr[Boolean] = js.undefined
+  var passive: js.UndefOr[Boolean] = js.undefined
 }
 
 @js.native

@@ -34,7 +34,7 @@ import fabric.styling._
 import fabric.components._
 
 object Calendar {
-@js.native
+  @js.native
   @JSImport("@uifabric/date-time/lib", "Calendar")
   object JS extends ReactJSComponent
 
@@ -42,16 +42,13 @@ object Calendar {
   trait ICalendar extends js.Object {
     def focus(): Unit = js.native
   }
-  
-  trait Props extends js.Object {
-  
-  }
-  
+
+  trait Props extends js.Object {}
+
   def apply(props: Props) = createElement0(JS, props)
-  
-  trait StyleProps extends js.Object {
-  }
-  
+
+  trait StyleProps extends js.Object {}
+
   trait Styles extends IStyleSetTag {
     var root: js.UndefOr[IStyle] = js.undefined
     var divider: js.UndefOr[IStyle] = js.undefined
@@ -59,20 +56,20 @@ object Calendar {
     var monthPickerWrapper: js.UndefOr[IStyle] = js.undefined
     var liveRegion: js.UndefOr[IStyle] = js.undefined
   }
-  
+
   trait IconStrings extends js.Object {
     var leftNavigation: js.UndefOr[String] = js.undefined
     var rightNavigation: js.UndefOr[String] = js.undefined
     var closeIcon: js.UndefOr[String] = js.undefined
   }
-  
+
   @js.native
   abstract trait AnimationDirection extends js.Any
   object AnimationDirection {
     val Horizontal = 0.asInstanceOf[AnimationDirection]
     val Vertical = 1.asInstanceOf[AnimationDirection]
   }
-   
+
   trait CalendarStrings extends js.Object {
     var months: js.UndefOr[js.Array[String]] = js.undefined
     var shortMonths: js.UndefOr[js.Array[String]] = js.undefined

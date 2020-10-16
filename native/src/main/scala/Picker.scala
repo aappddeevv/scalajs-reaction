@@ -43,13 +43,13 @@ object Picker {
 
   trait Android extends View.Props {
     var enabled: js.UndefOr[Boolean] = js.undefined
-    var mode: js.UndefOr[Mode]       = js.undefined
-    var prompt: js.UndefOr[String]   = js.undefined
+    var mode: js.UndefOr[Mode] = js.undefined
+    var prompt: js.UndefOr[String] = js.undefined
   }
 
   trait Props[T] extends Android with IOS {
     var onValueChange: js.UndefOr[js.Function2[T, Int, Unit]] = js.undefined
-    var selectedValue: js.UndefOr[T]                          = js.undefined
+    var selectedValue: js.UndefOr[T] = js.undefined
     //val style: js.UndefOr[StyleProp[ViewStyle]] = js.undefined
     //var testID: js.UndefOr[String] = js.undefined
   }
@@ -60,7 +60,7 @@ object Picker {
   @js.native
   sealed trait Mode extends js.Any
   object Mode {
-    val dialog   = "dialog".asInstanceOf[Mode]
+    val dialog = "dialog".asInstanceOf[Mode]
     val dropdown = "dropdown".asInstanceOf[Mode]
   }
 

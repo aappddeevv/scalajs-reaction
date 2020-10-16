@@ -39,15 +39,15 @@ object FocusTrapZone {
   }
 
   trait Props extends ComponentRef[IFocusTrapZone] {
-    var ariaLabelBy: js.UndefOr[String]                               = js.undefined
-    var disableFirstFocus: js.UndefOr[Boolean]                        = js.undefined
-    var disabled: js.UndefOr[Boolean]                                 = js.undefined
-    var elementToFocusOnDismiss: js.UndefOr[dom.html.Element]         = js.undefined
+    var ariaLabelBy: js.UndefOr[String] = js.undefined
+    var disableFirstFocus: js.UndefOr[Boolean] = js.undefined
+    var disabled: js.UndefOr[Boolean] = js.undefined
+    var elementToFocusOnDismiss: js.UndefOr[dom.html.Element] = js.undefined
     var firstFocusSelector: js.UndefOr[String | js.Function0[String]] = js.undefined
-    var focusPreviouslyFocusedInnerElement: js.UndefOr[Boolean]       = js.undefined
-    var forceFocusInsideTrap: js.UndefOr[Boolean]                     = js.undefined
-    var ignoreExternalFocusing: js.UndefOr[Boolean]                   = js.undefined
-    var isClickableOutsideFocusTrap: js.UndefOr[Boolean]              = js.undefined
+    var focusPreviouslyFocusedInnerElement: js.UndefOr[Boolean] = js.undefined
+    var forceFocusInsideTrap: js.UndefOr[Boolean] = js.undefined
+    var ignoreExternalFocusing: js.UndefOr[Boolean] = js.undefined
+    var isClickableOutsideFocusTrap: js.UndefOr[Boolean] = js.undefined
   }
 
   @js.native

@@ -19,5 +19,4 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package object components {
-}
+package object components {}

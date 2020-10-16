@@ -29,47 +29,47 @@ trait AnyOps[T] {
   protected def a: T
 
   /** Convert T => T|Null. */
-  def maybeNull = a.asInstanceOf[T|Null]
-  
+  def maybeNull = a.asInstanceOf[T | Null]
+
   /** If T is js.Any, this may be redundent. */
   def asJsAny: js.Any = a.asInstanceOf[js.Any]
   def asJsObj: js.Object = a.asInstanceOf[js.Object]
   def asDyn: js.Dynamic = a.asInstanceOf[js.Dynamic]
-  
+
   def asString = a.asInstanceOf[String]
-  def asNullString = a.asInstanceOf[String|Null]
+  def asNullString = a.asInstanceOf[String | Null]
   def asUndefString = a.asInstanceOf[js.UndefOr[String]]
-  def asUndefNullString= a.asInstanceOf[js.UndefOr[String|Null]]
-  
+  def asUndefNullString = a.asInstanceOf[js.UndefOr[String | Null]]
+
   def asNumber: Number = a.asInstanceOf[Number]
-  
+
   def asInt = a.asInstanceOf[Int]
-  def asNullInt = a.asInstanceOf[Int|Null]
+  def asNullInt = a.asInstanceOf[Int | Null]
   def asUndefInt = a.asInstanceOf[js.UndefOr[Int]]
-  def asUndefNullInt= a.asInstanceOf[js.UndefOr[Int|Null]]
-  
+  def asUndefNullInt = a.asInstanceOf[js.UndefOr[Int | Null]]
+
   def asFloat = a.asInstanceOf[Float]
-  def asNullFloat= a.asInstanceOf[Float|Null]
-  def asUndefFloat= a.asInstanceOf[js.UndefOr[Float]]
-  def asUndefNullFloat= a.asInstanceOf[js.UndefOr[Float|Null]]
-  
+  def asNullFloat = a.asInstanceOf[Float | Null]
+  def asUndefFloat = a.asInstanceOf[js.UndefOr[Float]]
+  def asUndefNullFloat = a.asInstanceOf[js.UndefOr[Float | Null]]
+
   def asDouble = a.asInstanceOf[Double]
-  def asNullDouble = a.asInstanceOf[Double|Null]
+  def asNullDouble = a.asInstanceOf[Double | Null]
   def asUndefDouble = a.asInstanceOf[js.UndefOr[Double]]
-  def asUndefNullDouble = a.asInstanceOf[js.UndefOr[Double|Null]]
-  
+  def asUndefNullDouble = a.asInstanceOf[js.UndefOr[Double | Null]]
+
   def asBoolean = a.asInstanceOf[Boolean]
-  def asNullBoolean = a.asInstanceOf[Boolean|Null]
+  def asNullBoolean = a.asInstanceOf[Boolean | Null]
   def asUndefBoolean = a.asInstanceOf[js.UndefOr[Boolean]]
-  def asUndefNullBoolean = a.asInstanceOf[js.UndefOr[Boolean|Null]]
-  
+  def asUndefNullBoolean = a.asInstanceOf[js.UndefOr[Boolean | Null]]
+
   def asJSDate = a.asInstanceOf[js.Date]
-  def asNullJSDate= a.asInstanceOf[js.Date|Null]
-  def asUndefJSDate= a.asInstanceOf[js.UndefOr[js.Date]]
-  def asUndefNullJSDate= a.asInstanceOf[js.UndefOr[js.Date|Null]]
-    
+  def asNullJSDate = a.asInstanceOf[js.Date | Null]
+  def asUndefJSDate = a.asInstanceOf[js.UndefOr[js.Date]]
+  def asUndefNullJSDate = a.asInstanceOf[js.UndefOr[js.Date | Null]]
+
   def asJsArray[A]: js.Array[A] = a.asInstanceOf[js.Array[A]]
-  
+
   def asJson: String = js.JSON.stringify(a.asInstanceOf[js.Object])
 
   /** `.asInstanceOf[T]` but shorter. Very dangerous! */
@@ -111,14 +111,11 @@ trait AnyOps[T] {
   def toTruthyUndefOr: js.UndefOr[T] =
     if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
     else js.undefined
-    
-    
   //
   // Some type tests, some of these may not work in all circumstances so you need
   // to know what you are doing to ensure they meet your needs.
   //
-  
-    
+
 }
 
 final class JsAnyOps[T <: js.Any](protected val a: T) extends AnyOps[T] {}

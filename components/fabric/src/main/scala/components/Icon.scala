@@ -46,10 +46,10 @@ object Icon { self =>
     createElement0(JS, props)
 
   trait StyleProps extends Theme {
-    var className: js.UndefOr[String]     = js.undefined
+    var className: js.UndefOr[String] = js.undefined
     var iconClassName: js.UndefOr[String] = js.undefined
-    var isImage: js.UndefOr[Boolean]      = js.undefined
-    var styles: js.UndefOr[Styles]        = js.undefined
+    var isImage: js.UndefOr[Boolean] = js.undefined
+    var styles: js.UndefOr[Styles] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {
@@ -57,11 +57,11 @@ object Icon { self =>
   }
 
   trait Props extends ComponentRef[IIcon] with HTMLAttributes[dom.html.Element] with Theme {
-    var ariaLabel: js.UndefOr[String]       = js.undefined
-    var iconName: js.UndefOr[String]        = js.undefined
+    var ariaLabel: js.UndefOr[String] = js.undefined
+    var iconName: js.UndefOr[String] = js.undefined
     var imageProps: js.UndefOr[Image.Props] = js.undefined
     // i think think this needs to be a constructor
-    var imageErrorAs: js.UndefOr[js.Any]                               = js.undefined
+    var imageErrorAs: js.UndefOr[js.Any] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
   }
 

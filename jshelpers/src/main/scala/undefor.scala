@@ -88,10 +88,10 @@ final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommo
 }
 
 // final case class JsUndefOrStringOrNullOps(val a: UndefOr[String|Null]) extends UndefOrCommon[String|Null] {
-// 
+//
 //   /** Return string's "zero" which is an empty string. */
 //   @inline def orEmpty: String = if(a == null) "" else a.getOrElse("").asInstanceOf[String]
-// 
+//
 //   /** Filter out empty string and null. Same as filterTruthy. */
 //   @inline def filterEmpty = a.filter(str => str != "" && str != null)
 // }
@@ -115,9 +115,9 @@ final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[B
 final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
   @inline private def forceGet: T = a.asInstanceOf[T]
 
-  @inline def isDefined: Boolean = if(a.isDefined && a != null) true else false
+  @inline def isDefined: Boolean = if (a.isDefined && a != null) true else false
   @inline def isEmpty: Boolean = !isDefined
-  
+
   /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
   @inline def absorbNull: js.UndefOr[T] = a.flatMap { value =>
     if (value == null) js.undefined
@@ -140,10 +140,10 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
     if (value == null) js.undefined
     else new JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
   }
-  
+
   /** Keep type signature, but filter out non-truthy values. */
   @inline def filterTruthy =
-    if(js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
     else js.undefined
 
   /** Absorb the `js.UndefOr` leaving `T|Null`. */
@@ -174,9 +174,9 @@ final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
   @inline def get: T =
     if (a == null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]")
     else forceGet
-    
+
   /** Only works with another js.UndefOr[T|Null] and takes into account null. */
-  @inline def orDeepElse(that: js.UndefOr[T|Null]) = if(a.isDefined && a != null) a else that
+  @inline def orDeepElse(that: js.UndefOr[T | Null]) = if (a.isDefined && a != null) a else that
 }
 
 /** Note that js.UndefOr and js.| already have a `.orNull` method. */

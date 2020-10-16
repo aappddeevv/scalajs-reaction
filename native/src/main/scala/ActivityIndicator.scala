@@ -36,9 +36,9 @@ object ActivityIndicator {
   def apply(props: Props = null) = createElement0(JS, props)
 
   trait Props extends View.Props {
-    var animating: js.UndefOr[Boolean]        = js.undefined
-    var color: js.UndefOr[Boolean]            = js.undefined
-    var size: js.UndefOr[Size | Int]          = js.undefined
+    var animating: js.UndefOr[Boolean] = js.undefined
+    var color: js.UndefOr[Boolean] = js.undefined
+    var size: js.UndefOr[Size | Int] = js.undefined
     var hidesWhenStopped: js.UndefOr[Boolean] = js.undefined
   }
 

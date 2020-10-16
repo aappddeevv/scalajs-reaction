@@ -69,18 +69,17 @@ trait GraphQLError extends js.Error {
 }
 
 @js.native
-trait ExecutionResultBase[T,E] extends js.Object {
+trait ExecutionResultBase[T, E] extends js.Object {
   //val data: js.UndefOr[T] = js.native
   // could also just have this be a js.Dictionary[js.Any]
   def extensions[E]: js.UndefOr[E] = js.native
   val errors: js.UndefOr[js.Array[GraphQLError]] = js.native
 }
 
-
 /** Return type T, Ext is not used alot so it remains member local. */
 @js.native
-trait ExecutionResult[T] extends ExecutionResultBase[T,js.Object] {
-  val data: js.UndefOr[T] = js.native  
+trait ExecutionResult[T] extends ExecutionResultBase[T, js.Object] {
+  val data: js.UndefOr[T] = js.native
 }
 
 object ExecutionResult {

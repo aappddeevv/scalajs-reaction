@@ -24,11 +24,13 @@ package react_router6
 import scala.scalajs.js
 import js.|
 
-import org.scalajs.{dom => sdom}
+import org.scalajs.{ dom => sdom }
 
 package object dom {
 
-    type URLSearchParamsInit = String | js.Object | js.Dynamic | sdom.experimental.URLSearchParams | js.Dictionary[String] | js.Dictionary[js.Array[String]]
+  type URLSearchParamsInit =
+    String | js.Object | js.Dynamic | sdom.experimental.URLSearchParams | js.Dictionary[String] | js.Dictionary[
+      js.Array[String]]
 
   def usePrompt(message: String, when: js.UndefOr[Boolean] = js.undefined) = module.usePrompt(message, when)
   def useSearchParams() = module.useSearchParams()

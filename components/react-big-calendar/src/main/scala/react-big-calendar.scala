@@ -59,82 +59,82 @@ object ReactBigCalendar {
    */
   trait Props[E <: js.Any] extends js.Object {
     // required
-    var localizer: js.UndefOr[Localizer]    = js.undefined
+    var localizer: js.UndefOr[Localizer] = js.undefined
     var elementProps: js.UndefOr[js.Object] = js.undefined
-    var date: js.UndefOr[js.Date]           = js.undefined
-    var defaultDate: js.UndefOr[js.Date]    = js.undefined
-    var view: js.UndefOr[Views]             = js.undefined
-    var defaultView: js.UndefOr[Views]      = js.undefined
-    var events: js.UndefOr[js.Array[E]]     = js.undefined
+    var date: js.UndefOr[js.Date] = js.undefined
+    var defaultDate: js.UndefOr[js.Date] = js.undefined
+    var view: js.UndefOr[Views] = js.undefined
+    var defaultView: js.UndefOr[Views] = js.undefined
+    var events: js.UndefOr[js.Array[E]] = js.undefined
 
     var titleAccessor: js.UndefOr[String] = js.undefined
     @JSName("titleAccessor")
     var titleAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, String]] = js.undefined
-    var tooltipAccessor: js.UndefOr[String]                              = js.undefined
+    var tooltipAccessor: js.UndefOr[String] = js.undefined
     @JSName("tolltipAccessor")
     var tooltipAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, String]] = js.undefined
-    var allDayAccessor: js.UndefOr[String]                                 = js.undefined
+    var allDayAccessor: js.UndefOr[String] = js.undefined
     @JSName("allDayAccessor")
     var allDayAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, Boolean]] = js.undefined
-    var startAccessor: js.UndefOr[String]                                  = js.undefined
+    var startAccessor: js.UndefOr[String] = js.undefined
     @JSName("startAccessor")
     var startAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, js.Date]] = js.undefined
-    var endAccessor: js.UndefOr[String]                                   = js.undefined
+    var endAccessor: js.UndefOr[String] = js.undefined
     @JSName("endAccessor")
     var endAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, js.Date]] = js.undefined
-    var resourceAccessor: js.UndefOr[String]                            = js.undefined
+    var resourceAccessor: js.UndefOr[String] = js.undefined
     @JSName("resourceAccessor")
     var resourceAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, js.Any]] = js.undefined
-    var resources: js.UndefOr[js.Array[js.Object]]                          = js.undefined
-    var resourceIdAccessor: js.UndefOr[String]                              = js.undefined
+    var resources: js.UndefOr[js.Array[js.Object]] = js.undefined
+    var resourceIdAccessor: js.UndefOr[String] = js.undefined
     @JSName("resourceIdAccessor")
     var resourceIdAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, js.Any]] = js.undefined
-    var resourceTitleAccessor: js.UndefOr[String]                             = js.undefined
+    var resourceTitleAccessor: js.UndefOr[String] = js.undefined
     @JSName("resourceTitleAccessor")
     var resourceTitleAccessorThunk: js.UndefOr[js.Function1[js.Dynamic, js.Any]] = js.undefined
 
     var getNow: js.UndefOr[js.Function0[js.Date]] = js.undefined
 
-    var onNavigate: js.UndefOr[js.Function2[Navigate, js.Date, Unit]]                       = js.undefined
-    var onView: js.UndefOr[js.Function1[Views, Unit]]                                       = js.undefined
-    var onDrillDown: js.UndefOr[js.Function2[js.Date, Views, Unit]]                         = js.undefined
-    var onRangeChange: js.UndefOr[js.Function0[js.Dynamic]]                                 = js.undefined
-    var onSelectSlot: js.UndefOr[js.Function1[SlotInfo, js.Any]]                            = js.undefined
-    var onSelectEvent: js.UndefOr[js.Function2[E, ReactEvent[dom.html.Element], Unit]]      = js.undefined
+    var onNavigate: js.UndefOr[js.Function2[Navigate, js.Date, Unit]] = js.undefined
+    var onView: js.UndefOr[js.Function1[Views, Unit]] = js.undefined
+    var onDrillDown: js.UndefOr[js.Function2[js.Date, Views, Unit]] = js.undefined
+    var onRangeChange: js.UndefOr[js.Function0[js.Dynamic]] = js.undefined
+    var onSelectSlot: js.UndefOr[js.Function1[SlotInfo, js.Any]] = js.undefined
+    var onSelectEvent: js.UndefOr[js.Function2[E, ReactEvent[dom.html.Element], Unit]] = js.undefined
     var onDoubleClickEvent: js.UndefOr[js.Function2[E, ReactEvent[dom.html.Element], Unit]] = js.undefined
-    var onSelecting: js.UndefOr[Range]                                                      = js.undefined
-    var selected: js.UndefOr[E]                                                             = js.undefined
+    var onSelecting: js.UndefOr[Range] = js.undefined
+    var selected: js.UndefOr[E] = js.undefined
     @JSName("views")
     var viewsList: js.UndefOr[js.Array[Views]] = js.undefined
     @JSName("views")
-    var views: js.UndefOr[ViewsSpecifier]                                                   = js.undefined
-    var drilldownView: js.UndefOr[Views]                                                    = js.undefined
+    var views: js.UndefOr[ViewsSpecifier] = js.undefined
+    var drilldownView: js.UndefOr[Views] = js.undefined
     var getDrilldownView: js.UndefOr[js.Function3[js.Date, Views, js.Array[Views], String]] = js.undefined
-    var length: js.UndefOr[Int]                                                             = js.undefined
-    var popup: js.UndefOr[Boolean]                                                          = js.undefined
-    var popupOffset: js.UndefOr[Int | Offset]                                               = js.undefined
-    var selectable: js.UndefOr[Boolean | String]                                            = js.undefined
-    var longPressThreshold: js.UndefOr[Int]                                                 = js.undefined
-    var step: js.UndefOr[Int]                                                               = js.undefined
-    var rtl: js.UndefOr[Boolean]                                                            = js.undefined
+    var length: js.UndefOr[Int] = js.undefined
+    var popup: js.UndefOr[Boolean] = js.undefined
+    var popupOffset: js.UndefOr[Int | Offset] = js.undefined
+    var selectable: js.UndefOr[Boolean | String] = js.undefined
+    var longPressThreshold: js.UndefOr[Int] = js.undefined
+    var step: js.UndefOr[Int] = js.undefined
+    var rtl: js.UndefOr[Boolean] = js.undefined
     var eventPropGetter: js.UndefOr[js.Function4[
       E,
       js.Date,
       js.Date,
       Boolean,
       PropGetterResult
-    ]]                                                                      = js.undefined
+    ]] = js.undefined
     var slotPropGetter: js.UndefOr[js.Function1[js.Date, PropGetterResult]] = js.undefined
-    var dayPropGetter: js.UndefOr[js.Function1[js.Date, PropGetterResult]]  = js.undefined
-    var showMultiDayTimes: js.UndefOr[Boolean]                              = js.undefined
-    var min: js.UndefOr[js.Date]                                            = js.undefined
-    var max: js.UndefOr[js.Date]                                            = js.undefined
-    var scrollToTime: js.UndefOr[js.Date]                                   = js.undefined
-    var culture: js.UndefOr[String]                                         = js.undefined
-    var formats: js.UndefOr[Format]                                         = js.undefined
-    var components: js.UndefOr[Components]                                  = js.undefined
-    var className: js.UndefOr[String]                                       = js.undefined
-    var messages: js.UndefOr[Messages]                                      = js.undefined
+    var dayPropGetter: js.UndefOr[js.Function1[js.Date, PropGetterResult]] = js.undefined
+    var showMultiDayTimes: js.UndefOr[Boolean] = js.undefined
+    var min: js.UndefOr[js.Date] = js.undefined
+    var max: js.UndefOr[js.Date] = js.undefined
+    var scrollToTime: js.UndefOr[js.Date] = js.undefined
+    var culture: js.UndefOr[String] = js.undefined
+    var formats: js.UndefOr[Format] = js.undefined
+    var components: js.UndefOr[Components] = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var messages: js.UndefOr[Messages] = js.undefined
   }
 
   /** Mixin for ReactJSComponent. Create a `ReactJSComponent` using
@@ -146,59 +146,59 @@ object ReactBigCalendar {
   @js.native
   trait ReactJSComponentEnh extends ReactJSComponent {
     val navigate: NavigateThunk = js.native
-    val title: TitleThunk       = js.native
+    val title: TitleThunk = js.native
   }
 
   type NavigateThunk = js.Function2[js.Date, Action, js.Date]
-  type TitleThunk    = js.Function2[js.Date, js.Dynamic, js.Date]
+  type TitleThunk = js.Function2[js.Date, js.Dynamic, js.Date]
 
   trait ViewsSpecifier extends js.Object {
-    var month: js.UndefOr[Boolean | ReactJSComponentEnh]    = js.undefined
-    var week: js.UndefOr[Boolean | ReactJSComponentEnh]     = js.undefined
+    var month: js.UndefOr[Boolean | ReactJSComponentEnh] = js.undefined
+    var week: js.UndefOr[Boolean | ReactJSComponentEnh] = js.undefined
     var workWeek: js.UndefOr[Boolean | ReactJSComponentEnh] = js.undefined
-    var day: js.UndefOr[Boolean | ReactJSComponentEnh]      = js.undefined
-    var agenda: js.UndefOr[Boolean | ReactJSComponentEnh]   = js.undefined
+    var day: js.UndefOr[Boolean | ReactJSComponentEnh] = js.undefined
+    var agenda: js.UndefOr[Boolean | ReactJSComponentEnh] = js.undefined
   }
 
   @js.native
   trait SlotInfo extends js.Object {
-    val start: js.Date             = js.native
-    val end: js.Date               = js.native
-    val slots: js.Array[js.Date]   = js.native
-    val action: Action             = js.native
+    val start: js.Date = js.native
+    val end: js.Date = js.native
+    val slots: js.Array[js.Date] = js.native
+    val action: Action = js.native
     val bounds: js.UndefOr[Bounds] = js.native
-    val box: js.UndefOr[Box]       = js.native
+    val box: js.UndefOr[Box] = js.native
   }
 
   @js.native
   trait Box extends js.Object {
     val clientX: Double = js.native
     val clientY: Double = js.native
-    val x: Double       = js.native
-    val y: Double       = js.native
+    val x: Double = js.native
+    val y: Double = js.native
   }
 
   @js.native
   trait Bounds extends js.Object {
-    val x: Double      = js.native
-    val y: Double      = js.native
-    val top: Double    = js.native
+    val x: Double = js.native
+    val y: Double = js.native
+    val top: Double = js.native
     val bottom: Double = js.native
-    val right: Double  = js.native
-    val left: Double   = js.native
+    val right: Double = js.native
+    val left: Double = js.native
   }
 
   @js.native
   sealed trait Action extends js.Any
   object Action {
-    val select      = "select".asInstanceOf[Action]
-    val click       = "click".asInstanceOf[Action]
+    val select = "select".asInstanceOf[Action]
+    val click = "click".asInstanceOf[Action]
     val doubleClick = "doubleClick".asInstanceOf[Action]
   }
 
   trait PropGetterResult extends js.Object {
     var className: js.UndefOr[String] = js.undefined
-    var style: js.UndefOr[js.Object]  = js.undefined
+    var style: js.UndefOr[js.Object] = js.undefined
   }
 
   trait Offset extends js.Object {
@@ -218,91 +218,91 @@ object ReactBigCalendar {
   @js.native
   sealed trait Views extends js.Any
   object Views {
-    val month    = "month".asInstanceOf[Views]
-    val week     = "week".asInstanceOf[Views]
+    val month = "month".asInstanceOf[Views]
+    val week = "week".asInstanceOf[Views]
     val workWeek = "work_week".asInstanceOf[Views]
-    val day      = "day".asInstanceOf[Views]
-    val agenda   = "agenda".asInstanceOf[Views]
+    val day = "day".asInstanceOf[Views]
+    val agenda = "agenda".asInstanceOf[Views]
   }
 
   @js.native
   sealed trait Navigate extends js.Any
   object Navigate {
     val PREVIOUS = "PREV".asInstanceOf[Navigate]
-    val NEXT     = "NEXT".asInstanceOf[Navigate]
-    val TODAY    = "TODAY".asInstanceOf[Navigate]
-    val DATE     = "DATE".asInstanceOf[Navigate]
+    val NEXT = "NEXT".asInstanceOf[Navigate]
+    val TODAY = "TODAY".asInstanceOf[Navigate]
+    val DATE = "DATE".asInstanceOf[Navigate]
   }
 
   /** String formats for stringifying dates. */
   trait Format extends js.Object {
-    var dateFormat: js.UndefOr[String]                = js.undefined
-    var dayFormat: js.UndefOr[String]                 = js.undefined
-    var weekdayFormat: js.UndefOr[String]             = js.undefined
-    var timeGutterFormat: js.UndefOr[String]          = js.undefined
-    var monthHeaderFormat: js.UndefOr[String]         = js.undefined
-    var dayRangeHeaderFormat: js.UndefOr[String]      = js.undefined
-    var dayHeaderFormat: js.UndefOr[String]           = js.undefined
-    var agendaHeaderFormat: js.UndefOr[String]        = js.undefined
-    var selectRangeFormat: js.UndefOr[String]         = js.undefined
-    var agendaDateFormat: js.UndefOr[String]          = js.undefined
-    var agendaTimeFormat: js.UndefOr[String]          = js.undefined
-    var agendaTimeRangeFormat: js.UndefOr[String]     = js.undefined
-    var eventTimeRangeFormat: js.UndefOr[String]      = js.undefined
+    var dateFormat: js.UndefOr[String] = js.undefined
+    var dayFormat: js.UndefOr[String] = js.undefined
+    var weekdayFormat: js.UndefOr[String] = js.undefined
+    var timeGutterFormat: js.UndefOr[String] = js.undefined
+    var monthHeaderFormat: js.UndefOr[String] = js.undefined
+    var dayRangeHeaderFormat: js.UndefOr[String] = js.undefined
+    var dayHeaderFormat: js.UndefOr[String] = js.undefined
+    var agendaHeaderFormat: js.UndefOr[String] = js.undefined
+    var selectRangeFormat: js.UndefOr[String] = js.undefined
+    var agendaDateFormat: js.UndefOr[String] = js.undefined
+    var agendaTimeFormat: js.UndefOr[String] = js.undefined
+    var agendaTimeRangeFormat: js.UndefOr[String] = js.undefined
+    var eventTimeRangeFormat: js.UndefOr[String] = js.undefined
     var eventTimeRangeStartFormat: js.UndefOr[String] = js.undefined
-    var eventTimeRangeEndFormat: js.UndefOr[String]   = js.undefined
+    var eventTimeRangeEndFormat: js.UndefOr[String] = js.undefined
   }
 
   trait Messages extends js.Object {
-    var allDay: js.UndefOr[ReactNode]   = js.undefined
+    var allDay: js.UndefOr[ReactNode] = js.undefined
     var previous: js.UndefOr[ReactNode] = js.undefined
-    var next: js.UndefOr[ReactNode]     = js.undefined
-    var today: js.UndefOr[ReactNode]    = js.undefined
-    var month: js.UndefOr[ReactNode]    = js.undefined
-    var week: js.UndefOr[ReactNode]     = js.undefined
-    var day: js.UndefOr[ReactNode]      = js.undefined
-    var agenda: js.UndefOr[ReactNode]   = js.undefined
-    var date: js.UndefOr[ReactNode]     = js.undefined
-    var time: js.UndefOr[ReactNode]     = js.undefined
-    var event: js.UndefOr[ReactNode]    = js.undefined
+    var next: js.UndefOr[ReactNode] = js.undefined
+    var today: js.UndefOr[ReactNode] = js.undefined
+    var month: js.UndefOr[ReactNode] = js.undefined
+    var week: js.UndefOr[ReactNode] = js.undefined
+    var day: js.UndefOr[ReactNode] = js.undefined
+    var agenda: js.UndefOr[ReactNode] = js.undefined
+    var date: js.UndefOr[ReactNode] = js.undefined
+    var time: js.UndefOr[ReactNode] = js.undefined
+    var event: js.UndefOr[ReactNode] = js.undefined
     var showMore: js.UndefOr[ReactNode] = js.undefined
   }
 
   trait Agenda extends js.Object {
-    var date: js.UndefOr[ReactJSComponent]  = js.undefined
-    var time: js.UndefOr[ReactJSComponent]  = js.undefined
+    var date: js.UndefOr[ReactJSComponent] = js.undefined
+    var time: js.UndefOr[ReactJSComponent] = js.undefined
     var event: js.UndefOr[ReactJSComponent] = js.undefined
   }
 
   trait Day extends js.Object {
     var header: js.UndefOr[ReactJSComponent] = js.undefined
-    var event: js.UndefOr[ReactJSComponent]  = js.undefined
+    var event: js.UndefOr[ReactJSComponent] = js.undefined
   }
 
   trait Week extends js.Object {
     var header: js.UndefOr[ReactJSComponent] = js.undefined
-    var event: js.UndefOr[ReactJSComponent]  = js.undefined
+    var event: js.UndefOr[ReactJSComponent] = js.undefined
   }
 
   trait Month extends js.Object {
-    var header: js.UndefOr[ReactJSComponent]     = js.undefined
+    var header: js.UndefOr[ReactJSComponent] = js.undefined
     var dateHeader: js.UndefOr[ReactJSComponent] = js.undefined
-    var event: js.UndefOr[ReactJSComponent]      = js.undefined
+    var event: js.UndefOr[ReactJSComponent] = js.undefined
   }
 
   trait Components extends js.Object {
-    var event: js.UndefOr[ReactJSComponent]                 = js.undefined
-    var eventWrapper: js.UndefOr[ReactJSComponent]          = js.undefined
+    var event: js.UndefOr[ReactJSComponent] = js.undefined
+    var eventWrapper: js.UndefOr[ReactJSComponent] = js.undefined
     var eventContainerWrapper: js.UndefOr[ReactJSComponent] = js.undefined
-    var dayWrapper: js.UndefOr[ReactJSComponent]            = js.undefined
-    var dateCellWrapper: js.UndefOr[ReactJSComponent]       = js.undefined
-    var timesSlotWrapper: js.UndefOr[ReactJSComponent]      = js.undefined
-    var timesGutterHeader: js.UndefOr[ReactJSComponent]     = js.undefined
-    var toolbar: js.UndefOr[ReactJSComponent]               = js.undefined
-    var agenda: js.UndefOr[Agenda]                          = js.undefined
-    var day: js.UndefOr[Day]                                = js.undefined
-    var week: js.UndefOr[Week]                              = js.undefined
-    var month: js.UndefOr[Month]                            = js.undefined
+    var dayWrapper: js.UndefOr[ReactJSComponent] = js.undefined
+    var dateCellWrapper: js.UndefOr[ReactJSComponent] = js.undefined
+    var timesSlotWrapper: js.UndefOr[ReactJSComponent] = js.undefined
+    var timesGutterHeader: js.UndefOr[ReactJSComponent] = js.undefined
+    var toolbar: js.UndefOr[ReactJSComponent] = js.undefined
+    var agenda: js.UndefOr[Agenda] = js.undefined
+    var day: js.UndefOr[Day] = js.undefined
+    var week: js.UndefOr[Week] = js.undefined
+    var month: js.UndefOr[Month] = js.undefined
   }
 
 }

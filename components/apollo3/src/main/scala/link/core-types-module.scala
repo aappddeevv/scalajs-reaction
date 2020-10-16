@@ -48,7 +48,7 @@ trait Operation extends js.Object {
 }
 
 @js.native
-trait FetchResult[T, C, E] extends ExecutionResultBase[T,E] {
+trait FetchResult[T, C, E] extends ExecutionResultBase[T, E] {
   val data: js.UndefOr[T | Null] = js.native
   val context: js.UndefOr[C] = js.native
 }

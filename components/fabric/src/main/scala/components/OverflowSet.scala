@@ -49,8 +49,8 @@ object OverflowSet {
   trait StyleProps extends js.Object {}
 
   trait Styles extends IStyleSetTag {
-    var root: js.UndefOr[IStyle]           = js.undefined
-    var item: js.UndefOr[IStyle]           = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
+    var item: js.UndefOr[IStyle] = js.undefined
     var overflowButton: js.UndefOr[IStyle] = js.undefined
   }
 
@@ -61,12 +61,12 @@ object OverflowSet {
   }
 
   trait Props extends js.Object {
-    var className: js.UndefOr[String]                    = js.undefined
-    var items: js.UndefOr[Seq[ItemProps]]                = js.undefined
-    var vertical: js.UndefOr[Boolean]                    = js.undefined
-    var overflowItems: js.UndefOr[Seq[ItemProps]]        = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var items: js.UndefOr[Seq[ItemProps]] = js.undefined
+    var vertical: js.UndefOr[Boolean] = js.undefined
+    var overflowItems: js.UndefOr[Seq[ItemProps]] = js.undefined
     var doNotContainWithinFocusZone: js.UndefOr[Boolean] = js.undefined
-    var role: js.UndefOr[String]                         = js.undefined
+    var role: js.UndefOr[String] = js.undefined
 
     /** Always make this a function. */
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined

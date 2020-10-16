@@ -45,27 +45,27 @@ object Radio {
   @js.native
   sealed trait Color extends js.Any
   object Color {
-    val primary   = "primary".asInstanceOf[Color]
+    val primary = "primary".asInstanceOf[Color]
     val secondary = "secondary".asInstanceOf[Color]
-    val default   = "defaulut".asInstanceOf[Color]
+    val default = "defaulut".asInstanceOf[Color]
   }
 
   trait Props extends js.Object {
-    var checked: js.UndefOr[Boolean | String]                                     = js.undefined
-    var checkedIcon: js.UndefOr[ReactNode]                                        = js.undefined
-    var classes: js.UndefOr[js.Object]                                            = js.undefined
-    var color: js.UndefOr[Color]                                                  = js.undefined
-    var disableRipple: js.UndefOr[Boolean]                                        = js.undefined
-    var disabled: js.UndefOr[Boolean]                                             = js.undefined
-    var icon: js.UndefOr[ReactNode]                                               = js.undefined
-    var id: js.UndefOr[String]                                                    = js.undefined
-    var inputProps: js.UndefOr[js.Object]                                         = js.undefined
-    var inputRef: js.UndefOr[js.Any]                                              = js.undefined
-    var key: js.UndefOr[String]                                                   = js.undefined
+    var checked: js.UndefOr[Boolean | String] = js.undefined
+    var checkedIcon: js.UndefOr[ReactNode] = js.undefined
+    var classes: js.UndefOr[js.Object] = js.undefined
+    var color: js.UndefOr[Color] = js.undefined
+    var disableRipple: js.UndefOr[Boolean] = js.undefined
+    var disabled: js.UndefOr[Boolean] = js.undefined
+    var icon: js.UndefOr[ReactNode] = js.undefined
+    var id: js.UndefOr[String] = js.undefined
+    var inputProps: js.UndefOr[js.Object] = js.undefined
+    var inputRef: js.UndefOr[js.Any] = js.undefined
+    var key: js.UndefOr[String] = js.undefined
     var onChange: js.UndefOr[js.Function2[ReactEvent[org.scalajs.dom.html.Input], Boolean, Unit]] = js.undefined
-    var style: js.UndefOr[js.Object]                                              = js.undefined
-    var `type`: js.UndefOr[String]                                                = js.undefined
-    var value: js.UndefOr[js.Any]                                                 = js.undefined
+    var style: js.UndefOr[js.Object] = js.undefined
+    var `type`: js.UndefOr[String] = js.undefined
+    var value: js.UndefOr[js.Any] = js.undefined
   }
 
 }

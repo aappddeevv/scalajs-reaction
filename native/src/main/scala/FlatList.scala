@@ -38,17 +38,17 @@ object FlatList {
     var ItemSeparatorComponent: js.UndefOr[ReactType] = js.undefined
     // view style?
     var columnWrapperStyle: js.UndefOr[js.Object] = js.undefined
-    var numColumns: js.UndefOr[Int]               = js.undefined
+    var numColumns: js.UndefOr[Int] = js.undefined
     var legacyImplementation: js.UndefOr[Boolean] = js.undefined
   }
 
 }
 
 trait ViewabilityConfig extends js.Object {
-  var minimumViewTime: js.UndefOr[Double]                  = js.undefined
+  var minimumViewTime: js.UndefOr[Double] = js.undefined
   var viewAreaCoveragePercentThreshold: js.UndefOr[Double] = js.undefined
-  var itemVisiblePercentThreshold: js.UndefOr[Double]      = js.undefined
-  var waitForInteraction: js.UndefOr[Double]               = js.undefined
+  var itemVisiblePercentThreshold: js.UndefOr[Double] = js.undefined
+  var waitForInteraction: js.UndefOr[Double] = js.undefined
 }
 
 trait Separators extends js.Object {
@@ -97,13 +97,13 @@ trait ScrollToEnd extends js.Object {
 trait ScrollToIndex extends js.Object {
   var index: Int
   var viewOffset: Int
-  var animated: js.UndefOr[Boolean]    = js.undefined
+  var animated: js.UndefOr[Boolean] = js.undefined
   var viewPosition: js.UndefOr[Double] = js.undefined
 }
 
 trait ScrollToItem[T] extends js.Object {
   var item: T
-  var animated: js.UndefOr[Boolean]    = js.undefined
+  var animated: js.UndefOr[Boolean] = js.undefined
   var viewPosition: js.UndefOr[Double] = js.undefined
 }
 
@@ -120,11 +120,11 @@ trait RenderItemInfo[T] extends js.Object {
 
 @js.native
 trait IFlatList[T] extends js.Object {
-  def scrollToEnd(): Unit                          = js.native
-  def scrollToEnd(params: ScrollToEnd): Unit       = js.native
-  def scrollToIndex(params: ScrollToIndex): Unit   = js.native
-  def scrollToItem(params: ScrollToItem[T]): Unit  = js.native
+  def scrollToEnd(): Unit = js.native
+  def scrollToEnd(params: ScrollToEnd): Unit = js.native
+  def scrollToIndex(params: ScrollToIndex): Unit = js.native
+  def scrollToItem(params: ScrollToItem[T]): Unit = js.native
   def scrollToOffset(params: ScrollToOffset): Unit = js.native
-  def recordInteraction(): Unit                    = js.native
-  def flashScrollIndicators(): Unit                = js.native
+  def recordInteraction(): Unit = js.native
+  def flashScrollIndicators(): Unit = js.native
 }

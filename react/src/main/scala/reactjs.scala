@@ -91,15 +91,15 @@ trait ReactJS extends js.Object with Concurrent {
     js.native
 
   /** Create a ref to be assigned to a "ref" property on a component. If you are using
-   * function components and hooks, use `useRef` to get a `MutableRef`. 
+   * function components and hooks, use `useRef` to get a `MutableRef`.
    */
   def createRef[T](defaultValue: T): react.ReactRef[T] = js.native
 
   /** Create a component that forwards a ref. You need to ensure your P (props)
-  * has a `ref` variable in it so its available when passed along. The variable
-  * should be a `react.ReactRef` instead of a `MutableRef`.
-  */
-  def forwardRef[P <: js.Object,T](inner: js.Function2[P, react.MutableRef[T], ReactNode]): ReactFC[P] = js.native
+   * has a `ref` variable in it so its available when passed along. The variable
+   * should be a `react.ReactRef` instead of a `MutableRef`.
+   */
+  def forwardRef[P <: js.Object, T](inner: js.Function2[P, react.MutableRef[T], ReactNode]): ReactFC[P] = js.native
 
   val version: String = js.native
 
@@ -169,8 +169,6 @@ object EffectArg {
     ((() => { val rthunk = f(); js.Any.fromFunction0 { () => rthunk(); () } }): js.Function0[js.Function0[Unit]])
       .asInstanceOf[EffectArg]
 }
-
-
 @js.native
 trait StateSetterOrUpdater[T] extends js.Object {
   def apply(t: T): Unit = js.native

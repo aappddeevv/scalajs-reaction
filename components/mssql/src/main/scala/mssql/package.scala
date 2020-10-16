@@ -20,8 +20,8 @@
  */
 
 import scala.scalajs.js
- 
+
 package object mssql {
-   import mssql.SchemaColumn
-   type Schema = js.Dictionary[SchemaColumn]
+  import mssql.SchemaColumn
+  type Schema = js.Dictionary[SchemaColumn]
 }

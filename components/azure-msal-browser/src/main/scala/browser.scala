@@ -33,8 +33,7 @@ import msal.common._
 // msal-browser/error
 @js.native
 @JSImport("@azure/msal-browser", "BrowserAuthError")
-class BrowserAuthError(code: String, message: js.UndefOr[String] = js.undefined)
-    extends AuthError(code, message)
+class BrowserAuthError(code: String, message: js.UndefOr[String] = js.undefined) extends AuthError(code, message)
 
 // msal-browser/error
 @js.native
@@ -42,7 +41,6 @@ class BrowserAuthError(code: String, message: js.UndefOr[String] = js.undefined)
 object BrowserAuthError extends js.Object {
   // static creators...
 }
-
 
 // msal-browser/error
 @js.native
@@ -73,9 +71,9 @@ trait IPublicClientApplication extends js.Object {
   def acquireTokenPopup(request: PopupRequest): js.Promise[AuthenticationResult] = js.native
   def acquireTokenRedirect(request: RedirectRequest): js.Promise[Unit] = js.native
   def acquireTokenSilent(request: SilentRequest): js.Promise[AuthenticationResult] = js.native
-  def getAccountByUsername(userName: String): AccountInfo|Null = js.native
+  def getAccountByUsername(userName: String): AccountInfo | Null = js.native
   def getAllAccounts(): js.Array[AccountInfo] | Null = js.native
-  def handleRedirectPromise(): js.Promise[AuthenticationResult|Null] = js.native
+  def handleRedirectPromise(): js.Promise[AuthenticationResult | Null] = js.native
   def loginPopup(request: PopupRequest): js.Promise[AuthenticationResult] = js.native
   def loginRedirect(request: RedirectRequest): js.Promise[Unit] = js.native
   def logout(request: js.UndefOr[EndSessionRequest] = js.undefined): js.Promise[Unit] = js.native
@@ -100,11 +98,11 @@ trait BrowserAuthOptions extends BrowserAuthOptionsBase {
 }
 
 trait BrowserSystemOptions extends SystemOptions {
-  var loggerOptions: js.UndefOr[LoggerOptions]                 = js.undefined
+  var loggerOptions: js.UndefOr[LoggerOptions] = js.undefined
   var networkClient: js.UndefOr[INetworkModule] = js.undefined
-  var windowHashTimeout: js.UndefOr[Int]          = js.undefined
-  var iframeHashTimeout: js.UndefOr[Int]          = js.undefined
-  var loadFrameTimeout: js.UndefOr[Int]          = js.undefined
+  var windowHashTimeout: js.UndefOr[Int] = js.undefined
+  var iframeHashTimeout: js.UndefOr[Int] = js.undefined
+  var loadFrameTimeout: js.UndefOr[Int] = js.undefined
   // var tokenRenewalOffsetSeconds: js.UndefOr[Int] = js.undefined
   // var telemetry: js.UndefOr[TelemetryOptions]    = js.undefined
 }
@@ -113,17 +111,17 @@ trait BrowserSystemOptions extends SystemOptions {
 sealed trait CacheLocation extends js.Any
 object CacheLocation {
   val sessionStorage = "sessionStorage".asInstanceOf[CacheLocation]
-  val localStorage   = "localStorage".asInstanceOf[CacheLocation]
+  val localStorage = "localStorage".asInstanceOf[CacheLocation]
 }
 
 trait CacheOptions extends js.Object {
-  var cacheLocation: js.UndefOr[CacheLocation]    = js.undefined
+  var cacheLocation: js.UndefOr[CacheLocation] = js.undefined
   var storeAuthStateInCookie: js.UndefOr[Boolean] = js.undefined
 }
 
 trait ConfigurationBase extends js.Object {
-  var cache: js.UndefOr[CacheOptions]         = js.undefined
-  var system: js.UndefOr[BrowserSystemOptions]       = js.undefined
+  var cache: js.UndefOr[CacheOptions] = js.undefined
+  var system: js.UndefOr[BrowserSystemOptions] = js.undefined
 }
 
 trait ConfigurationInit extends ConfigurationBase {
@@ -131,8 +129,7 @@ trait ConfigurationInit extends ConfigurationBase {
 }
 
 object ConfigurationInit {
-  private implicit class RichInit private[ConfigurationInit] (private val c: ConfigurationInit)
-      extends AnyVal {
+  private implicit class RichInit private[ConfigurationInit] (private val c: ConfigurationInit) extends AnyVal {
     def withRequired(auth: BrowserAuthOptions) =
       js.Object.assign(literal(), c, literal("auth" -> auth)).asInstanceOf[Configuration]
     def hasRequired = c.asInstanceOf[Configuration]
@@ -146,16 +143,16 @@ trait Configuration extends ConfigurationBase {
 @js.native
 @JSImport("@azure/msal-browser/crypto", "CryptoOps")
 class CryptoUtils() extends js.Object {
-  def createNewGuid(): String             = js.native
+  def createNewGuid(): String = js.native
   def base64Encode(input: String): String = js.native
-  def base64Decode(inut: String): String  = js.native
+  def base64Decode(inut: String): String = js.native
   def generatePkceCodes(): js.Promise[js.Any] = js.native
 }
 
 @js.native
 @JSImport("@azure/msal-browser/crypto", "GuidGenerator")
 class GuidGenerator() extends js.Object {
-  def generateGuid(): String             = js.native
+  def generateGuid(): String = js.native
   def isGuid(guid: String): Boolean = js.native
 }
 

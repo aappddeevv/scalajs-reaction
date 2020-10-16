@@ -36,9 +36,9 @@ object Button {
   trait Props extends js.Object {
     val title: String
     val onPress: js.Function1[js.Dynamic, Unit]
-    var color: js.UndefOr[String]              = js.undefined
+    var color: js.UndefOr[String] = js.undefined
     var accessibilityLabel: js.UndefOr[String] = js.undefined
-    var disabled: js.UndefOr[Boolean]          = js.undefined
-    var testID: js.UndefOr[String]             = js.undefined
+    var disabled: js.UndefOr[Boolean] = js.undefined
+    var testID: js.UndefOr[String] = js.undefined
   }
 }

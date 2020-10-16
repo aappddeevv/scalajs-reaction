@@ -339,5 +339,4 @@ trait SVGAttributesBase[+T <: dom.EventTarget] extends js.Object {
   var z: js.UndefOr[String | Double] = js.undefined
 }
 
-trait SVGAttributes[+T <: dom.EventTarget] 
-    extends SVGAttributesBase[T] with DOMAttributes[T]
+trait SVGAttributes[+T <: dom.EventTarget] extends SVGAttributesBase[T] with DOMAttributes[T]

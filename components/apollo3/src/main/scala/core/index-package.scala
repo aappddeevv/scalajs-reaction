@@ -25,7 +25,7 @@ package client3
 import scala.scalajs.js
 import js.|
 import js.annotation._
-import js.JSConverters._ 
+import js.JSConverters._
 
 import graphql.DocumentNode
 

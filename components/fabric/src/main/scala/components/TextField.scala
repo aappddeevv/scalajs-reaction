@@ -64,7 +64,7 @@ object TextField {
     var autoAdjustHeight: js.UndefOr[Boolean] = js.undefined
     var ariaLabel: js.UndefOr[String] = js.undefined
     var addonString: js.UndefOr[String] = js.undefined
-    //var autoComplete: js.UndefOr[Boolean] = js.undefined    
+    //var autoComplete: js.UndefOr[Boolean] = js.undefined
     var borderless: js.UndefOr[Boolean] = js.undefined
     var componentId: js.UndefOr[String] = js.undefined
     //var label: js.UndefOr[String] = js.undefined

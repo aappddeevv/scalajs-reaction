@@ -40,15 +40,15 @@ object Toolbar {
   sealed trait Variant extends js.Any
   object Variant {
     val regular = "regular".asInstanceOf[Variant]
-    val dense   = "dense".asInstanceOf[Variant]
+    val dense = "dense".asInstanceOf[Variant]
   }
 
   trait Props extends js.Object {
-    var className: js.UndefOr[String]       = js.undefined
-    var classes: js.UndefOr[js.Object]      = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var classes: js.UndefOr[js.Object] = js.undefined
     var disableGutters: js.UndefOr[Boolean] = js.undefined
-    var key: js.UndefOr[String]             = js.undefined
-    var style: js.UndefOr[js.Object]        = js.undefined
-    var variant: js.UndefOr[Variant]        = js.undefined
+    var key: js.UndefOr[String] = js.undefined
+    var style: js.UndefOr[js.Object] = js.undefined
+    var variant: js.UndefOr[Variant] = js.undefined
   }
 }

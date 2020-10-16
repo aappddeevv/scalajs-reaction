@@ -57,8 +57,10 @@ trait Concurrent extends js.Object {
 object ReactDOMServer extends js.Object {
   def renderToString(element: ReactNode): String = js.native
   def renderToStaticMarkup(element: ReactNode): String = js.native
+
   /** Only available on a node server. */
   def renderToNodeStream(element: ReactNode): js.Any = js.native
+
   /** Only available on a node server. */
   def renderToStaticNodeStream(element: ReactNode): js.Any = js.native
 }

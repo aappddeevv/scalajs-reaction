@@ -45,25 +45,26 @@ object Label {
   def apply(children: ReactNode*) =
     createElementN(JS, null)(children: _*)
 
-  def keyAndText(k: String, text: String) = 
-    createElement(JS, new Props { 
+  def keyAndText(k: String, text: String) =
+    createElement(JS, new Props {
       key = k
     }, text.asInstanceOf[ReactNode])
-    
-  trait Props extends LabelHTMLAttributes[html.Label]
+
+  trait Props
+      extends LabelHTMLAttributes[html.Label]
       with ComponentRef[js.Any]
       with Disabled
       with Theme
       with ReactJSProps {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-    var required: js.UndefOr[Boolean]                                  = js.undefined
+    var required: js.UndefOr[Boolean] = js.undefined
   }
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined
     var disabled: js.UndefOr[Boolean] = js.undefined
     var required: js.UndefOr[Boolean] = js.undefined
-    var theme: js.UndefOr[Theme]      = js.undefined
+    var theme: js.UndefOr[Theme] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {

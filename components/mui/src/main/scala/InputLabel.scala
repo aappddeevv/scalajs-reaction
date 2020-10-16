@@ -47,26 +47,26 @@ object InputLabel {
   object Variant {
     val standard = "standard".asInstanceOf[Variant]
     val outlined = "outlined".asInstanceOf[Variant]
-    val filled   = "filled".asInstanceOf[Variant]
+    val filled = "filled".asInstanceOf[Variant]
   }
 
   trait Props extends js.Object {
     var FormLabelClasses: js.UndefOr[js.Object] = js.undefined
-    var className: js.UndefOr[String]           = js.undefined
-    var classes: js.UndefOr[js.Object]          = js.undefined
-    var component: js.UndefOr[js.Any]           = js.undefined
-    var disableAnimation: js.UndefOr[Boolean]   = js.undefined
-    var disabled: js.UndefOr[Boolean]           = js.undefined
-    var error: js.UndefOr[Boolean]              = js.undefined
-    var filled: js.UndefOr[Boolean]             = js.undefined
-    var focused: js.UndefOr[Boolean]            = js.undefined
-    var key: js.UndefOr[String]                 = js.undefined
-    var margin: js.UndefOr[String]              = js.undefined
-    var muiFormControl: js.UndefOr[js.Object]   = js.undefined
-    var required: js.UndefOr[Boolean]           = js.undefined
-    var shrink: js.UndefOr[Boolean]             = js.undefined
-    var style: js.UndefOr[js.Object]            = js.undefined
-    var variant: js.UndefOr[String]             = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var classes: js.UndefOr[js.Object] = js.undefined
+    var component: js.UndefOr[js.Any] = js.undefined
+    var disableAnimation: js.UndefOr[Boolean] = js.undefined
+    var disabled: js.UndefOr[Boolean] = js.undefined
+    var error: js.UndefOr[Boolean] = js.undefined
+    var filled: js.UndefOr[Boolean] = js.undefined
+    var focused: js.UndefOr[Boolean] = js.undefined
+    var key: js.UndefOr[String] = js.undefined
+    var margin: js.UndefOr[String] = js.undefined
+    var muiFormControl: js.UndefOr[js.Object] = js.undefined
+    var required: js.UndefOr[Boolean] = js.undefined
+    var shrink: js.UndefOr[Boolean] = js.undefined
+    var style: js.UndefOr[js.Object] = js.undefined
+    var variant: js.UndefOr[String] = js.undefined
   }
 
 }

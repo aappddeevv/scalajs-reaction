@@ -25,6 +25,6 @@ package styling
 import scala.scalajs.js
 
 trait IFabricConfig {
-  var fontBaseUrl: js.UndefOr[String]            = js.undefined
+  var fontBaseUrl: js.UndefOr[String] = js.undefined
   var mergeStyles: js.UndefOr[IStylesheetConfig] = js.undefined
 }

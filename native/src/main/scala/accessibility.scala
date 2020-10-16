@@ -29,11 +29,11 @@ trait AccessibilityPropsAndroid extends js.Object {}
 trait AccessibilityPropsIOS extends js.Object {}
 
 trait AccessibilityProps extends AccessibilityPropsAndroid with AccessibilityPropsIOS {
-  var accessible: js.UndefOr[Boolean]        = js.undefined
+  var accessible: js.UndefOr[Boolean] = js.undefined
   var accessibilityLabel: js.UndefOr[String] = js.undefined
   // accessibilityRole: AccessibilityRole
   var accessibilityRole: js.UndefOr[String] = js.undefined
   // accessibilityStates: js.Array[AccessibilityState]
   var accessibilityStates: js.UndefOr[js.Array[String]] = js.undefined
-  var accessibilityHint: js.UndefOr[String]             = js.undefined
+  var accessibilityHint: js.UndefOr[String] = js.undefined
 }

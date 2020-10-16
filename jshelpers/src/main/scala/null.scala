@@ -50,9 +50,9 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
   @inline private def forceGet: A = a.asInstanceOf[A]
 
   /** Convert an A|Null to a well formed Option. Should we check for undefined?
-    * This method is not really needed here as `.toOption` is safe but
-    * we have this signature on other helpers so it shere for consistency.
-    */
+   * This method is not really needed here as `.toOption` is safe but
+   * we have this signature on other helpers so it shere for consistency.
+   */
   @inline def toNonNullOption: Option[A] = Option(forceGet)
 
   /** Like `.toNonNullOption`. */
@@ -87,10 +87,10 @@ final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
       Option(forceGet)
     else None
 
-  @inline def filterTruthy: A|Null = 
-    if(js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
-    else null.asInstanceOf[A|Null]
-    
+  @inline def filterTruthy: A | Null =
+    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+    else null.asInstanceOf[A | Null]
+
   /** Absorb the null and change A|Null => A. Value could still be null,
    * which is valid in scala, but it will no longer by typed that way.
    */

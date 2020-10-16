@@ -77,6 +77,6 @@ package object jss {
     link = true
   }
 
-  val _jss                                                  = module._jss
+  val _jss = module._jss
   def create(config: js.UndefOr[JssOptions] = js.undefined) = module.create(config)
 }

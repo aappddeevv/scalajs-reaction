@@ -34,23 +34,23 @@ import scala.util.control._
 import Exception._
 import styling.module.concatStyleSets
 import utilities._
-import merge_styles._ 
+import merge_styles._
 
 object hooks extends UseCustomizableHooks
 
 trait UseCustomizableHooks {
 
   /** Hook to get customized theme in a function component. It's the same as
-    * using a `customizable` decorator or the `styled` HOC. `fields` automatically
-    * has `theme` and `styles` added so the return value has those values.
-    *
-    * @see https://github.com/microsoft/fluentui/issues/9858
-    */
+   * using a `customizable` decorator or the `styled` HOC. `fields` automatically
+   * has `theme` and `styles` added so the return value has those values.
+   *
+   * @see https://github.com/microsoft/fluentui/issues/9858
+   */
   def useCustomizable[SP <: js.Object, S <: IStyleSetTag](
-      fields: Seq[String] = Nil,
-      scope: js.UndefOr[String] = js.undefined
-      // removed styles arg
-    ) = {
+    fields: Seq[String] = Nil,
+    scope: js.UndefOr[String] = js.undefined
+    // removed styles arg
+  ) = {
     val (_, update) = useStateStrict[Boolean](true)
     val inCustomizerContext = useRef(false)
     val cb = useCallbackMounting(() => update(!_))
@@ -70,13 +70,11 @@ trait UseCustomizableHooks {
   }
 
   /** Get the theme via Customizations which is different than the
-    * global theme obtained through `getTheme()` apparently.
-    */
+   * global theme obtained through `getTheme()` apparently.
+   */
   def useTheme[SP <: js.Object, S <: IStyleSetTag]() = {
     val customizations = useCustomizable[SP, S]()
     customizations.theme
   }
 
 }
-
-

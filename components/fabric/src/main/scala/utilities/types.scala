@@ -66,17 +66,29 @@ trait DebounceOptions extends js.Object {
 
 @js.native
 @JSImport("@uifabric/utilities", "Async")
-class Async(parent: js.UndefOr[js.Object] = js.undefined, onError: js.UndefOr[js.Function1[js.Any,Unit]]=js.undefined)
+class Async(
+  parent: js.UndefOr[js.Object] = js.undefined,
+  onError: js.UndefOr[js.Function1[js.Any, Unit]] = js.undefined)
     extends js.Object {
   def dispose(): Unit = js.native
   def setTimeout(callback: js.Function0[Unit], duration: Int): Int = js.native
   def clearTimeout(id: Int): Unit = js.native
-  def setImmediate(callback: js.Function0[Unit], targetElement: js.UndefOr[dom.html.Element|Null]=js.undefined): Int = js.native
-  def clearImmediate(id: Int, targetElement: js.UndefOr[dom.html.Element|Null]=js.undefined): Unit = js.native
+  def setImmediate(
+    callback: js.Function0[Unit],
+    targetElement: js.UndefOr[dom.html.Element | Null] = js.undefined): Int = js.native
+  def clearImmediate(id: Int, targetElement: js.UndefOr[dom.html.Element | Null] = js.undefined): Unit = js.native
   def setInterval(callback: js.Function0[Unit], duration: Int): Int = js.native
   def clearInterval(id: Int): Unit = js.native
-  def throttle[T](f: js.Function0[Unit], wait: js.UndefOr[Int]=js.undefined, options: js.UndefOr[DebounceOptions] =js.undefined): T | js.Function0[Unit] = js.native
-  def debounce[T](f: js.Function0[Unit], wait: js.UndefOr[Int]=js.undefined, options: js.UndefOr[DebounceOptions] =js.undefined): CancelableAndCallable[T] = js.native
-  def requestAnimationFrame(callback: js.Function0[Unit], targetElement:js.UndefOr[dom.html.Element|Null]=js.undefined): Int = js.native
-  def cancelAnimationFrame(id: Int, targetElement: js.UndefOr[dom.html.Element|Null]=js.undefined): Unit = js.native
+  def throttle[T](
+    f: js.Function0[Unit],
+    wait: js.UndefOr[Int] = js.undefined,
+    options: js.UndefOr[DebounceOptions] = js.undefined): T | js.Function0[Unit] = js.native
+  def debounce[T](
+    f: js.Function0[Unit],
+    wait: js.UndefOr[Int] = js.undefined,
+    options: js.UndefOr[DebounceOptions] = js.undefined): CancelableAndCallable[T] = js.native
+  def requestAnimationFrame(
+    callback: js.Function0[Unit],
+    targetElement: js.UndefOr[dom.html.Element | Null] = js.undefined): Int = js.native
+  def cancelAnimationFrame(id: Int, targetElement: js.UndefOr[dom.html.Element | Null] = js.undefined): Unit = js.native
 }

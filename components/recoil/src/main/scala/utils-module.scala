@@ -27,11 +27,11 @@ import js.annotation._
 
 /** Keys must be serializable. */
 trait CacheImplementation[T] extends js.Object {
-    def get(key: Any): js.UndefOr[T]
-    def put(key: Any, a: T): CacheImplementation[T]
-    def delete(key: Any): CacheImplementation[T]
-    def entries(): js.Iterator[Any]
-    def toBuiltInMap(): js.Map[Any,Any]
+  def get(key: Any): js.UndefOr[T]
+  def put(key: Any, a: T): CacheImplementation[T]
+  def delete(key: Any): CacheImplementation[T]
+  def entries(): js.Iterator[Any]
+  def toBuiltInMap(): js.Map[Any, Any]
 }
 
 /** P should be < SerializableParameter. */
@@ -44,39 +44,39 @@ trait AtomFamilyOptions[P, T] extends js.Object {
     Return[T]] | js.Function1[js.Dictionary[P], Return[T]]
 }
 
-trait ReadOnlySelectorFamilyOptions[P,T] extends js.Object {
+trait ReadOnlySelectorFamilyOptions[P, T] extends js.Object {
   val key: String
   //def get(args: P): js.Function1[GetRecoilValue[T], Return[T]]
   //def get(args: P): js.Function1[ReadOnlyAccessors, Return[T]]
   val get: js.Function1[P, js.Function1[ReadOnlyAccessors, Return[T]]]
-  
+
   //var cacheImplementationForParams_UNSTABLE: js.UndefOr[js.Function0[CacheImplementation[RecoilValue[T]]]] = js.undefined
   var dangerouslyAllowMutability: js.UndefOr[Boolean] = js.undefined
 }
 
-trait ReadWriteSelectorFamilyOptions[P,T] extends ReadOnlySelectorFamilyOptions[P,T] {
+trait ReadWriteSelectorFamilyOptions[P, T] extends ReadOnlySelectorFamilyOptions[P, T] {
   def set(args: P): js.Function2[ReadWriteAccessors, T | DefaultValue, Unit]
 }
 
 @js.native
 trait utils_module extends js.Object {
-  def atomFamily[P, T](options: AtomFamilyOptions[P,T]): js.Function1[P, RecoilState[T]] =
+  def atomFamily[P, T](options: AtomFamilyOptions[P, T]): js.Function1[P, RecoilState[T]] =
     js.native
 
   @JSName("selectorFamily")
-  def selectorFamilyRO[P,T](
-    options: ReadOnlySelectorFamilyOptions[P,T]): js.Function1[SerializableParameter, RecoilValueReadOnly[T]] = js.native
-    
+  def selectorFamilyRO[P, T](
+    options: ReadOnlySelectorFamilyOptions[P, T]): js.Function1[SerializableParameter, RecoilValueReadOnly[T]] =
+    js.native
+
   @JSName("selectorFamily")
-  def selectorFamilyRW[P,T](
-    options: ReadWriteSelectorFamilyOptions[P,T]): js.Function1[SerializableParameter, RecoilState[T]] = js.native
-    
-  def selectorFamily[P,T](
-    options: ReadOnlySelectorFamilyOptions[P,T] | ReadWriteSelectorFamilyOptions[P,T])
+  def selectorFamilyRW[P, T](
+    options: ReadWriteSelectorFamilyOptions[P, T]): js.Function1[SerializableParameter, RecoilState[T]] = js.native
+
+  def selectorFamily[P, T](options: ReadOnlySelectorFamilyOptions[P, T] | ReadWriteSelectorFamilyOptions[P, T])
     : js.Function1[P, RecoilValue[T]] = js.native
 
   def constSelector[T](constant: T): RecoilValueReadOnly[T] = js.native
-  
+
   def errorSelector[T](message: String): RecoilValueReadOnly[T] = js.native
 
   // there is no way in js to restrict F with a context bounds since that adds an argument.
@@ -116,24 +116,23 @@ trait JSF[F[_]] {
   type JS[T] = F[T]
 }
 
-trait utils_exports { 
+trait utils_exports {
 
-  def atomFamily[P,T](options: AtomFamilyOptions[P,T]) =
-    utils_module.atomFamily[P,T](options)
+  def atomFamily[P, T](options: AtomFamilyOptions[P, T]) =
+    utils_module.atomFamily[P, T](options)
 
-  def selectorFamilyRO[P,T](options: ReadOnlySelectorFamilyOptions[P,T]) =
-    utils_module.selectorFamilyRO[P,T](options)
+  def selectorFamilyRO[P, T](options: ReadOnlySelectorFamilyOptions[P, T]) =
+    utils_module.selectorFamilyRO[P, T](options)
 
-  def selectorFamilyRW[P,T](options: ReadWriteSelectorFamilyOptions[P,T]) =
-    utils_module.selectorFamilyRW[P,T](options)
+  def selectorFamilyRW[P, T](options: ReadWriteSelectorFamilyOptions[P, T]) =
+    utils_module.selectorFamilyRW[P, T](options)
 
-    /**
-    * @tparam T
-    * @tparam P Args to resulting function.
-    */
-  def selectorFamily[P,T](
-    options: ReadOnlySelectorFamilyOptions[P,T] | ReadWriteSelectorFamilyOptions[P,T]) =
-    utils_module.selectorFamily[P,T](options)
+  /**
+   * @tparam T
+   * @tparam P Args to resulting function.
+   */
+  def selectorFamily[P, T](options: ReadOnlySelectorFamilyOptions[P, T] | ReadWriteSelectorFamilyOptions[P, T]) =
+    utils_module.selectorFamily[P, T](options)
 
   def constSelector[T <: SerializableParameter](constant: T) = utils_module.constSelector[T](constant)
   def errorSelector[T](message: String) = utils_module.errorSelector[T](message)

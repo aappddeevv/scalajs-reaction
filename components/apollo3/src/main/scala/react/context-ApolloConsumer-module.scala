@@ -36,10 +36,10 @@ object ApolloConsumer {
   object JS extends ReactJSComponent
 
   def apply(props: Props) = createElement(JS, props)
-  def apply(children: js.Function1[ApolloClient[_], ReactNode|Null]) =
+  def apply(children: js.Function1[ApolloClient[_], ReactNode | Null]) =
     createElement(JS, js.Dynamic.literal("children" -> children))
 
   trait Props extends js.Object {
-    val children: js.Function1[ApolloClient[_], ReactNode|Null]
+    val children: js.Function1[ApolloClient[_], ReactNode | Null]
   }
 }

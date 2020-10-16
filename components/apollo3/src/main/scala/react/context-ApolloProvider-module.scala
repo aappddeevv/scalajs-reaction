@@ -36,11 +36,11 @@ object ApolloProvider {
   object JS extends ReactJSComponent
 
   def apply(props: Props, children: ReactNode*) = createElement(JS, props, children: _*)
-  def apply(client: ApolloClient[_])(children: ReactNode*) = 
+  def apply(client: ApolloClient[_])(children: ReactNode*) =
     createElement(JS, js.Dynamic.literal("client" -> client, "children" -> children))
 
   trait Props extends js.Object {
     val client: ApolloClient[_]
-    var children: js.UndefOr[ReactNode|js.Array[ReactNode]|Null] = js.undefined
+    var children: js.UndefOr[ReactNode | js.Array[ReactNode] | Null] = js.undefined
   }
 }

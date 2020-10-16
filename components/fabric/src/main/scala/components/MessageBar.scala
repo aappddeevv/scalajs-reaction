@@ -48,49 +48,49 @@ object MessageBar {
   sealed abstract trait Type extends js.Any
 
   object Type {
-    val info          = 0.asInstanceOf[Type]
-    val error         = 1.asInstanceOf[Type]
-    val blocked       = 2.asInstanceOf[Type]
+    val info = 0.asInstanceOf[Type]
+    val error = 1.asInstanceOf[Type]
+    val blocked = 2.asInstanceOf[Type]
     val severeWarning = 3.asInstanceOf[Type]
-    val success       = 4.asInstanceOf[Type]
-    val warning       = 5.asInstanceOf[Type]
+    val success = 4.asInstanceOf[Type]
+    val warning = 5.asInstanceOf[Type]
   }
 
   trait StyleProps extends js.Object {
-    var className: js.UndefOr[IStyle]         = js.undefined
-    var messageBarType: js.UndefOr[Type]      = js.undefined
-    var onDismiss: js.UndefOr[Boolean]        = js.undefined
-    var truncated: js.UndefOr[Boolean]        = js.undefined
-    var isMultiline: js.UndefOr[Boolean]      = js.undefined
+    var className: js.UndefOr[IStyle] = js.undefined
+    var messageBarType: js.UndefOr[Type] = js.undefined
+    var onDismiss: js.UndefOr[Boolean] = js.undefined
+    var truncated: js.UndefOr[Boolean] = js.undefined
+    var isMultiline: js.UndefOr[Boolean] = js.undefined
     var expandSingleLine: js.UndefOr[Boolean] = js.undefined
-    var actions: js.UndefOr[Boolean]          = js.undefined
+    var actions: js.UndefOr[Boolean] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {
-    var root: js.UndefOr[IStyle]              = js.undefined
-    var content: js.UndefOr[IStyle]           = js.undefined
-    var iconContainer: js.UndefOr[IStyle]     = js.undefined
-    var icon: js.UndefOr[IStyle]              = js.undefined
-    var text: js.UndefOr[IStyle]              = js.undefined
-    var innerText: js.UndefOr[IStyle]         = js.undefined
-    var dismissal: js.UndefOr[IStyle]         = js.undefined
-    var expand: js.UndefOr[IStyle]            = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
+    var content: js.UndefOr[IStyle] = js.undefined
+    var iconContainer: js.UndefOr[IStyle] = js.undefined
+    var icon: js.UndefOr[IStyle] = js.undefined
+    var text: js.UndefOr[IStyle] = js.undefined
+    var innerText: js.UndefOr[IStyle] = js.undefined
+    var dismissal: js.UndefOr[IStyle] = js.undefined
+    var expand: js.UndefOr[IStyle] = js.undefined
     var dismissSingleLine: js.UndefOr[IStyle] = js.undefined
-    var expandSingleLine: js.UndefOr[IStyle]  = js.undefined
-    var actions: js.UndefOr[IStyle]           = js.undefined
+    var expandSingleLine: js.UndefOr[IStyle] = js.undefined
+    var actions: js.UndefOr[IStyle] = js.undefined
   }
 
   trait Props extends HTMLAttributes[dom.html.Element] with ComponentRef[IMessageBar] with Theme with Attributes {
     @JSName("messageBarType")
-    var barType: js.UndefOr[Type]                                      = js.undefined
-    var messageBarType: js.UndefOr[Type]                               = js.undefined
-    var actions: js.UndefOr[ReactElement]                              = js.undefined
-    var arialLabel: js.UndefOr[String]                                 = js.undefined
-    var onDismiss: js.UndefOr[js.Function1[js.Any, js.Any]]            = js.undefined
-    var isMultiline: js.UndefOr[Boolean]                               = js.undefined
-    var dismissButtonAriaLabel: js.UndefOr[String]                     = js.undefined
-    var truncated: js.UndefOr[Boolean]                                 = js.undefined
-    var overflowButtonAriaLabel: js.UndefOr[String]                    = js.undefined
+    var barType: js.UndefOr[Type] = js.undefined
+    var messageBarType: js.UndefOr[Type] = js.undefined
+    var actions: js.UndefOr[ReactElement] = js.undefined
+    var arialLabel: js.UndefOr[String] = js.undefined
+    var onDismiss: js.UndefOr[js.Function1[js.Any, js.Any]] = js.undefined
+    var isMultiline: js.UndefOr[Boolean] = js.undefined
+    var dismissButtonAriaLabel: js.UndefOr[String] = js.undefined
+    var truncated: js.UndefOr[Boolean] = js.undefined
+    var overflowButtonAriaLabel: js.UndefOr[String] = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
   }
 }

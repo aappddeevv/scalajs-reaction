@@ -44,16 +44,16 @@ object StyleSetArg {
   ): StyleSetArg = s.asInstanceOf[StyleSetArg]
   @inline implicit def from5[SP <: js.Any, SS <: IStyleSetTag](s: js.UndefOr[IStyleFunction[SP, SS]]): StyleSetArg =
     s.asInstanceOf[StyleSetArg]
-  @inline implicit def from6[SS <: IStyleSetTag](s: SS): StyleSetArg             = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from6[SS <: IStyleSetTag](s: SS): StyleSetArg = s.asInstanceOf[StyleSetArg]
   @inline implicit def from7[SS <: IStyleSetTag](s: js.UndefOr[SS]): StyleSetArg = s.asInstanceOf[StyleSetArg]
-  @inline implicit def from8(s: js.Dynamic): StyleSetArg                         = s.asInstanceOf[StyleSetArg]
+  @inline implicit def from8(s: js.Dynamic): StyleSetArg = s.asInstanceOf[StyleSetArg]
 }
 
 /** uifabric/styling == office-ui-fabric-react/lib/Styling. @uifabric/styling
  * also exports most of @uifabic/merge-styles.
  * This should really be the module.
  *
- * 
+ *
  */
 @deprecated("Use fabric.styling.module")
 @js.native
@@ -107,10 +107,10 @@ trait MergeStyles extends js.Object {
    * @tparam S Style props.
    */
   def concatStyleSetsWithProps[SP <: js.Any](props: SP, styleSets: StyleSetArg*): IStyleSet = js.native
-  
+
   @JSName("concatStyleSetsWithProps")
   def unsafeConcatStyleSetsWithProps[SP <: js.Any](props: SP, styleSets: scala.Any*): IStyleSet = js.native
-  
+
   /** Register a font face. */
   def fontFace(font: FontFace): Unit = js.native
 
@@ -126,26 +126,26 @@ trait MergeStyles extends js.Object {
 @js.native
 trait IVendorSettings extends js.Object {
   val isWebkit: js.UndefOr[Boolean] = js.native
-  val isMoz: js.UndefOr[Boolean]    = js.native
-  val isMs: js.UndefOr[Boolean]     = js.native
-  val isOpera: js.UndefOr[Boolean]  = js.native
+  val isMoz: js.UndefOr[Boolean] = js.native
+  val isMs: js.UndefOr[Boolean] = js.native
+  val isOpera: js.UndefOr[Boolean] = js.native
 }
 
 trait IIconSubset extends js.Object {
   // string to string|JSX.Element
-  var icons: js.UndefOr[js.Object]    = js.undefined
+  var icons: js.UndefOr[js.Object] = js.undefined
   var fontFace: js.UndefOr[js.Object] = js.undefined // IFontFace
-  var style: js.UndefOr[IRawStyle]    = js.undefined
+  var style: js.UndefOr[IRawStyle] = js.undefined
 }
 
 trait IIconOptions extends js.Object {
-  var disableWarnings: js.UndefOr[Boolean]    = js.undefined
+  var disableWarnings: js.UndefOr[Boolean] = js.undefined
   var warnOnMissingIcons: js.UndefOr[Boolean] = js.undefined
 }
 
 @js.native
 trait StylingLike extends js.Object {
-  def getIconClassName(name: String): String                                                = js.native
+  def getIconClassName(name: String): String = js.native
   def registerIcons(r: IIconSubset, options: js.UndefOr[IIconOptions] = js.undefined): Unit = js.native
 }
 

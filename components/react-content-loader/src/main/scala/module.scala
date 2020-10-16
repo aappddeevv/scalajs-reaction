@@ -60,41 +60,41 @@ object ContentLoader {
 
   /** Should only be SVG children. */
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props,children: _*)
+    createElement(JS, props, children: _*)
 
   object Facebook {
     @js.native
     @JSImport("react-content-loader", "Facebook")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props,children: _*)
+      createElement(JS, props, children: _*)
   }
   object Instagram {
     @js.native
     @JSImport("react-content-loader", "Instagram")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props,children: _*)
+      createElement(JS, props, children: _*)
   }
   object Code {
     @js.native
     @JSImport("react-content-loader", "Code")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props,children: _*)
+      createElement(JS, props, children: _*)
   }
   object List {
     @js.native
     @JSImport("react-content-loader", "List")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props,children: _*)
+      createElement(JS, props, children: _*)
   }
   object BulletList {
     @js.native
     @JSImport("react-content-loader", "BulletList")
     object JS extends ReactJSComponent
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props,children: _*)
+      createElement(JS, props, children: _*)
   }
 }

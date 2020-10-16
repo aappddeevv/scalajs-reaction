@@ -36,7 +36,7 @@ object Helmet {
 
   def apply(props: Props, children: ReactNode*) =
     createElementN(JS, props)(children: _*)
-  def apply(props: Props)         = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
   def apply(children: ReactNode*) = createElementN(JS, null)(children: _*)
   //def apply(props: Props)(children: ReactNode*) = createElementN(JS,props)(children:_*)
   def withTitle(wtitle: String) =
@@ -45,20 +45,20 @@ object Helmet {
     })
 
   @jsenrich trait Props extends js.Object {
-    var async: js.UndefOr[Boolean]                   = js.undefined
-    var base: js.UndefOr[js.Any]                     = js.undefined
-    var defaultTitle: js.UndefOr[String]             = js.undefined
-    var defer: js.UndefOr[Boolean]                   = js.undefined
+    var async: js.UndefOr[Boolean] = js.undefined
+    var base: js.UndefOr[js.Any] = js.undefined
+    var defaultTitle: js.UndefOr[String] = js.undefined
+    var defer: js.UndefOr[Boolean] = js.undefined
     var encodeSpecialCharacters: js.UndefOr[Boolean] = js.undefined
     // htmlAtributes
     var onChangeClientState: js.UndefOr[js.Function3[js.Any, HelmetTags, HelmetTags, Unit]] = js.undefined
-    var link: js.UndefOr[js.Array[js.Object]]                                               = js.undefined
-    var meta: js.UndefOr[js.Array[js.Object | js.Dynamic]]                                  = js.undefined
-    var noscript: js.UndefOr[js.Array[js.Any]]                                              = js.undefined
-    var style: js.UndefOr[js.Array[js.Any]]                                                 = js.undefined
-    var title: js.UndefOr[String]                                                           = js.undefined
-    var titleAttributes: js.UndefOr[js.Object]                                              = js.undefined
-    var titleTemplate: js.UndefOr[String]                                                   = js.undefined
+    var link: js.UndefOr[js.Array[js.Object]] = js.undefined
+    var meta: js.UndefOr[js.Array[js.Object | js.Dynamic]] = js.undefined
+    var noscript: js.UndefOr[js.Array[js.Any]] = js.undefined
+    var style: js.UndefOr[js.Array[js.Any]] = js.undefined
+    var title: js.UndefOr[String] = js.undefined
+    var titleAttributes: js.UndefOr[js.Object] = js.undefined
+    var titleTemplate: js.UndefOr[String] = js.undefined
   }
 }
 
@@ -76,10 +76,10 @@ trait HelmetTags extends js.Object {
 @JSImport("react-helmet", JSImport.Namespace)
 object module extends js.Object {
   //peek, rewind, renderState
-  def peek(): HelmetData       = js.native
-  def rewind(): HelmetData     = js.native
+  def peek(): HelmetData = js.native
+  def rewind(): HelmetData = js.native
   def renderStatic: HelmetData = js.native
-  val canUseDOM: Boolean       = js.native
+  val canUseDOM: Boolean = js.native
 }
 
 @js.native
@@ -99,14 +99,14 @@ trait HelmetHTMLElementDatum extends js.Object {
 
 @js.native
 trait HelmetData extends js.Object {
-  val base: HelmetDatum                      = js.native
-  val bodyAttributes: HelmetHTMLBodyDatum    = js.native
+  val base: HelmetDatum = js.native
+  val bodyAttributes: HelmetHTMLBodyDatum = js.native
   val htmlAttributes: HelmetHTMLElementDatum = js.native
-  val link: HelmetDatum                      = js.native
-  val meta: HelmetDatum                      = js.native
-  val noscript: HelmetDatum                  = js.native
-  val script: HelmetDatum                    = js.native
-  val style: HelmetDatum                     = js.native
-  val title: HelmetDatum                     = js.native
-  val titleAttributes: HelmetDatum           = js.native
+  val link: HelmetDatum = js.native
+  val meta: HelmetDatum = js.native
+  val noscript: HelmetDatum = js.native
+  val script: HelmetDatum = js.native
+  val style: HelmetDatum = js.native
+  val title: HelmetDatum = js.native
+  val titleAttributes: HelmetDatum = js.native
 }

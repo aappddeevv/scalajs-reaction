@@ -48,20 +48,20 @@ object SearchBox {
   }
 
   trait Styles extends IStyleSetTag {
-    var root: js.UndefOr[IStyle]          = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
     var iconContainer: js.UndefOr[IStyle] = js.undefined
-    var icon: js.UndefOr[IStyle]          = js.undefined
-    var field: js.UndefOr[IStyle]         = js.undefined
-    var clearButton: js.UndefOr[IStyle]   = js.undefined
+    var icon: js.UndefOr[IStyle] = js.undefined
+    var field: js.UndefOr[IStyle] = js.undefined
+    var clearButton: js.UndefOr[IStyle] = js.undefined
   }
 
   trait StyleProps extends Attributes {
     //var theme: js.UndefOr[ITheme] = js.undefined
-    var className: js.UndefOr[String]         = js.undefined
-    var disabled: js.UndefOr[Boolean]         = js.undefined
-    var hasFocus: js.UndefOr[Boolean]         = js.undefined
-    var underlined: js.UndefOr[Boolean]       = js.undefined
-    var hasInput: js.UndefOr[Boolean]         = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var disabled: js.UndefOr[Boolean] = js.undefined
+    var hasFocus: js.UndefOr[Boolean] = js.undefined
+    var underlined: js.UndefOr[Boolean] = js.undefined
+    var hasInput: js.UndefOr[Boolean] = js.undefined
     var disableAnimation: js.UndefOr[Boolean] = js.undefined
   }
 
@@ -69,7 +69,7 @@ object SearchBox {
     var ariaLabel: js.UndefOr[String] = js.undefined
     //var className: js.UndefOr[String] = js.undefined
     var clearButtonProps: js.UndefOr[Button.Props] = js.undefined
-    var disableAnimation: js.UndefOr[Boolean]      = js.undefined
+    var disableAnimation: js.UndefOr[Boolean] = js.undefined
     //var placeholder: js.UndefOr[String] = js.undefined
     var underlined: js.UndefOr[Boolean] = js.undefined
     //var value: js.UndefOr[String]                       = js.undefined

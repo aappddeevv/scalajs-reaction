@@ -38,7 +38,7 @@ object Separator {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Separator", "Separator")
   object JS extends ReactJSComponent
-  
+
   def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
@@ -46,19 +46,17 @@ object Separator {
     createElementN(JS, null)(children: _*)
 
   @js.native
-  trait ISeparator extends js.Object 
-    
+  trait ISeparator extends js.Object
+
   @js.native
   abstract trait AlignContent extends js.Any
-  object AlignContent { 
+  object AlignContent {
     val start = "start".asInstanceOf[AlignContent]
     val center = "center".asInstanceOf[AlignContent]
     val end = "end".asInstanceOf[AlignContent]
   }
-    
-  trait Props extends HTMLAttributes[html.Element]
-      with Theme
-      with ReactJSProps {
+
+  trait Props extends HTMLAttributes[html.Element] with Theme with ReactJSProps {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     var vertical: js.UndefOr[Boolean] = js.undefined
     var alignContent: js.UndefOr[AlignContent] = js.undefined
@@ -66,9 +64,9 @@ object Separator {
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined
-    var theme: js.UndefOr[Theme]      = js.undefined
+    var theme: js.UndefOr[Theme] = js.undefined
     var vertical: js.UndefOr[Boolean] = js.undefined
-    var alignContent: js.UndefOr[AlignContent] = js.undefined    
+    var alignContent: js.UndefOr[AlignContent] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {

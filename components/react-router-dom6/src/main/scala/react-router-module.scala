@@ -30,20 +30,20 @@ import react._
 @js.native
 abstract trait Action extends js.Any
 object Action {
-    val Pop = "POP".asInstanceOf[Action]
-    val Push = "PUSH".asInstanceOf[Action]
-    val Replace = "REPLACE".asInstanceOf[Action]
+  val Pop = "POP".asInstanceOf[Action]
+  val Push = "PUSH".asInstanceOf[Action]
+  val Replace = "REPLACE".asInstanceOf[Action]
 }
 
 // history
-trait PathPieces extends js.Object { 
-    var pathname: js.UndefOr[String] = js.undefined
-    var search: js.UndefOr[String] = js.undefined
-    var hash: js.UndefOr[String] = js.undefined
+trait PathPieces extends js.Object {
+  var pathname: js.UndefOr[String] = js.undefined
+  var search: js.UndefOr[String] = js.undefined
+  var hash: js.UndefOr[String] = js.undefined
 }
 
 // history
-trait LocationPieces[S] extends PathPieces { 
+trait LocationPieces[S] extends PathPieces {
   var state: js.UndefOr[S @scala.annotation.unchecked.uncheckedVariance] = js.undefined
   var key: js.UndefOr[LocationKey] = js.undefined
 }
@@ -54,16 +54,18 @@ trait LocationInit[S] extends LocationPieces[S]
 
 // history
 object LocationInit {
+
   /** Create LocationInit from a pathname. */
-  def apply[S](p: String) = 
-    new LocationInit[S] { 
-        pathname = p
+  def apply[S](p: String) =
+    new LocationInit[S] {
+      pathname = p
     }
-   
-   implicit class RichLocationInit[S](private val li: LocationInit[S]) extends AnyVal {
-     /** Attesting for LocationInit having all required fields to be a Location. */
-     def hasRequired: Location[S] = li.asInstanceOf[Location[S]]
-   }
+
+  implicit class RichLocationInit[S](private val li: LocationInit[S]) extends AnyVal {
+
+    /** Attesting for LocationInit having all required fields to be a Location. */
+    def hasRequired: Location[S] = li.asInstanceOf[Location[S]]
+  }
 }
 
 // history
@@ -79,7 +81,7 @@ trait Location[+S] extends js.Object {
   val hash: Hash = js.native
   val key: LocationKey = js.native
 }
-*/
+ */
 
 /** More specific types when returning from `useLocation`. */
 trait Location[S] extends js.Object {
@@ -91,7 +93,7 @@ trait Location[S] extends js.Object {
 }
 
 object Location {
-  implicit class RichLocation[S](private val location: Location[S]) extends AnyVal { 
+  implicit class RichLocation[S](private val location: Location[S]) extends AnyVal {
     def toLocationInit: LocationInit[S] = location.asInstanceOf[LocationInit[S]]
     def toLocationPieces: LocationPieces[S] = location.asInstanceOf[LocationPieces[S]]
   }
@@ -107,39 +109,39 @@ trait ResolvedLocation extends js.Object {
 // history
 @js.native
 trait Update[S] extends js.Object {
-    val action: Action = js.native
-    val location: Location[S] = js.native
+  val action: Action = js.native
+  val location: Location[S] = js.native
 }
 
 // history
 @js.native
 trait Transition[S] extends Update[S] {
-    def retry(): Unit = js.native
+  def retry(): Unit = js.native
 }
 
 // history
 @js.native
 trait History[S] extends js.Object {
-    val action: Action = js.native
-    val location: Location[S] = js.native
-    def createHref(to: To): String = js.native
-    def push(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
-    def replace(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
-    def go(n: Int): Unit = js.native
-    def back(): Unit = js.native
-    def forward(): Unit = js.native
-    //def listen(listener: Listener[S]): js.Function0[Unit] = js.native
-    def block(blocker: Blocker[S]): js.Function0[Unit] = js.native
+  val action: Action = js.native
+  val location: Location[S] = js.native
+  def createHref(to: To): String = js.native
+  def push(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
+  def replace(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
+  def go(n: Int): Unit = js.native
+  def back(): Unit = js.native
+  def forward(): Unit = js.native
+  //def listen(listener: Listener[S]): js.Function0[Unit] = js.native
+  def block(blocker: Blocker[S]): js.Function0[Unit] = js.native
 }
 
 @js.native
-trait Navigator[S] extends js.Object {   
-    val action: Action = js.native
-    def createHref(to: To): String = js.native
-    def push(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
-    def replace(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
-    def go(n: Int): Unit = js.native
-    def block(blocker: Blocker[S]): js.Function0[Unit] = js.native
+trait Navigator[S] extends js.Object {
+  val action: Action = js.native
+  def createHref(to: To): String = js.native
+  def push(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
+  def replace(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
+  def go(n: Int): Unit = js.native
+  def block(blocker: Blocker[S]): js.Function0[Unit] = js.native
 }
 
 /** Very similar to what you provide to the Route component. */
@@ -165,23 +167,23 @@ trait NavigateOptions[S] extends js.Object {
 
 @js.native
 trait NavigateFunction extends js.Object {
-   def apply(to: To): Unit = js.native
+  def apply(to: To): Unit = js.native
 
-   @JSName("apply")
-   def apply(delta: Int): Unit = js.native
-   
-   /** to includes Path(string) and PathPieces! */
-   @JSName("apply")
-   def to(to: To): Unit = js.native
-   
-   @JSName("apply")
-   def toPath(to: String): Unit = js.native
-   
-   @JSName("apply")
-   def toPieces(to: PathPieces, options: NavigateOptions[_]): Unit = js.native
-   
-   @JSName("apply")
-   def toPath(to: String, options: NavigateOptions[_]): Unit = js.native
+  @JSName("apply")
+  def apply(delta: Int): Unit = js.native
+
+  /** to includes Path(string) and PathPieces! */
+  @JSName("apply")
+  def to(to: To): Unit = js.native
+
+  @JSName("apply")
+  def toPath(to: String): Unit = js.native
+
+  @JSName("apply")
+  def toPieces(to: PathPieces, options: NavigateOptions[_]): Unit = js.native
+
+  @JSName("apply")
+  def toPath(to: String, options: NavigateOptions[_]): Unit = js.native
 }
 
 trait PathPatternParts {
@@ -221,13 +223,13 @@ trait Hooks extends js.Object {
   def useBlocker[S](blocker: Blocker[S], when: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   //def useHref[S](to: To): String = js.native
   def useInRouterContext(): Boolean = js.native
-  
+
   /** Should not need to use this according to docs. */
   def useLocation[S](): Location[S] = js.native
   def useLocationPending(): Boolean = js.native
-  
+
   /** Use this to avoid Route entries everywhere. */
-  def useMatch(to: PathPattern): PathMatch|Null = js.native
+  def useMatch(to: PathPattern): PathMatch | Null = js.native
   def useNavigate(): NavigateFunction = js.native
   def useOutlet(): ReactNode = js.native
   def useParams[P <: js.Object](): P = js.native
@@ -238,14 +240,14 @@ trait Hooks extends js.Object {
   def useRoutes(
     routes: js.Array[PartialRouteObject],
     basename: js.UndefOr[String] = js.undefined
-    ): ReactNode = js.native
+  ): ReactNode = js.native
 }
 
 @js.native
 trait Utils extends js.Object {
   def createRoutesFromChildren(children: js.UndefOr[js.Any] = js.undefined): js.Array[RouteObject] = js.native
   def createRoutesFromArray(array: js.Array[PartialRouteObject]): js.Array[RouteObject] = js.native
-  def matchPath(pattern: PathPattern, pathname: String): PathMatch | Null  = js.native
+  def matchPath(pattern: PathPattern, pathname: String): PathMatch | Null = js.native
   def matchRoutes[S](
     routes: RouteSpec,
     location: Location[S] | String,
@@ -258,7 +260,6 @@ trait Utils extends js.Object {
 @js.native
 @JSImport("react-router", JSImport.Namespace)
 object module extends Hooks with Utils
-
 
 object MemoryRouter {
   @js.native
@@ -299,8 +300,8 @@ object Navigate {
       js.Dynamic.literal(
         "to" -> to.asInstanceOf[js.Any],
         "state" -> state
-   ))
-    
+      ))
+
   def replace(to: To) =
     createElement(
       JS,
@@ -308,7 +309,7 @@ object Navigate {
         "to" -> to.asInstanceOf[js.Any],
         "replace" -> true,
       ))
-    
+
   def replace(to: To, state: js.Any) =
     createElement(
       JS,
@@ -339,21 +340,21 @@ object Route {
   object JS extends ReactJSComponent
 
   def apply(props: Props) = createElement(JS, props)
-  
+
   /** Use `Route` children. */
-  def nested(props: Props)(children: ReactNode*) = createElement(JS, props, children:_*)
-  
+  def nested(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+
   /** Non-specialized version. */
   def apply(path: String, element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element))
 
-  def withKey(key: String, path: String, element: ReactNode) = 
+  def withKey(key: String, path: String, element: ReactNode) =
     createElement(JS, js.Dynamic.literal("key" -> key, "path" -> path, "element" -> element))
-    
+
   /** Children should be `Route` nodes. `element` should use `Outlet` to show selected child. */
   def nested(path: String, element: ReactNode)(children: ReactNode*) =
-    createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element), children:_*)
-    
+    createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element), children: _*)
+
   /** Path is `*`. */
   def always(element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> "*", "element" -> element))
@@ -361,17 +362,17 @@ object Route {
   /** Appends `slash asterisk` to the path. Your element should *not* use `Outlet`. */
   def descendant(path: String, element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> (path + "/*"), "element" -> element))
-    
+
   /** Uses `/` as the path. Typically used with nested route parent to render at the
    * root of the parent.
    */
   def index(element: ReactNode) =
     createElement(JS, js.Dynamic.literal("path" -> "/", "element" -> element))
-    
+
   /** Use `slash asterisk` as the path. `element` should use `Outlet`. */
-  def indexNested(element: ReactNode)(children: ReactNode*) = 
-    createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children:_*)
-    
+  def indexNested(element: ReactNode)(children: ReactNode*) =
+    createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children: _*)
+
   trait Props extends MaybeHasStrKey {
     var caseSensitive: js.UndefOr[Boolean] = js.undefined
     var path: js.UndefOr[String] = js.undefined
@@ -411,10 +412,9 @@ object Routes {
     createElement(JS, null, children: _*)
 
   def basename(bname: js.UndefOr[String], children: ReactNode*) =
-     createElement(JS, new Props { basename = bname }, children:_*)
-    
+    createElement(JS, new Props { basename = bname }, children: _*)
+
   trait Props extends js.Object {
     var basename: js.UndefOr[String] = js.undefined
   }
 }
-

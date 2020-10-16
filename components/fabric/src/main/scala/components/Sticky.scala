@@ -40,16 +40,16 @@ object Sticky {
   trait ISticky extends js.Object
 
   trait Props extends ComponentRef[ISticky] {
-    var stickyClassName: js.UndefOr[String]       = js.undefined
+    var stickyClassName: js.UndefOr[String] = js.undefined
     var stickyBackgroundColor: js.UndefOr[String] = js.undefined
-    var stickyPosition: js.UndefOr[Position]      = js.undefined
-    var isScrollSynced: js.UndefOr[Boolean]       = js.undefined
+    var stickyPosition: js.UndefOr[Position] = js.undefined
+    var isScrollSynced: js.UndefOr[Boolean] = js.undefined
   }
 
   @js.native
   abstract trait Position extends js.Any
   object Position {
-    val Both   = 0.asInstanceOf[Position]
+    val Both = 0.asInstanceOf[Position]
     val Header = 1.asInstanceOf[Position]
     val Footer = 2.asInstanceOf[Position]
   }

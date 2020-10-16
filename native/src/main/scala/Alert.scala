@@ -32,23 +32,23 @@ trait AlertOptions extends js.Object {
 trait AlertButton extends js.Object {
   val text: String
   val onPress: js.UndefOr[js.Function0[Unit]] = js.undefined
-  var style: js.UndefOr[AlertButtonStyle]     = js.undefined
+  var style: js.UndefOr[AlertButtonStyle] = js.undefined
 }
 
 @js.native
 sealed trait AlertType extends js.Any
 object AlertType {
-  val default       = "default".asInstanceOf[AlertType]
-  val plainText     = "plain-text".asInstanceOf[AlertType]
-  val secureText    = "secure-text".asInstanceOf[AlertType]
+  val default = "default".asInstanceOf[AlertType]
+  val plainText = "plain-text".asInstanceOf[AlertType]
+  val secureText = "secure-text".asInstanceOf[AlertType]
   val loginPassword = "login-password".asInstanceOf[AlertType]
 }
 
 @js.native
 sealed trait AlertButtonStyle extends js.Any
 object AlertButtonStyle {
-  val default     = "default".asInstanceOf[AlertButtonStyle]
-  val cancel      = "cancel".asInstanceOf[AlertButtonStyle]
+  val default = "default".asInstanceOf[AlertButtonStyle]
+  val cancel = "cancel".asInstanceOf[AlertButtonStyle]
   val destructive = "destructive".asInstanceOf[AlertButtonStyle]
 }
 

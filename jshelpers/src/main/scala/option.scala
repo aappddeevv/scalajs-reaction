@@ -49,12 +49,12 @@ final class OptionOps[T](private val a: Option[T]) extends AnyVal {
 
   /** Changes type to T but does *not* add `|Null`. */
   def orNull: T = a.getOrElse(null).asInstanceOf[T]
-  
+
   /** Changes type to `T|Null`. */
-  def withNull: T|Null = a.getOrElse(null).asInstanceOf[T|Null]
-  
+  def withNull: T | Null = a.getOrElse(null).asInstanceOf[T | Null]
+
   /** Tap the value. */
-  def tapValue(f: T => Any) = a.map{t => f(t); t}
+  def tapValue(f: T => Any) = a.map { t => f(t); t }
 }
 
 trait OptionSyntax {

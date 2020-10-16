@@ -42,42 +42,42 @@ object Image {
 
   def apply(props: Props = null)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
-    
+
   def only(props: Props) = createElement0(JS, props)
 
   @js.native
   trait IImage extends js.Object {}
 
   trait StyleProps extends Theme {
-    var className: js.UndefOr[String]           = js.undefined
-    var maximizeFrame: js.UndefOr[Boolean]      = js.undefined
-    var isLoaded: js.UndefOr[Boolean]           = js.undefined
-    var shouldFadeIn: js.UndefOr[Boolean]       = js.undefined
+    var className: js.UndefOr[String] = js.undefined
+    var maximizeFrame: js.UndefOr[Boolean] = js.undefined
+    var isLoaded: js.UndefOr[Boolean] = js.undefined
+    var shouldFadeIn: js.UndefOr[Boolean] = js.undefined
     var shouldStartVisible: js.UndefOr[Boolean] = js.undefined
-    var isLandscape: js.UndefOr[Boolean]        = js.undefined
-    var isCenter: js.UndefOr[Boolean]           = js.undefined
-    var isContain: js.UndefOr[Boolean]          = js.undefined
-    var isCover: js.UndefOr[Boolean]            = js.undefined
-    var isCenterCover: js.UndefOr[Boolean]      = js.undefined
-    var isNone: js.UndefOr[Boolean]             = js.undefined
-    var isError: js.UndefOr[Boolean]            = js.undefined
-    var isNotImageFit: js.UndefOr[Boolean]      = js.undefined
-    var width: js.UndefOr[Double | String]      = js.undefined
-    var height: js.UndefOr[Double | String]     = js.undefined
+    var isLandscape: js.UndefOr[Boolean] = js.undefined
+    var isCenter: js.UndefOr[Boolean] = js.undefined
+    var isContain: js.UndefOr[Boolean] = js.undefined
+    var isCover: js.UndefOr[Boolean] = js.undefined
+    var isCenterCover: js.UndefOr[Boolean] = js.undefined
+    var isNone: js.UndefOr[Boolean] = js.undefined
+    var isError: js.UndefOr[Boolean] = js.undefined
+    var isNotImageFit: js.UndefOr[Boolean] = js.undefined
+    var width: js.UndefOr[Double | String] = js.undefined
+    var height: js.UndefOr[Double | String] = js.undefined
   }
 
   trait Styles extends IStyleSetTag {
-    var root: js.UndefOr[IStyle]  = js.undefined
+    var root: js.UndefOr[IStyle] = js.undefined
     var image: js.UndefOr[IStyle] = js.undefined
   }
 
   @js.native
   abstract sealed trait Fit extends js.Any
   object Fit {
-    val center      = 0.asInstanceOf[Fit]
-    val contain     = 1.asInstanceOf[Fit]
-    val cover       = 2.asInstanceOf[Fit]
-    val none        = 3.asInstanceOf[Fit]
+    val center = 0.asInstanceOf[Fit]
+    val contain = 1.asInstanceOf[Fit]
+    val cover = 2.asInstanceOf[Fit]
+    val none = 3.asInstanceOf[Fit]
     val centerCover = 4.asInstanceOf[Fit]
   }
 
@@ -85,28 +85,28 @@ object Image {
   abstract sealed trait CoverStyle extends js.Any
   object CoverStyle {
     val landscape = 0.asInstanceOf[CoverStyle]
-    val portrait  = 1.asInstanceOf[CoverStyle]
+    val portrait = 1.asInstanceOf[CoverStyle]
   }
 
   @js.native
   abstract sealed trait LoadState extends js.Any
   object LoadState {
-    val notLoaded  = 0.asInstanceOf[LoadState]
-    val loaded     = 1.asInstanceOf[LoadState]
-    val error      = 2.asInstanceOf[LoadState]
+    val notLoaded = 0.asInstanceOf[LoadState]
+    val loaded = 1.asInstanceOf[LoadState]
+    val error = 2.asInstanceOf[LoadState]
     val erroLoaded = 3.asInstanceOf[LoadState]
   }
 
   trait Props extends ComponentRef[IImage] with ImgHTMLAttributes[dom.html.Image] with Theme {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     //var className: js.UndefOr[String] = js.undefined
-    var shouldFadeIn: js.UndefOr[Boolean]                               = js.undefined
-    var shouldStartVisible: js.UndefOr[Boolean]                         = js.undefined
-    var imageFit: js.UndefOr[Fit]                                       = js.undefined
-    var errorSrc: js.UndefOr[String]                                    = js.undefined
-    var maximizeFrame: js.UndefOr[Boolean]                              = js.undefined
+    var shouldFadeIn: js.UndefOr[Boolean] = js.undefined
+    var shouldStartVisible: js.UndefOr[Boolean] = js.undefined
+    var imageFit: js.UndefOr[Fit] = js.undefined
+    var errorSrc: js.UndefOr[String] = js.undefined
+    var maximizeFrame: js.UndefOr[Boolean] = js.undefined
     var onLoadingStateChange: js.UndefOr[js.Function1[LoadState, Unit]] = js.undefined
-    var coverStyle: js.UndefOr[CoverStyle]                              = js.undefined
+    var coverStyle: js.UndefOr[CoverStyle] = js.undefined
   }
 
 }

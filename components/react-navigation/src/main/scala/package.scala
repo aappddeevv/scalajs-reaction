@@ -28,7 +28,7 @@ import react._
 package object react_navigation {
 
   type RouteSpecType = RouteConfig[js.Object] | ReactJSComponent
-  type RouteConfigs  = js.Dictionary[RouteSpecType]
+  type RouteConfigs = js.Dictionary[RouteSpecType]
 
   /** Create routes using easier syntax. */
   object routes {

@@ -1,3 +1,24 @@
+/*
+ * Copyright (c) 2018 The Trapelo Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package formik
 
 import scala.scalajs.js
@@ -58,7 +79,7 @@ trait StateReturnValue[P] extends js.Object {
   val status: Any = js.native
   val submitCount: Int = js.native
 }
-   
+
 trait State[P] extends js.Object {
   val values: P
   val errors: Errors
@@ -105,15 +126,15 @@ trait Helpers[P] extends js.Object {
  */
 @js.native
 trait Handlers[P] extends js.Object {
-    def handleSubmit(e: ReactFormEvent[dom.html.Form]): Unit = js.native
-    def handleReset(e: SyntheticEvent[dom.html.Element]): Unit = js.native
-    def handleBlur(e: ReactFocusEvent[dom.html.Element]): Unit = js.native
-    //def handleBlur...
-    def handleChange(e: ReactChangeEvent[dom.html.Element]): Unit = js.native
-    //def handleChange
-    def getFieldProps[A](props: Any): FieldInputProps[A] = js.native
-    def getFieldMeta[A](name: String): FieldMetaProps[A] = js.native
-    def getFieldHelpers[A](props: Any): FieldHelperProps[A] = js.native
+  def handleSubmit(e: ReactFormEvent[dom.html.Form]): Unit = js.native
+  def handleReset(e: SyntheticEvent[dom.html.Element]): Unit = js.native
+  def handleBlur(e: ReactFocusEvent[dom.html.Element]): Unit = js.native
+  //def handleBlur...
+  def handleChange(e: ReactChangeEvent[dom.html.Element]): Unit = js.native
+  //def handleChange
+  def getFieldProps[A](props: Any): FieldInputProps[A] = js.native
+  def getFieldMeta[A](name: String): FieldMetaProps[A] = js.native
+  def getFieldHelpers[A](props: Any): FieldHelperProps[A] = js.native
 }
 
 trait SharedConfig extends js.Object {
@@ -147,7 +168,8 @@ object Formik {
     var onSubmit: js.UndefOr[js.Function2[P, Helpers[P], js.UndefOr[js.Thenable[Any]]]] = js.undefined
     // yup specific
     //var validateSchema
-    var validate: js.UndefOr[js.Function1[P, Unit | js.Object | js.Dictionary[Any]|js.Thenable[Errors]]] = js.undefined
+    var validate: js.UndefOr[js.Function1[P, Unit | js.Object | js.Dictionary[Any] | js.Thenable[Errors]]] =
+      js.undefined
     var innerRef: js.UndefOr[ReactRef[Props[P]]] = js.undefined
   }
 }
@@ -159,12 +181,12 @@ object ErrorMessage {
 
   def apply(props: Props)(children: js.Function1[String, ReactNode]) =
     createElement(JS, props, children.asInstanceOf[ReactNode])
-    
+
   def apply(props: Props) = createElement(JS, props)
 
-  def apply(n: String, c: ReactType) = 
+  def apply(n: String, c: ReactType) =
     createElement(JS, new Props { val name = n; component = c })
-    
+
   trait Props extends js.Object {
     val name: String
     var className: js.UndefOr[String] = js.undefined
@@ -181,9 +203,7 @@ object FastField {
   def apply(props: Props)(children: ReactNode*) =
     createElement(JS, props, children: _*)
 
-  trait Props extends js.Object {
-    
-  }
+  trait Props extends js.Object {}
 }
 
 object Field {
@@ -195,7 +215,7 @@ object Field {
     createElement(JS, props, children: _*)
 
   trait Props extends js.Object {}
-  
+
   @js.native
   trait ChildProps[P] extends js.Object {
     val field: FieldInputProps[P]
@@ -260,16 +280,17 @@ trait FieldInputProps[A] extends js.Object {
 }
 
 trait UseFieldProps[P] extends HTMLAttributes[dom.html.Element] {
-    var component: js.UndefOr[ReactType] = js.undefined
-    var as: js.UndefOr[ReactType] = js.undefined
-    @JSName("children")
-    var onRender: js.UndefOr[js.Function1[Field.ChildProps[P], ReactNode]] = js.undefined
-    @JSName("children")
-    var onRenderUsing: js.UndefOr[ReactNode] = js.undefined
-    var validate: js.UndefOr[FieldValidator] = js.undefined
-    val name: String
-    /** HTML input type. */
-    var `type`: js.UndefOr[String] = js.undefined
-    var value: js.UndefOr[Any] = js.undefined
-    var innerRef: js.UndefOr[js.Function1[Any, Unit]] = js.undefined
+  var component: js.UndefOr[ReactType] = js.undefined
+  var as: js.UndefOr[ReactType] = js.undefined
+  @JSName("children")
+  var onRender: js.UndefOr[js.Function1[Field.ChildProps[P], ReactNode]] = js.undefined
+  @JSName("children")
+  var onRenderUsing: js.UndefOr[ReactNode] = js.undefined
+  var validate: js.UndefOr[FieldValidator] = js.undefined
+  val name: String
+
+  /** HTML input type. */
+  var `type`: js.UndefOr[String] = js.undefined
+  var value: js.UndefOr[Any] = js.undefined
+  var innerRef: js.UndefOr[js.Function1[Any, Unit]] = js.undefined
 }

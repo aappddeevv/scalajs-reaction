@@ -39,20 +39,20 @@ package object react_router6 {
 
   // not history
   type PathPattern = String | PathPatternParts
-  type RoutePreloadFunction[S] = js.Function3[js.Dictionary[String]|js.Object|js.Dynamic, Location[S], Int, Unit]
-  
+  type RoutePreloadFunction[S] = js.Function3[js.Dictionary[String] | js.Object | js.Dynamic, Location[S], Int, Unit]
+
   type RouteSpec = js.Array[RouteSpecElement | RouteSpecRouteTo]
-  
+
   // ...
   // in process--migrating defs to natives defined in the package object
   // ...
 
   def useBlocker[S](blocker: Blocker[S], when: js.UndefOr[Boolean] = js.undefined) = module.useBlocker(blocker, when)
-  
+
   @js.native
   @JSImport("react-router", "useHref")
   def useHref[S](to: To): String = js.native
-  
+
   def useInRouterContext() = module.useInRouterContext()
   def useLocation[S]() = module.useLocation[S]()
   def useLocationPending() = module.useLocationPending()
@@ -63,12 +63,11 @@ package object react_router6 {
   def useParamsDict() = module.useParamsDict()
   //def useResolvedLocation(to: To) = module.useResolvedLocation(to)
   def useResolvedPath(to: To) = module.useResolvedPath(to)
-  def useRoutes(
-    routes: js.Array[PartialRouteObject],
-    basename: js.UndefOr[String] = js.undefined) = module.useRoutes(routes, basename)
-    
+  def useRoutes(routes: js.Array[PartialRouteObject], basename: js.UndefOr[String] = js.undefined) =
+    module.useRoutes(routes, basename)
+
   @js.native
   @JSImport("react-router", "resolvePath")
-  def resolvePath(to: To, fromPathname: js.UndefOr[String]=js.undefined): PathPieces = js.native
-    
+  def resolvePath(to: To, fromPathname: js.UndefOr[String] = js.undefined): PathPieces = js.native
+
 }

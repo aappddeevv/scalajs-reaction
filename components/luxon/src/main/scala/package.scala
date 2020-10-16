@@ -29,6 +29,7 @@ package object luxon {
    *  so it is automatically picked up.
    */
   val dateOrdering = Ordering.by((item: DateTime) => item.valueOf().asInstanceOf[Double])
-  
-  type DurationUnit2 = "year"|"years"|"quarter"|"quarters"|"month"|"months"|"week"|"weeks"|"day"|"days"|"hour"|"hours"|"minute"|"minutes"|"second"|"seconds"|"millisecond"|"millisecons"
+
+  type DurationUnit2 =
+    "year" | "years" | "quarter" | "quarters" | "month" | "months" | "week" | "weeks" | "day" | "days" | "hour" | "hours" | "minute" | "minutes" | "second" | "seconds" | "millisecond" | "millisecons"
 }
