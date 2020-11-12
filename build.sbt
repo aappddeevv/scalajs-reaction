@@ -102,7 +102,7 @@ lazy val root = project
   .in(file("."))
   .settings(skip in publish := true)
   .aggregate(
-    apollo,
+    //apollo,
     apollo3,
     `apollo-server`,
     bootstrap,
@@ -324,7 +324,7 @@ lazy val `apollo-server` = project
   .in(file("components/apollo-server"))
   .settings(std_settings("apollo-server", "apollo-server"))
   .settings(buildinfo_settings("apollo_server"))
-  .dependsOn(react, apollo, `react-macros`)
+  .dependsOn(react, apollo3, `react-macros`)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `react-responsive` = project
@@ -562,7 +562,7 @@ lazy val docs = project
     //scalacOptions -= -"Yno-imports",
     //scalacOptions -= "-Ydata-warnings",
     ,
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples),
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples) -- inProjects(apollo),
     target in (ScalaUnidoc, unidoc) := (baseDirectory in LocalRootProject).value / "website" / "scalajs-reaction" / "static" / "api",
     cleanFiles += (target in (ScalaUnidoc, unidoc)).value
   )
@@ -589,14 +589,15 @@ lazy val docs = project
     `react-navigation`,
     `react-native-sideswipe`,
     jss,
-    apollo,
-    `apollo-server`,
+    //apollo,
+    //apollo3,
+    //`apollo-server`,
     formik,
     //forms,
     `react-router-dom5`,
     `react-router-dom6`,
     pathtoregexp,
-    dataValidationJS,
+    //dataValidationJS,
     msal,
     `azure-msal-browser`,
     mssql,

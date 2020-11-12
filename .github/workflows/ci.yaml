@@ -62,9 +62,9 @@ jobs:
           # needed for codegen scala
           cs install scalafmt
           sbt compile 
-          sbt examples/fullOptJS
       - name: Build example
         run: |
+          sbt examples/fullOptJS
           npm run build
       - name: Build website
         run: |
