@@ -105,7 +105,7 @@ object Plot {
   }
 
   trait PropsInit extends PropsBase {
-    var data: js.UndefOr[js.Array[Data]] = js.undefined
+    var data: js.UndefOr[js.Array[Trace]] = js.undefined
     var layout: js.UndefOr[Layout] = js.undefined
   }
 
@@ -116,7 +116,7 @@ object Plot {
   }
 
   trait Props extends PropsBase {
-    val data: js.Array[Data]
+    val data: js.Array[Trace]
     val layout: Layout
   }
 }

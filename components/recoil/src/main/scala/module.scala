@@ -26,13 +26,20 @@ import js.JSConverters._
 import js.|, js.annotation._
 import react._
 
+@js.native
+trait SnapshotID extends js.Any
+
 // Should be creatable so can set snapshot on root when needed rework this.
 @js.native
 trait Snapshot extends js.Object {
+  def getID(): SnapshotID = js.native
   def getLoadable[T](recoilValue: RecoilValue[T]): Loadable[T] = js.native
   def getPromise[T](recoilValue: RecoilValue[T]): js.Promise[T] = js.native
   def map(cb: js.Function1[MutableSnapshot, Unit]): Snapshot = js.native
   def asyncMap(cb: js.Function1[MutableSnapshot, js.Thenable[Unit]]): js.Promise[Snapshot] = js.native
+  
+  // unstable API
+  def getNodes_UNSTABLE(opts: js.Dynamic): js.Iterable[RecoilValue[_]]
 }
 
 // keep in sync with SetRecoilState, ResetRecoilState
@@ -139,14 +146,13 @@ object LoadableState {
 
 @js.native
 trait Accessors[+T] extends js.Object {
-
   /** Throw promise or error, or return the value. */
   def getValue(): T = js.native
   def toPromise[U >: T](): LoadablePromise[U] = js.native
   def valueMaybe(): js.UndefOr[T] = js.native
   def valueOrThrow(): T = js.native
   def errorMaybe(): js.UndefOr[js.Error] = js.native
-  def errorOrMaybe(): js.Error = js.native
+  def errorOrThrow(): js.Error = js.native
   def promiseMaybe(): js.UndefOr[js.Promise[T]] = js.native
   def promiseOrThrow(): js.Promise[T] = js.native
 

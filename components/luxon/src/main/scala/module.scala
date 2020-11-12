@@ -47,7 +47,7 @@ object DurationUnit {
   val minute = "minute".asInstanceOf[DurationUnit]
   val minutes = "minutes".asInstanceOf[DurationUnit]
   val second = "second".asInstanceOf[DurationUnit]
-  val seconds = "secounds".asInstanceOf[DurationUnit]
+  val seconds = "seconds".asInstanceOf[DurationUnit]
   val millisecond = "millisecond".asInstanceOf[DurationUnit]
   val milliseconds = "milliseconds".asInstanceOf[DurationUnit]
 }
@@ -76,15 +76,16 @@ trait Duration extends js.Object {
   val hours: Double = js.native
   val minutes: Double = js.native
   val seconds: Double = js.native
-  def as(unit: DurationUnit): Double = js.native
-  def get(unit: DurationUnit): Double = js.native
+  def as(unit: DurationUnit|String): Double = js.native
+  def get(unit: DurationUnit|String): Double = js.native
   def mapUnits(fn: js.Function1[Duration, Duration]): Duration = js.native
   def equals(that: Duration): Boolean = js.native
   def toObject(): DurationInit = js.native
   def toISO(): String = js.native
   def toJSON(): String = js.native
 //   def toString(): String = js.native
-//   def valueOf(): Int = js.native
+  @JSName("valueOf")
+  def valueOfNumber(): Double = js.native
   def negate(): Duration = js.native
   def plus(that: Duration): Duration = js.native
   def minus(that: Duration): Duration = js.native

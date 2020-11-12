@@ -60,17 +60,18 @@ trait ReadWriteSelectorFamilyOptions[P, T] extends ReadOnlySelectorFamilyOptions
 
 @js.native
 trait utils_module extends js.Object {
+  // P should be recoil.SerializableParameter
   def atomFamily[P, T](options: AtomFamilyOptions[P, T]): js.Function1[P, RecoilState[T]] =
     js.native
 
   @JSName("selectorFamily")
   def selectorFamilyRO[P, T](
-    options: ReadOnlySelectorFamilyOptions[P, T]): js.Function1[SerializableParameter, RecoilValueReadOnly[T]] =
+    options: ReadOnlySelectorFamilyOptions[P, T]): js.Function1[P, RecoilValueReadOnly[T]] =
     js.native
 
   @JSName("selectorFamily")
   def selectorFamilyRW[P, T](
-    options: ReadWriteSelectorFamilyOptions[P, T]): js.Function1[SerializableParameter, RecoilState[T]] = js.native
+    options: ReadWriteSelectorFamilyOptions[P, T]): js.Function1[P, RecoilState[T]] = js.native
 
   def selectorFamily[P, T](options: ReadOnlySelectorFamilyOptions[P, T] | ReadWriteSelectorFamilyOptions[P, T])
     : js.Function1[P, RecoilValue[T]] = js.native

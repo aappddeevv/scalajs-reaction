@@ -94,7 +94,7 @@ inThisBuild(
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
     ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.3.18" cross CrossVersion.full)
-
+,version := "0.1.0-M7"
   )
 )
 
@@ -123,9 +123,11 @@ lazy val root = project
     msal,
     `azure-msal-browser`,
     mssql,
+    `microsoft-graph-client`,
     //examples,
     //docs,
     native,
+    `node-fetch`,
      pathtoregexp,
      plotlyjs,
     `prop-types`,
@@ -363,7 +365,7 @@ lazy val dataValidationJS = project
 //lazy val dataValidationJVM = dataValidation.jvm
 
 lazy val `react-macros` = project
-//.enablePlugins(ScalaJSPlugin)
+  .enablePlugins(ScalaJSPlugin)
   .settings(
     scalacOptions ++= Seq("-Ymacro-annotations", "-language:experimental.macros"),
     description := "Small but helpful macros.",
@@ -423,6 +425,13 @@ lazy val fabric = project
   .dependsOn(react, vdom, `react-macros`)
   .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
   .settings(buildinfo_settings("fabric"))
+
+
+lazy val `microsoft-graph-client` = project
+  .in(file("components/microsoft-graph-client"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .settings(std_settings("microsoft-graph-client", "@microsoft/microsoft-graph-client."))
+  .settings(buildinfo_settings("microsoft.graph_client"))
 
 lazy val `fabric-experiments` = project
   .in(file("components/fabric-experiments"))
@@ -486,6 +495,11 @@ lazy val `react-plotlyjs` = project
   .dependsOn(plotlyjs, react, vdom, `react-macros`)
   .settings(std_settings("react-plotlyjs", "react-plotly.js"))
   .settings(buildinfo_settings("react_plotlyjs"))
+
+lazy val `node-fetch` = project.in(file("components/node-fetch"))
+	.enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+	.settings(std_settings("node-fetch", "node-fetch"))
+	.settings(buildinfo_settings("node_fetch"))
 
 lazy val `recoil` = project
   .in(file("components/recoil"))
@@ -565,6 +579,7 @@ lazy val docs = project
     bootstrap,
    handlebars,
    lodash,
+   `microsoft-graph-client`,
     mui,
     `react-macros`,
     //router,
@@ -585,6 +600,7 @@ lazy val docs = project
     msal,
     `azure-msal-browser`,
     mssql,
+    `node-fetch`,
     express,
     loglevel,
     whydidyourender,

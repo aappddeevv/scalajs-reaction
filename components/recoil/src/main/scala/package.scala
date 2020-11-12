@@ -58,7 +58,7 @@ package object recoil extends recoil.hooks with utils_exports {
   /** For *Family getter args. Must be stringifable for a serializable key. We need to use this but am not currently. */
   type SerializableParameter =
     Boolean | Int | Long | Float | Double | String | Null | Unit | js.Array[Primitive] | js.Object | js.Dictionary[
-      Primitive]
+      Primitive] | js.UndefOr[Primitive]
 
   implicit object jsfDictionary extends JSF[js.Dictionary]
   implicit object jsfArray extends JSF[js.Array]

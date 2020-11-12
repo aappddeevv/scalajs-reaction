@@ -1,0 +1,73 @@
+# build and maybe make release
+name: build
+on: 
+  push:
+    #tags: 'v*'
+    branches:
+      master
+jobs:
+  context-dump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"  
+  build-project:
+      name: Build all parts
+      runs-on: ubuntu-latest
+      strategy:
+          fail-fast: false
+      steps:
+      - uses: ilammy/setup-nasm@v1
+      - name: Setup Node.js 14
+        uses: actions/setup-node@v2-beta
+        with:
+            node-version: 14
+            check-latest: true
+      - uses: olafurpg/setup-scala@v10
+        with:
+          java-version: openjdk@1.14
+      - uses: laughedelic/coursier-setup@v1
+      - uses: coursier/cache-action@v5
+        with:
+          root: webui
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install npm dependencies
+        run: |
+          npm install
+      - name: Compile scala 
+        run: |
+          # needed for codegen scala
+          cs install scalafmt
+          sbt compile 
+      - name: Build example
+        run: |
+          npm run build
+      - name: Build website
+        run: |
+          # requires npm run build prior to this
+          sbt docs/unidoc
+          cd website/scalajs-reaction
+          npm run build

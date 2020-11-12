@@ -102,8 +102,33 @@ package object lodash {
 
   @js.native
   @JSImport("lodash", "omit")
-  def omit[T <: js.Object](o: js.Object, paths: js.Array[String | js.Array[String]]): T = js.native
+  def omit[T <: js.Object](o: js.Object, paths: js.Array[String]|js.Array[String | js.Array[String]]): T = js.native
 
+  @js.native
+  @JSImport("lodash", "omitBy")
+  def omitBy[T <: js.Object](o: js.Object, predicate: js.Any): T = js.native
+  
+  @js.native
+  @JSImport("lodash", "isNil")
+  val isNil: js.Any = js.native
+  
+  @js.native
+  @JSImport("lodash", "isNull")
+  val isNull: js.Any = js.native
+  
+  @js.native
+  @JSImport("lodash", "isUndefined")
+  val isUndefined: js.Any = js.native
+  
+  
+  @js.native
+  @JSImport("lodash", "identity")
+  val identity: js.Any = js.native
+  
+  @js.native
+  @JSImport("lodash", "pick")
+  def pick[T <: js.Object](o: js.Object, paths: js.Array[String]|js.Array[String | js.Array[String]]): T = js.native
+  
   @js.native
   @JSImport("lodash", "merge")
   def merge[T <: js.Object](args: T | js.Object | js.Dynamic | Null | Unit | js.UndefOr[_]*): T =
@@ -148,4 +173,16 @@ package object lodash {
   @js.native
   @JSImport("lodash", "round")
   def roundInt(value: Int, precision: js.UndefOr[Int] = js.undefined): Int = js.native
+  
+  @js.native
+  @JSImport("lodash", "isEqual")
+  def isEqual(lhs: js.Any, rhs: js.Any): Boolean = js.native
+  
+  @js.native
+  @JSImport("lodash", "template")
+  def template(source: String, options: js.UndefOr[js.Object|js.Dynamic]=js.undefined): js.Function1[js.Object|js.Dynamic, String] = js.native
+  
+  @js.native
+  @JSImport("lodash", "templateSettings")
+  val templateSettings: js.Dynamic = js.native
 }

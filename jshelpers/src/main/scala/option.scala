@@ -55,6 +55,9 @@ final class OptionOps[T](private val a: Option[T]) extends AnyVal {
 
   /** Tap the value. */
   def tapValue(f: T => Any) = a.map { t => f(t); t }
+  
+  /** Add | Null to T */
+  def maybeNull: Option[T|Null] = a.map(_.asInstanceOf[T|Null])
 }
 
 trait OptionSyntax {
