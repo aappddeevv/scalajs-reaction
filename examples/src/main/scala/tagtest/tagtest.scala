@@ -164,7 +164,7 @@ object TagTest {
       label("SVG test by setting inner HTML"),
       div(new DivProps {
         dangerouslySetInnerHTML = new SetInnerHTML {
-          val __html = """
+          __html = """
 <?xml version="1.0" standalone="no"?>
 <svg width="12cm" height="4cm" viewBox="0 0 1200 400"
      xmlns="http://www.w3.org/2000/svg" version="1.1">
