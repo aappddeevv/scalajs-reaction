@@ -71,4 +71,5 @@ jobs:
           # requires npm run build prior to this
           sbt docs/unidoc
           cd website/scalajs-reaction
+          npm install
           npm run build
