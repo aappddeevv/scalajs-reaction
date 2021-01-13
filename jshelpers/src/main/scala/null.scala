@@ -227,11 +227,11 @@ final class Null4[A, B, C, D](private val tuple: (A | Null, B | Null, C | Null, 
 }
 
 trait NullLowerOrderImplicits {
-  @inline implicit def NullTuple2[A, B](a: (A | Null, B | Null)) =
+  @inline implicit def NullTuple2[A, B](a: (A | Null, B | Null)): Null2[A,B] =
     new Null2[A, B](a)
-  @inline implicit def NullTuple3[A, B, C](a: (A | Null, B | Null, C | Null)) =
+  @inline implicit def NullTuple3[A, B, C](a: (A | Null, B | Null, C | Null)): Null3[A,B,C] =
     new Null3[A, B, C](a)
-  @inline implicit def NullTuple4[A, B, C, D](a: (A | Null, B | Null, C | Null, D | Null)) =
+  @inline implicit def NullTuple4[A, B, C, D](a: (A | Null, B | Null, C | Null, D | Null)): Null4[A,B,C,D] =
     new Null4[A, B, C, D](a)
 }
 
@@ -250,7 +250,7 @@ class OrNullStringOps(private val a: String | Null) extends AnyVal {
 }
 
 trait OrNullSyntax extends NullLowerOrderImplicits {
-  @inline implicit def orNullStringOps(a: String | Null) = new OrNullStringOps(a)
-  @inline implicit def orNullSyntax[A](a: A | Null) = new OrNullOps[A](a)
-  @inline implicit def orUndefOrNullSyntax[A](a: js.UndefOr[A] | Null) = new JsUndefOrNullOps[A](a)
+  @inline implicit def orNullStringOps(a: String | Null): OrNullStringOps = new OrNullStringOps(a)
+  @inline implicit def orNullSyntax[A](a: A | Null): OrNullOps[A] = new OrNullOps[A](a)
+  @inline implicit def orUndefOrNullSyntax[A](a: js.UndefOr[A] | Null): JsUndefOrNullOps[A] = new JsUndefOrNullOps[A](a)
 }

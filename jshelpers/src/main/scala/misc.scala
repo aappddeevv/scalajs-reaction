@@ -33,5 +33,5 @@ final case class StringIntMiscOrSyntax(a: String | Int) {
 }
 
 trait MiscOrSyntax {
-  @inline implicit def stringIntMiscOrSyntax(a: String | Int) = StringIntMiscOrSyntax(a)
+  @inline implicit def stringIntMiscOrSyntax(a: String | Int): StringIntMiscOrSyntax = StringIntMiscOrSyntax(a)
 }

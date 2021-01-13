@@ -91,6 +91,6 @@ final class JsDictionaryOps[T <: js.Any](private val self: js.Dictionary[T]) ext
 }
 
 trait JsObjectSyntax {
-  @inline implicit def jsObjectOpsSyntax[A <: js.Object](a: A) = new JsObjectOps(a)
-  @inline implicit def jsDictionaryOpsSyntax[T <: js.Any](a: js.Dictionary[T]) = new JsDictionaryOps[T](a)
+  @inline implicit def jsObjectOpsSyntax[A <: js.Object](a: A): JsObjectOps[A] = new JsObjectOps(a)
+  @inline implicit def jsDictionaryOpsSyntax[T <: js.Any](a: js.Dictionary[T]): JsDictionaryOps[T] = new JsDictionaryOps[T](a)
 }

@@ -51,7 +51,7 @@ def buildinfo_settings(pkg: String) =
 lazy val compilerSettings = Seq(
   scalacOptions in (Compile, doc) ++= Seq("-groups"),
   scalacOptions ++= commonScalacOptions,
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.1" cross CrossVersion.full),
   addCompilerPlugin(scalafixSemanticdb),
   autoAPIMappings := true,
   autoCompilerPlugins := true
@@ -74,7 +74,7 @@ def std_settings(p: String, d: String) =
     ),
     // temp fix as scalafix plugin is incompat with 2.13.2
     // https://github.com/scalacenter/scalafix/issues/1109
-    addCompilerPlugin(scalafixSemanticdb("4.3.10"))
+    //addCompilerPlugin(scalafixSemanticdb("4.3.10"))
   ) ++ resolverSettings ++ compilerSettings ++ bintraySettings ++ jsSettings
 
 inThisBuild(
@@ -93,8 +93,9 @@ inThisBuild(
     ),
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
-    ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.3.18" cross CrossVersion.full)
-,version := "0.1.0-M7"
+    ,
+    addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.3.18" cross CrossVersion.full),
+    version := "0.1.0-M7"
   )
 )
 
@@ -128,15 +129,15 @@ lazy val root = project
     //docs,
     native,
     `node-fetch`,
-     pathtoregexp,
-     plotlyjs,
+    pathtoregexp,
+    plotlyjs,
     `prop-types`,
     `react-macros`,
     `react-content-loader`,
     react,
     `react-redux`,
     `react-dom`,
-    `react-router-dom5`,
+    //`react-router-dom5`,
     `react-router-dom6`,
     `react-big-calendar`,
     `react-native-nativebase`,
@@ -223,12 +224,12 @@ lazy val jss = project
   .dependsOn(react, vdom)
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
-lazy val `react-router-dom5` = project
-  .in(file("components/react-router-dom5"))
-  .settings(std_settings("react-router-dom5", "react-router-dom5"))
-  .settings(buildinfo_settings("react_router5.dom"))
-  .dependsOn(react, vdom, `react-macros`)
-  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+// lazy val `react-router-dom5` = project
+//   .in(file("components/react-router-dom5"))
+//   .settings(std_settings("react-router-dom5", "react-router-dom5"))
+//   .settings(buildinfo_settings("react_router5.dom"))
+//   .dependsOn(react, vdom, `react-macros`)
+//   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-router-dom6` = project
   .in(file("components/react-router-dom6"))
@@ -426,7 +427,6 @@ lazy val fabric = project
   .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
   .settings(buildinfo_settings("fabric"))
 
-
 lazy val `microsoft-graph-client` = project
   .in(file("components/microsoft-graph-client"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -473,7 +473,7 @@ lazy val forms = project
   .dependsOn(react, vdom)
   .settings(std_settings("forms", "scalajs-reaction forms library."))
   .settings(buildinfo_settings("forms"))
-*/
+ */
 
 lazy val plotlyjs = project
   .in(file("components/plotlyjs"))
@@ -496,10 +496,11 @@ lazy val `react-plotlyjs` = project
   .settings(std_settings("react-plotlyjs", "react-plotly.js"))
   .settings(buildinfo_settings("react_plotlyjs"))
 
-lazy val `node-fetch` = project.in(file("components/node-fetch"))
-	.enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-	.settings(std_settings("node-fetch", "node-fetch"))
-	.settings(buildinfo_settings("node_fetch"))
+lazy val `node-fetch` = project
+  .in(file("components/node-fetch"))
+  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+  .settings(std_settings("node-fetch", "node-fetch"))
+  .settings(buildinfo_settings("node_fetch"))
 
 lazy val `recoil` = project
   .in(file("components/recoil"))
@@ -511,7 +512,7 @@ lazy val `recoil` = project
 lazy val `formik` = project
   .in(file("components/formik"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react,vdom)
+  .dependsOn(react, vdom)
   .settings(std_settings("formik", "formik forms management"))
   .settings(buildinfo_settings("formik"))
 
@@ -543,7 +544,7 @@ lazy val examples = project
     bootstrap,
     mui,
     `react-big-calendar`,
-    `react-router-dom5`,
+    //`react-router-dom5`,
     dataValidationJS,
     `react-router-dom6`,
     recoil
@@ -577,9 +578,9 @@ lazy val docs = project
     `react-dom`,
     `prop-types`,
     bootstrap,
-   handlebars,
-   lodash,
-   `microsoft-graph-client`,
+    handlebars,
+    lodash,
+    `microsoft-graph-client`,
     mui,
     `react-macros`,
     //router,
@@ -594,7 +595,7 @@ lazy val docs = project
     //`apollo-server`,
     formik,
     //forms,
-    `react-router-dom5`,
+    //`react-router-dom5`,
     `react-router-dom6`,
     pathtoregexp,
     //dataValidationJS,

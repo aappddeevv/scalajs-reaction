@@ -30,7 +30,7 @@ final case class JsRefOps[T](v: ReactRef[T]) {
 }
 
 trait JsRefSyntax {
-  implicit def refToJsRefOps[T](v: ReactRef[T]) = JsRefOps(v)
+  implicit def refToJsRefOps[T](v: ReactRef[T]): JsRefOps[T] = JsRefOps(v)
 }
 
 trait AllSyntax

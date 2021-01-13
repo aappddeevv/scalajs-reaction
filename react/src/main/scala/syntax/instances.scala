@@ -51,10 +51,10 @@ object ReactNodeEncoder {
 
 trait ValueInstances {
 
-  implicit val stringEncoder =
+  implicit val stringEncoder: ReactNodeEncoder[String] =
     ReactNodeEncoder.instance[String](stringToElement(_))
 
-  implicit def undefOrEncoder[T](implicit tc: ReactNodeEncoder[T]) =
+  implicit def undefOrEncoder[T](implicit tc: ReactNodeEncoder[T]): ReactNodeEncoder[js.UndefOr[T]] =
     ReactNodeEncoder.instance[js.UndefOr[T]](_.map(tc.toNode(_)).getOrElse(nullNode))
 }
 
@@ -73,12 +73,12 @@ trait ValueInstances {
  * @todo Restructure as a typeclass using an "encoding" pattern, see the trait above :-).
  */
 trait ValueConverters {
-  implicit def jsArrayOfNodeToElement[T <: ReactNode](arr: js.Array[T]) = arrayToElement(arr)
+  implicit def jsArrayOfNodeToElement[T <: ReactNode](arr: js.Array[T]): ReactNode = arrayToElement(arr)
 
   /** Critical to handling varargs in component children lists. */
-  implicit def seqOfNodeToElement(s: Seq[ReactNode]) = arrayToElement(s.toJSArray)
+  implicit def seqOfNodeToElement(s: Seq[ReactNode]): ReactNode = arrayToElement(s.toJSArray)
 
-  implicit def iterableOfNodeToElement(s: Iterable[ReactNode]) = arrayToElement(s.toJSArray)
+  implicit def iterableOfNodeToElement(s: Iterable[ReactNode]): ReactNode = arrayToElement(s.toJSArray)
 
   implicit def anyValToElement(v: AnyVal): ReactNode = v.asInstanceOf[ReactNode]
 
@@ -110,6 +110,10 @@ trait ValueConverters {
   /** Implicit conversion from Option[String] => js.UndefOr[String]. */
   implicit def optionStringToUndefOr(n: Option[String]): js.UndefOr[String] = n.orUndefined
 
+    implicit def undefNullStringToNode(v: js.UndefOr[String|Null]) = v.asInstanceOf[ReactNode]
+     implicit def undefNullIntToNode(v: js.UndefOr[Int|Null]) = v.asInstanceOf[ReactNode]
+      implicit def undefNullDoubleToNode(v: js.UndefOr[Double|Null]) = v.asInstanceOf[ReactNode]
+  
   implicit def optToElement(s: Option[ReactNode]): ReactNode =
     s.getOrElse(nullNode)
 

@@ -36,5 +36,5 @@ final case class JsOrOps[A, B](o: A | B) {
 }
 
 trait OrSyntax {
-  implicit def jsOrSyntax[A, B](a: A | B) = new JsOrOps(a)
+  implicit def jsOrSyntax[A, B](a: A | B): JsOrOps[A,B] = new JsOrOps(a)
 }

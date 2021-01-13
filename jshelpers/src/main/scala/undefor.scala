@@ -210,20 +210,20 @@ final class UndefMap4[A, B, C, D](private val tuple: (js.UndefOr[A], js.UndefOr[
 }
 
 trait JsUndefLowerOrderImplicits {
-  @inline implicit def jsUndefOrTuple2[A, B](a: (js.UndefOr[A], js.UndefOr[B])) = new UndefMap2[A, B](a)
-  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) =
+  @inline implicit def jsUndefOrTuple2[A, B](a: (js.UndefOr[A], js.UndefOr[B])): UndefMap2[A,B] = new UndefMap2[A, B](a)
+  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])): UndefMap3[A,B,C] =
     new UndefMap3[A, B, C](a)
-  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])) =
+  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])): UndefMap4[A,B,C,D] =
     new UndefMap4[A, B, C, D](a)
 }
 
 trait JsUndefOrSyntax extends JsUndefLowerOrderImplicits {
 
-  @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A]) = new JsUndefOrOps(a)
-  @inline implicit def jsUndefOrStringOps(a: js.UndefOr[String]) = new JsUndefOrStringOps(a)
+  @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A]): JsUndefOrOps[A] = new JsUndefOrOps(a)
+  @inline implicit def jsUndefOrStringOps(a: js.UndefOr[String]): JsUndefOrStringOps = new JsUndefOrStringOps(a)
   //@inline implicit def jsUndefOrStringOrNullOps(a: js.UndefOr[String]) = new JsUndefOrStringOrNullOps(a)
   //implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
-  @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]) = new JsUndefOrNullOps[A](a)
-  @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]) = new JsUndefOrBooleanOps(a)
-  @inline implicit def jsUndefOrJsObject[A <: js.Object](a: js.UndefOr[A]) = new JsUndefOrJsObject[A](a)
+  @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]): JsUndefOrNullOps[A] = new JsUndefOrNullOps[A](a)
+  @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]): JsUndefOrBooleanOps = new JsUndefOrBooleanOps(a)
+  @inline implicit def jsUndefOrJsObject[A <: js.Object](a: js.UndefOr[A]): JsUndefOrJsObject[A] = new JsUndefOrJsObject[A](a)
 }

@@ -92,7 +92,7 @@ package object extras {
    *
    * Needs testing!
    */
-  def useCustomCompareEffect[T](create: EffectArg, input: T, compare: (T, T) => Boolean) =
-    useEffect(unsafeDeps(useMemoCompare(input, compare)))(create)
+  // def useCustomCompareEffect[T](create: EffectArg, input: T, compare: (T, T) => Boolean) =
+  //   useEffect(unsafeDeps(useMemoCompare(input, compare)))(create)
 
 }

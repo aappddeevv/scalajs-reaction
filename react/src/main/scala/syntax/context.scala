@@ -49,6 +49,6 @@ final class ReactContextOps2[T](private val ctx: ReactContext[T]) extends AnyVal
 }
 
 trait ContextSyntax {
-  implicit def contextToRichContext[T](ctx: ReactContext[T]) =
+  implicit def contextToRichContext[T](ctx: ReactContext[T]): ReactContextOps2[T] =
     new ReactContextOps2[T](ctx)
 }

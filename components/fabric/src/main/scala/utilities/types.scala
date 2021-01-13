@@ -27,6 +27,11 @@ import js.|
 import js.annotation._
 import org.scalajs.dom
 
+trait IViewport extends js.Object {
+  var width: js.UndefOr[Int] = js.undefined
+  var height: js.UndefOr[Int] = js.undefined
+}
+
 trait Size extends js.Object {
   val width: Int
   val height: Int

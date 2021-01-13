@@ -46,7 +46,9 @@ package object styling {
 
   trait IRawStyle extends IRawStyleBase {
     var displayName: js.UndefOr[String] = js.undefined
+    /** @deprecated Use combineDynamic or variant. */
     var selectors: js.UndefOr[ISelectorSet] = js.undefined
+    var subComponentStyles: js.UndefOr[js.Object|js.Dynamic|js.Dictionary[js.Any]] = js.undefined
   }
 
   private[styling] trait MakeSelectors {
@@ -69,6 +71,26 @@ package object styling {
   /** Helper to create entries for the selectors propert on IRawStyle. */
   object selectorset extends MakeSelectors
 
+  private[styling] trait MakeSubcomponentStyles {
+
+    /** Create a selector set of styles. */
+    def apply(selects: (String, IStyle)*): ISelectorSet =
+      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String, js.Any)]]: _*)
+
+    /** Create a selector set out of any values. Experts only! */
+    def any(selects: (String, js.Any)*): ISelectorSet =
+      js.Dictionary[js.Any](selects: _*)
+
+    /** Create an undefined selector set. */
+    def apply(): js.UndefOr[ISelectorSet] = js.undefined
+
+    /** Create an empty selector set. You can add or remove from it. */
+    def empty: ISelectorSet = js.Dictionary.empty[js.Any]
+  }
+
+  /** Helper to create entries for the selectors propert on IRawStyle. */
+  object subcomponentstyles extends MakeSubcomponentStyles
+  
   trait IRawStyleArray extends js.Array[IStyle]
 
   private[styling] trait MakeStyles {

@@ -36,9 +36,9 @@ import graphql._
 trait ApolloClientOptionsMaker[T, TVars] {
 
   /** Make apollo_client.QueryOptions for the ApolloClient returned from `useQuery` which are slightly different than
-   * `QueryHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
-   * to the suspense mechanism.
-   */
+    * `QueryHookOptions` used in the hook! This primarily exists so we can get a `js.Promise` to throw an exception
+    * to the suspense mechanism.
+    */
   def makeClientOptions(
     query: DocumentNode,
     variables: js.UndefOr[TVars] = js.undefined,
@@ -109,10 +109,10 @@ trait OptionsMaker[T, TVars] extends ApolloClientOptionsMaker[T, TVars] {
 }
 
 /** Because there are some duplicative types in the signatures
- * which become burdensome, this helper class reduces type noise.
- * Instantiate the object then use values and methods in it without
- * need to always specify the types.
- */
+  * which become burdensome, this helper class reduces type noise.
+  * Instantiate the object then use values and methods in it without
+  * need to always specify the types.
+  */
 case class UseQuery[T, TVars]() extends OptionsMaker[T, TVars] with ApolloClientOptionsMaker[T, TVars] {
   type TArg = T
   type TVarsArg = TVars
@@ -193,10 +193,10 @@ case class UseLazyQuery[T, TVars]() extends ApolloClientOptionsMaker[T, TVars] {
 }
 
 /** Because there are some duplicative types in the signatures
- * which become burdensome, this helper class reduces type noise.
- * Instantiate the object then use values and methods in it without
- * need to always specify the types.
- */
+  * which become burdensome, this helper class reduces type noise.
+  * Instantiate the object then use values and methods in it without
+  * need to always specify the types.
+  */
 case class UseMutation[T, TVars]() {
   type TArg = T
   type TVarsArg = TVars
@@ -246,9 +246,9 @@ case class UseMutation[T, TVars]() {
   }
 
   /** Options needed for the "caller" function return from the mutation hook.
-   * Other config info, such as error policy and the operation itself are take
-   * from the hook.
-   */
+    * Other config info, such as error policy and the operation itself are take
+    * from the hook.
+    */
   def makeFunctionOptions(
     unsafeVariables: js.UndefOr[js.Dynamic] = js.undefined,
     variables: js.UndefOr[TVars] = js.undefined,
@@ -277,10 +277,10 @@ case class UseMutation[T, TVars]() {
   }
 
   /** Make apollo_client.QueryOptions for the ApolloClient returned from `useMutation` which are slightly different than
-   * `MutationHookOptions` used in the hook!
-   * This primarily exists so we can get a `js.Promise` to throw an exception
-   * to the suspense mechanism.
-   */
+    * `MutationHookOptions` used in the hook!
+    * This primarily exists so we can get a `js.Promise` to throw an exception
+    * to the suspense mechanism.
+    */
   def makeClientOptions(
     mutation: DocumentNode,
     context: js.UndefOr[js.Object] = js.undefined,

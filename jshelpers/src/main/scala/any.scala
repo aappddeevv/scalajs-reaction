@@ -158,9 +158,9 @@ final class ToLocaleStringInstanceOps[A <: AnyVal](private val a: A) extends Any
 
 trait ScalaMappedSyntax {
   //@inline implicit def toLocaleStringOps[A <: AnyVal](a: A) = new ToLocaleStringInstanceOps[A](a)
-  @inline implicit def toIntLocaleOps(a: Int) = new ToLocaleStringOps[Int](a)
-  @inline implicit def toFloatLocaleOps(a: Float) = new ToLocaleStringOps[Float](a)
-  @inline implicit def toDoubleLocaleOps(a: Double) = new ToLocaleStringOps[Double](a)
+  @inline implicit def toIntLocaleOps(a: Int): ToLocaleStringOps[Int] = new ToLocaleStringOps[Int](a)
+  @inline implicit def toFloatLocaleOps(a: Float): ToLocaleStringOps[Float] = new ToLocaleStringOps[Float](a)
+  @inline implicit def toDoubleLocaleOps(a: Double): ToLocaleStringOps[Double] = new ToLocaleStringOps[Double](a)
 
   @inline implicit def stringScalaOpsSyntax[String](a: String): ScalaMappedOps[String] =
     new ScalaMappedOps[String](a)

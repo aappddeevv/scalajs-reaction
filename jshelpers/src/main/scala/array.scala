@@ -44,12 +44,12 @@ final class RichJSArrayTuple4[T, U, V, W](private val tuvs: js.Array[(((T, U), V
 trait LowerOrderJSArrayImplicits {
 //   @inline implicit def toTuple3[T,U,V](tuvs: js.Array[((T,U),V)]): js.Array[(T,U,V)] =
 //     tuvs.map(tuv => (tuv._1._1, tuv._1._2, tuv._2))
-  @inline implicit def mixedTupel3ToTuple[T, U, V](arr: js.Array[((T, U), V)]) = new RichJSArrayTuple3[T, U, V](arr)
-  @inline implicit def mixedTupel4ToTuple[T, U, V, W](arr: js.Array[(((T, U), V), W)]) =
+  @inline implicit def mixedTupel3ToTuple[T, U, V](arr: js.Array[((T, U), V)]): RichJSArrayTuple3[T,U,V] = new RichJSArrayTuple3[T, U, V](arr)
+  @inline implicit def mixedTupel4ToTuple[T, U, V, W](arr: js.Array[(((T, U), V), W)]): RichJSArrayTuple4[T,U,V,W] =
     new RichJSArrayTuple4[T, U, V, W](arr)
 }
 
 trait JSArraySyntax extends LowerOrderJSArrayImplicits {
-  @inline implicit def jsArrayOpsSyntax[T](arr: js.Array[T]) = new JSArrayOps[T](arr)
+  @inline implicit def jsArrayOpsSyntax[T](arr: js.Array[T]): JSArrayOps[T] = new JSArrayOps[T](arr)
 
 }

@@ -88,10 +88,10 @@ class Value(value: Double) extends Animated {
 trait InterpolationConfig extends js.Object {
   var inputRange: js.Array[Double] = js.native
   var outputRange: js.Array[Double] | js.Array[String] = js.native
-  var easing: js.UndefOr[js.Function1[Double, Double]] = js.undefined
-  var extrapolate: js.UndefOr[Extrapolate] = js.undefined
-  var extrapolateLeft: js.UndefOr[Extrapolate] = js.undefined
-  var extrapolateRight: js.UndefOr[Extrapolate] = js.undefined
+  var easing: js.UndefOr[js.Function1[Double, Double]] = js.native
+  var extrapolate: js.UndefOr[Extrapolate] = js.native
+  var extrapolateLeft: js.UndefOr[Extrapolate] = js.native
+  var extrapolateRight: js.UndefOr[Extrapolate] = js.native
 }
 
 @js.native

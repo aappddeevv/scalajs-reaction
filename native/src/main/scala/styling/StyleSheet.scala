@@ -95,9 +95,9 @@ object StyleSheet extends js.Object {
 
 @js.native
 trait AbsoluteFillStyle extends js.Object {
-  val position: js.UndefOr[String] = js.undefined
-  val left: js.UndefOr[Int] = js.undefined
-  val right: js.UndefOr[Int] = js.undefined
-  val top: js.UndefOr[Int] = js.undefined
-  val bottom: js.UndefOr[Int] = js.undefined
+  val position: js.UndefOr[String] = js.native
+  val left: js.UndefOr[Int] = js.native
+  val right: js.UndefOr[Int] = js.native
+  val top: js.UndefOr[Int] = js.native
+  val bottom: js.UndefOr[Int] = js.native
 }

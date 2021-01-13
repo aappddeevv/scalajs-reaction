@@ -176,7 +176,7 @@ final class JSPromiseOps[A](private val self: js.Thenable[A]) extends AnyVal {
   def tapErrorF(f: scala.Any => js.Thenable[Any]): js.Promise[A] = {
     val onr = js.Any
       .fromFunction1((e: Any) =>
-        f(e).`then`[Unit](().asInstanceOf[RESOLVE[Any, Unit]], js.defined((_: Any) => js.Promise.reject(e))))
+        f(e).`then`[Any](()/*.asInstanceOf[RESOLVE[Any, Unit]]*/, js.defined((_: Any) => js.Promise.reject(e)).asInstanceOf[REJECTED[Any]]))
       .asInstanceOf[REJECTED[A]]
     self.`then`[A]((), onr).asInstanceOf[js.Promise[A]]
   }
@@ -288,7 +288,7 @@ final class JSPromiseFailObjectOps(private val a: scala.Any) extends AnyVal {
 }
 
 final class JSPromise2[A, B](private val tuple: (js.Thenable[A], js.Thenable[B])) extends AnyVal {
-  implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  implicit def toJSPromiseOps[A](p: js.Thenable[A]): JSPromiseOps[A] = new JSPromiseOps[A](p)
   def parMapX[T](thunk: (A, B) => T) =
     (for {
       valueA <- tuple._1
@@ -304,7 +304,7 @@ final class JSPromise2[A, B](private val tuple: (js.Thenable[A], js.Thenable[B])
 }
 
 final class JSPromise3[A, B, C](private val tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C])) extends AnyVal {
-  implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  implicit def toJSPromiseOps[A](p: js.Thenable[A]): JSPromiseOps[A] = new JSPromiseOps[A](p)
   def parMapX[T](thunk: (A, B, C) => T) =
     (for {
       valueA <- tuple._1
@@ -323,7 +323,7 @@ final class JSPromise3[A, B, C](private val tuple: (js.Thenable[A], js.Thenable[
 
 final class JSPromise4[A, B, C, D](private val tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D]))
     extends AnyVal {
-  implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  implicit def toJSPromiseOps[A](p: js.Thenable[A]): JSPromiseOps[A] = new JSPromiseOps[A](p)
   def parMapX[T](thunk: (A, B, C, D) => T) =
     (for {
       valueA <- tuple._1
@@ -343,10 +343,10 @@ final class JSPromise4[A, B, C, D](private val tuple: (js.Thenable[A], js.Thenab
 }
 
 trait JSPromiseLowerOrderImplicits {
-  @inline implicit def jsPromise2[A, B](a: (js.Thenable[A], js.Thenable[B])) = new JSPromise2[A, B](a)
-  @inline implicit def jsPromise3[A, B, C](a: (js.Thenable[A], js.Thenable[B], js.Thenable[C])) =
+  @inline implicit def jsPromise2[A, B](a: (js.Thenable[A], js.Thenable[B])): JSPromise2[A,B] = new JSPromise2[A, B](a)
+  @inline implicit def jsPromise3[A, B, C](a: (js.Thenable[A], js.Thenable[B], js.Thenable[C])): JSPromise3[A,B,C] =
     new JSPromise3[A, B, C](a)
-  @inline implicit def jsPromise4[A, B, C, D](a: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D])) =
+  @inline implicit def jsPromise4[A, B, C, D](a: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D])): JSPromise4[A,B,C,D] =
     new JSPromise4[A, B, C, D](a)
 }
 
@@ -354,7 +354,7 @@ trait JSPromiseLowerOrderImplicits {
 final class JSArrayPromiseOpsThenable[A](private val arr: js.Array[js.Thenable[A]]) extends AnyVal {
 
   /** `js.Promise.all` only takes js.Promise arrays. This takes an array of `js.Thenable[_]`s. */
-  def all = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[A]]])
+  def all: js.Promise[js.Array[A]] = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[A]]])
 }
 
 /** Extension methods for js.Array[js.Thenable[_]]. */
@@ -365,12 +365,12 @@ final class JSArrayPromiseOps[A](private val arr: js.Array[js.Promise[A]]) exten
 }
 
 trait JSPromiseSyntax extends JSPromiseLowerOrderImplicits {
-  @inline implicit def jsArrayToPromiseThenable[A](arr: js.Array[js.Thenable[A]]) =
+  @inline implicit def jsArrayToPromiseThenable[A](arr: js.Array[js.Thenable[A]]): JSArrayPromiseOpsThenable[A] =
     new JSArrayPromiseOpsThenable[A](arr)
-  @inline implicit def jsArrayToPromise[A](arr: js.Array[js.Promise[A]]) = new JSArrayPromiseOps[A](arr)
-  @inline implicit def anyToJSPromise[A](a: A) = new JSPromiseObjectOps[A](a)
-  @inline implicit def anyToJSPromiseFail(a: scala.Any) = new JSPromiseFailObjectOps(a)
-  @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]) = new JSPromiseOps[A](p)
+  @inline implicit def jsArrayToPromise[A](arr: js.Array[js.Promise[A]]): JSArrayPromiseOps[A] = new JSArrayPromiseOps[A](arr)
+  @inline implicit def anyToJSPromise[A](a: A): JSPromiseObjectOps[A] = new JSPromiseObjectOps[A](a)
+  @inline implicit def anyToJSPromiseFail(a: scala.Any): JSPromiseFailObjectOps = new JSPromiseFailObjectOps(a)
+  @inline implicit def toJSPromiseOps[A](p: js.Thenable[A]): JSPromiseOps[A] = new JSPromiseOps[A](p)
 }
 
 /** Helpers for creating a `js.Promise`. These are mostly strict except call-by-name.

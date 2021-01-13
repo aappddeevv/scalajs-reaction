@@ -185,10 +185,10 @@ trait HTMLTagsX {
   ) = div(new DivProps { className = cn })(children: _*)
 
   def divWithKeyAndClass(
-    key: String,
+    k: String,
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = div(new DivProps { `key` = key; className = cn })(children: _*)
+  ) = div(new DivProps { `key` = k; className = cn })(children: _*)
 
   def divWithProps(props: DivProps) = div(props)()
 

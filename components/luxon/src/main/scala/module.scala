@@ -51,20 +51,36 @@ object DurationUnit {
   val millisecond = "millisecond".asInstanceOf[DurationUnit]
   val milliseconds = "milliseconds".asInstanceOf[DurationUnit]
 }
+
 @jsenrich trait DurationInit extends js.Object {
-  var days: js.UndefOr[Double] = js.undefined
-  var months: js.UndefOr[Double] = js.undefined
-  var quarters: js.UndefOr[Double] = js.undefined
-  var years: js.UndefOr[Double] = js.undefined
-  var weeks: js.UndefOr[Double] = js.undefined
-  var hours: js.UndefOr[Double] = js.undefined
-  var minutes: js.UndefOr[Double] = js.undefined
-  var seconds: js.UndefOr[Double] = js.undefined
-  var milliseconds: js.UndefOr[Double] = js.undefined
-  var locale: js.UndefOr[String] = js.undefined
-  var numberingSystem: js.UndefOr[String] = js.undefined
-  var conversionAccuracy: js.UndefOr[String] = js.undefined
+  val days: js.UndefOr[Double] = js.undefined
+  val months: js.UndefOr[Double] = js.undefined
+  val quarters: js.UndefOr[Double] = js.undefined
+  val years: js.UndefOr[Double] = js.undefined
+  val weeks: js.UndefOr[Double] = js.undefined
+  val hours: js.UndefOr[Double] = js.undefined
+  val minutes: js.UndefOr[Double] = js.undefined
+  val seconds: js.UndefOr[Double] = js.undefined
+  val milliseconds: js.UndefOr[Double] = js.undefined
+  val locale: js.UndefOr[String] = js.undefined
+  val numberingSystem: js.UndefOr[String] = js.undefined
+  val conversionAccuracy: js.UndefOr[String] = js.undefined
 }
+
+// class DurationInitC(
+//   val days: js.UndefOr[Double] = js.undefined,
+//   val months: js.UndefOr[Double] = js.undefined,
+//   val quarters: js.UndefOr[Double] = js.undefined,
+//   val years: js.UndefOr[Double] = js.undefined,
+//   val weeks: js.UndefOr[Double] = js.undefined,
+//   val hours: js.UndefOr[Double] = js.undefined,
+//   val minutes: js.UndefOr[Double] = js.undefined,
+//   val seconds: js.UndefOr[Double] = js.undefined,
+//   val milliseconds: js.UndefOr[Double] = js.undefined,
+//   val locale: js.UndefOr[String] = js.undefined,
+//   val numberingSystem: js.UndefOr[String] = js.undefined,
+//   val conversionAccuracy: js.UndefOr[String] = js.undefined,
+// ) extends DurationInit
 
 @js.native
 trait Duration extends js.Object {
@@ -76,8 +92,8 @@ trait Duration extends js.Object {
   val hours: Double = js.native
   val minutes: Double = js.native
   val seconds: Double = js.native
-  def as(unit: DurationUnit|String): Double = js.native
-  def get(unit: DurationUnit|String): Double = js.native
+  def as(unit: DurationUnit | String): Double = js.native
+  def get(unit: DurationUnit | String): Double = js.native
   def mapUnits(fn: js.Function1[Duration, Duration]): Duration = js.native
   def equals(that: Duration): Boolean = js.native
   def toObject(): DurationInit = js.native
@@ -105,15 +121,15 @@ object ConversionAccuracy {
   val longterm = "longterm".asInstanceOf[ConversionAccuracy]
 }
 
-@jsenrich trait DurationOptions extends js.Object {
-  var locale: js.UndefOr[String] = js.undefined
-  var numberingSystem: js.UndefOr[String] = js.undefined
-  var conversionAccuracy: js.UndefOr[ConversionAccuracy] = js.undefined
-}
+class DurationOptions(
+  val locale: js.UndefOr[String] = js.undefined,
+  val numberingSystem: js.UndefOr[String] = js.undefined,
+  val conversionAccuracy: js.UndefOr[ConversionAccuracy] = js.undefined,
+) extends js.Object
 
-@jsenrich trait DiffOptions extends js.Object {
-  var conversionAccuracy: js.UndefOr[ConversionAccuracy] = js.undefined
-}
+class DiffOptions(
+  val conversionAccuracy: js.UndefOr[ConversionAccuracy] = js.undefined
+) extends js.Object
 
 @js.native
 @JSImport("luxon", "Duration")
@@ -152,7 +168,6 @@ object Duration extends js.Object {
   var minute: js.UndefOr[Int] = js.undefined
   var second: js.UndefOr[Int] = js.undefined
   var millisecond: js.UndefOr[Int] = js.undefined
-
   var zone: js.UndefOr[String] = js.undefined
   var locale: js.UndefOr[String] = js.undefined
   var numberingSystem: js.UndefOr[String] = js.undefined
@@ -214,7 +229,7 @@ trait DateTime extends js.Object {
     unit: js.UndefOr[DurationUnit | js.Array[DurationUnit]] = js.undefined,
     options: js.UndefOr[DiffOptions] = js.undefined): Duration = js.native
   def setLocale(loc: String): DateTime = js.native
-  def setZone(zone: String): DateTime = js.native
+  def setZone(zone: String, opts: js.UndefOr[js.Object|js.Dynamic]=js.undefined): DateTime = js.native
   def toBSON(): js.Date = js.native
   def toUTC(): DateTime = js.native
   def toObject(): DateTimeUnits = js.native
@@ -240,21 +255,22 @@ trait DateTime extends js.Object {
   def toUTC(offset: Int, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
   def until(other: DateTime): Interval = js.native
   def equals(that: DateTime): Boolean = js.native
-  //def valueOf(): Double = js.native
+  @JSName("valueOf")
+  def valueOfNumber(): Double = js.native
 }
 
-@jsenrich trait SQLOptions extends js.Object {
-  var zone: js.UndefOr[Zone | String] = js.undefined
-  var setZone: js.UndefOr[Boolean] = js.undefined
-  val locale: js.UndefOr[String] = js.undefined
-  var numberingSystem: js.UndefOr[String] = js.undefined
-  var outputCalendar: js.UndefOr[String] = js.undefined
-}
+class SQLOptions(
+  var zone: js.UndefOr[Zone | String] = js.undefined,
+  var setZone: js.UndefOr[Boolean] = js.undefined,
+  val locale: js.UndefOr[String] = js.undefined,
+  var numberingSystem: js.UndefOr[String] = js.undefined,
+  var outputCalendar: js.UndefOr[String] = js.undefined,
+) extends js.Object
 
-@jsenrich trait DateTimeOptions extends js.Object {
-  var includeZone: js.UndefOr[Boolean] = js.undefined
+class DateTimeOptions(
+  var includeZone: js.UndefOr[Boolean] = js.undefined,
   var includeOffset: js.UndefOr[Boolean] = js.undefined
-}
+) extends js.Object
 
 @js.native
 @JSImport("luxon", "DateTime")
@@ -306,7 +322,10 @@ object DateTime extends js.Object {
   val DATETIME_SHORT: LocaleInfo = js.native
   val DATETIME_SHORT_WITH_SECONDS: LocaleInfo = js.native
   val DATE_FULL: LocaleInfo = js.native
+  val DATE_HUGE: LocaleInfo = js.native
   val DATE_MED: LocaleInfo = js.native
+  val DATE_MED_WITH_WEEKDAY: LocaleInfo = js.native
+  val DATE_SHORT: LocaleInfo = js.native
   val TIME_24_SIMPLE: LocaleInfo = js.native
   val TIME_24_WITH_LONG_OFFSET: LocaleInfo = js.native
   val TIME_24_WITH_SECONDS: LocaleInfo = js.native
@@ -317,10 +336,10 @@ object DateTime extends js.Object {
   val TIME_WITH_SHORT_OFFSET: LocaleInfo = js.native
 }
 
-@jsenrich trait IntervalInit extends js.Object {
-  var start: js.UndefOr[DateTime] = js.undefined
-  var stop: js.UndefOr[DateTime] = js.undefined
-}
+class IntervalInit(
+  var start: js.UndefOr[DateTime] = js.undefined,
+  var stop: js.UndefOr[DateTime] = js.undefined,
+)
 
 @js.native
 trait Interval extends js.Object {

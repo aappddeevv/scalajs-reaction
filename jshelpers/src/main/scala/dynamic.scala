@@ -118,5 +118,5 @@ final class JsDynamicOps(private val jsdyn: js.Dynamic) extends AnyVal {
 }
 
 trait JsDynamicSyntax {
-  @inline implicit def jsDynamicOpsSyntax(jsdyn: js.Dynamic) = new JsDynamicOps(jsdyn)
+  @inline implicit def jsDynamicOpsSyntax(jsdyn: js.Dynamic): JsDynamicOps = new JsDynamicOps(jsdyn)
 }
