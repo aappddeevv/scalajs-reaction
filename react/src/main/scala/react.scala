@@ -378,9 +378,14 @@ trait React {
     dependencies: js.UndefOr[Dependencies]): Unit =
     ReactJS.useImperativeHandle[T, R](ref, thunk, dependencies)
 
-  def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent =
-    ReactJS.`lazy`(lazyComponent)
+  /** Lazy load a module. */
+  def `lazy`(lazyComponent: js.Function0[js.Promise[DynamicImport]]): ReactJSComponent =
+    ReactJS.`lazy`(lazyComponent:js.Any).asInstanceOf[ReactJSComponent]
 
+  /** Lazy loaded component with zero object args, less common so the 0 suffix is here. */
+  /*def `lazy0`(lazyComponent: js.Function0[js.Promise[ReactNode]]): ReactJSLazyComponent =
+    ReactJS.`lazy`(lazyComponent:js.Any).asInstanceOf[ReactJSLazyComponent]
+  */  
   def useTransition(config: TransitionConfig): (js.Function1[js.Function0[Unit], Unit], Boolean) =
     ReactJS.useTransition(config)
 

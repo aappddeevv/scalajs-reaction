@@ -103,8 +103,10 @@ trait ReactJS extends js.Object with Concurrent {
 
   val version: String = js.native
 
-  /** Returns a "lazy" react component i.e. $$type = react.lazy */
-  def `lazy`(lazyComponent: DynamicImportThunk): ReactJSLazyComponent = js.native
+  /** Returns a "lazy" react component i.e. $$type = react.lazy. This is untyped
+   * so it needs typing in the public API.
+   */
+  def `lazy`(lazyComponent: js.Any): js.Any = js.native
 
   /** Takes a function component and optional props comparison func. This returns
    * a function component as this is an HOC. The returned component still needs
@@ -119,12 +121,15 @@ trait ReactJS extends js.Object with Concurrent {
   def isValidElement(obj: js.Object): Boolean = js.native
 }
 
-/** Opaque type.*/
-@js.native
+/** Opaque type. */
 trait DynamicImport extends js.Object {
   // If default is defined in the exports
   // other exports will be here as well
-  val `default`: ReactJSComponent
+  val `default`: js.Function1[_ <: js.Object, ReactNode]
+}
+
+object DynamicImport {
+  def apply(f: js.Function1[_ <: js.Object, ReactNode]) = new DynamicImport { val `default` = f }
 }
 
 /** Magnet pattern to create a friendly arg converter for effect hooks. As much

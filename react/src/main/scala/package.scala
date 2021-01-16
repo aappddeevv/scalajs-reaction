@@ -251,11 +251,11 @@ package object react extends react.React with When {
    * this type to represent it.
    */
   type ReactType =
-    ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_]| ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
 
   /** Component type that can be used in HOCs. */
   type ReactComponentType =
-    ReactClass | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
 
   /**
    * This type is used only as a target for imported javascript authored components to
@@ -283,21 +283,23 @@ package object react extends react.React with When {
    */
   @js.native
   trait ReactJSFunctionComponent extends js.Object
-
-  /** Not sure why I still have this. Probably should avoid. */
-  @js.native
-  trait ReactJSLazyComponent extends ReactJSComponent
+  
+  /** Create a react node with a single object arg. */
+  type ReactJSLazyComponent1[P <: js.Object] = js.Function1[P, ReactNode]
+  
+  /** Create a react node without args. */
+  type ReactJSLazyComponent = ScalaJSFunctionComponent
 
   /** All the types of components that can be imported from JS. These must be
    * processed to be allowed to be used as Components in this facade. Keep in
    * sync with `ReactType`.
    */
-  type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent
+  type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent
 
-  /** The type of `() => import("somecomponent")` which is used exclusively for
-   * the argument to React.lazy.
-   */
-  type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
+  ///** The type of `() => import("somecomponent")` which is used exclusively for
+  // * the argument to React.lazy.
+  // */
+  //type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
 
   /** Alias for internal use.
    * @deprecated
