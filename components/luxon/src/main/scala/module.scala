@@ -27,7 +27,63 @@ import js.annotation._
 import react._
 
 trait LocaleInfo extends js.Object {}
-trait Zone extends js.Object {}
+
+trait OffsetNameOptions extends js.Object {
+    var format: js.UndefOr[String] = js.undefined
+    var locale: js.UndefOr[String] = js.undefined
+}
+
+@js.native
+//@JSImport("luxon", "Zone")
+trait Zone extends js.Object {
+    val isValid: Boolean = js.native
+    val name: String = js.native
+    val `type`: String = js.native
+    val universal: Boolean = js.native
+    def equals(that: Zone): Boolean = js.native
+    def formatOffset(ts: Double, format: String): String = js.native
+    def offset(ts: Double): Double = js.native
+    def offsetName(ts: Double, opts: js.UndefOr[OffsetNameOptions|js.Object|js.Dynamic]=js.undefined): String = js.native
+}
+
+@js.native
+@JSImport("luxon", "FixedOffsetZone")
+class FixedOffsetZone() extends Zone
+
+@js.native
+@JSImport("luxon", "FixedOffsetZone")
+object FixedOffsetZone extends js.Object {
+  val utcInstance: FixedOffsetZone = js.native
+  def instance(offset: Double): FixedOffsetZone = js.native
+  def parseSpecifier(s: String): FixedOffsetZone = js.native
+}
+
+@js.native
+@JSImport("luxon", "LocalZone")
+class LocalZone() extends Zone
+
+@js.native
+@JSImport("luxon", "LocalZone")
+object LocalZone extends js.Object {
+   val instance: LocalZone = js.native
+}
+
+@js.native
+@JSImport("luxon", "IANAZone")
+class IANAZone() extends Zone
+
+@js.native
+@JSImport("luxon", "IANAZone")
+object IANAZone extends js.Object {
+   def resetCache(): Unit = js.native
+   def isValidZone(zone: String): Boolean = js.native
+   def isValidSpecifier(s: String): Boolean = js.native
+   def create(name: String): IANAZone = js.native
+}
+
+@js.native
+@JSImport("luxon", "InvalidZone")
+class InvalidZone() extends Zone
 
 @js.native
 abstract trait DurationUnit extends js.Any
@@ -52,19 +108,64 @@ object DurationUnit {
   val milliseconds = "milliseconds".asInstanceOf[DurationUnit]
 }
 
-@jsenrich trait DurationInit extends js.Object {
-  val days: js.UndefOr[Double] = js.undefined
-  val months: js.UndefOr[Double] = js.undefined
-  val quarters: js.UndefOr[Double] = js.undefined
-  val years: js.UndefOr[Double] = js.undefined
-  val weeks: js.UndefOr[Double] = js.undefined
-  val hours: js.UndefOr[Double] = js.undefined
-  val minutes: js.UndefOr[Double] = js.undefined
-  val seconds: js.UndefOr[Double] = js.undefined
-  val milliseconds: js.UndefOr[Double] = js.undefined
-  val locale: js.UndefOr[String] = js.undefined
-  val numberingSystem: js.UndefOr[String] = js.undefined
-  val conversionAccuracy: js.UndefOr[String] = js.undefined
+/*@jsenrich */
+trait DurationInit extends js.Object {
+  var days: js.UndefOr[Double] = js.undefined
+  var months: js.UndefOr[Double] = js.undefined
+  var quarters: js.UndefOr[Double] = js.undefined
+  var years: js.UndefOr[Double] = js.undefined
+  var weeks: js.UndefOr[Double] = js.undefined
+  var hours: js.UndefOr[Double] = js.undefined
+  var minutes: js.UndefOr[Double] = js.undefined
+  var seconds: js.UndefOr[Double] = js.undefined
+  var milliseconds: js.UndefOr[Double] = js.undefined
+  var locale: js.UndefOr[String] = js.undefined
+  var numberingSystem: js.UndefOr[String] = js.undefined
+  var conversionAccuracy: js.UndefOr[String] = js.undefined
+}
+
+object DurationInit {
+  def apply(
+    days: js.UndefOr[Double] = js.undefined,
+    months: js.UndefOr[Double] = js.undefined,
+    quarters: js.UndefOr[Double] = js.undefined,
+    years: js.UndefOr[Double] = js.undefined,
+    weeks: js.UndefOr[Double] = js.undefined,
+    hours: js.UndefOr[Double] = js.undefined,
+    minutes: js.UndefOr[Double] = js.undefined,
+    seconds: js.UndefOr[Double] = js.undefined,
+    milliseconds: js.UndefOr[Double] = js.undefined,
+    locale: js.UndefOr[String] = js.undefined,
+    numberingSystem: js.UndefOr[String] = js.undefined,
+    conversionAccuracy: js.UndefOr[String] = js.undefined
+  ) = {
+    val _days = days
+    val _months = months
+    val _quarters = quarters
+    val _years = years
+    val _weeks = weeks
+    val _hours = hours
+    val _minutes = minutes
+    val _seconds = seconds
+    val _milliseconds = milliseconds
+    val _locale = locale
+    val _numberingSystem = numberingSystem
+    val _conversionAccuracy = conversionAccuracy
+    new DurationInit {
+      days = _days
+      months = _months
+      quarters = _quarters
+      years = _years
+      weeks = _weeks
+      hours = _hours
+      minutes = _minutes
+      seconds = _seconds
+      milliseconds = _milliseconds
+      locale = _locale
+      numberingSystem = _numberingSystem
+      conversionAccuracy = _conversionAccuracy
+    }
+  }
 }
 
 // class DurationInitC(
@@ -142,7 +243,8 @@ object Duration extends js.Object {
   def isDUration(o: js.Any): Boolean = js.native
 }
 
-@jsenrich trait DateTimeUnits extends js.Object {
+/*@jsenrich */
+trait DateTimeUnits extends js.Object {
   var year: js.UndefOr[Int] = js.undefined
   var month: js.UndefOr[Int] = js.undefined
   var day: js.UndefOr[Int] = js.undefined
@@ -156,7 +258,49 @@ object Duration extends js.Object {
   var millisecond: js.UndefOr[Int] = js.undefined
 }
 
-@jsenrich trait DateTimeInit extends js.Object {
+object DateTimeUnits {
+  def apply(
+    year: js.UndefOr[Int] = js.undefined,
+    month: js.UndefOr[Int] = js.undefined,
+    day: js.UndefOr[Int] = js.undefined,
+    ordinal: js.UndefOr[Int] = js.undefined,
+    weekYear: js.UndefOr[Int] = js.undefined,
+    weekNumber: js.UndefOr[Int] = js.undefined,
+    weekday: js.UndefOr[Int] = js.undefined,
+    hour: js.UndefOr[Int] = js.undefined,
+    minute: js.UndefOr[Int] = js.undefined,
+    second: js.UndefOr[Int] = js.undefined,
+    millisecond: js.UndefOr[Int] = js.undefined,
+  ) = {
+    val _year = year
+    val _month = month
+    val _day = day
+    val _ordinal = ordinal
+    val _weekYear = weekYear
+    val _weekNumber = weekNumber
+    val _weekday = weekday
+    val _hour = hour
+    val _minute = minute
+    val _second = second
+    val _millisecond = millisecond
+    new DateTimeUnits {
+      year = _year
+      month = _month
+      day = _day
+      ordinal = _ordinal
+      weekYear = _weekYear
+      weekNumber = _weekNumber
+      weekday = _weekday
+      hour = _hour
+      minute = _minute
+      second = _second
+      millisecond = _millisecond
+    }
+  }
+}
+
+/*@jsenrich */
+trait DateTimeInit extends js.Object {
   var year: js.UndefOr[Int] = js.undefined
   var month: js.UndefOr[Int] = js.undefined
   var day: js.UndefOr[Int] = js.undefined
@@ -174,11 +318,67 @@ object Duration extends js.Object {
   var outputCalendar: js.UndefOr[String] = js.undefined
 }
 
-@jsenrich trait ToISOTimeOptions extends js.Object {
+object DateTimeInit {
+  def apply(
+    year: js.UndefOr[Int] = js.undefined,
+    month: js.UndefOr[Int] = js.undefined,
+    day: js.UndefOr[Int] = js.undefined,
+    ordinal: js.UndefOr[Int] = js.undefined,
+    weekYear: js.UndefOr[Int] = js.undefined,
+    weekNumber: js.UndefOr[Int] = js.undefined,
+    weekday: js.UndefOr[Int] = js.undefined,
+    hour: js.UndefOr[Int] = js.undefined,
+    minute: js.UndefOr[Int] = js.undefined,
+    second: js.UndefOr[Int] = js.undefined,
+    millisecond: js.UndefOr[Int] = js.undefined,
+    zone: js.UndefOr[String] = js.undefined,
+    locale: js.UndefOr[String] = js.undefined,
+    numberingSystem: js.UndefOr[String] = js.undefined,
+    outputCalendar: js.UndefOr[String] = js.undefined,
+  ) = new DateTimeInit {
+    this.year = year
+    this.month = month
+    this.day = day
+    this.ordinal = ordinal
+    this.weekYear = weekYear
+    this.weekNumber = weekNumber
+    this.weekday = weekday
+    this.hour = hour
+    this.minute = minute
+    this.second = second
+    this.millisecond = millisecond
+    this.zone = zone
+    this.locale = locale
+    this.numberingSystem = numberingSystem
+    this.outputCalendar = outputCalendar
+  }
+}
+
+trait ToISODateOptions extends js.Object {
+    var format: js.UndefOr[String] = js.undefined
+}
+
+/*@jsenrich */
+trait ToISOOptions extends js.Object {
   var suppressMilliseconds: js.UndefOr[Boolean] = js.undefined
   var suppressSeconds: js.UndefOr[Boolean] = js.undefined
   var includeOffset: js.UndefOr[Boolean] = js.undefined
   var format: js.UndefOr[String] = js.undefined
+}
+
+/** Options for `setZone`. */
+trait ZoneOptions extends js.Object {
+    /** Default is false. */
+  var keepLocalTime: js.UndefOr[Boolean] = js.undefined
+}
+
+object ZoneOptions {
+  def apply(keepLocalTime: js.UndefOr[Boolean] = js.undefined) = {
+    val _keepLocalTime = keepLocalTime
+    new ZoneOptions {
+      keepLocalTime = _keepLocalTime
+    }
+  }
 }
 
 @js.native
@@ -197,6 +397,8 @@ trait DateTime extends js.Object {
   val weekdayLong: String = js.native
   val weekdayShort: String = js.native
   val weeksInWeekYear: Int = js.native
+  val hour: Int = js.native
+  val minute: Int = js.native
   val millisecond: Int = js.native
   val zoneName: String = js.native
   val zone: Zone = js.native
@@ -214,8 +416,8 @@ trait DateTime extends js.Object {
   val offsetNameShort: String = js.native
   val ordinal: Int = js.native
   val outputCalendar: String = js.native
-  def plus(dur: Duration | DurationInit | Double): DateTime = js.native
-  def minus(dur: Duration | DurationInit | Double): DateTime = js.native
+  def plus(dur: Duration | DurationInit | Double | js.Object | js.Dynamic): DateTime = js.native
+  def minus(dur: Duration | DurationInit | Double | js.Object | js.Dynamic): DateTime = js.native
   def startOf(part: DurationUnit): DateTime = js.native
   def endOf(part: DurationUnit): DateTime = js.native
   def set(parts: DateTimeUnits): DateTime = js.native
@@ -229,15 +431,14 @@ trait DateTime extends js.Object {
     unit: js.UndefOr[DurationUnit | js.Array[DurationUnit]] = js.undefined,
     options: js.UndefOr[DiffOptions] = js.undefined): Duration = js.native
   def setLocale(loc: String): DateTime = js.native
-  def setZone(zone: String, opts: js.UndefOr[js.Object|js.Dynamic]=js.undefined): DateTime = js.native
+  def setZone(zone: String, opts: js.UndefOr[ZoneOptions | js.Dynamic|js.Object] = js.undefined): DateTime = js.native
   def toBSON(): js.Date = js.native
-  def toUTC(): DateTime = js.native
   def toObject(): DateTimeUnits = js.native
   def toFormat(fmt: String): String = js.native
   def toHTTP(): String = js.native
-  def toISO(options: js.UndefOr[ToISOTimeOptions] = js.undefined): String = js.native
-  def toISODate(): String = js.native
-  def toISOTime(options: js.UndefOr[ToISOTimeOptions] = js.undefined): String = js.native
+  def toISO(options: js.UndefOr[ToISOOptions] = js.undefined): String = js.native
+  def toISODate(options: js.UndefOr[ToISODateOptions] = js.undefined): String = js.native
+  def toISOTime(options: js.UndefOr[ToISOOptions] = js.undefined): String = js.native
   def toISOWeekDate(): String = js.native
   def toJSDate(): js.Date = js.native
   def toJSON(): String = js.native
@@ -252,7 +453,8 @@ trait DateTime extends js.Object {
   def toSQLTime(): String = js.native
   def toSeconds(): Double = js.native
 //   def toString(): String = js.native
-  def toUTC(offset: Int, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
+  //def toUTC(offset: Int, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
+  def toUTC(offset: js.UndefOr[Double]=js.undefined, opts: js.UndefOr[ZoneOptions|js.Dynamic|js.Object] = js.undefined): DateTime = js.native
   def until(other: DateTime): Interval = js.native
   def equals(that: DateTime): Boolean = js.native
   @JSName("valueOf")
@@ -267,10 +469,29 @@ class SQLOptions(
   var outputCalendar: js.UndefOr[String] = js.undefined,
 ) extends js.Object
 
-class DateTimeOptions(
-  var includeZone: js.UndefOr[Boolean] = js.undefined,
-  var includeOffset: js.UndefOr[Boolean] = js.undefined
-) extends js.Object
+
+trait LocaleOptions extends js.Object {
+  var locale: js.UndefOr[String] = js.undefined
+  var outputCalendar: js.UndefOr[CalendarSystem] = js.undefined
+  var numberingSystem: js.UndefOr[NumberingSystem] = js.undefined
+}
+
+trait DateTimeOptions extends LocaleOptions { 
+    var zone: js.UndefOr[String|Zone] = js.undefined
+}
+
+// class DateTimeOptions(
+//   var includeZone: js.UndefOr[Boolean] = js.undefined,
+//   var includeOffset: js.UndefOr[Boolean] = js.undefined
+// ) extends js.Object
+
+trait FromISOOptions extends js.Object { 
+    var zone: js.UndefOr[String|Zone] = js.undefined
+    var setZone: js.UndefOr[Boolean] = js.undefined
+    var locale: js.UndefOr[String] = js.undefined
+    var outputCalendar: js.UndefOr[String] = js.undefined
+    var numberingSystem: js.UndefOr[String] = js.undefined
+}
 
 @js.native
 @JSImport("luxon", "DateTime")
@@ -289,7 +510,7 @@ object DateTime extends js.Object {
   def fromRFC2822(text: String, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
   def fromSQL(text: String, options: js.UndefOr[SQLOptions] = js.undefined): DateTime = js.native
   def fromJSDate(dt: js.Date, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
-  def fromISO(arg: String, options: js.UndefOr[DateTimeOptions] = js.undefined): DateTime = js.native
+  def fromISO(arg: String, options: js.UndefOr[FromISOOptions] = js.undefined): DateTime = js.native
   def utc(): DateTime = js.native
   @JSName("utc")
   def utcFrom(

@@ -110,16 +110,19 @@ package object lodash {
   
   @js.native
   @JSImport("lodash", "isNil")
-  val isNil: js.Any = js.native
+  def isNil(value: Any): Boolean = js.native
   
   @js.native
   @JSImport("lodash", "isNull")
-  val isNull: js.Any = js.native
+  def isNull(value: Any): Boolean = js.native
   
   @js.native
   @JSImport("lodash", "isUndefined")
-  val isUndefined: js.Any = js.native
+  def isUndefined(value: Any): Boolean = js.native
   
+  @js.native
+  @JSImport("loadash", "isDate")
+  def isDate(value: Any): Boolean = js.native
   
   @js.native
   @JSImport("lodash", "identity")

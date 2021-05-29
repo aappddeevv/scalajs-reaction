@@ -72,8 +72,12 @@ object Rating {
     var readOnly: js.UndefOr[Boolean] = js.undefined
   }
 
-  @deriveClassNames trait Styles extends IStyleSetTag {
+  /*@deriveClassNames */trait Styles extends IStyleSetTag {
     var root: js.UndefOr[IStyle] = js.undefined
     // lots more
+  }
+  @js.native
+  trait ClassNames extends IClassNamesTag { 
+    var root: String= js.native
   }
 }

@@ -44,3 +44,5 @@ scalajs-reaction-docs
 *swp
 .bsp
 /*.yml
+.vscode
+.ipy*

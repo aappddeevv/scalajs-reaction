@@ -97,4 +97,9 @@ trait ComponentSyntax {
     }
     def toEl(props: P): ReactNode = ReactJS.createElement(js.Any.fromFunction1(f), props.asInstanceOf[js.Any])
   }
+  
+  implicit class RichReactElement(private val el: ReactElement) {
+    /** Simple conversion since many times you need a js.Array but its invariant. */
+    def asNode = el.asInstanceOf[ReactNode]
+  }
 }

@@ -48,13 +48,32 @@ trait syntax {
 
 object syntax extends syntax
 
-@jsenrich trait Font extends js.Object {
+/*@jsenrich */
+trait Font extends js.Object {
   var family: js.UndefOr[String] = js.undefined
   var size: js.UndefOr[Int] = js.undefined
   var color: js.UndefOr[String | Int] = js.undefined
 }
 
-@jsenrich trait Title extends js.Object {
+object Font {
+  def apply(
+    family: js.UndefOr[String] = js.undefined,
+    size: js.UndefOr[Int] = js.undefined,
+    color: js.UndefOr[String | Int] = js.undefined,
+  ) = {
+    val _family = family
+    val _size = size
+    val _color = color
+    new Font {
+      family = _family
+      size = _size
+      color = _color
+    }
+  }
+}
+
+/*@jsenrich */
+trait Title extends js.Object {
   var text: js.UndefOr[String] = js.undefined
   var font: js.UndefOr[Font] = js.undefined
   var xref: js.UndefOr[String] = js.undefined // string or paper
@@ -64,7 +83,42 @@ object syntax extends syntax
   var yanchor: js.UndefOr[Double] = js.undefined
 }
 
-@jsenrich trait DataTitle extends js.Object {
+object Title {
+  def apply(
+    text: js.UndefOr[String] = js.undefined,
+    font: js.UndefOr[Font] = js.undefined,
+    xref: js.UndefOr[String] = js.undefined,
+    x: js.UndefOr[Double] = js.undefined,
+    xanchor: js.UndefOr[Double] = js.undefined,
+    y: js.UndefOr[Double] = js.undefined,
+    yanchor: js.UndefOr[Double] = js.undefined,
+  ) = {
+    val _text = text
+    val _font = font
+    val _xref = xref
+    val _x = x
+    val _xanchor = xanchor
+    val _y = y
+    val _yanchor = yanchor
+    new Title {
+      text = _text
+      font = _font
+      xref = _xref
+      x = _x
+      xanchor = _xanchor
+      y = y
+      yanchor = _yanchor
+    }
+  }
+
+  def apply(text: String): Title = {
+    val _text = text
+    Title.apply(text = _text)
+  }
+}
+
+/*@jsenrich */
+trait DataTitle extends js.Object {
   var text: js.UndefOr[String] = js.undefined
   var font: js.UndefOr[Font] = js.undefined
   var position: js.UndefOr[String] = js.undefined
@@ -86,12 +140,14 @@ object Mode {
   var `false` = false.asInstanceOf[Mode]
 }
 
-@jsenrich trait UniformText extends js.Object {
+/*@jsenrich */
+trait UniformText extends js.Object {
   var mode: js.UndefOr[Mode] = js.undefined
   var minsize: js.UndefOr[Int] = js.undefined
 }
 
-@jsenrich trait ColorScale extends js.Object {
+/*@jsenrich */
+trait ColorScale extends js.Object {
   var sequential: js.UndefOr[js.Array[ColorScaleItem]] = js.undefined
   var sequentialminus: js.UndefOr[js.Array[ColorScaleItem]] = js.undefined
   var diverging: js.UndefOr[js.Array[ColorScaleItem]] = js.undefined
@@ -307,7 +363,8 @@ object Calendar {
   val ummalqura = "ummalura".asInstanceOf[Calendar]
 }
 
-@jsenrich trait TickTitle extends js.Object {
+/*@jsenrich */
+trait TickTitle extends js.Object {
   var text: js.UndefOr[String] = js.undefined
   var font: js.UndefOr[Font] = js.undefined
   var standoff: js.UndefOr[Int] = js.undefined
@@ -454,7 +511,8 @@ object Layer {
   val belowTraces = "below traces".asInstanceOf[Layer]
 }
 
-@jsenrich trait TickFormatStops extends js.Object {
+/*@jsenrich */
+trait TickFormatStops extends js.Object {
   var dtickrange: js.UndefOr[js.Tuple2[Double, Double]] = js.undefined
   var enabled: js.UndefOr[Boolean] = js.undefined
   var name: js.UndefOr[String] = js.undefined
@@ -462,7 +520,8 @@ object Layer {
   var value: js.UndefOr[String] = js.undefined
 }
 
-@jsenrich trait Axis extends js.Object {
+/*@jsenrich */
+trait Axis extends js.Object {
   var anchor: js.UndefOr[String] = js.undefined
   var autorange: js.UndefOr[Boolean | String] = js.undefined
   var automargin: js.UndefOr[Boolean] = js.undefined
@@ -532,6 +591,210 @@ object Layer {
   var zerolinewidth: js.UndefOr[Int] = js.undefined
 }
 
+object Axis {
+  def apply(
+    anchor: js.UndefOr[String] = js.undefined,
+    autorange: js.UndefOr[Boolean | String] = js.undefined,
+    automargin: js.UndefOr[Boolean] = js.undefined,
+    categoryorder: js.UndefOr[String] = js.undefined,
+    calendar: js.UndefOr[Calendar] = js.undefined,
+    color: js.UndefOr[String] = js.undefined,
+    constrain: js.UndefOr[Constrain] = js.undefined,
+    constraintoward: js.UndefOr[ConstrainToward] = js.undefined,
+    domain: js.UndefOr[js.Tuple2[Double, Double]] = js.undefined,
+    dtick: js.UndefOr[Double | String] = js.undefined,
+    dividercolor: js.UndefOr[Color] = js.undefined,
+    dividerwidth: js.UndefOr[Int] = js.undefined,
+    fixedrange: js.UndefOr[String] = js.undefined,
+    exponentformat: js.UndefOr[ExponentFormat] = js.undefined,
+    gridcolor: js.UndefOr[Color] = js.undefined,
+    gridwidth: js.UndefOr[Int] = js.undefined,
+    hoverformat: js.UndefOr[String] = js.undefined,
+    layer: js.UndefOr[Layer] = js.undefined,
+    linecolor: js.UndefOr[Color] = js.undefined,
+    linewidth: js.UndefOr[Int] = js.undefined,
+    matches: js.UndefOr[String] = js.undefined,
+    mirror: js.UndefOr[Mirror | Boolean] = js.undefined,
+    nticks: js.UndefOr[Int] = js.undefined,
+    overlaying: js.UndefOr[String] = js.undefined,
+    position: js.UndefOr[Double] = js.undefined,
+    range: js.UndefOr[js.Array[AxisRange]] = js.undefined,
+    rangemode: js.UndefOr[RangeMode] = js.undefined,
+    scaleanchor: js.UndefOr[String] = js.undefined,
+    scaleratio: js.UndefOr[Double] = js.undefined,
+    separatethousands: js.UndefOr[Boolean] = js.undefined,
+    showspikes: js.UndefOr[Boolean] = js.undefined,
+    showline: js.UndefOr[Boolean] = js.undefined,
+    showexponent: js.UndefOr[ShowExponent] = js.undefined,
+    showdividers: js.UndefOr[Boolean] = js.undefined,
+    showticklabels: js.UndefOr[Boolean] = js.undefined,
+    showtickprefix: js.UndefOr[ShowTickPrefix] = js.undefined,
+    showgrid: js.UndefOr[Boolean] = js.undefined,
+    side: js.UndefOr[Side] = js.undefined,
+    spikecolor: js.UndefOr[Color] = js.undefined,
+    spikethickness: js.UndefOr[Int] = js.undefined,
+    spikedash: js.UndefOr[String] = js.undefined,
+    spikemode: js.UndefOr[String] = js.undefined,
+    spikesnap: js.UndefOr[SpikeSnap] = js.undefined,
+    tick0: js.UndefOr[Double | String] = js.undefined,
+    tickformat: js.UndefOr[String] = js.undefined,
+    tickmode: js.UndefOr[TickMode] = js.undefined,
+    tickfont: js.UndefOr[Font] = js.undefined,
+    tickangle: js.UndefOr[Double] = js.undefined,
+    tickformatstops: js.UndefOr[js.Array[TickFormatStops]] = js.undefined,
+    tickprefix: js.UndefOr[String] = js.undefined,
+    ticklen: js.UndefOr[Int] = js.undefined,
+    tickwidth: js.UndefOr[Int] = js.undefined,
+    tickcolor: js.UndefOr[Color] = js.undefined,
+    tickvals: js.UndefOr[js.Array[Datum]] = js.undefined,
+    ticksuffix: js.UndefOr[String] = js.undefined,
+    ticktext: js.UndefOr[js.Array[String]] = js.undefined,
+    ticks: js.UndefOr[Tick] = js.undefined,
+    tickson: js.UndefOr[TicksOn] = js.undefined,
+    `type`: js.UndefOr[AxisType] = js.undefined,
+    title: js.UndefOr[TickTitle] = js.undefined,
+    uirevision: js.UndefOr[String | Int] = js.undefined,
+    visible: js.UndefOr[Boolean] = js.undefined,
+    zeroline: js.UndefOr[Boolean] = js.undefined,
+    zerolinecolor: js.UndefOr[Color] = js.undefined,
+    zerolinewidth: js.UndefOr[Int] = js.undefined,
+  ) = {
+    val _anchor = anchor
+    val _autorange = autorange
+    val _automargin = automargin
+    val _categoryorder = categoryorder
+    val _calendar = calendar
+    val _color = color
+    val _constrain = constrain
+    val _constraintoward = constraintoward
+    val _domain = domain
+    val _dtick = dtick
+    val _dividercolor = dividercolor
+    val _dividerwidth = dividerwidth
+    val _fixedrange = fixedrange
+    val _exponentformat = exponentformat
+    val _gridcolor = gridcolor
+    val _gridwidth = gridwidth
+    val _hoverformat = hoverformat
+    val _layer = layer
+    val _linecolor = linecolor
+    val _linewidth = linewidth
+    val _matches = matches
+    val _mirror = mirror
+    val _nticks = nticks
+    val _overlaying = overlaying
+    val _position = position
+    val _range = range
+    val _rangemode = rangemode
+    val _scaleanchor = scaleanchor
+    val _scaleratio = scaleratio
+    val _separatethousands = separatethousands
+    val _showspikes = showspikes
+    val _showline = showline
+    val _showexponent = showexponent
+    val _showdividers = showdividers
+    val _showticklabels = showticklabels
+    val _showtickprefix = showtickprefix
+    val _showgrid = showgrid
+    val _side = side
+    val _spikecolor = spikecolor
+    val _spikethickness = spikethickness
+    val _spikedash = spikedash
+    val _spikemode = spikemode
+    val _spikesnap = spikesnap
+    val _tick0 = tick0
+    val _tickformat = tickformat
+    val _tickmode = tickmode
+    val _tickfont = tickfont
+    val _tickangle = tickangle
+    val _tickformatstops = tickformatstops
+    val _tickprefix = tickprefix
+    val _ticklen = ticklen
+    val _tickwidth = tickwidth
+    val _tickcolor = tickcolor
+    val _tickvals = tickvals
+    val _ticksuffix = ticksuffix
+    val _ticktext = ticktext
+    val _ticks = ticks
+    val _tickson = tickson
+    val _type = `type`
+    val _title = title
+    val _uirevision = uirevision
+    val _visible = visible
+    val _zeroline = zeroline
+    val _zerolinecolor = zerolinecolor
+    val _zerolinewidth = zerolinewidth
+
+    new Axis {
+      anchor = _anchor
+      autorange = _autorange
+      automargin = _automargin
+      categoryorder = _categoryorder
+      calendar = _calendar
+      color = _color
+      constrain = _constrain
+      constraintoward = _constraintoward
+      domain = _domain
+      dtick = _dtick
+      dividercolor = _dividercolor
+      dividerwidth = _dividerwidth
+      fixedrange = _fixedrange
+      exponentformat = _exponentformat
+      gridcolor = _gridcolor
+      gridwidth = _gridwidth
+      hoverformat = _hoverformat
+      layer = _layer
+      linecolor = _linecolor
+      linewidth = _linewidth
+      matches = _matches
+      mirror = _mirror
+      nticks = _nticks
+      overlaying = _overlaying
+      position = _position
+      range = _range
+      rangemode = _rangemode
+      scaleanchor = _scaleanchor
+      scaleratio = _scaleratio
+      separatethousands = _separatethousands
+      showspikes = _showspikes
+      showline = _showline
+      showexponent = _showexponent
+      showdividers = _showdividers
+      showticklabels = _showticklabels
+      showtickprefix = _showtickprefix
+      showgrid = _showgrid
+      side = _side
+      spikecolor = _spikecolor
+      spikethickness = _spikethickness
+      spikedash = _spikedash
+      spikemode = _spikemode
+      spikesnap = _spikesnap
+      tick0 = _tick0
+      tickformat = _tickformat
+      tickmode = _tickmode
+      tickfont = _tickfont
+      tickangle = _tickangle
+      tickformatstops = _tickformatstops
+      tickprefix = _tickprefix
+      ticklen = _ticklen
+      tickwidth = _tickwidth
+      tickcolor = _tickcolor
+      tickvals = _tickvals
+      ticksuffix = _ticksuffix
+      ticktext = _ticktext
+      ticks = _ticks
+      tickson = _tickson
+      `type` = _type
+      title = _title
+      uirevision = _uirevision
+      visible = _visible
+      zeroline = _zeroline
+      zerolinecolor = _zerolinecolor
+      zerolinewidth = _zerolinewidth
+    }
+  }
+}
+
 @js.native
 abstract trait BoxMode extends js.Any
 object BoxMode {
@@ -556,7 +819,8 @@ object BarNorm {
   val percent = "percent".asInstanceOf[BarMode]
 }
 
-@jsenrich trait Layout extends js.Object {
+/*@jsenrich */
+trait Layout extends js.Object {
   //var annotations
   var autosize: js.UndefOr[Boolean] = js.undefined
   //var angularaxis
@@ -638,7 +902,8 @@ object BarNorm {
 
 }
 
-@jsenrich trait Frame extends js.Object {
+/*@jsenrich */
+trait Frame extends js.Object {
   var group: js.UndefOr[String] = js.undefined
   var name: js.UndefOr[String] = js.undefined
   var traces: js.UndefOr[js.Array[Int]] = js.undefined
@@ -652,7 +917,8 @@ object BarNorm {
 //   var easing: js.UndefOr[String] = js.undefined
 // }
 
-@jsenrich trait Config extends js.Object {
+/*@jsenrich */
+trait Config extends js.Object {
   var autosizable: js.UndefOr[Boolean] = js.undefined
   var displayModeBar: js.UndefOr[String | Boolean] = js.undefined // hover
   var displaylogo: js.UndefOr[Boolean] = js.undefined
@@ -678,7 +944,8 @@ object BarNorm {
   var topojsonURL: js.UndefOr[String] = js.undefined
 }
 
-@jsenrich trait Point extends js.Object {
+/*@jsenrich */
+trait Point extends js.Object {
   var x: js.UndefOr[Double] = js.undefined
   var y: js.UndefOr[Double] = js.undefined
   var z: js.UndefOr[Double] = js.undefined

@@ -157,7 +157,8 @@ object IColumnInit {
 }
 
 /** IColumn with required properties. */
-@jsenrich trait IColumn extends IColumnBase {
+/*@jsenrich */
+trait IColumn extends IColumnBase {
 
   /** In ts, this is String|Int */
   val key: String
@@ -168,38 +169,48 @@ object IColumnInit {
 object IColumn {
   type OnColumnResize = js.Function1[Int, Unit]
 
+  type OnColumnClick = js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]
+
   /** Smart constructor for `DetailsList.onColumnResize`. */
-  def OnColumnResize(f: Int => Unit): js.UndefOr[OnColumnResize] = js.defined(f(_))
+  def OnColumnResize(f: Int => Unit): OnColumnResize = f(_)
 
   /** Smart constructor for `IColumn.onColumnClick` */
   def OnColumnClick(
     f: (ReactMouseEvent[dom.html.Element], IColumn) => Unit
-  ): js.UndefOr[js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit]] =
-    js.defined((e, c) => f(e.asInstanceOf[ReactMouseEvent[dom.html.Element]], c.asInstanceOf[IColumn]))
+  ): js.Function2[ReactMouseEvent[dom.html.Element], js.Any, Unit] =
+    (e, c) => f(e.asInstanceOf[ReactMouseEvent[dom.html.Element]], c.asInstanceOf[IColumn])
 
   /** Smart constructor for `IColumn.onColumnContextMenu` */
   def OnColumnContextMenu(
     f: (IColumn, ReactMouseEvent[dom.html.Element]) => Unit
-  ): js.UndefOr[js.Function2[js.Any, js.Any, Unit]] =
-    js.defined((c, e) => f(c.asInstanceOf[IColumn], e.asInstanceOf[ReactMouseEvent[dom.html.Element]]))
+  ): js.Function2[js.Any, js.Any, Unit] =
+    (c, e) => f(c.asInstanceOf[IColumn], e.asInstanceOf[ReactMouseEvent[dom.html.Element]])
 
   /** Smart constructor for `IColumn.onRender`. */
   def OnRender[T <: js.Any](
     f: (T, Int, IColumn) => ReactNode
-  ): js.UndefOr[js.Function3[js.Any, Int, js.Any, ReactNode]] =
-    js.defined((t, i, c) => f(t.asInstanceOf[T], i, c.asInstanceOf[IColumn]))
+  ): OnRender =
+    (t, i, c) => f(t.asInstanceOf[T], i, c.asInstanceOf[IColumn])
 
+  type OnRender = js.Function3[js.Any, Int, js.Any, ReactNode]
+    
   /** Unsafe conversion. */
   def toCol(a: js.Dynamic): IColumn = a.asInstanceOf[IColumn]
 
   /** Uses js.Object.assign so its *not* hierarchical merging. */
   implicit class ExtraRichIColumn(private val col: IColumn) extends AnyVal {
+    def withIsSorted(isSorted: Boolean) =
+      js.Object.assign(new js.Object {}, col, literal("isSorted" -> isSorted)).asInstanceOf[IColumn]
+    def withIsSortedDescending(isSorted: Boolean) =
+      js.Object.assign(new js.Object {}, col, literal("isSortedDescending" -> isSorted)).asInstanceOf[IColumn]
+    def withOnColumnClick(occ: OnColumnClick) =
+      js.Object.assign(new js.Object {}, col, literal("onColumnClick" -> occ)).asInstanceOf[IColumn]
 
     /** Takes current (minWidth, maxWidth) argument. */
     def modifyMaxWidth(f: (js.UndefOr[Int], js.UndefOr[Int]) => js.UndefOr[Int]) =
       js.Object
         .assign(
-          new js.Object,
+          new js.Object {},
           col,
           js.Dynamic.literal("maxWidth" -> f(col.minWidth, col.maxWidth).asInstanceOf[js.Any]))
         .asInstanceOf[IColumn]

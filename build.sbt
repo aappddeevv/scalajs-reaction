@@ -1,6 +1,7 @@
 import scala.sys.process._
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
+//Global / semanticdbVersion := "4.4.0"
 
 lazy val bintraySettings = Seq(
   bintrayReleaseOnPublish := false,
@@ -37,7 +38,7 @@ lazy val jsSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "1.0.0"
+    "org.scala-js" %%% "scalajs-dom" % "1.1.0"
   )
 )
 
@@ -72,14 +73,11 @@ def std_settings(p: String, d: String) =
     libraryDependencies ++= Seq(
       //"org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
     ),
-    // temp fix as scalafix plugin is incompat with 2.13.2
-    // https://github.com/scalacenter/scalafix/issues/1109
-    //addCompilerPlugin(scalafixSemanticdb("4.3.10"))
   ) ++ resolverSettings ++ compilerSettings ++ bintraySettings ++ jsSettings
 
 inThisBuild(
   List(
-    scalaVersion := "2.13.3",
+    scalaVersion := "2.13.4",
     organization := "ttg",
     organizationName := "The Trapelo Group",
     startYear := Some(2018),
@@ -94,8 +92,9 @@ inThisBuild(
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
     ,
-    addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.3.18" cross CrossVersion.full),
     version := "0.1.0-M7"
+    //, semanticdbVersion := "4.4.0"
+    ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.6" cross CrossVersion.full)
   )
 )
 
@@ -132,7 +131,7 @@ lazy val root = project
     pathtoregexp,
     plotlyjs,
     `prop-types`,
-    `react-macros`,
+    //`react-macros`,
     `react-content-loader`,
     react,
     `react-redux`,
@@ -154,6 +153,7 @@ lazy val root = project
     `use-query-params`,
     `use-error-boundary`,
     vdom,
+    whydidyourender
   )
 
 lazy val `react` = project
@@ -235,7 +235,7 @@ lazy val `react-router-dom6` = project
   .in(file("components/react-router-dom6"))
   .settings(std_settings("react-router-dom6", "react-router-dom v6"))
   .settings(buildinfo_settings("react_router6.dom"))
-  .dependsOn(react, vdom, `react-macros`)
+  .dependsOn(react, vdom )
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-navigation` = project
@@ -276,70 +276,70 @@ lazy val whydidyourender = project
   .in(file("components/whydidyourender"))
   .settings(std_settings("whydidyourender", "Why Did You Render library"))
   .settings(buildinfo_settings("whydidyourender"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val luxon = project
   .in(file("components/luxon"))
   .settings(std_settings("luxon", "Luxon date time."))
   .settings(buildinfo_settings("luxon"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `react-content-loader` = project
   .in(file("components/react-content-loader"))
   .settings(std_settings("react-content-loader", "Placeholders"))
   .settings(buildinfo_settings("react_content_loader"))
-  .dependsOn(react, `react-macros`, vdom)
+  .dependsOn(react, vdom)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val dataloader = project
   .in(file("components/dataloader"))
   .settings(std_settings("dataloader", "FB dataloader"))
   .settings(buildinfo_settings("dataloader"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `use-query-params` = project
   .in(file("components/use-query-params"))
   .settings(std_settings("use-query-params", "use-query-params"))
   .settings(buildinfo_settings("use_query_params"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `use-error-boundary` = project
   .in(file("components/use-error-boundary"))
   .settings(std_settings("use-error-boundary", "use-error-boundary"))
   .settings(buildinfo_settings("use_error_boundary"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `react-teleporter` = project
   .in(file("components/react-teleporter"))
   .settings(std_settings("react-teleporter", "react-teleporter"))
   .settings(buildinfo_settings("react_teleporter"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `apollo-server` = project
   .in(file("components/apollo-server"))
   .settings(std_settings("apollo-server", "apollo-server"))
   .settings(buildinfo_settings("apollo_server"))
-  .dependsOn(react, apollo3, `react-macros`)
+  .dependsOn(react, apollo3)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `react-responsive` = project
   .in(file("components/react-responsive"))
   .settings(std_settings("react-responsive", "react-responsive"))
   .settings(buildinfo_settings("react_responsive"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 lazy val `react-device-detect` = project
   .in(file("components/react-device-detect"))
   .settings(std_settings("react-device-detect", "react-device-detect"))
   .settings(buildinfo_settings("react_device_detect"))
-  .dependsOn(react, `react-macros`)
+  .dependsOn(react)
   .enablePlugins(ScalaJSPlugin)
 
 // jvm and js based project
@@ -364,7 +364,7 @@ lazy val dataValidationJS = project
 
 //lazy val dataValidationJS = dataValidation.js
 //lazy val dataValidationJVM = dataValidation.jvm
-
+/*
 lazy val `react-macros` = project
   .enablePlugins(ScalaJSPlugin)
   .settings(
@@ -374,6 +374,7 @@ lazy val `react-macros` = project
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     )
   )
+*/
 
 lazy val `prop-types` = project
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -402,7 +403,7 @@ lazy val `react-redux` = project
 lazy val helmet = project
   .in(file("components/helmet"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom, `react-macros`)
+  .dependsOn(react, vdom)
   .settings(std_settings("helmet", "react-helmet"))
   .settings(buildinfo_settings("helmet"))
 
@@ -423,7 +424,7 @@ lazy val apollo3 = project
 lazy val fabric = project
   .in(file("components/fabric"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom, `react-macros`)
+  .dependsOn(react, vdom)//, /*`react-macros`*/)
   .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
   .settings(buildinfo_settings("fabric"))
 
@@ -478,7 +479,7 @@ lazy val forms = project
 lazy val plotlyjs = project
   .in(file("components/plotlyjs"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom, `react-macros`)
+  .dependsOn(react, vdom)
   .settings(std_settings("plotlyjs", "plotly.js"))
   .settings(buildinfo_settings("plotlyjs"))
 
@@ -492,7 +493,7 @@ lazy val handlebars = project
 lazy val `react-plotlyjs` = project
   .in(file("components/react-plotlyjs"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(plotlyjs, react, vdom, `react-macros`)
+  .dependsOn(plotlyjs, react, vdom)
   .settings(std_settings("react-plotlyjs", "react-plotly.js"))
   .settings(buildinfo_settings("react_plotlyjs"))
 
@@ -582,7 +583,7 @@ lazy val docs = project
     lodash,
     `microsoft-graph-client`,
     mui,
-    `react-macros`,
+    //`react-macros`,
     //router,
     `react-big-calendar`,
     `react-native-nativebase`,
