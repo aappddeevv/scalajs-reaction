@@ -82,21 +82,22 @@ inThisBuild(
     scalaVersion := "2.13.4",
     publishMavenStyle := true,
     organization := "org.ttgoss.js",
-    organizationName := "The Trapelo Group Open Source",
+    organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
     startYear := Some(2018),
     licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-    homepage := Some(url("https://github.io/aappddeevv/scalajs-reaction/")),
+    homepage := Some(url("https://github.com/aappddeevv/scalajs-reaction")),
     developers := List(
       Developer("aappddeevv", "Devon Miller", "aappddeevv@gmail.com", url("https://aappddeevv.github.io"))
     ),
     scmInfo := Some(
-      ScmInfo(url("https://github.com/scalajs-reaction"), "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
+      ScmInfo(url("https://github.com/aappddeevv/scalajs-reaction"), "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
     ),
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
-    ,
     // should come from sbt-dynver
-    version := "0.1.0-M7"
+    //version := "0.1.0-M7"
+    ,dynverSonatypeSnapshots := true
+    ,dynverSeparator := "-"
     //, semanticdbVersion := "4.4.0"
     ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.6" cross CrossVersion.full)
   )
