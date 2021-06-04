@@ -6,7 +6,6 @@
   </a>
 </p>
 
-![Bintray](https://img.shields.io/bintray/v/aappddeevv/maven/react)
 ![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.scala-lang/scala-compiler/2.13.1?label=scala)
 
 You need to use a react version 16.8+ to make sure that hooks are included. Use the latest react-native.
@@ -159,36 +158,37 @@ the tools provided by scala and scala.js to make it easier to write react applic
 
 # Usage
 
+The libraries are all at the organization `org.ttgoss.js` and available on maven. They are no longer available on bintray.
+
 Include the library in your build:
 
 ```scala
-resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "latest.version" // see the badge above 
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
-    "ttg" %%% "react" % scalaJsReactVersion,
-    "ttg" %%% "vdom" % scalaJsReactVersion,
+    "org.ttgoss.js" %%% "react" % scalaJsReactVersion,
+    "org.ttgoss.js" %%% "vdom" % scalaJsReactVersion,
 
     // optionals
     // if you need react-dom
-    "ttg" %%% "react-dom" % scalaJsReactVersion
+    "org.ttgoss.js" %%% "react-dom" % scalaJsReactVersion
 
     // Microsoft fabric UI components, "MS office", css-in-"scala"
     // css-in-scala can be used independently of fabric
-    "ttg" %%% "fabric" % scalaJsReactVersion,
+    "org.ttgoss.js" %%% "fabric" % scalaJsReactVersion,
 
     // Material UI components (bootstrap is also available but limited)
-    "ttg" %%% "mui" % scalaJsReactVersion,
+    "org.ttgoss.js" %%% "mui" % scalaJsReactVersion,
 
     // if you integrate with redux
-    "ttg" %%% "redux" % scalaJsReactVersion,
+    "org.ttgoss.js" %%% "redux" % scalaJsReactVersion,
     
     // if you need prop-types--you only need these for interop scenarios
-    "ttg" %%% "prop-types" % scalaJsReactVersion,
+    "org.ttgoss.js" %%% "prop-types" % scalaJsReactVersion,
  
     // if you need react-native
-    "ttg" %%% "native" % scalaJsReactversion)
+    "org.ttgoss.js" %%% "native" % scalaJsReactversion)
 //
 // Add import scala.language.implicitConversions to each file or
 // add scalacOptions += Seq("-language:_") to your settings 
@@ -213,7 +213,7 @@ so you may want to use the latest experimental release.
 
 There are many modules available as most of the focus has been on hand-crafted bindings in order
 to improve ergonomics. We'll work with ScalablyType to improve the availability of bindings, however,
-they are quite simple to write using scalajs-reaction. All of these libraries use the group name `ttg`:
+they are quite simple to write using scalajs-reaction. All of these libraries use the group name `org.ttgoss.js`:
 
 * apollo
 * bootstrap

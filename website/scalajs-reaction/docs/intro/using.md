@@ -4,12 +4,10 @@ title: Getting Started
 ---
 
 Like any scala.js project to get started you need to include the libraries in
-your build. the artifacts are published to a bintray only and not jcenter or
-maven.
+your build. the artifacts are published to maven.
 
 ```scala
 // bintray resolvers
-resolvers += Resolver.bintrayRepo("aappddeevv", "maven")
 val scalaJsReactVersion = "<latest version> // e.g. "0.1.0-M7"
 
 // grab the the latest version or use a specific version

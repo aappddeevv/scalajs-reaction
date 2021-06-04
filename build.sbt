@@ -2,18 +2,20 @@ import scala.sys.process._
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 //Global / semanticdbVersion := "4.4.0"
+//sonatypeLogLevel := "trace"
 
-lazy val bintraySettings = Seq(
-  bintrayReleaseOnPublish := false,
-  bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap"),
-  bintrayVcsUrl := Some("git:git@github.com:aappddeevv/scalajs-reaction"),
-  publishMavenStyle := true
+//bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap"),
+// https://github.com/xerial/sbt-sonatype
+lazy val sonatypeSettings = Seq(
+  publishTo := sonatypePublishToBundle.value
+  ,sonatypeCredentialHost := "s01.oss.sonatype.org"
+  ,sonatypeProfileName := "org.ttgoss"
 )
 
 lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
-    Resolver.jcenterRepo
+    //Resolver.jcenterRepo
   )
 )
 
@@ -73,13 +75,14 @@ def std_settings(p: String, d: String) =
     libraryDependencies ++= Seq(
       //"org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
     ),
-  ) ++ resolverSettings ++ compilerSettings ++ bintraySettings ++ jsSettings
+  ) ++ resolverSettings ++ compilerSettings ++ jsSettings ++ sonatypeSettings
 
 inThisBuild(
   List(
     scalaVersion := "2.13.4",
-    organization := "ttg",
-    organizationName := "The Trapelo Group",
+    publishMavenStyle := true,
+    organization := "org.ttgoss.js",
+    organizationName := "The Trapelo Group Open Source",
     startYear := Some(2018),
     licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
     homepage := Some(url("https://github.io/aappddeevv/scalajs-reaction/")),
@@ -92,15 +95,18 @@ inThisBuild(
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
     ,
+    // should come from sbt-dynver
     version := "0.1.0-M7"
     //, semanticdbVersion := "4.4.0"
     ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.6" cross CrossVersion.full)
   )
 )
 
+
 lazy val root = project
   .in(file("."))
   .settings(skip in publish := true)
+  .settings(sonatypeSettings)
   .aggregate(
     //apollo,
     apollo3,
