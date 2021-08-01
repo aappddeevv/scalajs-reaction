@@ -2,13 +2,15 @@
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
 <p align="center">
   <a href="https://www.scala-js.org">
-   <img src="https://www.scala-js.org/assets/badges/scalajs-1.0.0.svg"/>
+   <img src="https://www.scala-js.org/assets/badges/scalajs-1.6.0.svg"/>
   </a>
 </p>
 
 ![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.scala-lang/scala-compiler/2.13.1?label=scala)
 
-You need to use a react version 16.8+ to make sure that hooks are included. Use the latest react-native.
+scalajs reaction focuses on scala3.
+
+Use react version 16.8+ to ensure that hooks are included. Use the latest react-native.
 
 Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
