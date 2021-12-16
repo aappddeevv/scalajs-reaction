@@ -22,22 +22,18 @@
 package react
 
 import scala.scalajs.js
-import js._
-import jshelpers._
+import js.*
+import jshelpers.*
 
-final case class JsRefOps[T](v: ReactRef[T]) {
-  @inline def toDyn: js.Dynamic = refToJs[T](v)
-}
-
-trait JsRefSyntax {
-  implicit def refToJsRefOps[T](v: ReactRef[T]): JsRefOps[T] = JsRefOps(v)
-}
+trait JsRefSyntax:
+  extension [T](v: ReactRef[T])
+    inline def toDyn: js.Dynamic = refToJs[T](v)
 
 trait AllSyntax
     extends ComponentSyntax
     with ValueSyntax
-    with JsDynamicSyntax
-    with JsObjectSyntax
+    with JSDynamicSyntax
+    with JSObjectSyntax
     with JsAnySyntax
     with OrNullSyntax
     with ScalaMappedSyntax
@@ -50,13 +46,13 @@ trait AllSyntax
     with OrSyntax
     with JSArraySyntax
 
-object syntax {
+object syntax:
   object all extends AllSyntax
   object component extends ComponentSyntax
   object value extends ValueSyntax
-  object jsdynamic extends JsDynamicSyntax
+  object jsdynamic extends JSDynamicSyntax
   object jsundefor extends JsUndefOrSyntax
-  object jsobject extends JsObjectSyntax
+  object jsobject extends JSObjectSyntax
   object jsany extends JsAnySyntax
   object scalaany extends ScalaMappedSyntax
   object ornull extends OrNullSyntax
@@ -67,4 +63,3 @@ object syntax {
   object context extends ContextSyntax
   object or extends OrSyntax
   object jsarray extends JSArraySyntax
-}

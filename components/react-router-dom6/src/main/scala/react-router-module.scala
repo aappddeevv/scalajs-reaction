@@ -84,44 +84,40 @@ trait Location[+S] extends js.Object {
  */
 
 /** More specific types when returning from `useLocation`. */
-trait Location[S] extends js.Object {
+trait Location[S] extends js.Object:
   val pathname: Pathname
   val search: Search
   def state[U >: S]: U
   val hash: Hash
   val key: LocationKey
-}
 
-object Location {
+object Location:
   implicit class RichLocation[S](private val location: Location[S]) extends AnyVal {
     def toLocationInit: LocationInit[S] = location.asInstanceOf[LocationInit[S]]
     def toLocationPieces: LocationPieces[S] = location.asInstanceOf[LocationPieces[S]]
   }
-}
+
 
 @js.native
-trait ResolvedLocation extends js.Object {
+trait ResolvedLocation extends js.Object:
   val pathname: Pathname
   val search: Search
   val hash: Hash
-}
 
 // history
 @js.native
-trait Update[S] extends js.Object {
+trait Update[S] extends js.Object:
   val action: Action = js.native
   val location: Location[S] = js.native
-}
 
 // history
 @js.native
-trait Transition[S] extends Update[S] {
+trait Transition[S] extends Update[S]:
   def retry(): Unit = js.native
-}
 
 // history
 @js.native
-trait History[S] extends js.Object {
+trait History[S] extends js.Object:
   val action: Action = js.native
   val location: Location[S] = js.native
   def createHref(to: To): String = js.native
@@ -132,41 +128,36 @@ trait History[S] extends js.Object {
   def forward(): Unit = js.native
   //def listen(listener: Listener[S]): js.Function0[Unit] = js.native
   def block(blocker: Blocker[S]): js.Function0[Unit] = js.native
-}
 
 @js.native
-trait Navigator[S] extends js.Object {
+trait Navigator[S] extends js.Object:
   val action: Action = js.native
   def createHref(to: To): String = js.native
   def push(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
   def replace(to: To, state: js.UndefOr[S] = js.undefined): Unit = js.native
   def go(n: Int): Unit = js.native
   def block(blocker: Blocker[S]): js.Function0[Unit] = js.native
-}
 
 /** Very similar to what you provide to the Route component. */
-trait RouteSpecElement extends js.Object {
+trait RouteSpecElement extends js.Object:
   val path: String
   val element: js.UndefOr[ReactNode] = js.undefined
   val children: js.UndefOr[RouteSpec] = js.undefined
-}
 
-trait RouteSpecRouteTo extends js.Object {
+trait RouteSpecRouteTo extends js.Object:
   val path: String
   // not sure this is right, some docs list redirectTo:
   val location: js.UndefOr[Location[_] | String] = js.undefined
-}
 
 @js.native
-trait UnblockingTx extends js.Object {}
+trait UnblockingTx extends js.Object
 
-trait NavigateOptions[S] extends js.Object {
+trait NavigateOptions[S] extends js.Object:
   var replace: js.UndefOr[Boolean] = js.undefined
   var state: js.UndefOr[S] = js.undefined
-}
 
 @js.native
-trait NavigateFunction extends js.Object {
+trait NavigateFunction extends js.Object:
   def apply(to: To): Unit = js.native
 
   @JSName("apply")
@@ -184,42 +175,37 @@ trait NavigateFunction extends js.Object {
 
   @JSName("apply")
   def toPath(to: String, options: NavigateOptions[_]): Unit = js.native
-}
 
-trait PathPatternParts {
+trait PathPatternParts:
   val path: String
   var caseSensitive: js.UndefOr[Boolean] = js.undefined
   var end: js.UndefOr[Boolean] = js.undefined
-}
 
 @js.native
-trait PathMatch extends js.Object {
+trait PathMatch extends js.Object:
   val path: String = js.native
   val pathname: String = js.native
   def params[P <: js.Object]: P = js.native
   @JSName("params")
   val paramsDict: js.Dictionary[String] = js.native
-}
 
-trait PartialRouteObject extends js.Object {
+trait PartialRouteObject extends js.Object:
   var path: js.UndefOr[String] = js.undefined
   var caseSensitive: js.UndefOr[Boolean] = js.undefined
   var element: js.UndefOr[ReactNode] = js.undefined
   //var preload: js.UndefOr[RoutePreloadFunction[_]] = js.undefined
   var children: js.UndefOr[js.Array[PartialRouteObject]] = js.undefined
-}
 
 @js.native
-trait RouteObject extends js.Object {
+trait RouteObject extends js.Object:
   var path: String = js.native
   var caseSensitive: Boolean = js.native
   var element: ReactNode = js.native
   var children: js.UndefOr[js.Array[PartialRouteObject]] = js.native
-}
 
 /** Some hooks are defined in the package itself. */
 @js.native
-trait Hooks extends js.Object {
+trait Hooks extends js.Object:
   def useBlocker[S](blocker: Blocker[S], when: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   //def useHref[S](to: To): String = js.native
   def useInRouterContext(): Boolean = js.native
@@ -241,10 +227,9 @@ trait Hooks extends js.Object {
     routes: js.Array[PartialRouteObject],
     basename: js.UndefOr[String] = js.undefined
   ): ReactNode = js.native
-}
 
 @js.native
-trait Utils extends js.Object {
+trait Utils extends js.Object:
   def createRoutesFromChildren(children: js.UndefOr[js.Any] = js.undefined): js.Array[RouteObject] = js.native
   def createRoutesFromArray(array: js.Array[PartialRouteObject]): js.Array[RouteObject] = js.native
   def matchPath(pattern: PathPattern, pathname: String): PathMatch | Null = js.native
@@ -255,13 +240,12 @@ trait Utils extends js.Object {
     caseSensitive: js.UndefOr[Boolean] = js.undefined): Location[S] | Null = js.native
   def resolveLocation[S](to: Location[S] | String, fromPathName: String): Location[S] = js.native
   def generatePath(pathname: String, params: js.Dictionary[String] | js.Object): String = js.native
-}
 
 @js.native
 @JSImport("react-router", JSImport.Namespace)
 object module extends Hooks with Utils
 
-object MemoryRouter {
+object MemoryRouter:
   @js.native
   @JSImport("react-router", "MemoryRouter")
   object JS extends ReactJSComponent
@@ -272,14 +256,12 @@ object MemoryRouter {
   def apply(children: ReactNode*) =
     createElement(JS, null, children: _*)
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var initialEntries: js.UndefOr[js.Array[InitialEntry[_]]] = js.undefined
     var initialIndex: js.UndefOr[Int] = js.undefined
     var timeout: js.UndefOr[Int] = js.undefined
-  }
-}
 
-object Navigate {
+object Navigate:
   @js.native
   @JSImport("react-router", "Navigate")
   object JS extends ReactJSComponent
@@ -319,22 +301,19 @@ object Navigate {
         "state" -> state
       ))
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     val to: To
     var replace: js.UndefOr[Boolean] = js.undefined
-    var state: js.UndefOr[_] = js.undefined
-  }
-}
+    var state: js.UndefOr[Any] = js.undefined
 
-object Outlet {
+object Outlet:
   @js.native
   @JSImport("react-router", "Outlet")
   object JS extends ReactJSComponent
 
   def apply(): ReactNode = createElement(JS, null)
-}
 
-object Route {
+object Route:
   @js.native
   @JSImport("react-router", "Route")
   object JS extends ReactJSComponent
@@ -373,14 +352,12 @@ object Route {
   def indexNested(element: ReactNode)(children: ReactNode*) =
     createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children: _*)
 
-  trait Props extends MaybeHasStrKey {
+  trait Props extends MaybeHasStrKey:
     var caseSensitive: js.UndefOr[Boolean] = js.undefined
     var path: js.UndefOr[String] = js.undefined
     var element: js.UndefOr[ReactNode] = js.undefined
-  }
-}
 
-object Router {
+object Router:
   @js.native
   @JSImport("react-router", "Router")
   object JS extends ReactJSComponent
@@ -391,16 +368,14 @@ object Router {
   def apply(children: ReactNode*) =
     createElement(JS, null, children: _*)
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var action: js.UndefOr[Action] = js.undefined
     val location: Location[_]
     val navigator: Navigator[_]
     var pending: js.UndefOr[Boolean] = js.undefined
     var static: js.UndefOr[Boolean] = js.undefined
-  }
-}
 
-object Routes {
+object Routes:
   @js.native
   @JSImport("react-router", "Routes")
   object JS extends ReactJSComponent
@@ -412,9 +387,7 @@ object Routes {
     createElement(JS, null, children: _*)
 
   def basename(bname: js.UndefOr[String], children: ReactNode*) =
-    createElement(JS, new Props { basename = bname }, children: _*)
+    createElement(JS, new Props { this.basename = bname }, children: _*)
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var basename: js.UndefOr[String] = js.undefined
-  }
-}

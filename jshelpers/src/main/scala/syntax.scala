@@ -20,13 +20,11 @@
  */
 
 package jshelpers
-
-import scala.scalajs.js
-import js._
+package syntax
 
 trait AllSyntax
-    extends JsDynamicSyntax
-    with JsObjectSyntax
+    extends JSDynamicSyntax
+    with JSObjectSyntax
     with JsAnySyntax
     with OrNullSyntax
     with ScalaMappedSyntax
@@ -35,19 +33,17 @@ trait AllSyntax
     with MiscOrSyntax
     with JSPromiseSyntax
     with OrSyntax
-    with JSArraySyntax
+    with JSArraySyntax    
 
-object syntax {
-  object all extends AllSyntax
-  object jsdynamic extends JsDynamicSyntax
-  object jsundefor extends JsUndefOrSyntax
-  object jsobject extends JsObjectSyntax
-  object jsany extends JsAnySyntax
-  object scalaany extends ScalaMappedSyntax
-  object ornull extends OrNullSyntax
-  object option extends OptionSyntax
-  object miscor extends MiscOrSyntax
-  object jspromise extends JSPromiseSyntax
-  object or extends OrSyntax
-  object jsarray extends JSArraySyntax
-}
+object all extends AllSyntax
+object jsdynamic extends JSDynamicSyntax
+object jsundefor extends JsUndefOrSyntax
+object jsobject extends JSObjectSyntax
+object jsany extends JsAnySyntax
+object scalaany extends ScalaMappedSyntax
+object ornull extends OrNullSyntax
+object option extends OptionSyntax
+object miscor extends MiscOrSyntax
+object jspromise extends JSPromiseSyntax
+object or extends OrSyntax
+object jsarray extends JSArraySyntax

@@ -34,9 +34,9 @@ package object link extends link.core.types_module with http.http_module with co
 
   @js.native
   @JSImport("@apollo/client/link/http/createHttpLink", "createHttpLink")
-  def createHttpLink(linkOptions: HttpOptions): ApolloLink = js.native
+  def createHttpLink(linkOptions: HttpOptions): ApolloLink[?] = js.native
 
   @js.native
   @JSImport("@apollo/client/link/context", "setContext")
-  def setContext[C](setter: ContextSetter[C]): ApolloLink = js.native
+  def setContext[C](setter: ContextSetter[C]): ApolloLink[?] = js.native
 }

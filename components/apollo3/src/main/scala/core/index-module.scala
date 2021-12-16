@@ -28,6 +28,7 @@ import js.|
 import js.annotation._
 
 /** Common base for value. */
+/*
 trait FetchPolicies[T] {
   val cacheFirst = "cache-first".asInstanceOf[T]
   val networkOnly = "network-only".asInstanceOf[T]
@@ -59,3 +60,9 @@ object ErrorPolicy {
   val ignore = "ignore".asInstanceOf[ErrorPolicy]
   val all = "all".asInstanceOf[ErrorPolicy]
 }
+*/
+type FetchPolicies = "cache-first" | "network-only" | "cache-only" | "standby"
+type MutationFetchPolicy = FetchPolicies
+type FetchPolicy = FetchPolicies | "no-cache"
+type WatchQueryFetchPolicy = FetchPolicies | "no-cache" | "cache-and-network"
+type ErrorPolicy = FetchPolicies | "none" | "ignore" | "all"

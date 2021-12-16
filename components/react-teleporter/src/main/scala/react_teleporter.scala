@@ -19,15 +19,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package react_teleporter
+
 import scala.scalajs.js
 import js.annotation._
 
-package object react_teleporter {
-  import react_teleporter._
 
-  @js.native
-  @JSImport("react-teleporter", "createTeleporter")
-  def createTeleporter[TC <: js.Object](options: js.UndefOr[TeleporterOptions] = js.undefined): Teleporter[TC] =
-    js.native
+@js.native
+@JSImport("react-teleporter", "createTeleporter")
+def createTeleporter[TC <: js.Object](options: js.UndefOr[TeleporterOptions] = js.undefined): Teleporter[TC] =
+  js.native
 
-}

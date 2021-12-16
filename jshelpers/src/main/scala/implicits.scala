@@ -24,4 +24,4 @@ package jshelpers
 /* Include these to get automatic type conversions. They are optional but
  * exceptionally helpful.  These can be included ala carte.
  */
-object implicits extends AllSyntax with AllInstances
+object implicits extends syntax.AllSyntax with AllInstances

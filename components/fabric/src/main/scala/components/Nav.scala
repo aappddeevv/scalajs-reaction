@@ -47,7 +47,7 @@ object Nav {
 
   @js.native
   trait INav extends js.Object {
-    var selectedKey: js.UndefOr[String] = js.undefined
+    var selectedKey: js.UndefOr[String] = js.native
   }
 
   trait StyleProps extends js.Object {

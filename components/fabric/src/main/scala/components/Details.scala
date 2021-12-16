@@ -362,7 +362,7 @@ object Details {
       var selectionMode: js.UndefOr[SelectionMode] = js.undefined
       var selectionPreservedOnEmptyClick: js.UndefOr[Boolean] = js.undefined
       var setKey: js.UndefOr[String] = js.undefined
-      var styles: js.UndefOr[IStyleFunctionOrObject[_ <: StyleProps, _ <: Styles]] = js.undefined
+      var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
       var usePageCache: js.UndefOr[Boolean] = js.undefined
     }
 

@@ -35,8 +35,8 @@ import client3.core._
 
 @js.native
 trait ApolloContextValue extends js.Object {
-  val client: js.UndefOr[ApolloClient[js.Object]] = js.undefined
-  val renderPromises: js.UndefOr[js.Object] = js.undefined
+  val client: js.UndefOr[ApolloClient[js.Object]] = js.native
+  val renderPromises: js.UndefOr[js.Object] = js.native
 }
 
 trait CommonOptions extends js.Object {

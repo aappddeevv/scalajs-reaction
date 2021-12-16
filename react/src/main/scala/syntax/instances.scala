@@ -21,10 +21,10 @@
 
 package react
 
-import scala.util._
+import scala.util.*
 import scala.scalajs.js
-import js.JSConverters._
-import js._
+import js.JSConverters.*
+import js.*
 
 /** Encode a value to a ReactNode. This can only be used for
  * values that are themselves directly renderable because if you want
@@ -76,17 +76,17 @@ trait ValueConverters {
   implicit def jsArrayOfNodeToElement[T <: ReactNode](arr: js.Array[T]): ReactNode = arrayToElement(arr)
 
   /** Critical to handling varargs in component children lists. */
-  implicit def seqOfNodeToElement(s: Seq[ReactNode]): ReactNode = arrayToElement(s.toJSArray)
+  implicit val seqOfNodeToElement: Conversion[Seq[ReactNode], ReactNode] = s => arrayToElement(s.toJSArray)
 
-  implicit def iterableOfNodeToElement(s: Iterable[ReactNode]): ReactNode = arrayToElement(s.toJSArray)
+  implicit val iterableOfNodeToElement: Conversion[Iterable[ReactNode], ReactNode] = x => arrayToElement(x.toJSArray)
 
-  implicit def anyValToElement(v: AnyVal): ReactNode = v.asInstanceOf[ReactNode]
+  implicit val anyValToElement: Conversion[AnyVal, ReactNode] = _.asInstanceOf[ReactNode]
 
-  implicit def undefOrAnyValToElement(v: js.UndefOr[AnyVal]): ReactNode =
-    v.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode)
+  implicit val undefOrAnyValToElement: Conversion[js.UndefOr[AnyVal], ReactNode] = 
+    v => v.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode)
 
-  implicit def nullOrAnyValToElement(v: AnyVal | Null): ReactNode =
-    if (v == null) nullNode else v.asInstanceOf[ReactNode]
+  implicit val nullOrAnyValToElement: Conversion[AnyVal | Null, ReactNode] = 
+    v => if (v == null) nullNode else v.asInstanceOf[ReactNode]
 
   implicit def _stringToElement(s: String): ReactNode = s.asInstanceOf[ReactNode]
 
@@ -100,20 +100,20 @@ trait ValueConverters {
 //      if(n == null) nullNode else n.asInstanceOf[Node]
 
   /** Since null is a valid react node, convert an optional string to null. */
-  implicit def optionStringToElement(n: Option[String]): ReactNode =
-    n.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode)
+  implicit val optionStringToElement: Conversion[Option[String], ReactNode] =
+    n => n.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode)
 
   /** Since null is a valid react node, convert an optional string to null. */
-  implicit def optionStringToUndefOrElement(n: Option[String]): js.UndefOr[ReactNode] =
-    js.defined(n.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode))
+  implicit val optionStringToUndefOrElement: Conversion[Option[String], js.UndefOr[ReactNode]] =
+    n => js.defined(n.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode))
 
   /** Implicit conversion from Option[String] => js.UndefOr[String]. */
   implicit def optionStringToUndefOr(n: Option[String]): js.UndefOr[String] = n.orUndefined
 
-    implicit def undefNullStringToNode(v: js.UndefOr[String|Null]) = v.asInstanceOf[ReactNode]
-     implicit def undefNullIntToNode(v: js.UndefOr[Int|Null]) = v.asInstanceOf[ReactNode]
-      implicit def undefNullDoubleToNode(v: js.UndefOr[Double|Null]) = v.asInstanceOf[ReactNode]
-  
+  implicit def undefNullStringToNode(v: js.UndefOr[String|Null]): ReactNode = v.asInstanceOf[ReactNode]
+  implicit def undefNullIntToNode(v: js.UndefOr[Int|Null]): ReactNode = v.asInstanceOf[ReactNode]
+  implicit def undefNullDoubleToNode(v: js.UndefOr[Double|Null]): ReactNode = v.asInstanceOf[ReactNode]
+
   implicit def optToElement(s: Option[ReactNode]): ReactNode =
     s.getOrElse(nullNode)
 
@@ -161,7 +161,7 @@ trait AllInstances extends jshelpers.AllInstances with ValueConverters with Valu
  * instances--but close enough as they are not syntax extensions "'element'
  * converters" would be better similiar to `JSConverters` in scala.js.
  */
-object instances extends jshelpers.Instances {
+object instances extends jshelpers.InstancesTrait {
   object all extends AllInstances
   object value extends ValueConverters with ValueInstances
 }

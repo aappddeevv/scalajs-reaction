@@ -39,7 +39,7 @@ trait Snapshot extends js.Object {
   def asyncMap(cb: js.Function1[MutableSnapshot, js.Thenable[Unit]]): js.Promise[Snapshot] = js.native
   
   // unstable API
-  def getNodes_UNSTABLE(opts: js.Dynamic): js.Iterable[RecoilValue[_]]
+  def getNodes_UNSTABLE(opts: js.Dynamic): js.Iterable[RecoilValue[Any]]
 }
 
 // keep in sync with SetRecoilState, ResetRecoilState
@@ -170,17 +170,17 @@ abstract trait LoadableValue[+T] extends js.Object
 
 @js.native
 trait LoadableStrict[+T] extends LoadableValue[T] {
-  val state: "hasValue" = js.native
+  val state: "hasValue"// = js.native
   val contents: T = js.native
 }
 @js.native
 trait LoadableError[+T] extends LoadableValue[T] {
-  val state: "hasError" = js.native
+  val state: "hasError"// = js.native
   val contents: js.Error = js.native
 }
 @js.native
 trait LoadableEffect[+T] extends LoadableValue[T] with Accessors[T] {
-  val state: "loading" = js.native
+  val state: "loading"// = js.native
   def contents[U >: T]: LoadablePromise[U] = js.native
 }
 

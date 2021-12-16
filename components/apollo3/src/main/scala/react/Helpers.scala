@@ -24,14 +24,17 @@ package client3
 package react
 
 import scala.scalajs.js
-import js.annotation._
-import js.|
+import js.annotation.*
 
-import client3.link._
-import client3.core._
-import client3.utilities._
-import client3.errors._
-import graphql._
+import client3.link.*
+import client3.core.*
+import client3.utilities.*
+import client3.errors.*
+import graphql.*
+
+import scala.language.implicitConversions
+import jshelpers.syntax.all.given
+import jshelpers.{given, *}
 
 trait ApolloClientOptionsMaker[T, TVars] {
 
@@ -51,15 +54,15 @@ trait ApolloClientOptionsMaker[T, TVars] {
   ) = {
     val __obj = js.Dynamic
       .literal(
-        "query" -> query,
-        "errorPolicy" -> errorPolicy,
-        "context" -> context,
-        "fetchResult" -> fetchResults,
-        "metadata" -> metadata,
-        "fetchPolicy" -> fetchPolicy
+        "query" -> query.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "context" -> context.asJSAny,
+        "fetchResult" -> fetchResults.asJSAny,
+        "metadata" -> metadata.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDynamic("variables")(unsafeVariables)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDynamic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[QueryOptions[TVars]]
   }
 }
@@ -87,23 +90,23 @@ trait OptionsMaker[T, TVars] extends ApolloClientOptionsMaker[T, TVars] {
   ) = {
     val __obj = js.Dynamic
       .literal(
-        "query" -> query,
-        "displayName" -> displayName,
-        "onCompleted" -> onCompleted,
-        "onError" -> onError,
-        "ssr" -> ssr,
-        "fetchPolicy" -> fetchPolicy,
-        "errorPolicy" -> errorPolicy,
-        "pollInterval" -> pollInterval,
-        "client" -> client,
-        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
-        "context" -> context,
-        "partialRefetch" -> partialRefetch,
-        "returnPartialData" -> returnPartialData,
-        "skip" -> skip,
+        "query" -> query.asJSAny,
+        "displayName" -> displayName.asJSAny,
+        "onCompleted" -> onCompleted.asJSAny,
+        "onError" -> onError.asJSAny,
+        "ssr" -> ssr.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "pollInterval" -> pollInterval.asJSAny,
+        "client" -> client.asJSAny,
+        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange.asJSAny,
+        "context" -> context.asJSAny,
+        "partialRefetch" -> partialRefetch.asJSAny,
+        "returnPartialData" -> returnPartialData.asJSAny,
+        "skip" -> skip.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[QueryHookOptions[T, TVars]]
   }
 }
@@ -156,23 +159,23 @@ case class UseLazyQuery[T, TVars]() extends ApolloClientOptionsMaker[T, TVars] {
   ) = {
     val __obj = js.Dynamic
       .literal(
-        "query" -> query,
-        "displayName" -> displayName,
-        "onCompleted" -> onCompleted,
-        "onError" -> onError,
-        "ssr" -> ssr,
-        "fetchPolicy" -> fetchPolicy,
-        "errorPolicy" -> errorPolicy,
-        "pollInterval" -> pollInterval,
-        "client" -> client,
-        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
-        "context" -> context,
-        "partialRefetch" -> partialRefetch,
-        "returnPartialData" -> returnPartialData,
-        "skip" -> skip,
+        "query" -> query.asJSAny,
+        "displayName" -> displayName.asJSAny,
+        "onCompleted" -> onCompleted.asJSAny,
+        "onError" -> onError.asJSAny,
+        "ssr" -> ssr.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "pollInterval" -> pollInterval.asJSAny,
+        "client" -> client.asJSAny,
+        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange.asJSAny,
+        "context" -> context.asJSAny,
+        "partialRefetch" -> partialRefetch.asJSAny,
+        "returnPartialData" -> returnPartialData.asJSAny,
+        "skip" -> skip.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[LazyQueryHookOptions[T, TVars]]
   }
 
@@ -184,10 +187,10 @@ case class UseLazyQuery[T, TVars]() extends ApolloClientOptionsMaker[T, TVars] {
   ) = {
     val __obj = js.Dynamic
       .literal(
-        "context" -> context,
+        "context" -> context.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[QueryLazyOptions[TVars]]
   }
 }
@@ -228,20 +231,20 @@ case class UseMutation[T, TVars]() {
   ) = {
     val __obj = js.Dynamic
       .literal(
-        "awaitRefetchQueries" -> awaitRefetchQueries,
-        "client" -> client,
-        "context" -> context,
-        "errorPolicy" -> errorPolicy,
-        "fetchPolicy" -> fetchPolicy,
-        "igoreResults" -> ignoreResults,
-        "mutation" -> mutation,
-        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange,
-        "onCompleted" -> onCompleted,
-        "onError" -> onError,
-        "update" -> update,
+        "awaitRefetchQueries" -> awaitRefetchQueries.asJSAny,
+        "client" -> client.asJSAny,
+        "context" -> context.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "igoreResults" -> ignoreResults.asJSAny,
+        "mutation" -> mutation.asJSAny,
+        "notifyOnNetworkStatusChange" -> notifyOnNetworkStatusChange.asJSAny,
+        "onCompleted" -> onCompleted.asJSAny,
+        "onError" -> onError.asJSAny,
+        "update" -> update.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[MutationHookOptions[T, TVars]]
   }
 
@@ -262,17 +265,17 @@ case class UseMutation[T, TVars]() {
   ) = {
     val __obj = js.Dynamic
       .literal(
-        "context" -> context,
-        "fetchPolicy" -> fetchPolicy,
-        "update" -> update,
-        "refetchQueries" -> refetchQueriesByName,
-        "awaitRefetchQueries" -> awaitRefetchQueries,
+        "context" -> context.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "update" -> update.asJSAny,
+        "refetchQueries" -> refetchQueriesByName.asJSAny,
+        "awaitRefetchQueries" -> awaitRefetchQueries.asJSAny,
       )
     if (optimisticResponseStrict.isDefined)
-      __obj.updateDynamic("optimisticResponse")(optimisticResponseStrict.asInstanceOf[js.Any])
-    if (optimisticResponse.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponse)
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+      __obj.updateDynamic("optimisticResponse")(optimisticResponseStrict.unsafeAsJSAny)
+    if (optimisticResponse.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponse.unsafeAsJSAny)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[MutationFunctionOptions[T, TVars]]
   }
 
@@ -296,16 +299,16 @@ case class UseMutation[T, TVars]() {
     val __obj = js.Dynamic
       .literal(
         "mutation" -> mutation,
-        "context" -> context,
-        "fetchPolicy" -> fetchPolicy,
-        "errorPolicy" -> errorPolicy,
-        "update" -> update,
-        "awaitRefetchQueries" -> awaitRefetchQueries,
-        "updateQueries" -> updateQueries,
-        "optimisticResponse" -> optimisticResponse.asInstanceOf[js.Any],
+        "context" -> context.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "update" -> update.asJSAny,
+        "awaitRefetchQueries" -> awaitRefetchQueries.asJsAny,
+        "updateQueries" -> updateQueries.asJsAny,
+        "optimisticResponse" -> optimisticResponse.unsafeAsJSAny
       )
     if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.asJsAny)
     __obj.asInstanceOf[MutationOptions[T, TVars]]
   }
 }

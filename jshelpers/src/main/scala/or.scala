@@ -25,16 +25,13 @@ import scala.scalajs.js
 import js.|
 
 /** Hmm...we could really tighten this up by doing |.merge and typing the picks. */
-final case class JsOrOps[A, B](o: A | B) {
-  def pickLeft = o.asInstanceOf[A]
-  def pickRight = o.asInstanceOf[B]
+trait OrSyntax:
+  extension [A, B](o: A | B)
+    def pickLeft = o.asInstanceOf[A]
+    def pickRight = o.asInstanceOf[B]
 
 //   def as[A](implicit ev: A <:< |[A,B]) = (o.merge: scala.Any) match {
 //     case a: A if o.instanceOf[A] => Left(a)
 //     case b: B if o.instanceOf[B] => Right(b)
 //   }
-}
 
-trait OrSyntax {
-  implicit def jsOrSyntax[A, B](a: A | B): JsOrOps[A,B] = new JsOrOps(a)
-}

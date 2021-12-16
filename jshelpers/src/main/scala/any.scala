@@ -22,7 +22,6 @@
 package jshelpers
 
 import scala.scalajs.js
-import js.|
 
 /** Restrict T in subtype to something js.* related. */
 trait AnyOps[T] {
@@ -131,7 +130,7 @@ trait JsAnySyntax {
  */
 final class ScalaMappedOps[T <: scala.Any](protected val a: T) extends AnyOps[T] {
   ///** Very dangerous! You should know what you are doing. */
-  @inline def unsafeAsJsAny = a.asInstanceOf[js.Any]
+  //@inline def unsafeAsJsAny = a.asInstanceOf[js.Any]
   @inline def unsafeAsJsObject = a.asInstanceOf[js.Object]
 }
 

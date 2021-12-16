@@ -33,7 +33,7 @@ class PlotlyJSArrayOps[T](private val arr: js.Array[T]) extends AnyVal {
   def asDatumArr: js.Array[Datum] = arr.asInstanceOf[js.Array[Datum]]
 }
 
-trait syntax {
+trait syntax:
   /*implicit def intArrayToDatumArray(arr: js.Array[Int]) = new JSArrayOps[Int](arr)
   implicit def longArrayToDatumArray(arr: js.Array[Long]) = new JSArrayOps[Long](arr)
   implicit def floatArrayToDatumArray(arr: js.Array[Float]) = new JSArrayOps[Float](arr)
@@ -43,34 +43,29 @@ trait syntax {
   implicit def nullArrayToDatumArray(arr: js.Array[Null]) = new JSArrayOps[Null](arr)
   implicit def anyArrayToDatumArray(arr: js.Array[Any]) = new JSArrayOps[Any](arr)
    */
-  implicit def arrayToDatumArray[T](arr: js.Array[T]) = new PlotlyJSArrayOps[T](arr)
-}
+  implicit def arrayToDatumArray[T](arr: js.Array[T]): PlotlyJSArrayOps[T] = new PlotlyJSArrayOps[T](arr)
 
 object syntax extends syntax
 
 /*@jsenrich */
-trait Font extends js.Object {
+trait Font extends js.Object:
   var family: js.UndefOr[String] = js.undefined
   var size: js.UndefOr[Int] = js.undefined
   var color: js.UndefOr[String | Int] = js.undefined
-}
 
-object Font {
+object Font:
   def apply(
     family: js.UndefOr[String] = js.undefined,
     size: js.UndefOr[Int] = js.undefined,
     color: js.UndefOr[String | Int] = js.undefined,
-  ) = {
+  ) =
     val _family = family
     val _size = size
     val _color = color
-    new Font {
-      family = _family
-      size = _size
-      color = _color
-    }
-  }
-}
+    new Font: 
+      this.family = _family
+      this.size = _size
+      this.color = _color  
 
 /*@jsenrich */
 trait Title extends js.Object {
@@ -83,7 +78,7 @@ trait Title extends js.Object {
   var yanchor: js.UndefOr[Double] = js.undefined
 }
 
-object Title {
+object Title:
   def apply(
     text: js.UndefOr[String] = js.undefined,
     font: js.UndefOr[Font] = js.undefined,
@@ -92,7 +87,7 @@ object Title {
     xanchor: js.UndefOr[Double] = js.undefined,
     y: js.UndefOr[Double] = js.undefined,
     yanchor: js.UndefOr[Double] = js.undefined,
-  ) = {
+  ) =
     val _text = text
     val _font = font
     val _xref = xref
@@ -100,22 +95,18 @@ object Title {
     val _xanchor = xanchor
     val _y = y
     val _yanchor = yanchor
-    new Title {
-      text = _text
-      font = _font
-      xref = _xref
-      x = _x
-      xanchor = _xanchor
-      y = y
-      yanchor = _yanchor
-    }
-  }
+    new Title:
+      this.text = _text
+      this.font = _font
+      this.xref = _xref
+      this.x = _x
+      this.xanchor = _xanchor
+      this.y = _y
+      this.yanchor = _yanchor
 
-  def apply(text: String): Title = {
+  def apply(text: String): Title =
     val _text = text
     Title.apply(text = _text)
-  }
-}
 
 /*@jsenrich */
 trait DataTitle extends js.Object {
@@ -725,73 +716,73 @@ object Axis {
     val _zerolinecolor = zerolinecolor
     val _zerolinewidth = zerolinewidth
 
-    new Axis {
-      anchor = _anchor
-      autorange = _autorange
-      automargin = _automargin
-      categoryorder = _categoryorder
-      calendar = _calendar
-      color = _color
-      constrain = _constrain
-      constraintoward = _constraintoward
-      domain = _domain
-      dtick = _dtick
-      dividercolor = _dividercolor
-      dividerwidth = _dividerwidth
-      fixedrange = _fixedrange
-      exponentformat = _exponentformat
-      gridcolor = _gridcolor
-      gridwidth = _gridwidth
-      hoverformat = _hoverformat
-      layer = _layer
-      linecolor = _linecolor
-      linewidth = _linewidth
-      matches = _matches
-      mirror = _mirror
-      nticks = _nticks
-      overlaying = _overlaying
-      position = _position
-      range = _range
-      rangemode = _rangemode
-      scaleanchor = _scaleanchor
-      scaleratio = _scaleratio
-      separatethousands = _separatethousands
-      showspikes = _showspikes
-      showline = _showline
-      showexponent = _showexponent
-      showdividers = _showdividers
-      showticklabels = _showticklabels
-      showtickprefix = _showtickprefix
-      showgrid = _showgrid
-      side = _side
-      spikecolor = _spikecolor
-      spikethickness = _spikethickness
-      spikedash = _spikedash
-      spikemode = _spikemode
-      spikesnap = _spikesnap
-      tick0 = _tick0
-      tickformat = _tickformat
-      tickmode = _tickmode
-      tickfont = _tickfont
-      tickangle = _tickangle
-      tickformatstops = _tickformatstops
-      tickprefix = _tickprefix
-      ticklen = _ticklen
-      tickwidth = _tickwidth
-      tickcolor = _tickcolor
-      tickvals = _tickvals
-      ticksuffix = _ticksuffix
-      ticktext = _ticktext
-      ticks = _ticks
-      tickson = _tickson
-      `type` = _type
-      title = _title
-      uirevision = _uirevision
-      visible = _visible
-      zeroline = _zeroline
-      zerolinecolor = _zerolinecolor
-      zerolinewidth = _zerolinewidth
-    }
+    new Axis:
+      this.anchor = _anchor
+      this.autorange = _autorange
+      this.automargin = _automargin
+      this.categoryorder = _categoryorder
+      this.calendar = _calendar
+      this.color = _color
+      this.constrain = _constrain
+      this.constraintoward = _constraintoward
+      this.domain = _domain
+      this.dtick = _dtick
+      this.dividercolor = _dividercolor
+      this.dividerwidth = _dividerwidth
+      this.fixedrange = _fixedrange
+      this.exponentformat = _exponentformat
+      this.gridcolor = _gridcolor
+      this.gridwidth = _gridwidth
+      this.hoverformat = _hoverformat
+      this.layer = _layer
+      this.linecolor = _linecolor
+      this.linewidth = _linewidth
+      this.matches = _matches
+      this.mirror = _mirror
+      this.nticks = _nticks
+      this.overlaying = _overlaying
+      this.position = _position
+      this.range = _range
+      this.rangemode = _rangemode
+      this.scaleanchor = _scaleanchor
+      this.scaleratio = _scaleratio
+      this.separatethousands = _separatethousands
+      this.showspikes = _showspikes
+      this.showline = _showline
+      this.showexponent = _showexponent
+      this.showdividers = _showdividers
+      this.showticklabels = _showticklabels
+      this.showtickprefix = _showtickprefix
+      this.showgrid = _showgrid
+      this.side = _side
+      this.spikecolor = _spikecolor
+      this.spikethickness = _spikethickness
+      this.spikedash = _spikedash
+      this.spikemode = _spikemode
+      this.spikesnap = _spikesnap
+      this.tick0 = _tick0
+      this.tickformat = _tickformat
+      this.tickmode = _tickmode
+      this.tickfont = _tickfont
+      this.tickangle = _tickangle
+      this.tickformatstops = _tickformatstops
+      this.tickprefix = _tickprefix
+      this.ticklen = _ticklen
+      this.tickwidth = _tickwidth
+      this.tickcolor = _tickcolor
+      this.tickvals = _tickvals
+      this.ticksuffix = _ticksuffix
+      this.ticktext = _ticktext
+      this.ticks = _ticks
+      this.tickson = _tickson
+      this.`type` = _type
+      this.title = _title
+      this.uirevision = _uirevision
+      this.visible = _visible
+      this.zeroline = _zeroline
+      this.zerolinecolor = _zerolinecolor
+      this.zerolinewidth = _zerolinewidth
+
   }
 }
 
@@ -945,41 +936,36 @@ trait Config extends js.Object {
 }
 
 /*@jsenrich */
-trait Point extends js.Object {
+trait Point extends js.Object:
   var x: js.UndefOr[Double] = js.undefined
   var y: js.UndefOr[Double] = js.undefined
   var z: js.UndefOr[Double] = js.undefined
-}
 
 trait PlotScatterDataPoint extends js.Object {}
 
 trait PlotDatum extends js.Object {}
 
 @js.native
-trait PlotCoordinate extends js.Object {
+trait PlotCoordinate extends js.Object:
   val x: Double = js.native
   val y: Double = js.native
   val pointnumber: Double = js.native
-}
 
 @js.native
-trait PlotSelectionEvent extends js.Object {
+trait PlotSelectionEvent extends js.Object:
   val points: js.Array[PlotDatum] = js.native
-  val range: js.UndefOr[SelectionRange] = js.undefined
-  val lassoPoints: js.UndefOr[SelectionRange] = js.undefined
-}
+  var range: js.UndefOr[SelectionRange] = js.native
+  var lassoPoints: js.UndefOr[SelectionRange] = js.native
 
 @js.native
-trait SelectionRange extends js.Object {
+trait SelectionRange extends js.Object:
   val x: js.Array[Double]
   val y: js.Array[Double]
-}
 
 @js.native
-trait PlotMouseEvent extends js.Object {
+trait PlotMouseEvent extends js.Object:
   val points: js.Array[PlotDatum]
   val event: dom.MouseEvent
-}
 
 @js.native
 abstract trait HoverInfo extends js.Any

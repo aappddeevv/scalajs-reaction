@@ -235,7 +235,7 @@ object FieldArray {
   trait Props extends js.Object {}
 }
 
-object Form {
+object Form:
   @js.native
   @JSImport("formik", "Form")
   object JS extends ReactJSComponent
@@ -244,30 +244,26 @@ object Form {
     createElement(JS, props, children: _*)
 
   trait Props extends js.Object {}
-}
 
 @js.native
-trait ContextType[P] extends ChildProps[P] {
+trait ContextType[P] extends ChildProps[P]:
   // Keep in sync with Formik.Props
-  var validate: js.UndefOr[js.Function1[P, Unit | js.Object | js.Promise[Errors]]] = js.undefined
-}
+  var validate: js.UndefOr[js.Function1[P, Unit | js.Object | js.Promise[Errors]]] = js.native
 
 @js.native
-trait FieldMetaProps[A] extends js.Object {
+trait FieldMetaProps[A] extends js.Object:
   val value: A = js.native
   val error: js.UndefOr[String] = js.native
   val touched: Boolean = js.native
   val initialValue: js.UndefOr[A] = js.native
   val initialTouched: js.UndefOr[Boolean] = js.native
   val initialError: js.UndefOr[String] = js.native
-}
 
 @js.native
-trait FieldHelperProps[A] extends js.Object {
+trait FieldHelperProps[A] extends js.Object:
   def setValue(value: A, shouldValidate: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   def setTouched(value: Boolean, shouldValidate: js.UndefOr[Boolean] = js.undefined): Unit = js.native
   def setError(value: A): Unit = js.native
-}
 
 @js.native
 trait FieldInputProps[A] extends js.Object {

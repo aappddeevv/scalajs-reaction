@@ -52,14 +52,14 @@ trait UseCustomizableHooks {
     // removed styles arg
   ) = {
     val (_, update) = useStateStrict[Boolean](true)
-    val inCustomizerContext = useRef(false)
+    val inCustomizerContext = useRef[Boolean](false)
     val cb = useCallbackMounting(() => update(!_))
     useEffect(inCustomizerContext) { () =>
       if (!inCustomizerContext.current) Customizations.observe(cb)
       () => if (!inCustomizerContext.current) Customizations.unobserve(cb)
     }
     val context = useContext[CustomizerContext](fabric.utilities.module.CustomizerContext)
-    inCustomizerContext.current = context.customizations.inCustomizerContext.getOrElse(false)
+    inCustomizerContext.current = context.customizations.inCustomizerContext.getOrElse(false).asInstanceOf[Boolean]
     val customizations = useMemo(scope, fields.hashCode)(() =>
       Customizations
         .getSettings[StandardSettingsWithTheme[SP, S]](
