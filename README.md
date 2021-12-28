@@ -1,16 +1,11 @@
 <p align="center"><img width="300" src="./logo.svg"/></p>
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
-<p align="center">
-  <a href="https://www.scala-js.org">
-   <img src="https://www.scala-js.org/assets/badges/scalajs-1.6.0.svg"/>
-  </a>
-</p>
 
-![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.scala-lang/scala-compiler/2.13.1?label=scala)
+![Maven Central with version prefix filter](https://img.shields.io/maven-central/v/org.scala-lang/scala-compiler/3.1.0?label=scala)
 
 scalajs reaction focuses on scala3.
 
-Use react version 16.8+ to ensure that hooks are included. Use the latest react-native.
+Use react version 17+ to ensure that hooks are included. Use the latest react-native.
 
 Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
@@ -264,7 +259,7 @@ they are quite simple to write using scalajs-reaction. All of these libraries us
 - react-responsive
 - react-helmet
 - react-flexbox-grid
-- react-router-dom (5 and 6)
+- react-router-dom 6
 - recoil (facebook state management)
 - use-query-params
 - use-deep-compare-effect

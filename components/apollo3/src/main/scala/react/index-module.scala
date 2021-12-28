@@ -24,8 +24,4 @@ package client3
 package react
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
-
-import _root_.react._
-import _root_.react.implicits._
+import js.annotation.*

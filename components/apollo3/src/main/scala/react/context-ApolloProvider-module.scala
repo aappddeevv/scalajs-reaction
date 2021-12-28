@@ -24,23 +24,20 @@ package client3
 package react
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 
-import _root_.react._
-import _root_.react.implicits._
+import _root_.{react => r}
+import r.syntax.*
 
-object ApolloProvider {
+object ApolloProvider:
   @js.native
   @JSImport("@apollo/client/react", "ApolloProvider")
-  object JS extends ReactJSComponent
+  object JS extends r.ReactJSComponent
 
-  def apply(props: Props, children: ReactNode*) = createElement(JS, props, children: _*)
-  def apply(client: ApolloClient[_])(children: ReactNode*) =
-    createElement(JS, js.Dynamic.literal("client" -> client, "children" -> children))
+  def apply(props: Props, children: r.ReactNode*) = r.createElement(JS, props, children: _*)
+  def apply(client: ApolloClient[_])(children: r.ReactNode*) =
+    r.createElement(JS, js.Dynamic.literal("client" -> client, "children" -> children))
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     val client: ApolloClient[_]
-    var children: js.UndefOr[ReactNode | js.Array[ReactNode] | Null] = js.undefined
-  }
-}
+    var children: js.UndefOr[r.ReactNode | js.Array[r.ReactNode] | Null] = js.undefined

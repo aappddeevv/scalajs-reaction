@@ -3,8 +3,7 @@ package jshelpers
 import scala.scalajs.js
 import utest._
 
-import jshelpers.syntax.dynamic.*
-import jshelpers.syntax.undefor.*
+import jshelpers.syntax.*
 
 
 object UndefBooleanTests extends TestSuite:
@@ -13,7 +12,7 @@ object UndefBooleanTests extends TestSuite:
       val v: js.UndefOr[Boolean] = js.defined(true) // or = true
       val vundef: js.UndefOr[Boolean] = js.undefined
       v.flip ==> false
-      v.map(a => !a).getOrElse(true) ==> false
+      //v.map(a => !a).getOrElse(true) ==> false
       assert(!vundef.flip.isDefined)
       v.orTrue ==> true
       v.orFalse ==> true
@@ -56,7 +55,7 @@ object UndefTests extends TestSuite:
       // just needs to compile
       val v2: js.UndefOr[Int|Null] = v.toUndefOrNull
       val v3: Int | Null =  v.toNull
-      val v4: js.UndefOr[Int | Null] = null
+      val v4: js.UndefOr[Int | Null] = js.defined(null)
       assert(v4.isEmpty)
     }
     test("istotalEmpty") {

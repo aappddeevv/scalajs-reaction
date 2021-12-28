@@ -22,11 +22,10 @@
 package react_teleporter
 
 import react._
-import react.implicits._
+import react.syntax.*
 import scala.scalajs.js
 import org.scalajs.dom
-import js.annotation._
-import js.|
+import js.annotation.*
 
 /**
  * @tparam TC Props passed to the source but defined in target.

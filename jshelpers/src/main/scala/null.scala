@@ -214,26 +214,26 @@ x.fold[String | Unit](())(x => x)
       def foreach[U](f: A => U): Unit = localFilter(p).foreach(f)
       def withFilter(q: A => Boolean): WithFilter[A] = new WithFilter[A](self, x => p(x) && q(x))
 
-  extension [A, B](tuple: (A | Null, B | Null))
-    @targetName("nullMapX2")
-    def mapX[T](f: (A, B) => T): T | Null =
-      if (tuple._1 != null && tuple._2 != null) f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B])
-      else null
+  // extension [A, B](tuple: (A | Null, B | Null))
+  //   @targetName("nullMapX2")
+  //   def mapX[T](f: (A, B) => T): T | Null =
+  //     if (tuple._1 != null && tuple._2 != null) f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B])
+  //     else null
 
-  extension [A, B, C](tuple: (A | Null, B | Null, C | Null))
-    @targetName("nullMapX3")
-    def mapX[T](f: (A, B, C) => T): T | Null =
-      if (tuple._1 != null && tuple._2 != null && tuple._3 != null)
-        f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C])
-      else null
+  // extension [A, B, C](tuple: (A | Null, B | Null, C | Null))
+  //   @targetName("nullMapX3")
+  //   def mapX[T](f: (A, B, C) => T): T | Null =
+  //     if (tuple._1 != null && tuple._2 != null && tuple._3 != null)
+  //       f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C])
+  //     else null
 
-  extension [A, B, C, D](tuple: (A | Null, B | Null, C | Null, D | Null))
-    @targetName("nullMapX4")
-    def mapX[T](f: (A, B, C, D) => T): T | Null =
-      if (tuple._1 != null && tuple._2 != null && tuple._3 != null &&
-          tuple._4 != null)
-        f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C], tuple._4.asInstanceOf[D])
-      else null
+  // extension [A, B, C, D](tuple: (A | Null, B | Null, C | Null, D | Null))
+  //   @targetName("nullMapX4")
+  //   def mapX[T](f: (A, B, C, D) => T): T | Null =
+  //     if (tuple._1 != null && tuple._2 != null && tuple._3 != null &&
+  //         tuple._4 != null)
+  //       f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C], tuple._4.asInstanceOf[D])
+  //     else null
 
   extension [A](a: js.UndefOr[A] | Null)
     /** Swap `js.UndefOr[A|Null]` for `js.UndefOr[A]|Null`. */

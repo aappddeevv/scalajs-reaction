@@ -33,8 +33,7 @@ import client3.errors.*
 import graphql.*
 
 import scala.language.implicitConversions
-import jshelpers.syntax.all.given
-import jshelpers.{given, *}
+import jshelpers.syntax.*
 
 trait ApolloClientOptionsMaker[T, TVars] {
 
@@ -303,12 +302,12 @@ case class UseMutation[T, TVars]() {
         "fetchPolicy" -> fetchPolicy.asJSAny,
         "errorPolicy" -> errorPolicy.asJSAny,
         "update" -> update.asJSAny,
-        "awaitRefetchQueries" -> awaitRefetchQueries.asJsAny,
-        "updateQueries" -> updateQueries.asJsAny,
+        "awaitRefetchQueries" -> awaitRefetchQueries.asJSAny,
+        "updateQueries" -> updateQueries.unsafeAsJSAny,
         "optimisticResponse" -> optimisticResponse.unsafeAsJSAny
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.asInstanceOf[js.Any])
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.asJsAny)
+    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.asJSAny)
     __obj.asInstanceOf[MutationOptions[T, TVars]]
   }
 }

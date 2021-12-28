@@ -24,12 +24,11 @@ package client3
 package core
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
-import jshelpers.{given, *}
+import js.annotation.*
+import jshelpers.syntax.*
 
-import graphql._
-import client3.link._
+import graphql.*
+import client3.link.*
 
 trait UpdateQueryOptionsSD[SubscriptionData] extends js.Object {
   val data: SubscriptionData

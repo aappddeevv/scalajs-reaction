@@ -194,15 +194,15 @@ object undefor:
   end extension
 
   /** Convert any of the allowed source types `js.Any`. */
-  extension (_a: js.UndefOr[JSAnyConversionSource])
+  extension (a: js.UndefOr[JSAnyConversionSource])
     /** Cast. */
-    def asJSAny: js.Any = _a.asInstanceOf[js.Any]
+    def asJSAny: js.Any = a.asInstanceOf[js.Any]
   end extension
 
   /** Unsafely convert anything that is wrapped in a `js.UndefOr`. */
-  extension [A](_a: js.UndefOr[A])
+  extension [A](a: js.UndefOr[A])
     /** Unsafe cast. */
-    def unsafeAsJSAny: js.Any = _a.asInstanceOf[js.Any]
+    def unsafeAsJSAny: js.Any = a.asInstanceOf[js.Any]
   end extension
 
   extension (a: js.UndefOr[Boolean])
