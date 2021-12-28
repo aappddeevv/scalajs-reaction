@@ -23,13 +23,12 @@ package fabric
 package components
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 
-import react._
-import react.implicits._
-import styling._
-import vdom._
+import react.*
+import react.syntax.*
+import styling.*
+import vdom.*
 import org.scalajs.dom
 
 object Picker {

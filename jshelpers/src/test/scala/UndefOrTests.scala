@@ -3,7 +3,9 @@ package jshelpers
 import scala.scalajs.js
 import utest._
 
-import jshelpers.syntax.jsundefor.given
+import jshelpers.syntax.dynamic.*
+import jshelpers.syntax.undefor.*
+
 
 object UndefBooleanTests extends TestSuite:
   val tests = Tests {
@@ -11,6 +13,7 @@ object UndefBooleanTests extends TestSuite:
       val v: js.UndefOr[Boolean] = js.defined(true) // or = true
       val vundef: js.UndefOr[Boolean] = js.undefined
       v.flip ==> false
+      v.map(a => !a).getOrElse(true) ==> false
       assert(!vundef.flip.isDefined)
       v.orTrue ==> true
       v.orFalse ==> true
@@ -24,11 +27,13 @@ object UndefBooleanTests extends TestSuite:
 
 object UndefStringTests extends TestSuite:
   val tests = Tests {
-    test("string") { 
+    test("string") {
       val v: js.UndefOr[String] = js.defined("blah") // or = "blah"
+      val v2: js.UndefOr[String] = js.defined("")
       val vundef: js.UndefOr[String] = js.undefined
       v.orEmpty ==> "blah"
       v.filterEmpty ==> "blah"
+      v2.filterEmpty ==> js.undefined
       vundef.orEmpty ==> ""
       assert(!vundef.filterEmpty.isDefined)
     }
@@ -36,8 +41,12 @@ object UndefStringTests extends TestSuite:
 
 object UndefTests extends TestSuite:
   val tests = Tests {
+    test("basics") { 
+      val v: js.UndefOr[Int] = null.asInstanceOf[js.UndefOr[Int]]
+      v.isNull ==> true
+    }
     test("toTruthy") {
-      val v: js.UndefOr[Int] = 10      
+      val v: js.UndefOr[Int] = 10
       val vundef: js.UndefOr[Int] = js.undefined
       v.toTruthy ==> true
       vundef.toTruthy ==> false
@@ -47,6 +56,8 @@ object UndefTests extends TestSuite:
       // just needs to compile
       val v2: js.UndefOr[Int|Null] = v.toUndefOrNull
       val v3: Int | Null =  v.toNull
+      val v4: js.UndefOr[Int | Null] = null
+      assert(v4.isEmpty)
     }
     test("istotalEmpty") {
       val v: js.UndefOr[Int] = 10
@@ -55,6 +66,13 @@ object UndefTests extends TestSuite:
       v.isTotalEmpty ==> false
       vundef.isTotalEmpty ==> true
       vnull.isTotalEmpty ==> true
+    }
+    test("toTruthy") {
+      (js.defined("blah"):js.UndefOr[String]).toTruthy ==> true
+      (js.defined(""):js.UndefOr[String]).toTruthy ==> false
+      (js.defined(null):js.UndefOr[String]).toTruthy ==> false
+      (js.defined(0):js.UndefOr[Int]).toTruthy ==> false
+      (js.defined(1):js.UndefOr[Int]).toTruthy ==> true
     }
   }  
 
@@ -71,23 +89,3 @@ object UndefMapXTests extends TestSuite:
       (v1,v2,v3,v4).mapX { (i, s, b, d) => assert(i == 10 && s == "blah" && b == true && d == 10.0) }
     }
   }
-
-object JSObjectTests extends TestSuite:
-  import jshelpers.syntax.jsdynamic.given
-  val tests = Tests {
-    test("duplicate") {
-      val v: js.Dynamic = js.Dynamic.literal(a = "blah")
-      val vAsFoo: Foo = v.asInstanceOf[Foo]
-      val dupe: js.Dynamic = v.duplicate
-      assert(dupe != null && dupe.toTruthy)
-      vAsFoo.a = "hah"
-      assert(dupe.asInstanceOf[Foo].a == "blah")
-      assert(dupe.a.asInstanceOf[String] == "blah")
-      assert(vAsFoo.a == "hah")
-    }
-  }
-
-@js.native
-trait Foo extends js.Object:
-  var a: String
-

@@ -23,7 +23,6 @@ import scala.scalajs.js
 
 import js.JSConverters._
 import js.UndefOr
-import js.|
 
 /**
  * A scala.js react facaded in the spirit of ReasonReact.
@@ -35,12 +34,14 @@ package object react extends react.React with When {
 
   /** General purpose type that grabs AnyVal and some js types. Using just js.Any is not ergonomic. */
   type AllType =
-    Boolean | Byte | Short | Float | String | Long | Double | Int | js.Any /*js.Object*/ | js.Dictionary[_] | js.Symbol | js.Array[
-      scala.Any] | Null | Unit
+    Boolean | Byte | Short | Float | String | Long | Double | Int | 
+    js.Any | 
+    js.Object |
+    js.Dictionary[?] | 
+    js.Symbol | 
+    js.Array[scala.Any] | Null | Unit
 
-  /** Hook dependencies data structure. Should this be scala.Any?
-   * The docs suggest otherwise.
-   */
+  /** Hook dependencies data structure. Hooks require a list of objects that when changed, re-runs the evaluation process. */
   type Dependencies = js.Array[AllType]
 
   /** Empty array which is different than undefinedDependencies. Typically
@@ -48,7 +49,7 @@ package object react extends react.React with When {
    */
   val emptyDependencies: Dependencies = js.Array()
 
-  /** Undefined array typically indicates per render hook computation. Typically *not* what you want. */
+  /** Undefined array typically indicates per render. Typically *not* what you want. */
   val undefinedDependencies: js.UndefOr[Dependencies] = js.undefined
 
   /** Create a dependencies array. With no args, its a zero-length array.
@@ -66,7 +67,7 @@ package object react extends react.React with When {
   def unsafeDeps(values: scala.Any*): Dependencies =
     values.toJSArray.asInstanceOf[Dependencies]
 
-  /** Noop for effect callback. */
+  /** Noop for `useEffect`-like callbacks. */
   val noCleanUp = () => ()
 
   /**
@@ -225,7 +226,7 @@ package object react extends react.React with When {
   }
 
   /**
-   * A js-object that is returned from create-react-class. In reactjs a react
+   * A js-object that is returned from create-react-class. In reactjs, a react
    * class is a js object created using the "class" construct. This should
    * really be ReactJSComponent but we keep this slightly different for those
    * who care about such things.
@@ -241,9 +242,12 @@ package object react extends react.React with When {
   type ScalaJSFunctionComponent = js.Function0[ReactNode]
 
   /** Pure JS functions defined in scala are also components. */
-  type ScalaJSFunctionComponent1 = js.Function1[_ <: js.Object, ReactNode]
+  type ScalaJSFunctionComponent1 = js.Function1[? <: js.Object, ReactNode]
 
-  type ScalaJSFunctionComponent1WithRef = js.Function2[_ <: js.Object, _ <: js.Any, ReactNode]
+  type ScalaJSFunctionComponent1WithRef = js.Function2[? <: js.Object, ? <: js.Any, ReactNode]
+
+  /** Some "primitive" types can also be converted. */
+  type PrimitiveConvertibleToNode = String|Int|Long|Float|Double|Byte
 
   /** Something that can be used in `ReactJS.createElement()`. Given an object of
    * this type, you must call `createElement` on it to create the element
@@ -251,11 +255,26 @@ package object react extends react.React with When {
    * this type to represent it.
    */
   type ReactType =
-    ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_]| ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | 
+    PrimitiveConvertibleToNode | 
+    ReactJSComponent | 
+    ReactJSFunctionComponent | 
+    ReactJSLazyComponent1[_]| 
+    ReactJSLazyComponent | 
+    ScalaJSFunctionComponent | 
+    ScalaJSFunctionComponent1 | 
+    ScalaJSFunctionComponent1WithRef
 
   /** Component type that can be used in HOCs. */
   type ReactComponentType =
-    ReactClass | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | 
+    ReactJSComponent | 
+    ReactJSFunctionComponent | 
+    ReactJSLazyComponent1[_] | 
+    ReactJSLazyComponent | 
+    ScalaJSFunctionComponent | 
+    ScalaJSFunctionComponent1 | 
+    ScalaJSFunctionComponent1WithRef
 
   /**
    * This type is used only as a target for imported javascript authored components to
@@ -296,10 +315,10 @@ package object react extends react.React with When {
    */
   type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent
 
-  ///** The type of `() => import("somecomponent")` which is used exclusively for
-  // * the argument to React.lazy.
-  // */
-  //type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
+  /** The type of `() => import("somecomponent")` which is used exclusively for
+  * the argument to React.lazy.
+  */
+  type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
 
   /** Alias for internal use.
    * @deprecated
@@ -452,7 +471,12 @@ package object react extends react.React with When {
    */
   type ReactElementTuple[P <: js.Object] = (js.Function1[P, ReactNode], P)
 
-  /** A type used to drive type inference when declaring your component. */
+  /** A type used to drive type inference when declaring your component.
+   * Generally, your render methods should be declared using this type
+   * so that the function is automatically converted to a js function.
+   * 
+   * Use this pattern, `val render: ReactFC[Props] = props => { ... }`.
+   */
   type ReactFC[P <: js.Object] = js.Function1[P, ReactNode]
 
   /** Memo a function component. */

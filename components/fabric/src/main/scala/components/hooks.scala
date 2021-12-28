@@ -22,19 +22,19 @@
 package fabric
 
 import scala.scalajs.js
-import styling._
-import js.JSConverters._
-import js.annotation._
-import js.|
+import styling.*
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
 import org.scalajs.dom.window.localStorage
-import react._
-import react.implicits._
-import scala.util.control._
-import Exception._
+import react.*
+import react.syntax.*
+import react.conversions.*
+import scala.util.control.*
+import Exception.*
 import styling.module.concatStyleSets
-import utilities._
-import merge_styles._
+import utilities.*
+import merge_styles.*
 
 object hooks extends UseCustomizableHooks
 

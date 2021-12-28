@@ -28,10 +28,10 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
-import js.|
 import org.scalajs.dom
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
+import jshelpers.syntax.*
 import vdom._
 import fabric._
 import fabric.components._

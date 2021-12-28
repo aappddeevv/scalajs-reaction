@@ -27,11 +27,12 @@ import scala.annotation.targetName
 
 // To make a promise:
 // (resolve: js.Function1[Unit|js.Thenable[Unit],_], reject: js.Function1[scala.Any,_]) =>
+
 /** More ergonomic typed methods for js.Promise processing. It is easy to convert to js
  * Promise to a future (jspromiseInstance.toFuture) but if you have alot of js.Promise
  * API then you are converting alot of Futures :-).
  */
-trait JSPromiseOps:
+object promise:
   type RVAL[A] = A | js.Thenable[A]
   type RESOLVE[A, B] = js.Function1[A, RVAL[B]]
   type REJECTED[A] = js.Function1[scala.Any, RVAL[A]]
@@ -269,24 +270,19 @@ trait JSPromiseOps:
     }
 
 
-/** Ergonomic syntax for Promise.resolve and Promise.reject. Or, use like
- * `PromiseValue(true).resolve`. `a` is a strict value.
- */
-trait JSPromiseObjectOps:
+  /** Ergonomic syntax for Promise.resolve and Promise.reject. Or, use like
+   * `PromiseValue(true).resolve`. `a` is a strict value.
+   */
   extension [A](a: A)
     /** Return a js.Thenable. */
     def resolve = JSPromiseCreators.effectTotal[A](a)
 
-trait JSPromiseFailObjectOps:
   extension (a: scala.Any)
     /** Return a reject promise with value `a`, type `Nothing`. */
     def reject = JSPromiseCreators.reject(a)
 
     /** Return a `js.Thenable[B]` with rejected value `a`. */
     def fail[A] = JSPromiseCreators.fail[A](a)
-
-trait JSParMappers:
-  given ops: JSPromiseOps = new JSPromiseOps{}
 
   extension [A, B](tuple: (js.Thenable[A], js.Thenable[B]))
     @targetName("parMapX2")
@@ -343,27 +339,23 @@ trait JSParMappers:
         d <- thunk(valueA, valueB, valueC, valueD)
       } yield d).asInstanceOf[js.Promise[T]]
       
-/** Extension methods for js.Array[js.Thenable[_]]. */
-trait JSArrayPromiseOpsThenable:
   extension [A](arr: js.Array[js.Thenable[A]])
     /** `js.Promise.all` only takes js.Promise arrays. This takes an array of `js.Thenable[_]`s. */
     @targetName("allArrayOfThenables")
     def all: js.Promise[js.Array[A]] = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[A]]])
 
-/** Extension methods for js.Array[js.Thenable[_]]. */
-trait JSArrayPromiseOps:
   extension [A](arr: js.Array[js.Promise[A]])
     /** `js.Promise.all` only takes js.Promise arrays. This takes an array of `js.Thenable[_]`s. */
     @targetName("allArrayOfPromises")
     def all = js.Promise.all(arr.asInstanceOf[js.Array[js.Promise[A]]])
 
-trait JSPromiseSyntax 
-  extends JSPromiseOps
-  with JSArrayPromiseOps 
-  with JSArrayPromiseOpsThenable 
-  with JSParMappers
-  with JSPromiseFailObjectOps
-  with JSPromiseObjectOps
+// trait JSPromiseSyntax 
+//   extends JSPromiseOps
+//   with JSArrayPromiseOps 
+//   with JSArrayPromiseOpsThenable 
+//   with JSParMappers
+//   with JSPromiseFailObjectOps
+//   with JSPromiseObjectOps
 
 /** Helpers for creating a `js.Promise`. These are mostly strict except call-by-name.
  * If you want anything more complicated you should use a scala effect such as

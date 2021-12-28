@@ -23,16 +23,11 @@ package fabric
 package components
 
 import scala.scalajs.js
-
-import js.annotation._
-
+import js.annotation.*
 import org.scalajs.dom.html
-
-import react._
-
-import vdom._
-
-import fabric.styling._
+import react.*
+import vdom.*
+import fabric.styling.*
 
 object Label {
   @js.native
@@ -60,14 +55,12 @@ object Label {
     var required: js.UndefOr[Boolean] = js.undefined
   }
 
-  trait StyleProps extends js.Object {
+  trait StyleProps extends js.Object:
     var className: js.UndefOr[String] = js.undefined
     var disabled: js.UndefOr[Boolean] = js.undefined
     var required: js.UndefOr[Boolean] = js.undefined
     var theme: js.UndefOr[Theme] = js.undefined
-  }
 
-  trait Styles extends IStyleSetTag {
+  trait Styles extends IStyleSetTag:
     var root: js.UndefOr[IStyle] = js.undefined
-  }
 }

@@ -20,21 +20,24 @@
  */
 
 package jshelpers
+package syntax 
 
+import scala.annotation.targetName
 import scala.scalajs.js
-import js.|
 
 /** If you want js.UndefOr, use JSConverters `.toOption`and `.orUndefined`. */
-trait OptionSyntax:
+object option:
   extension [T](a: Option[T])
 
     /** If Some and value is truthy according to JS, then keep it, otherwise become a None. */
+    @targetName("filterTruthyOption")
     def filterTruthy: Option[T] =
       a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
 
     /** Filter nulls out in case it *might* be null.
      * @deprecated USe [[filterNull]].
      */
+    @targetName("toNonNullOptionOption")
     def toNonNullOption = a.filter(_ != null)
 
     /** Filter nulls out in case it *might* be null. */
@@ -43,9 +46,10 @@ trait OptionSyntax:
     /** If Some, keep the value, else set the value to null. */
     def orElseNull = a orElse Some(null.asInstanceOf[T])
 
-    def ???[B >: T](other: Option[B]): Option[B] =
-      if (a.isEmpty) other else a
+    // def ???[B >: T](other: Option[B]): Option[B] =
+    //   if (a.isEmpty) other else a
 
+    @targetName("getOrElseOption")
     def ??[B >: T](default: => B): B = a.getOrElse(default)
 
     /** Changes type to T but does *not* add `|Null`. */

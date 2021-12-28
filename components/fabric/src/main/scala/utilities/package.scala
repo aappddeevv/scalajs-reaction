@@ -22,7 +22,7 @@
 package fabric
 
 import scala.scalajs.js
-import js.annotation._
+import js.annotation.*
 
 package object utilities {
   type SettingsFunction = Settings => Settings
@@ -39,6 +39,6 @@ package object utilities {
   /** string, serializable (has toString), dictionary, null, undefined, boolean...*/
   @js.native
   @JSImport("@uifabric/utilities", "css")
-  def css(various: js.Any*): String = js.native
+  def css(various: js.Any|js.UndefOr[js.Any]|String|js.UndefOr[String]*): String = js.native
 
 }

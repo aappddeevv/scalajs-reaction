@@ -28,10 +28,11 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
-import js.|
 import org.scalajs.dom
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
+import react.conversions.given
+import jshelpers.syntax.*
 import react.extras._
 import vdom._
 import fabric._
@@ -48,11 +49,10 @@ object styles {
 
 import styles._
 
-object AddressManager {
-  trait Props extends js.Object {
+object AddressManager:
+  trait Props extends js.Object:
     val dao: AddressDAO
     val className: js.UndefOr[String] = js.undefined
-  }
 
   val Name = "AddressManager"
 
@@ -161,7 +161,7 @@ object AddressManager {
 
   val render: ReactFC[Props] = props => {
     // redux hooks
-    val label = useSelector[GlobalAppState, js.UndefOr[String]](_.view.label.flatMap(_.toUndefOr))
+    val label = useSelector[GlobalAppState, js.UndefOr[String]](_.view.label)
     val lastActiveAddressId =
       useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.lastActiveAddressId.toUndefOr)
     val activeId  = useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
@@ -228,9 +228,10 @@ object AddressManager {
       divWithClassname(
         amstyles.footer.asString,
         addressStuff._2,
-        Label("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>"))
+        Label("Redux sourced label: " + label.getOrElse("<no redux label provided>"))
       )
     )
   }
   render.displayName(Name)
-}
+
+end AddressManager

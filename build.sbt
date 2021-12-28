@@ -40,7 +40,7 @@ lazy val jsSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-   ("org.scala-js" %%% "scalajs-dom" % "2.0.0"), //"org.scala-js" %%% "scalajs-dom" % "1.1.0").cross(CrossVersion.for3Use2_13),
+   ("org.scala-js" %%% "scalajs-dom" % "2.0.0"),
   ),
   // testing
 libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.10" % "test",
@@ -57,7 +57,6 @@ def buildinfo_settings(pkg: String) =
 lazy val compilerSettings = Seq(
   scalacOptions in (Compile, doc) ++= Seq("-groups"),
   scalacOptions ++= commonScalacOptions,
-  //addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.1" cross CrossVersion.full),
   //addCompilerPlugin(scalafixSemanticdb),
   autoAPIMappings := true,
   autoCompilerPlugins := true
@@ -552,13 +551,10 @@ lazy val examples = project
     `fabric-experiments`,
     `react-redux`,
     `react-dom`,
-    //forms,
     formik,
     bootstrap,
     mui,
     `react-big-calendar`,
-    //`react-router-dom5`,
-    dataValidationJS,
     `react-router-dom6`,
     recoil
   )

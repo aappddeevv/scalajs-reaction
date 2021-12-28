@@ -27,10 +27,11 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js.annotation._
-import js.|
 import org.scalajs.dom
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
+import jshelpers.syntax.*
+import react.conversions.given
 import vdom._
 import fabric._
 import fabric.components._
@@ -41,15 +42,14 @@ import styles._
 /** The detail display is driven by the parent and *not* by the global redux
  * state although it could be hooked directly up to redux.
  */
-object AddressDetail {
+object AddressDetail:
 
-    import examples.Contexts._
+  import examples.Contexts.*
 
   val Name = "AddressDetail"
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     val address: Option[Address]
-  }
 
   def apply(address_ : Option[Address]) = 
     render.elementWith(new Props { val address = address_ })
@@ -68,4 +68,3 @@ object AddressDetail {
     )
   }
   render.displayName(Name)
-}

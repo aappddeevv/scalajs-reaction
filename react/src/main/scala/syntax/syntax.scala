@@ -20,46 +20,13 @@
  */
 
 package react
+package syntax
 
-import scala.scalajs.js
-import js.*
-import jshelpers.*
+//import scala.scalajs.js
+// trait JsRefSyntax:
+//   extension [T](v: ReactRef[T])
+//     inline def toDyn: js.Dynamic = refToJs[T](v)
 
-trait JsRefSyntax:
-  extension [T](v: ReactRef[T])
-    inline def toDyn: js.Dynamic = refToJs[T](v)
-
-trait AllSyntax
-    extends ComponentSyntax
-    with ValueSyntax
-    with JSDynamicSyntax
-    with JSObjectSyntax
-    with JsAnySyntax
-    with OrNullSyntax
-    with ScalaMappedSyntax
-    with OptionSyntax
-    with JsUndefOrSyntax
-    with MiscOrSyntax
-    with JsRefSyntax
-    with JSPromiseSyntax
-    with ContextSyntax
-    with OrSyntax
-    with JSArraySyntax
-
-object syntax:
-  object all extends AllSyntax
-  object component extends ComponentSyntax
-  object value extends ValueSyntax
-  object jsdynamic extends JSDynamicSyntax
-  object jsundefor extends JsUndefOrSyntax
-  object jsobject extends JSObjectSyntax
-  object jsany extends JsAnySyntax
-  object scalaany extends ScalaMappedSyntax
-  object ornull extends OrNullSyntax
-  object option extends OptionSyntax
-  object miscor extends MiscOrSyntax
-  object jsref extends JsRefSyntax
-  object jspromise extends JSPromiseSyntax
-  object context extends ContextSyntax
-  object or extends OrSyntax
-  object jsarray extends JSArraySyntax
+export react.syntax.node.*
+export react.syntax.context.*
+export react.syntax.component.*

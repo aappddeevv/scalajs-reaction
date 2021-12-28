@@ -21,25 +21,22 @@
 
 package ttg
 package examples
+package addressmanager
 
 import scala.scalajs.js
-
-import js.JSConverters._
-import js.|
-import react._
-import react.implicits._
+import js.JSConverters.*
+import react.*
+import react.syntax.*
 import react_redux.Dispatch
-import fabric.components._
+import fabric.components.*
 
-package object addressmanager {
-  type Id          = String
-  type AddressList = js.Array[Address]
-  type IdList      = js.Array[String]
-  type Result      = Either[String, AddressList]
-  type CRUDResult  = Either[String, Unit]
-  val emptyAddressList = js.Array[Address]()
-  val emptyIdList      = js.Array[Id]()  
-  def getAddressKey(item: js.UndefOr[Address], idx: Int) = 
-    item.flatMap(_.customeraddressid) getOrElse idx.toString
-  val getAddressKeyJS = Selection.GetKey(getAddressKey)
-}
+type Id          = String
+type AddressList = js.Array[Address]
+type IdList      = js.Array[String]
+type Result      = Either[String, AddressList]
+type CRUDResult  = Either[String, Unit]
+val emptyAddressList = js.Array[Address]()
+val emptyIdList      = js.Array[Id]()  
+def getAddressKey(item: js.UndefOr[Address], idx: Int) = 
+  item.flatMap(_.customeraddressid) getOrElse idx.toString
+val getAddressKeyJS = Selection.GetKey(getAddressKey)

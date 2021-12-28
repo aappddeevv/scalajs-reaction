@@ -23,13 +23,13 @@ package fabric
 package components
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import fabric.styling._
-import vdom._
+import react.*
+import react.syntax.*
+import react.conversions.*
+import fabric.styling.*
+import vdom.*
 
 object Rating {
 

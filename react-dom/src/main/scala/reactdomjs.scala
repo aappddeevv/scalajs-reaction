@@ -28,33 +28,29 @@ import org.scalajs.dom
 import react._
 
 @js.native
-trait Renderable extends js.Object {
+trait Renderable extends js.Object:
   def render(node: ReactNode): Unit = js.native
-}
 
-trait CreateRootOptions extends js.Object {
+trait CreateRootOptions extends js.Object:
   var hydrate: js.UndefOr[Boolean] = js.undefined
-}
 
 @js.native
-trait Concurrent extends js.Object {
-  @JSName("unstable_createRoot")
+trait Concurrent extends js.Object:
+  @JSName("createRoot")
   def createRoot(
     rootElement: dom.Element,
     options: js.UndefOr[CreateRootOptions] = js.undefined
   ): Renderable = js.native
 
-  @JSName("unstable_createBlockingRoot")
-  def createBlockingRoot(
-    rootElement: dom.Element,
-    options: js.UndefOr[CreateRootOptions] = js.undefined
-  ): Renderable = js.native
-
-}
+  // @JSName("unstable_createBlockingRoot")
+  // def createBlockingRoot(
+  //   rootElement: dom.Element,
+  //   options: js.UndefOr[CreateRootOptions] = js.undefined
+  // ): Renderable = js.native
 
 @js.native
 @JSImport("react-dom/server", JSImport.Default)
-object ReactDOMServer extends js.Object {
+object ReactDOMServer extends js.Object:
   def renderToString(element: ReactNode): String = js.native
   def renderToStaticMarkup(element: ReactNode): String = js.native
 
@@ -63,10 +59,9 @@ object ReactDOMServer extends js.Object {
 
   /** Only available on a node server. */
   def renderToStaticNodeStream(element: ReactNode): js.Any = js.native
-}
 
 @js.native
-private[react_dom] trait ReactDOMJS extends js.Object with Concurrent {
+private[react_dom] trait ReactDOMJS extends js.Object with Concurrent:
   def render(el: ReactNode): Unit = js.native
 
   def render(node: ReactNode, target: dom.Element, callback: js.UndefOr[js.Function0[Unit]] = js.undefined): Unit =
@@ -83,7 +78,6 @@ private[react_dom] trait ReactDOMJS extends js.Object with Concurrent {
   def findDOMNode(componentOrElement: js.Any): dom.Element = js.native
 
   def hydrate(element: dom.html.Element, container: dom.html.Element, callback: () => Unit): Unit = js.native
-}
 
 /** react-dom scala.js import. */
 @js.native

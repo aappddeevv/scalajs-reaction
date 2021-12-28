@@ -23,8 +23,8 @@ package react
 package vdom
 
 import scala.scalajs.js
-import js.|
-import implicits._
+import react.syntax.*
+import jshelpers.syntax.*
 
 /**
  * Create a tag from a list of attributes. This is a "factory" for tags as

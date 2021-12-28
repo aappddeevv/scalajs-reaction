@@ -26,8 +26,10 @@ package graphs
 import scala.scalajs.js
 import js.Dynamic.{ literal => jsobj }
 import org.scalajs.dom
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
+import react.conversions.given
+import jshelpers.syntax.*
 import vdom._
 import fabric._
 import fabric.components._

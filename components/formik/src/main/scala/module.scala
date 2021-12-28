@@ -22,12 +22,11 @@
 package formik
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
+import react.*
+import react.syntax.*
+import vdom.*
 
 @js.native
 trait SubmitForm extends js.Object {

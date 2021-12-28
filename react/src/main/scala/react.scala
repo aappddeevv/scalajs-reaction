@@ -26,10 +26,9 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js._
-import js.|
 
 /**
- * Scala-side access to JSReact APIs. Some of these methods overlay the raw JS
+ * Scala-side access to js react APIs. Some of these methods overlay the raw JS
  * version to provide the convenience of using scala types as inputs and saving
  * a few conversion nits.
  *
@@ -39,7 +38,7 @@ import js.|
  * for those code bases that already have the js versions. Note that useCallback
  * returns a js function so it can be used as a dependency.
  */
-trait React {
+trait React:
 
   def createContext[T](defaultValue: T): ReactContext[T] =
     ReactJS.createContext(defaultValue, js.undefined)
@@ -119,12 +118,17 @@ trait React {
 
   /** For creating quick ReactElements using js.Dynamic. Input is a scala function
    * taking a single props argument.
+   * 
+   * @deprecated
    */
   def unsafeCreateElement(component: () => ReactNode) = {
     val jsc = js.Any.fromFunction0(component).asInstanceOf[ReactType]
     createElement0(jsc, null)
   }
 
+  /**
+   * @deprecated
+   */
   def unsafeCreateElement(component: js.Dynamic => ReactNode, props: js.Dynamic) = {
     val jsc = js.Any.fromFunction1(component).asInstanceOf[ReactType]
     createElement0(jsc, props)
@@ -443,11 +447,8 @@ trait React {
   }
 
   val version = ReactJS.version
-}
+end React
 
-///** Primary entry point into the React API. */
-//@deprecated("Use main react object react e.g. react.createElement().", "0.1.0")
-//object React extends React
 
 /**
  * React's context object contains the consumer and provider "components".

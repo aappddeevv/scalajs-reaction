@@ -20,35 +20,42 @@
  */
 
 package react
+package syntax
+
 
 import scala.scalajs.js
 import js.annotation._
 
 import js.Dynamic.literal
 
-/** Removing only the "r" on the end may be confusing... */
-final class ReactContextOps2[T](private val ctx: ReactContext[T]) extends AnyVal {
+object context:
+  /** Removing only the "r" on the end may be confusing... */
+  extension [T](ctx: ReactContext[T])
+    /** Provide a context value with a list of children. */
+    def provide(value: T)(children: ReactNode*) =
+      ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), children: _*)
 
-  def provide(value: T)(children: ReactNode*) =
-    ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), children: _*)
+    /** Proivde a context value with a single child. */
+    def provide1(value: T, child: ReactNode) =
+      ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), child)
 
-  def provide1(value: T, child: ReactNode) =
-    ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), child)
+    /** Consume a context using a scala function converted to a js function. */
+    def consume(f: T => ReactNode, key: String) =
+      ReactJS.createElement(
+        ctx.Consumer,
+        literal("key" -> key),
+        createElement(js.Any.toFunction1(f).asInstanceOf[ReactJSFunctionComponent], null))
 
-  def consume(f: T => ReactNode, key: String) =
-    ReactJS.createElement(
-      ctx.Consumer,
-      literal("key" -> key),
-      createElement(js.Any.toFunction1(f).asInstanceOf[ReactJSFunctionComponent], null))
+    /** Consume a context using a scala function which is converted to a js function. */
+    def consume(f: T => ReactNode) =
+      ReactJS.createElement(
+        ctx.Consumer,
+        literal(),
+        createElement(js.Any.toFunction1(f).asInstanceOf[ReactJSFunctionComponent], null))
 
-  def consume(f: T => ReactNode) =
-    ReactJS.createElement(
-      ctx.Consumer,
-      literal(),
-      createElement(js.Any.toFunction1(f).asInstanceOf[ReactJSFunctionComponent], null))
-}
-
-trait ContextSyntax {
-  implicit def contextToRichContext[T](ctx: ReactContext[T]): ReactContextOps2[T] =
-    new ReactContextOps2[T](ctx)
-}
+    /** Consume a context using a js function. */
+    def consume(f: js.Function1[T, ReactNode]) =
+      ReactJS.createElement(
+        ctx.Consumer,
+        literal(),
+        createElement(f, null))

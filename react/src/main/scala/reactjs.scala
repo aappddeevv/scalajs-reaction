@@ -22,12 +22,10 @@
 package react
 
 import scala.scalajs.js
-
 import js.annotation._
-import js.|
 
 @js.native
-trait Children extends js.Object {
+trait Children extends js.Object:
   def map(children: ReactChildren, f: js.Function1[ReactElement, ReactElement]): ReactChildren = js.native
   def map(children: ReactChildren, f: js.Function2[ReactElement, Int, ReactElement]): ReactChildren = js.native
   def forEach(children: ReactChildren, f: js.Function1[ReactElement, Unit]): Unit = js.native
@@ -35,18 +33,16 @@ trait Children extends js.Object {
   def only(children: ReactChildren): ReactElement = js.native
   def count(children: ReactChildren): Int = js.native
   def toArray(children: ReactChildren): js.Array[ReactElement] = js.native
-}
 
-trait TransitionConfig extends js.Object {
+trait TransitionConfig extends js.Object:
   var timeoutMs: js.UndefOr[Int] = js.undefined
-}
 
-trait DeferredValueConfig extends js.Object {
+trait DeferredValueConfig extends js.Object:
   var timeoutMs: js.UndefOr[Int] = js.undefined
-}
 
+/** Concurrent features targeted at v18, I recall. */
 @js.native
-trait Concurrent extends js.Object {
+trait Concurrent extends js.Object:
   def useTransition(config: TransitionConfig): js.Tuple2[js.Function1[js.Function0[Unit], Unit], Boolean] = js.native
   def useDeferredValue(value: js.Any, config: DeferredValueConfig): js.Any = js.native
   val SuspenseList: ReactJSComponent = js.native
@@ -58,18 +54,17 @@ trait Concurrent extends js.Object {
     source: MutableSource[S],
     getSnapshot: js.Function1[S, A],
     subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A = js.native
-}
 
 /** Opaque type. */
 @js.native
 trait MutableSource[T] extends js.Object
 
 @js.native
-trait ReactJS extends js.Object with Concurrent {
+trait ReactJS extends js.Object with Concurrent:
 
   val Children: Children = js.native
 
-  /** We are not importing this to be used in a class oriented way. */
+  /** We are *not* importing this to be used in a class oriented way. */
   val Component: js.Dynamic = js.native
 
   /** Can take a wide variety of types for tpe: string | sfc | class (extending
@@ -80,7 +75,7 @@ trait ReactJS extends js.Object with Concurrent {
    */
   def createElement(el: ReactType, props: js.Any, children: ReactNode*): ReactElement = js.native
 
-  // should not use rally ever...
+  /** Avoid. */
   def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
 
   val Fragment: ReactJSComponent = js.native
@@ -119,18 +114,15 @@ trait ReactJS extends js.Object with Concurrent {
   ): js.Function1[P, ReactElement] = js.native
 
   def isValidElement(obj: js.Object): Boolean = js.native
-}
 
 /** Opaque type. */
-trait DynamicImport extends js.Object {
+trait DynamicImport extends js.Object:
   // If default is defined in the exports
   // other exports will be here as well
   val `default`: js.Function1[_ <: js.Object, ReactNode]
-}
 
-object DynamicImport {
+object DynamicImport:
   def apply(f: js.Function1[_ <: js.Object, ReactNode]) = new DynamicImport { val `default` = f }
-}
 
 /** Magnet pattern to create a friendly arg converter for effect hooks. As much
  * as possible these need to be casts vs allocations.
@@ -143,7 +135,7 @@ trait EffectArg extends js.Object
  * to be the reactjs "after-effect" callback. Otherwise, the return
  * value is discarded.
  */
-object EffectArg {
+object EffectArg:
 
   /** Convert a scala EffectCallbackArg to js using a proxy approach.
    * Use a general return of A vs unit to be more friendly. Requires
@@ -173,15 +165,14 @@ object EffectArg {
   @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
     ((() => { val rthunk = f(); js.Any.fromFunction0 { () => rthunk(); () } }): js.Function0[js.Function0[Unit]])
       .asInstanceOf[EffectArg]
-}
-@js.native
-trait StateSetterOrUpdater[T] extends js.Object {
-  def apply(t: T): Unit = js.native
-  def apply(f: js.Function1[T, T]): Unit = js.native
-}
 
 @js.native
-trait Hooks extends js.Object {
+trait StateSetterOrUpdater[T] extends js.Object:
+  def apply(t: T): Unit = js.native
+  def apply(f: js.Function1[T, T]): Unit = js.native
+
+@js.native
+trait Hooks extends js.Object:
 
   // expose imperative code on ref.current
   def useImperativeHandle[T, R <: js.Object](
@@ -218,8 +209,10 @@ trait Hooks extends js.Object {
 
   // didUpdate is () => Unit or () => (() => Unit)
   def useLayoutEffect(didUpdate: js.Any, dependencies: Dependencies | Unit): Unit = js.native
-}
 
+/** The raw js import of the react namespace. Kept private to this 
+ * package so you must go through the public interface.
+ */
 @js.native
 @JSImport("react", JSImport.Namespace)
 private[react] object ReactJS extends ReactJS with Hooks
@@ -230,7 +223,7 @@ trait ReactModule extends js.Object
 
 /** A publically accessible react namespace import for those
  *  interop scenarios where you need this. There are no
- *  scala visible methods, etc.
+ *  scala visible methods.
  */
 @js.native
 @JSImport("react", JSImport.Namespace)

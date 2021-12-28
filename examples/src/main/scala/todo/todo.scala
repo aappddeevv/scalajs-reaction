@@ -28,10 +28,10 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit, global => g }
 import js.JSConverters._
 import js.annotation._
-import js.|
 import org.scalajs.dom
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
+import react.conversions.given
 import vdom._
 import fabric._
 import fabric.components._
@@ -44,13 +44,12 @@ case class ToDo(id: Int, name: String, added: js.Date = null, completed: Boolean
 object ToDoItem {
   val Name = "ToDoItem"
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var todo: ToDo
     var remove: () => Unit
     var rootClassname: js.UndefOr[String]  = js.undefined
     var titleClassname: js.UndefOr[String] = js.undefined
     var key: js.UndefOr[String]            = js.undefined
-  }
 
   def apply(props: Props) = render.elementWith(props)
 

@@ -27,7 +27,8 @@ import js.Dynamic.{ literal => jsobj }
 import js.|
 import org.scalajs.dom
 import react._
-import react.implicits._
+import syntax.*
+import conversions.given
 import vdom._
 import vdom.styling._
 import components._
@@ -35,25 +36,23 @@ import jss._
 import mui._
 import mui.components._
 
-object MaterialUIPage {
-    val NAME = "MaterialUIPage"
+object MaterialUIPage:
+  val NAME = "MaterialUIPage"
     
   @js.native
-  trait ClassNames extends ClassNamesTag {
+  trait ClassNames extends ClassNamesTag:
     val bullet: String = js.native
     val card: String   = js.native
     val title: String  = js.native
     val pos: String    = js.native
-  }
 
-  trait Styles extends RuleTag {
+  trait Styles extends RuleTag:
     var foo: js.UndefOr[JssStyle]    = js.undefined
     var foo2: js.UndefOr[JssStyle]   = js.undefined
     var card: js.UndefOr[JssStyle]   = js.undefined
     var bullet: js.UndefOr[JssStyle] = js.undefined
     var title: js.UndefOr[JssStyle]  = js.undefined
     var pos: js.UndefOr[JssStyle]    = js.undefined
-  }
 
   val xxx = jsobj("background" -> "rgb(245, 222, 179)") // wheat
   val yyy = jsobj("color"      -> "rgb(255,255,255)")
@@ -79,9 +78,8 @@ object MaterialUIPage {
 
   val useStyles = createUseStyles0[ClassNames](styles)
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var rootClassName: js.UndefOr[String] = js.undefined
-  }
 
   def apply(props: Props = new Props {}) = render.elementWith(props)
 
@@ -169,9 +167,8 @@ object MaterialUIPage {
     )
   }
   render.displayName(NAME)
-}
 
-object components {
+object components:
   val NAME = "MaterialUIExample"
 
   trait Props extends js.Object {
@@ -193,4 +190,3 @@ object components {
     )
   }
   render.displayName(NAME)
-}

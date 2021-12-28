@@ -24,12 +24,10 @@ package examples
 package addressmanager
 
 import scala.scalajs.js
-
-import js.annotation._
-import js.|
+import js.annotation.*
 
 /** See datamodel.ts */
-trait Address extends js.Object {
+trait Address extends js.Object:
   val customeraddressid: js.UndefOr[String] = js.undefined
   val name: js.UndefOr[String]              = js.undefined
   val city: js.UndefOr[String]              = js.undefined
@@ -37,20 +35,18 @@ trait Address extends js.Object {
   val createdon: js.UndefOr[String]         = js.undefined
   val postalcode: js.UndefOr[String]        = js.undefined
   val country: js.UndefOr[String]           = js.undefined
-}
 
-trait AddressDAO extends js.Object {
+trait AddressDAO extends js.Object:
   val fetch: js.Function1[Id, js.Promise[AddressList]]
   val add: js.Function1[Address, js.Promise[Id]]
   val remove: js.Function1[String, js.Promise[Unit]]
   val update: js.Function1[Address, js.Promise[Unit]]
-}
 
 /** Manage data access and selection state as a pair. */
-trait AddressesViewModel extends js.Object {
+trait AddressesViewModel extends js.Object:
   // address can be null value explicitly per plain old scala
   def setActive(id: Id, address: Address): Unit
   def activeId: Id
   // per the typescript documentation, Address|null in the redux state
   def active: Address
-}
+

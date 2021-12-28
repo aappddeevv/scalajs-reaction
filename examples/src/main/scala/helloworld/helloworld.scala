@@ -24,12 +24,12 @@ package examples
 package helloworld
 
 import scala.scalajs.js
-
-import js.annotation._
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
+import react.*
+import syntax.*
+import react.conversions.given
+import vdom.*
 
 /** Props for make2 outside the HellowWorld object.  By using js.UndefOr for the
  * defintion, a SFC taking these props can easily interop with the js world.

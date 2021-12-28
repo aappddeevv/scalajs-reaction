@@ -20,21 +20,23 @@
  */
 
 package jshelpers
+package syntax
 
 import scala.scalajs.js
+import scala.annotation.targetName
 
-trait JSArray:
+object array:
   extension [T](arr: js.Array[T])
     /** Easier cast of elements. Would be nice to do some structural
      * checking here but maybe not...
      */
-    inline def as[B] = arr.asInstanceOf[js.Array[B]]
+    @targetName("asArray")
+    def as[B] = arr.asInstanceOf[js.Array[B]]
 
-trait RichJSArrayTuples:
-  extension [T, U, V](tuvs: js.Array[((T, U), V)])
-    def toTuple3 = tuvs.map(tuv => (tuv._1._1, tuv._1._2, tuv._2))
+  // extension [T, U, V](tuvs: js.Array[((T, U), V)])
+  //   def toTuple3: js.Array[(T,U,V)] = tuvs.map(p => (p._1._1, p._1._2, p._2))
 
-  extension [T, U, V, W](tuvs: js.Array[(((T, U), V), W)])
-    def toTuple4 = tuvs.map(tuv => (tuv._1._1._1, tuv._1._1._2, tuv._1._2, tuv._2))
+  // extension [T, U, V, W](tuvs: js.Array[(((T, U), V), W)])
+  //   def toTuple4: js.Array[(T,U,V,W)] = tuvs.map(p => (p._1._1._1, p._1._1._2, p._1._2, p._2))
 
-trait JSArraySyntax extends JSArray with RichJSArrayTuples
+

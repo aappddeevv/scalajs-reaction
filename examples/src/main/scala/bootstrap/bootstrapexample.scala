@@ -23,20 +23,20 @@ package ttg.examples
 package bootstrap
 
 import scala.scalajs.js
-import js.|
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
-import vdom.styling._
-import bootstrap._
-import bootstrap.components._
+import react.*
+import conversions.given
+import syntax.*
+import vdom.*
+import vdom.styling.*
+import bootstrap.*
+import bootstrap.components.*
 
-object BootstrapPage {
-    val Name = "BootstrapPage"
-  trait Props extends js.Object {
+object BootstrapPage:
+  val Name = "BootstrapPage"
+  
+  trait Props extends js.Object:
     var rootClassName: js.UndefOr[String] = js.undefined
-  }
 
   def apply(props: Props) = render.elementWith(props)
 
@@ -63,9 +63,9 @@ object BootstrapPage {
     )
   }
   render.displayName(Name)
-}
 
-object BootstrapExample {
+
+object BootstrapExample:
 
   trait Props extends js.Object {
     val children: ReactElement
@@ -85,9 +85,8 @@ object BootstrapExample {
     )
   }
   render.displayName("BootstrapExample")
-}
 
-object FormExample {
+object FormExample:
   sealed trait Action
   case class Change(value: Option[String]) extends Action
 
@@ -126,7 +125,7 @@ object FormExample {
   }
   render.displayName("FormExample")
 
-  def getValidationState(value: Option[String] = None) = {
+  def getValidationState(value: Option[String] = None) =
     val len = value.map(_.length).getOrElse(-1)
     value match {
       case Some(x) if len > 10 => Option("success")
@@ -134,6 +133,3 @@ object FormExample {
       case Some(x) if len > 0  => Option("error")
       case _                   => None
     }
-  }
-
-}

@@ -20,19 +20,23 @@
  */
 
 package react
+package syntax 
 
-/** Convert any scala object to a ReactNode via `blah.toNode`. */
-final case class ValueOps[T <: scala.Any](v: T) extends AnyVal {
-  def toNode: ReactNode = v.asInstanceOf[ReactNode]
-}
+import scala.scalajs.js
+import scala.annotation.targetName
 
-/** Enable `value.toNode` syntax. `ValueConverters` enable direct conversion to
- * ReactNode if you want to avoid the syntax and have magic.
- */
-trait ValueSyntax {
-  implicit def stringValueOpsSyntax(v: String): ValueOps[String] = ValueOps[String](v)
-  implicit def intValueOpsSyntax(v: Int): ValueOps[Int] = ValueOps[Int](v)
-  implicit def floatValueOpsSyntax(v: Float): ValueOps[Float] = ValueOps[Float](v)
-  implicit def doubleValueOpsSyntax(v: Double): ValueOps[Double] = ValueOps[Double](v)
-  implicit def booleanValueOpsSyntax(v: Boolean): ValueOps[Boolean] = ValueOps[Boolean](v)
-}
+/** Convert values to `ReactNode` via casts. */
+object node:
+  extension [T <: scala.Any](v: T)
+    @targetName("toNodeJSAny")
+    def unsafeToNode: ReactNode = v.asInstanceOf[ReactNode]
+
+
+  /** Convert common "primitive" types to `ReactNode`. */
+  extension [T <: String|Long|Int|Double|Float|Byte|Boolean](v: T)
+    @targetName("toNodePrimitive")
+    def toNode: ReactNode = v.asInstanceOf[ReactNode]
+
+  // extension (v: () => ReactNode)
+  //   @targetName("thunkToSFC")
+  //   def toNode: ReactNode = js.Any.fromFunction0(v).asInstanceOf[ReactNode]

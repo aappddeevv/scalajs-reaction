@@ -18,38 +18,46 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+package react_redux
 import scala.scalajs.js
+import js.annotation.*
+import react.*
 
-import js.|
+/** A listener in redux is very coarse grained. You receive all events. */
+type Listener = js.Function0[Unit]
+type Unsubscriber = js.Function0[Unit]
 
-package object react_redux {
+/** Dispatch an action via the store. */
+type Dispatch[A <: Action] = js.Function1[A | js.Dynamic, Unit]
 
-  /** Keys should be properties, values, js.Anys. Extend your Action trait from
-   * this trait to ensure it has a `type` property.
-   */
-  trait Action extends js.Object {
-    val `type`: String
-  }
+/** Helper to make type a dispatch function into js. */
+def dispatch[A <: Action](f: A | js.Dynamic => Unit): Dispatch[A] = f
 
-  /** A listener in redux is very coarse grained. You receive all events. */
-  type Listener = js.Function0[Unit]
-  type Unsubscriber = js.Function0[Unit]
 
-  /** Dispatch an action via the store. */
-  type Dispatch[A <: Action] = js.Function1[A | js.Dynamic, Unit]
+@js.native @JSImport("react-redux", "createProvider")
+def createProvider(storeKey: String): ReactJSComponent = js.native
 
-  /** Helper to make type a dispatch function into js. */
-  def dispatch[A <: Action](f: A | js.Dynamic => Unit): Dispatch[A] = f
+/** Default Provider component whose store's name is "store". */
+@js.native @JSImport("react-redux", "Provider")
+val Provider: ReactJSComponent = js.native
 
-  import react_redux.module
+/** Must have same properties and Object.is used to compared the values of the
+ * keys.
+ */
+@js.native @JSImport("react-redux", "shallowEqual")
+def shallowEqual(lhs: js.Any, rhs: js.Any): Boolean = js.native
 
-  def createProvider(storeKey: String) = module.createProvider(storeKey)
-  val Provider = module.Provider
-  def shallowEqual(lhs: js.Any, rhs: js.Any) = module.shallowEqual(lhs, rhs)
-  def useDispatch[A <: Action]() = module.useDispatch[A]()
-  def useSelector[S, A](selector: js.Function1[S, A]) = module.useSelector[S, A](selector)
-  def useSelector[S, A](selector: js.Function1[S, A], equalityFn: js.Function2[A, A, Boolean]) =
-    module.useSelector[S, A](selector, equalityFn)
-  def useStore[State, A <: Action]() = module.useStore[State, A]()
-}
+/** Wrap these in React.useCallback to avoid unnecessary renders. */
+@js.native @JSImport("react-redux", "useDispatch")
+def useDispatch[A <: Action](): Dispatch[A] = js.native
+
+/** Read notes on this at https://react-redux.js.org/next/api/hooks. */
+@js.native @JSImport("react-redux", "useSelector")
+def useSelector[S, A](selector: js.Function1[S, A]): A = js.native
+
+/** Read notes on this at https://react-redux.js.org/next/api/hooks. */
+@js.native @JSImport("react-redux", "useSelector")
+def useSelector[S, A](selector: js.Function1[S, A], equalityFn: js.Function2[A, A, Boolean]): A = js.native
+
+@js.native @JSImport("react-redux", "useStore")
+def useStore[State, A <: Action](): Store[State, A] = js.native

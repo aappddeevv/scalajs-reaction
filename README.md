@@ -14,6 +14,12 @@ Use react version 16.8+ to ensure that hooks are included. Use the latest react-
 
 Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
+Tiny example to declare your react component:
+
+```scala
+val HelloWorld: ReactFC0 = () => div("hello world")
+```
+
 # What is scalajs-reaction?
 
 A react library for scala written in the spirit of ReasonReact, a react library
@@ -36,11 +42,11 @@ scalajs-reaction emphasizes:
   existing application including those using global state-managed solutions such
   as redux.
 
-At the same time, it allows you to build your entire interface in scalajs-reaction. As long as your front-end solution can manage the model of
-  scala.js's output (one large module for all scala.js code, not file-by-file/module-by-module), you should consider scalajs-reaction for your solution. By providing a thin veneer over standard scala functions and hooks, it eschews abstractions and avoids getting in your way.
+At the same time, `scalajs-reaction` allows you to build your entire interface in scalajs-reaction. As long as your front-end solution can manage the model of
+scala.js's output (one large module for all scala.js code, not file-by-file/module-by-module), you should consider scalajs-reaction for your solution. By providing a thin veneer over standard scala functions and hooks, it eschews abstractions and avoids getting in your way.
 
-* [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
-* [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco): Uses the old API but still helpful.
+- [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
+- [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco): Uses the old API but still helpful.
 
 The library supports fragments, the new context provider and hooks. The facade's
 API roughly mimics ReasonReact's approach based on hooks. This facade also
@@ -56,14 +62,15 @@ create a new project.
 It's easy to create a component and render it:
 
 ```scala
+// hello world component
 val HelloWorld: ReactFC0 = () => div("hello world")
-// ...
+// ....
 react_dom.createAndRenderWithId(HelloWorld, "container")
 ```
 
 ReactFC0 does not do much other than ensure that the scala function on the right
 becomes a js function--which is all that is needed to use react. You
-could have just declared it directly: 
+could have just declared it directly:
 
 ```scala
 val HelloWorld: js.Function0[ReactNode] = props => div("hello world")
@@ -73,24 +80,25 @@ If you need to pass in an argument, remember that react function components requ
 
 ```scala
 object MyComponent {
-    trait Props extends js.Object {
+    trait Props extends js.Object:
         val name: String
-    }
+
     // I use this declaration style alot.
     val render: ReactFC[Props] = props =>
       div("hello " + props.name)
     }
     render.displayName = "MyComponent"
+
     def apply(props: Props) = createElement(render, props)
 }
 ```
 
 ReactFC says that the function component HelloWorld takes a single parameter, of
-type Props. You do not need to use `ReactFC`, you could just use standard
+type `Props`. You do not need to use `ReactFC`, you could just use standard
 scala and standard react:
 
 ```scala
-object MyComponent { 
+object MyComponent {
     trait Props ...
 
     val render: js.Function1[Props, ReactNode] = props => div(s"hello ${props.name}")
@@ -114,11 +122,11 @@ object MyComponent {
   // ReactElementTuple causes scala=>js function conversion using standard scala methods
   def apply(props: Props): ReactElementTuple = (render, props)
 
-  // r convert using the `.elementWith` extension method which reads nicely
+  // Or convert using the `.elementWith` extension method which reads nicely
   // This is what I usually use.
   def apply(props: Props) = render.elementWith(props)
 }
-````
+```
 
 That's how simple this facade is. You use the easy parts of scala.
 
@@ -152,7 +160,7 @@ straightforward. Depending on the component library you use, having choices
 helps you find the easiest way to access the components in your application.
 This library does not force many conventions on your code.
 
-This facade uses standard scala.js concepts. Higher level components, 
+This facade uses standard scala.js concepts. Higher level components,
 e.g. composition of smaller components, can
 use more idiomatic scala constructs. This library does
 not fight scala or scala.js to make it more like js. It uses
@@ -165,7 +173,7 @@ The libraries are all at the organization `org.ttgoss.js` and available on maven
 Include the library in your build:
 
 ```scala
-val scalaJsReactVersion = "latest.version" // see the badge above 
+val scalaJsReactVersion = "latest.version" // see the badge above
 
 // grab the the latest version or use a specific version
 libraryDependencies ++= Seq(
@@ -185,15 +193,15 @@ libraryDependencies ++= Seq(
 
     // if you integrate with redux
     "org.ttgoss.js" %%% "redux" % scalaJsReactVersion,
-    
+
     // if you need prop-types--you only need these for interop scenarios
     "org.ttgoss.js" %%% "prop-types" % scalaJsReactVersion,
- 
+
     // if you need react-native
     "org.ttgoss.js" %%% "native" % scalaJsReactversion)
 //
 // Add import scala.language.implicitConversions to each file or
-// add scalacOptions += Seq("-language:_") to your settings 
+// add scalacOptions += Seq("-language:_") to your settings
 // to enable implicit conversions and all other language features
 //
 ```
@@ -202,8 +210,8 @@ Do not forget to include the react libraries in your execution environment. For
 react 16+, the libraries have been split out into multiple libraries. For the
 reactjs based modules, the javascript dependencies are:
 
-* core: react
-* react-dom: react-dom
+- core: react
+- react-dom: react-dom
 
 ```sh
 npm i --save react
@@ -217,51 +225,51 @@ There are many modules available as most of the focus has been on hand-crafted b
 to improve ergonomics. We'll work with ScalablyType to improve the availability of bindings, however,
 they are quite simple to write using scalajs-reaction. All of these libraries use the group name `org.ttgoss.js`:
 
-* apollo
-* bootstrap
-* dataloader
-* data-validation (applicative data validation)
-* express
-* fabric (office-ui-fabric-react): Custom and ergonomic facade.
-* fabric-experiments
-* forms: Advanced, all-scala.js forms package.
-  * In transition so its not currently available.
-* formik
-* handlebars
-* helmet
-* jshelpers: Helpers for working with js data. Includes full js.Promise extension methods to avoid Future.
-* jss
-* lodash
-* loglevel
-* luxon (datetime library, evolved from moment)
-* msal
-* mssql
-* mui
-* native
-* pathtoregexp
-* plotlyjs
-* prop-types
-* react
-* react-content-loader
-* react-device-detect
-* react-dom
-* react-big-calendar
-* react-fast-compare
-* react-native-nativebase
-* react-native-elements
-* react-navigation
-* react-native-sideswipe
-* react-plotlyjs
-* react-redux
-* react-responsive
-* react-helmet
-* react-flexbox-grid
-* react-router-dom (5 and 6)
-* recoil (facebook state management)
-* use-query-params
-* use-deep-compare-effect
-* vdom
-* whydidyourender (use include/exclude regexs, see the readme in that directory)
+- apollo
+- bootstrap
+- dataloader
+- data-validation (applicative data validation)
+- express
+- fabric (office-ui-fabric-react): Custom and ergonomic facade.
+- fabric-experiments
+- forms: Advanced, all-scala.js forms package.
+  - In transition so its not currently available.
+- formik
+- handlebars
+- helmet
+- jshelpers: Helpers for working with js data. Includes full js.Promise extension methods to avoid Future.
+- jss
+- lodash
+- loglevel
+- luxon (datetime library, evolved from moment)
+- msal
+- mssql
+- mui
+- native
+- pathtoregexp
+- plotlyjs
+- prop-types
+- react
+- react-content-loader
+- react-device-detect
+- react-dom
+- react-big-calendar
+- react-fast-compare
+- react-native-nativebase
+- react-native-elements
+- react-navigation
+- react-native-sideswipe
+- react-plotlyjs
+- react-redux
+- react-responsive
+- react-helmet
+- react-flexbox-grid
+- react-router-dom (5 and 6)
+- recoil (facebook state management)
+- use-query-params
+- use-deep-compare-effect
+- vdom
+- whydidyourender (use include/exclude regexs, see the readme in that directory)
 
 Some of the external libs have just enough scala.js to write an app with but
 they are not fully fleshed out. In most cases, there are enhancements
@@ -284,16 +292,18 @@ for org.scala-js scalajs-dom bindings: [![javadoc](https://javadoc.io/badge2/org
 # Documentation
 
 Client:
-* [user](http://aappddeevv.github.io/scalajs-reaction)
+
+- [user](http://aappddeevv.github.io/scalajs-reaction)
 
 Integrated API documentation:
-* [all basic modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
+
+- [all basic modules](https://aappddeevv.github.io/scalajs-reaction/api/ttg/react)
 
 Sometimes the documentation generation process does not work so
 if you need docs it is probably best to generate them
-locally. 
+locally.
 
-Generate integrated documents using unidoc then open the toplevel page: 
+Generate integrated documents using unidoc then open the toplevel page:
 
 ```sh
 get clone https://github.com/aappdddeevv/scalajs-reaction
@@ -325,7 +335,7 @@ functions. Scala.js easily supports creating classes that map into javascript
 classes and hence into react component classes. However, with parallel fiber
 coming to react and other enhancements that are planned, a more functional
 library should withstand the change in the core react infrastructure to
-something that is more sustainable in the long run. 
+something that is more sustainable in the long run.
 
 # Suitability
 
@@ -345,26 +355,26 @@ structures to your code.
 There are a few [scala.js](https://www.scala-js.org/) react
 facades/implementations available:
 
-* https://github.com/eldis/scalajs-react: Very clean class oriented react
+- https://github.com/eldis/scalajs-react: Very clean class oriented react
   implementation. Class oriented but has a builder as well and includes purely
   functional (stateless) component support as well. No macros. Allows ES
   class-like syntax. Has wrappers for japgolly. This lib was created to get
   around "wrapping" and other artifacts that the author was not fond of in
   japgolly.
-* https://github.com/eldis/scalajs-redux: Redux facade by the same as above.
-* https://github.com/shogowada/scalajs-reactjs: More functionally oriented
+- https://github.com/eldis/scalajs-redux: Redux facade by the same as above.
+- https://github.com/shogowada/scalajs-reactjs: More functionally oriented
   facade. Contains redux facades and more.
-* https://github.com/japgolly/scalajs-react: The can't shoot yourself in the
+- https://github.com/japgolly/scalajs-react: The can't shoot yourself in the
   foot implementation. well supported and thought out but a bit more complex API
   wise.
-* https://slinky.shadaj.me: Newcomer. Uses macros smartly. Allows you to use
+- https://slinky.shadaj.me: Newcomer. Uses macros smartly. Allows you to use
   scala.js components in js as well. Uses some macros to help with javascript
   interop.
-* https://github.com/xored/scala-js-react: Class oriented facade. Uses macros to
+- https://github.com/xored/scala-js-react: Class oriented facade. Uses macros to
   transform xml literals so you can write xml in your code like jsx.
-* https://github.com/scalajs-react-interface/sri#sri: React-native and web. New
+- https://github.com/scalajs-react-interface/sri#sri: React-native and web. New
   maintainers.
-* https://github.com/Ahnfelt/react4s: React wrapper. This does not just mimic
+- https://github.com/Ahnfelt/react4s: React wrapper. This does not just mimic
   the standard react interface. Includes an interesting CSS builder,
   css-in-scala.
 
@@ -383,21 +393,21 @@ defined components fairly directly via some type of adoption or import process.
 
 Libraries you may be interested in:
 
-* [binding.scala](https://github.com/ThoughtWorksInc/Binding.scala): reactive UI
-framework. It uses a new binding framework for scala. Works on jvm and js. The
-binding framework is at a individual element level like mobx. You can use xml
-syntax as well. The binding approach is called "precise" binding.
-* [diode](https://github.com/suzaku-io/diode): redux replacement.
-* [laminar](https://github.com/raquo/laminar): a reactive web framework.
-* [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom.
-* [pine](https://github.com/sparsetech/pine): XML/HTML builder.
-* [scalacss](https://github.com/japgolly/scalacss): A solid css-in-scala solution.
-* [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes.
-* [scala-tags](https://github.com/lihaoyi/scalatags): XML/HTML builder.
-* [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework.
-* [udash](https://udash.io/) is another reactive framework that is not
-react based, but reactive.
-* [udash-css](https://udash.io): A css-in-scala framework.
+- [binding.scala](https://github.com/ThoughtWorksInc/Binding.scala): reactive UI
+  framework. It uses a new binding framework for scala. Works on jvm and js. The
+  binding framework is at a individual element level like mobx. You can use xml
+  syntax as well. The binding approach is called "precise" binding.
+- [diode](https://github.com/suzaku-io/diode): redux replacement.
+- [laminar](https://github.com/raquo/laminar): a reactive web framework.
+- [levsha](https://github.com/fomkin/levsha): Fast pure scala.js virtual dom.
+- [pine](https://github.com/sparsetech/pine): XML/HTML builder.
+- [scalacss](https://github.com/japgolly/scalacss): A solid css-in-scala solution.
+- [scala-dom-types](https://github.com/raquo/scala-dom-types): for dom attributes.
+- [scala-tags](https://github.com/lihaoyi/scalatags): XML/HTML builder.
+- [outwatch](https://github.com/OutWatch/outwatch/): reactive UI framework.
+- [udash](https://udash.io/) is another reactive framework that is not
+  react based, but reactive.
+- [udash-css](https://udash.io): A css-in-scala framework.
 
 # License
 

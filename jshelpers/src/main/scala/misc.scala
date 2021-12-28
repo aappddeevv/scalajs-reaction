@@ -20,16 +20,20 @@
  */
 
 package jshelpers
+package syntax
 
 import scala.scalajs.js
 import js.|
 
-/**
- * A data type commonly found when working with dropdown/labels.
- */
-trait StringIntMiscOrSyntax:
+object misc:
+  /**
+   * A data type commonly found when working with dropdown/labels.
+   */
   extension (a: String | Int)
     inline def asInt: Int = a.asInstanceOf[Int]
     inline def asString: String = a.asInstanceOf[String]
 
-trait MiscOrSyntax extends StringIntMiscOrSyntax
+  extension [A, B](o: A | B)
+    def pickLeft = o.asInstanceOf[A]
+    def pickRight = o.asInstanceOf[B]
+

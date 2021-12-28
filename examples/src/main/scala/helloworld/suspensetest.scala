@@ -24,11 +24,13 @@ package examples
 package helloworld
 
 import scala.scalajs.js
-import js.annotation._
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
+import react.*
+import syntax.*
+import jshelpers.syntax.*
+import react.conversions.given
+import vdom.*
 
 object SuspenseTest {
 

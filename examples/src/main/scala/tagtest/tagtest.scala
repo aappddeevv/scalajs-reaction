@@ -26,8 +26,9 @@ package tagtest
 import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
 import js.annotation._
-import react._
-import implicits._
+import react.*
+import syntax.*
+import conversions.given
 import vdom._
 import vdom.svgtags._
 import org.scalajs.dom
@@ -36,12 +37,11 @@ import org.scalajs.dom
 @JSImport("Examples/tagtest/README.md", JSImport.Default)
 object README_MD extends js.Any
 
-object TagTest {
-    val NAME = "TagTest"
+object TagTest:
+  val NAME = "TagTest"
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var rootClassName: js.UndefOr[String] = js.undefined
-  }
 
   def apply(props: Props) = render.elementWith(props)
   def apply(rcn: js.UndefOr[String] = js.undefined) =
@@ -193,4 +193,3 @@ object TagTest {
     )
   }
   render.displayName(NAME)
-}

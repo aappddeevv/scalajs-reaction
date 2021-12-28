@@ -28,8 +28,9 @@ import scala.scalajs.js
 import js.Dynamic.literal
 import js.JSConverters._
 import js.annotation.JSImport
+import jshelpers.syntax.*
 
-import _root_.react._
+import _root_.react.*
 
 @js.native
 @JSImport("JSExamples/AddressSummary", JSImport.Namespace)
@@ -40,8 +41,8 @@ private object AddressSummaryNS extends js.Object {
 object AddressSummary {
   def apply(className: Option[String] = None, address: Option[Address] = None) = {
     val props = literal(
-      "className" -> className.orUndefined,
-      "address"   -> address.orUndefined
+      "className" -> className.orUndefined.asJSAny,
+      "address"   -> address.orUndefined.asJSAny
     )
     createElement0(AddressSummaryNS.AddressSummary, props)
   }

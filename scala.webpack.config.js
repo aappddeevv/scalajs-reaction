@@ -41,11 +41,11 @@ function libraryOutput(dest, isProd, publicPath) {
 }
 
 const indexHTMLPlugin = [
-    new HtmlWebpackPlugin({
-        title: "scalajs-reaction Examples App",
-        filename: "index.html",
-        template: path.join(Paths.Public, "index.html"),
-    }),
+  new HtmlWebpackPlugin({
+    title: "scalajs-reaction Examples App",
+    filename: "index.html",
+    template: path.join(Paths.Public, "index.html"),
+  }),
 ]
 
 const finalStyleLoaders = [
@@ -90,6 +90,7 @@ const devServer = {
   compress: true,
   hot: true,
   open: true,
+  port: 8080,
   host: "0.0.0.0",
   disableHostCheck: true,
   https: true,
@@ -146,12 +147,13 @@ const common = (scalapath, isProd) => ({
         test: /\.(png|jpg|gif)$/,
         use: ["url-loader"]
       },
-      {
-        test: /\.js$/,
-        use: ["scalajs-friendly-source-map-loader"],
-        enforce: "pre",
-        exclude: [/node_modules/]
-      },
+      // {
+      //   test: /\.js$/,
+      //   use: ["scalajs-friendly-source-map-loader"],
+      //   //use: ["source-map-loader"],
+      //   enforce: "pre",
+      //   exclude: [/node_modules/]
+      // },
       {
         test: /\.md$/,
         use: "raw-loader"
@@ -175,9 +177,9 @@ const prod = {
   mode: "production"
 };
 
-module.exports = function(env,argv) {
+module.exports = function (env, argv) {
   const isProd = env && env.BUILD_KIND && env.BUILD_KIND === "production";
-  const scalapath = path.join(__dirname, "examples/target/scala-2.13/Scala.js");
+  const scalapath = path.join(__dirname, "examples/target/scala-3.1.0/Scala.js");
   const dist = path.join(__dirname, "dist");
   const staticAssets = copies(dist);
   const output = libraryOutput(dist, isProd);
@@ -202,7 +204,7 @@ module.exports = function(env,argv) {
     console.log("globals: ", g);
     return merge(output, common(scalapath, isProd), prod, {
       plugins: [
-	...indexHTMLPlugin,
+        ...indexHTMLPlugin,
         new webpack.DefinePlugin(g),
         copyplugin, // must be befor prodCopy
         prodCopy

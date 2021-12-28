@@ -23,15 +23,15 @@ package fabric
 package date_time
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
-import react._
-import react.implicits._
+import js.annotation.*
+import react.*
+import react.syntax.*
+import react.conversions.*
 import org.scalajs.dom
-import vdom._
-import fabric._
-import fabric.styling._
-import fabric.components._
+import vdom.*
+import fabric.*
+import fabric.styling.*
+import fabric.components.*
 
 object Calendar {
   @js.native
