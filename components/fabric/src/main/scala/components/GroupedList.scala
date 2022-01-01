@@ -3,7 +3,6 @@ package components
 
 import scala.scalajs.js
 import js.annotation._
-import js.|
 import org.scalajs.dom
 import react._
 import vdom._
@@ -57,7 +56,7 @@ object GroupedList {
   @JSImport("office-ui-fabric-react/lib/GroupedList", "GroupedList")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement(JS, props)
+  def apply(props: Props) = createElement(JS, props)
 
   trait PropsInit extends MaybeHasStrKey with ComponentRef[IGroupedList] with Themable with ClassName {
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined

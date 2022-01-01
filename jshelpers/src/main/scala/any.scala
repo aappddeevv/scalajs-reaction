@@ -28,6 +28,8 @@ import scala.annotation.targetName
 /** Much unsafeness here. Assumes you know what you are doing. */
 object any:
   import scala.scalajs.js
+  import scala.language.unsafeNulls
+  
   /** All of these are unsafe. */
   extension [T <: js.Any](a: T)
     /** Convert T => T|Null. */
@@ -97,6 +99,7 @@ object any:
 
     /** If value is null or undefined be undefined, otherwise defined. Could be called "filterNull". */
     def toNonNullUndefOr: js.UndefOr[T] =
+      // we keep this so that it works when needed
       if (a == null || js.isUndefined(a)) js.undefined
       else js.defined(a)
 

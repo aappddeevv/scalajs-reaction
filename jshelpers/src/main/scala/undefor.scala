@@ -231,6 +231,7 @@ object undefor:
     @targetName("filterEmptyUndefOrString")
     def filterEmpty: js.UndefOr[String] = 
       a match
-        case s: String => if s != "" && s != null then s else js.undefined
+        //case s: String => if s != "" && s != null then s else js.undefined
+        case s: String => if s != "" then s else js.undefined
         case _ => js.undefined
   end extension

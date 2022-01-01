@@ -31,7 +31,7 @@ object Button {
   @JSImport("react-native", "Button")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   trait Props extends js.Object {
     val title: String

@@ -36,7 +36,7 @@ object NavigatorIOS {
   @JSImport("react-navigation", "NavigatorIOS")
   object JS extends ReactJSComponent
 
-  def apply[T](props: Props = null) =
+  def apply[T](props: Props) =
     createElement0(JS, props)
 
   trait Props extends js.Object {

@@ -36,7 +36,7 @@ object MemoryRouter:
   @JSImport("react-router", "MemoryRouter")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElement(JS, props, children: _*)
 
   def apply(children: ReactNode*) =
@@ -245,7 +245,7 @@ object NavLink:
   @JSImport("react-router-dom", "NavLink")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   trait Props extends Link.Props:
     //var `aria-current`: js.UndefOr[String] = js.undefined

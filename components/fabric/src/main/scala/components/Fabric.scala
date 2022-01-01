@@ -23,13 +23,9 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
 
 object Fabric {
@@ -38,7 +34,7 @@ object Fabric {
   @JSImport("office-ui-fabric-react/lib/Fabric", "Fabric")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends HTMLAttributes[dom.html.Div] with Theme {

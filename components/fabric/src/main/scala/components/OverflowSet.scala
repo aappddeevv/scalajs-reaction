@@ -23,13 +23,9 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import fabric.styling._
 
 object OverflowSet {
@@ -37,8 +33,8 @@ object OverflowSet {
   @JSImport("office-ui-fabric-react/lib/OverflowSet", "OverflowSet")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(children: ReactNode*) = createElementN(JS, ())(children: _*)
 
   @js.native
   trait IOveflowSet extends js.Object {

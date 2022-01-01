@@ -24,7 +24,6 @@ package components
 
 import scala.scalajs.js
 import js.annotation._
-import js.|
 import org.scalajs.dom
 import react._
 import vdom._
@@ -36,7 +35,7 @@ object Dropdown {
   @JSImport("office-ui-fabric-react/lib/Dropdown", "Dropdown")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   @js.native
   trait IDropdown extends js.Object {

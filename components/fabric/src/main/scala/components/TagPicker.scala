@@ -33,7 +33,7 @@ object TagPicker {
   @JSImport("office-ui-fabric-react/lib/TagPicker", "TagPicker")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: js.UndefOr[Props] = js.undefined)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait ITag extends js.Object {

@@ -23,9 +23,7 @@ package mui
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import react._
 
 object Tooltip {
@@ -33,7 +31,7 @@ object Tooltip {
   @JSImport("@material-ui/core/Tooltip", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   @js.native

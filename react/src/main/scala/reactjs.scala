@@ -73,10 +73,10 @@ trait ReactJS extends js.Object with Concurrent:
    * the props type before casting. Children can be in the props as well
    * if I recall correctly so the varags is a convenience.
    */
-  def createElement(el: ReactType, props: js.Any, children: ReactNode*): ReactElement = js.native
+  def createElement(el: ReactType, props: js.Any|Null|Unit, children: ReactNode*): ReactElement = js.native
 
   /** Avoid. */
-  def cloneElement(el: ReactElement, props: js.Dynamic): ReactDOMElement = js.native
+  def cloneElement(el: ReactElement, props: js.Dynamic|Null): ReactDOMElement = js.native
 
   val Fragment: ReactJSComponent = js.native
   val StrictMode: ReactJSComponent = js.native

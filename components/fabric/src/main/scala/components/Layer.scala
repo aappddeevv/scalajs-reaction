@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Layer {
@@ -40,7 +35,7 @@ object Layer {
   @JSImport("office-ui-fabric-react/lib/Layer", "Layer")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Styles extends IStyleSetTag with Theme {

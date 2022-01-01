@@ -24,9 +24,7 @@ package experiments
 
 import scala.scalajs.js
 import js.annotation._
-
 import react._
-
 import fabric.components._
 import fabric.styling._
 
@@ -36,7 +34,7 @@ object Pagination {
   @JSImport("@uifabric/experiments/lib/Pagination", "Pagination")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   trait PropsBase extends ReactJSProps with ComponentRef[js.Object] {
     var itemsPerPage: js.UndefOr[Int] = js.undefined
@@ -101,7 +99,7 @@ object PageNumber {
   @JSImport("@uifabric/experiments/lib/Pagination/PageNumber", "PageNumber")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   trait Props extends js.Object {
     var onClick: js.UndefOr[js.Function1[Int, Unit]] = js.undefined

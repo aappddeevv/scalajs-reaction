@@ -293,15 +293,15 @@ package object styling {
     u.asInstanceOf[IStyle]
 
   /** Unwrap the option or return null. @group converters */
-  implicit def styleOpt2IStyle(vopt: Option[IStyle]): IStyle =
-    vopt.getOrElse[IStyle](null)
+  implicit def styleOpt2IStyle(vopt: Option[IStyle]): IStyle|Null =
+    vopt.getOrElse(null)
 
   /** Directly convert to a style since undefined is valid. @group coneverters */
   implicit def undef2IStyle(vopt: js.UndefOr[IStyle]): IStyle =
     vopt.asInstanceOf[IStyle]
 
   /** Unwrap the string or return null. @group converters */
-  implicit def stringOpt2IStyle(sopt: Option[String]): IStyle =
+  implicit def stringOpt2IStyle(sopt: Option[String]): IStyle|Null =
     sopt.getOrElse(null).asInstanceOf[IStyle]
 
   /** Unwrap the string or return null. @group converters */

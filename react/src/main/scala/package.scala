@@ -422,12 +422,12 @@ package object react extends react.React with When {
     return element.asInstanceOf[ReactElement]
   }
 
-  /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
-   * support makes this easier so you don't have to use this function.
-   */
-  def toSafeOption[T <: js.Any](t: js.Any): Option[T] =
-    if (js.isUndefined(t) || t == null) None
-    else Option(t.asInstanceOf[T])
+  // /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
+  //  * support makes this easier so you don't have to use this function.
+  //  */
+  // def toSafeOption[T <: js.Any](t: js.Any): Option[T] =
+  //   if (js.isUndefined(t) || t == null) None
+  //   else Option(t.asInstanceOf[T])
 
   /** Shorted version of `js.defined(blah)` */
   @inline def jsdef[A](a: A) = js.defined(a)
@@ -446,7 +446,7 @@ package object react extends react.React with When {
    *  in particular. This code is from
    *  https://stackoverflow.com/questions/38126349/how-to-deeply-compare-two-js-like-objects-in-scala-js.
    */
-  def jsEqual(a: js.Any, b: js.Any): Boolean =
+  def jsEqual(a: js.Any|Null, b: js.Any|Null): Boolean =
     (a, b) match {
       case (null, null)                     => true
       case (a: js.Array[_], b: js.Array[_]) =>

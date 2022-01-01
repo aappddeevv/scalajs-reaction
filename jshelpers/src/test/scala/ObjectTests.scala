@@ -10,12 +10,12 @@ import jshelpers.syntax.any.*
 
 val x = js.Dynamic.literal(a="blah").duplicate
 
-object JSObjectTests extends TestSuite:  
+object JSObjectTests extends TestSuite:
+  import scala.language.unsafeNulls
   val tests = Tests {
     test("duplicate") {
       val v: js.Dynamic = js.Dynamic.literal(a = "blah")
       assert(v != null)
-      println(s"BLAH: ${v.asJSObj}")
       val dupe: js.Dynamic = v.asJSObject.duplicate.asJSDyn
       val dupe2: js.Dynamic = js.Object.assign(new js.Object{}, v.asInstanceOf[js.Object]).asInstanceOf[js.Dynamic]
       assert(dupe2 != null)

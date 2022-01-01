@@ -23,13 +23,9 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
 
 object MarqueeSelection {
@@ -37,8 +33,8 @@ object MarqueeSelection {
   @JSImport("office-ui-fabric-react/lib/MarqueeeSelection", "MarqueeSelection")
   object JS extends ReactJSComponent
 
-  def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply[T <: js.Object](props: Props[T])(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(children: ReactNode*) = createElementN(JS, ())(children: _*)
 
   @js.native
   trait IMarqueeSelection extends js.Object

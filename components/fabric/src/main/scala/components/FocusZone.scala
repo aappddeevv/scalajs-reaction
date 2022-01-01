@@ -23,14 +23,9 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
 
 object FocusZone {
@@ -38,7 +33,7 @@ object FocusZone {
   @JSImport("office-ui-fabric-react/lib/FocusZone", "FocusZone")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   @js.native

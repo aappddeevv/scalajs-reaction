@@ -31,6 +31,6 @@ object ImageBackground {
   @JSImport("react-native", "ImageBackground")
   object JS extends ReactJSComponent
 
-  def apply(props: Image.Props = null)(children: ReactNode*) =
+  def apply(props: Image.Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 }

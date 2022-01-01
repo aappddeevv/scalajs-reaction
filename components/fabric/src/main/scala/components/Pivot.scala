@@ -25,14 +25,9 @@ package components
 import scala.scalajs.js
 
 import js.annotation._
-import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Pivot {
@@ -40,8 +35,8 @@ object Pivot {
   @JSImport("office-ui-fabric-react/lib/Pivot", "Pivot")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(children: ReactNode*) = createElementN(JS, null)(children: _*)
 
   @js.native
   trait IPivot extends Focusable

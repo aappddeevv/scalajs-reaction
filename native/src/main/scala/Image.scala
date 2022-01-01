@@ -24,7 +24,6 @@ package native
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
-import scala.scalajs.js.|
 
 @js.native
 sealed trait CacheControl extends js.Any
@@ -72,7 +71,7 @@ object Image {
   @JSImport("react-native", "Image")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait IOS {}

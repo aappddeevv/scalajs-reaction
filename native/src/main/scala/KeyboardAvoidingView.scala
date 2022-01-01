@@ -31,7 +31,7 @@ object KeyboardAvoidingView {
   @JSImport("react-native", "KeyboardAvoidingView")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends View.Props {

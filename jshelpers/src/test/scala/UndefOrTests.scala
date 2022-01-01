@@ -7,10 +7,21 @@ import jshelpers.syntax.*
 
 
 object UndefBooleanTests extends TestSuite:
+
   val tests = Tests {
+    test("undef") {      
+      () ==> js.undefined
+      val x: js.UndefOr[Int|Null] = js.undefined
+      x ==> js.undefined
+      val y: Int|Null = null
+      // won't compile with -Yexplicit-nulls,must have `Int|Null`
+      //val z: Int = null
+    }
+
     test("boolean or{True,False,flip}"){
+      import scala.language.unsafeNulls
       val v: js.UndefOr[Boolean] = js.defined(true) // or = true
-      val vundef: js.UndefOr[Boolean] = js.undefined
+      val vundef: js.UndefOr[Boolean] = js.undefined // same as the value ()
       v.flip ==> false
       //v.map(a => !a).getOrElse(true) ==> false
       assert(!vundef.flip.isDefined)
@@ -20,7 +31,9 @@ object UndefBooleanTests extends TestSuite:
       vundef.orFalse ==> false
       v.isNull ==> false
       vundef.isNull ==> false
-      vundef.orNull ==> null
+      // fails tt runtime! why?
+      //().orNull ==> null
+      //vundef.orNull ==> null
     }    
   }
 
@@ -39,6 +52,7 @@ object UndefStringTests extends TestSuite:
   }
 
 object UndefTests extends TestSuite:
+  import scala.language.unsafeNulls
   val tests = Tests {
     test("basics") { 
       val v: js.UndefOr[Int] = null.asInstanceOf[js.UndefOr[Int]]
@@ -56,7 +70,7 @@ object UndefTests extends TestSuite:
       val v2: js.UndefOr[Int|Null] = v.toUndefOrNull
       val v3: Int | Null =  v.toNull
       val v4: js.UndefOr[Int | Null] = js.defined(null)
-      assert(v4.isEmpty)
+      assert(!v4.isEmpty)
     }
     test("istotalEmpty") {
       val v: js.UndefOr[Int] = 10

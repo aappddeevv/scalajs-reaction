@@ -33,6 +33,10 @@ val commonScalacOptions = Seq(
   //,"-Ywarn-dead-code"
   "source",
   "future",
+  "-Ysafe-init",
+  "-Yexplicit-nulls",
+  //"-language:unsafeNulls",
+  //"-language:strictEquality"
 )
 
 lazy val jsSettings = Seq(

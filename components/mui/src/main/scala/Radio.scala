@@ -23,14 +23,9 @@ package mui
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-import js.|
-
 import org.scalajs.dom._
-
 import react._
-
 import vdom._
 
 object Radio {
@@ -39,7 +34,7 @@ object Radio {
   @JSImport("@material-ui/core/Radio", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   @js.native

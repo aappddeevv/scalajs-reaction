@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Link {
@@ -39,8 +34,7 @@ object Link {
   @JSImport("office-ui-fabric-react/lib/Link", "Link")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined

@@ -23,13 +23,9 @@ package mui
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom._
-
 import react._
-
 import vdom._
 
 object Stepper {
@@ -37,7 +33,7 @@ object Stepper {
   @JSImport("@material-ui/core/Stepper", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   @js.native
@@ -69,7 +65,7 @@ object StepLabel {
   @JSImport("@material-ui/core/StepLabel", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
@@ -97,7 +93,7 @@ object Step {
   @JSImport("@material-ui/core/Step", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
@@ -122,7 +118,7 @@ object StepContent {
   @JSImport("@material-ui/core/StepContent", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
@@ -148,7 +144,7 @@ object StepButton {
   @JSImport("@material-ui/core/StepButton", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
@@ -197,7 +193,7 @@ object StepConnecter {
   @JSImport("@material-ui/core/StepConnector", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
@@ -220,7 +216,7 @@ object StepIcon {
   @JSImport("@material-ui/core/StepIcon", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {

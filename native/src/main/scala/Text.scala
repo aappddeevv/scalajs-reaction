@@ -33,7 +33,7 @@ object Text {
   @JSImport("react-native", "Text")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait IOS extends js.Object {

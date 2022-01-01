@@ -43,7 +43,7 @@ def safeGet[T: scala.reflect.ClassTag](
 ) =
   lodash.get[T](o, path).flatMap {
     case t: T => js.defined(t)
-    case _    => js.undefined
+    case null    => js.undefined
   }
 
 @js.native

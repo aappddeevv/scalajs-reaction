@@ -31,7 +31,7 @@ object FlatList {
   @JSImport("react-native", "FlatList")
   object JS extends ReactJSComponent
 
-  def apply[T](props: Props[T] = null) =
+  def apply[T](props: Props[T]) =
     createElement0(JS, props)
 
   trait Props[T] extends VirtualizedList.Props[T] {

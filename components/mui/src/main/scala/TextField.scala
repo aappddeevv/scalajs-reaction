@@ -38,8 +38,10 @@ object TextField {
   @js.native
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: js.UndefOr[Props] = js.undefined)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
+
+  def apply(children: ReactNode*) = createElementN(JS)(children: _*)    
 
   @js.native
   sealed trait Margin extends js.Any

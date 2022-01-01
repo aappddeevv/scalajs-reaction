@@ -33,7 +33,7 @@ object Picker {
     val Item: ReactJSComponent = js.native
   }
 
-  def apply[T](props: Props[T] = null)(children: ReactNode*) =
+  def apply[T](props: Props[T])(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait IOS extends View.Props {
@@ -64,7 +64,7 @@ object Picker {
   }
 
   object Item {
-    def apply[T](props: Props[T] = null) = createElement0(JS.Item, props)
+    def apply[T](props: Props[T]) = createElement0(JS.Item, props)
 
     trait Props[T] extends js.Object {
       val label: String

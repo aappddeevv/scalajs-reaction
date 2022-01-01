@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object ScrollablePane {
@@ -40,8 +35,8 @@ object ScrollablePane {
   @JSImport("office-ui-fabric-react/lib/ScrollablePane", "ScrollablePane")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(children: ReactNode*) = createElementN(JS, null)(children: _*)
 
   @js.native
   trait IScrollablePane extends js.Object {

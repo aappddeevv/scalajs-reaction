@@ -42,7 +42,7 @@ object Icon { self =>
 
   trait IIcon extends js.Object {}
 
-  def apply(props: Props = null) =
+  def apply(props: Props) =
     createElement0(JS, props)
 
   trait StyleProps extends Theme {
@@ -73,7 +73,7 @@ object Icon { self =>
     trait Props extends self.Props {
       //var iconName: js.UndefOr[String] = js.undefined
     }
-    def apply(props: Props = null) =
+    def apply(props: Props) =
       createElement0(JS, props)
   }
 

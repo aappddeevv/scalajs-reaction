@@ -22,11 +22,8 @@
 package react_native_sideswipe
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import react._
-
 import native._
 import native.styling._
 
@@ -36,7 +33,7 @@ object SideSwipe {
   @JSImport("react-native-sideswipe", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply[T](props: Props[T] = null) = createElement0(JS, props)
+  def apply[T](props: Props[T]) = createElement0(JS, props)
 
   trait Props[T] extends js.Object {
     var contentContainerStyle: js.UndefOr[StyleProp[ViewStyle]] = js.undefined

@@ -22,7 +22,6 @@
 package react
 
 import scala.scalajs.js
-
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js._
@@ -61,7 +60,7 @@ trait React:
    *
    * @todo Seems like this is an expensive call. Can we do better?
    */
-  @inline def extractChildren(item: js.UndefOr[js.Object]): js.Array[ReactNode] =
+  @inline def extractChildren(item: js.UndefOr[js.Object]|Null): js.Array[ReactNode] =
     if (item == null) js.Array() // need this since could be a "defined" null
     else
       item.toOption
@@ -71,7 +70,7 @@ trait React:
   /** Create a DOM element using the string name e.g. "div". */
   def createDOMElement(
     tag: String,
-    props: js.Object | js.Dynamic
+    props: js.Object | js.Dynamic | Null
   )(
     children: ReactNode*
   ): ReactDOMElement =
@@ -80,14 +79,14 @@ trait React:
   /** Create an element with props and 0 children. */
   def createElement0(
     tag: ReactType,
-    props: js.Object | js.Dynamic
+    props: js.Object | js.Dynamic | Null | Unit
   ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object])
 
   /** Create an elemnt with 1 child only. */
   def createElement1(
     tag: ReactType,
-    props: js.Object | js.Dynamic,
+    props: js.Object | js.Dynamic | Null | Unit,
     child: ReactNode
   ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object], child)
@@ -95,7 +94,7 @@ trait React:
   /** Create an element with props and children. */
   def createElementN(
     tag: ReactType,
-    props: js.Object | js.Dynamic
+    props: js.Object | js.Dynamic | Null | Unit
   )(
     children: ReactNode*
   ): ReactElement =
@@ -108,19 +107,19 @@ trait React:
   /** Create an element with some props. Children can be in the props. */
   def createElement[P <: js.Object](
     component: ReactType,
-    props: P
+    props: P|Null
   ) =
     ReactJS.createElement(component, props)
 
   /** Create an element using the standard var args signature. */
-  def createElement[P <: js.Object](component: ReactType, props: P, children: ReactNode*): ReactElement =
+  def createElement[P <: js.Object](component: ReactType, props: P|Null, children: ReactNode*): ReactElement =
     ReactJS.createElement(component, props, children: _*)
 
   /** For creating quick ReactElements using js.Dynamic. Input is a scala function
    * taking a single props argument.
-   * 
-   * @deprecated
+   *s
    */
+  @deprecated
   def unsafeCreateElement(component: () => ReactNode) = {
     val jsc = js.Any.fromFunction0(component).asInstanceOf[ReactType]
     createElement0(jsc, null)
@@ -440,10 +439,28 @@ trait React:
     def apply(fallback: => ReactNode /* | Null = null*/ )(children: ReactNode*) =
       ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback.asInstanceOf[js.Any]), children: _*)
   }
+  
+  opaque type RevealOrder = String
+  object RevealOrder:
+    val forwards: RevealOrder = "forwards"
+    val backwards: RevealOrder = "backwards"
+    val together: RevealOrder = "together"
+
+  opaque type Tail = String
+  object Tail:
+    val hidden: RevealOrder = "hidden"
+    val collapsed: RevealOrder = "collapsed"
 
   object SuspenseList {
+    trait Props extends js.Object:
+      def revealOrder: js.UndefOr[RevealOrder] = js.undefined
+      def tail: js.UndefOr[Tail] = js.undefined
+
     def apply(items: ReactNode*) =
       ReactJS.createElement(ReactJS.SuspenseList, null, items: _*)
+
+    def apply(props: Props|Null)(items: ReactNode*) =
+      ReactJS.createElement(ReactJS.SuspenseList, props, items: _*)      
   }
 
   val version = ReactJS.version

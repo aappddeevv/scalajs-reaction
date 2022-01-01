@@ -25,14 +25,9 @@ package components
 import scala.scalajs.js
 
 import js.annotation._
-import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Image {
@@ -40,7 +35,7 @@ object Image {
   @JSImport("office-ui-fabric-react/lib/Image", "Image")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   def only(props: Props) = createElement0(JS, props)

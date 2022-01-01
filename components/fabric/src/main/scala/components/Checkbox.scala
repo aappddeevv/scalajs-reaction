@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Checkbox {
@@ -40,7 +35,7 @@ object Checkbox {
   @JSImport("office-ui-fabric-react/lib/Checkbox", "Checkbox")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   @js.native
   trait ICheckbox extends Focusable {

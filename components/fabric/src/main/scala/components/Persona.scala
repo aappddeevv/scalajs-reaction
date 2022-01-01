@@ -24,7 +24,6 @@ package components
 
 import scala.scalajs.js
 import js.annotation._
-import js.|
 import org.scalajs.dom
 import react._
 import vdom._
@@ -35,7 +34,8 @@ object Persona {
   @JSImport("office-ui-fabric-react/lib/Persona", "Persona")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
+  def apply() = createElement0(JS, null)
 
   @js.native
   trait IPersona extends js.Object {}
@@ -212,7 +212,8 @@ object Persona {
     @JSImport("office-ui-fabric-react/lib/Persona", "PersonaCoin")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null) = createElement0(JS, props)
+    def apply(props: Props) = createElement0(JS, props)
+    def apply() = createElement0(JS, null)
 
     trait Props extends SharedProps {
       var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
