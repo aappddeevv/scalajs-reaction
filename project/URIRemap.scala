@@ -32,7 +32,7 @@ object URIRemap extends AutoPlugin {
         // Use this once I'm on version tags. Version tags have leading v.
         //Seq(s"""-P:scalajs:mapSourceURI:$a->$g/${version.value}/""")
         // Use this for git heads :-)
-        Seq(s"""-P:scalajs:mapSourceURI:$a->$b""")
+        Seq(s"""-scalajs-mapSourceURI:$a->$b""")
       }
     })
 }
