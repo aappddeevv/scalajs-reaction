@@ -63,7 +63,7 @@ object Application:
   val baseUrl =
     dom.document.location.origin.getOrElse("") + BuildSettings.routePrefix.getOrElse("")
   val nsegments =
-    BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
+    BuildSettings.routePrefix.map(_.split("/").nn.filterNot(_.nn.isEmpty).length).getOrElse(0)
 
   dom.console.log("baseURL", baseUrl, "nsegments to strip", nsegments)
 

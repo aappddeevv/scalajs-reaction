@@ -39,7 +39,7 @@ import fabric.styling._
 
 import react_dom._
 
-case class ToDo(id: Int, name: String, added: js.Date = null, completed: Boolean = false)
+case class ToDo(id: Int, name: String, added: js.Date|Null = null, completed: Boolean = false)
 
 object ToDoItem {
   val Name = "ToDoItem"
@@ -167,7 +167,7 @@ object ToDos {
   def apply(props: Props) = render.elementWith(props)
 
   val render: ReactFC[Props] = props => {
-    val ifield = useRef[TextField.ITextField](null)
+    val ifield = useRefWithNull[TextField.ITextField](null)
     useEffectMounting { () =>
       println("ToDo: subscriptions: called during mount")
       () => println("ToDo: subscriptions: unmounted")

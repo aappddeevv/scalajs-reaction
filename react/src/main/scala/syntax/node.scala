@@ -27,13 +27,13 @@ import scala.annotation.targetName
 
 /** Convert values to `ReactNode` via casts. */
 object node:
-  extension [T <: scala.Any](v: T)
+  extension [T <: scala.Any](v: T|Null)
     @targetName("toNodeJSAny")
     def unsafeToNode: ReactNode = v.asInstanceOf[ReactNode]
 
 
-  /** Convert common "primitive" types to `ReactNode`. */
-  extension [T <: String|Long|Int|Double|Float|Byte|Boolean](v: T)
+  /** Convert common "primitive" (but are not `js.Any` subtypes) types to `ReactNode`. */
+  extension [T <: String|Long|Int|Double|Float|Byte|Boolean|Null](v: T)
     @targetName("toNodePrimitive")
     def toNode: ReactNode = v.asInstanceOf[ReactNode]
 

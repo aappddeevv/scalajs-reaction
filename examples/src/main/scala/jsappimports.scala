@@ -93,7 +93,7 @@ trait ReactWeatherDisplayProps extends js.Object:
   var isVisible: js.UndefOr[Boolean]        = js.undefined
 
 object ReactWeatherDisplay:
-  def apply(props: ReactWeatherDisplayProps = null) =
+  def apply(props: ReactWeatherDisplayProps) =
     createElement0(ReactWeatherDisplayJS, props)
 
 class PrettyJsonOptions(
@@ -139,5 +139,5 @@ class ReactContentLoaderOptions(
 ) extends js.Object
 
 object ReactContentLoaderComponents:
-  def BulletList(props: ReactContentLoaderOptions = null)(children: ReactNode*) =
+  def BulletList(props: ReactContentLoaderOptions)(children: ReactNode*) =
     createElement(ReactContentLoader.List, props, children: _*)

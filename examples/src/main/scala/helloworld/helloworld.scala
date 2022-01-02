@@ -86,7 +86,7 @@ object HelloWorld {
   // Exported to javascript world under the nam <modulename>.HelloWorld
   @JSExportTopLevel("HelloWorld")
   val render3: ReactFC[Props3] = props => {
-    val hwref = useRef[dom.html.Div](null)
+    val hwref = useRefWithNull[dom.html.Div]()
     div(new DivProps {
       ref = hwref
     })(props.content)

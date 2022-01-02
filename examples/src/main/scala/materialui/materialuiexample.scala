@@ -24,7 +24,6 @@ package materialui
 
 import scala.scalajs.js
 import js.Dynamic.{ literal => jsobj }
-import js.|
 import org.scalajs.dom
 import react._
 import syntax.*
@@ -123,7 +122,7 @@ object MaterialUIPage:
         // 0
         className = cn.card
       })(
-        Card.Content()(
+        Card.Content(new{})(
           Typography(new Typography.Props {
             // 0
             className = cn.title
@@ -155,7 +154,7 @@ object MaterialUIPage:
             "a benevolent smile"
           )
         ),
-        Card.Actions()(Button(new Button.Props {
+        Card.Actions(new {})(Button(new Button.Props {
           size = Button.Size.small
         })("Learn More"))
       )

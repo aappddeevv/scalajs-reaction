@@ -99,7 +99,7 @@ object Pages {
       div(12),
       div(12.0),
       div(true), // this will not display anything
-      div(null), // this will not display anything
+      div(nullNode), // this will not display anything
       div("this is a helloworld string"),
       helloworld.SuspenseTest.blah(),
       helloworld.EqualityTest.doit()

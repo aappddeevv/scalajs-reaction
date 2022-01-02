@@ -34,6 +34,7 @@ import scalajs.js
 package object vdom extends Events with HTMLTagsX {
 
   /** Create tag that uses the "list" property syntax. */
+  @deprecated("Use tagt")
   inline def tag(name: String): Tag = new Tag(name)
 
   /** Create a tag that takes a typed `js.Object` for props. */

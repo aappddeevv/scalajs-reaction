@@ -46,7 +46,7 @@ trait AddressDAO extends js.Object:
 trait AddressesViewModel extends js.Object:
   // address can be null value explicitly per plain old scala
   def setActive(id: Id, address: Address): Unit
-  def activeId: Id
+  def activeId: Id|Null
   // per the typescript documentation, Address|null in the redux state
-  def active: Address
+  def active: Address|Null
 

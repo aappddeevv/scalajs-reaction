@@ -89,7 +89,7 @@ object AddressList {
     div.merge(lit("data-is-scrollable" -> true))(new DivProps {
       className = amstyles.master.asString
     })(
-      ScrollablePane()(Details.Shimmered[Address](listopts))
+      ScrollablePane(Details.Shimmered[Address](listopts))
     )
   }
   render.displayName(Name)

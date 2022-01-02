@@ -55,7 +55,7 @@ trait KeyAndRef extends js.Object {
   var ref: js.UndefOr[Ref[js.Any]] = js.undefined
 }
 
-/** Adds a componentRef member. */
+/** Adds a componentRef member with variants. */
 trait ComponentRef[T] extends js.Object {
   @JSName("componentRef")
   var componentRefCallback: js.UndefOr[RefCb[T]] = js.undefined

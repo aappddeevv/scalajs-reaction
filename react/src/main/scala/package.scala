@@ -20,9 +20,7 @@
  */
 
 import scala.scalajs.js
-
-import js.JSConverters._
-import js.UndefOr
+import js.JSConverters.*
 
 /**
  * A scala.js react facaded in the spirit of ReasonReact.
@@ -71,31 +69,25 @@ package object react extends react.React with When {
   val noCleanUp = () => ()
 
   /**
-   * Object returned from `createRef()`. It's typically either js component or a
+   * Non-mutable ref. Object returned from `createRef()` and some variants of `useRef` hook. 
+   It's typically either js component or a
    * DOM element, both of which are js.Objects. You only use this type with the
    * `React.createRef()` machinery. Use this instead of a string or ref
    * callback. Introduced in 16.3. `useRef` uses a slightly different flavor
-   * of `current`.
-   *
-   * @todo Validate a null value is present if the ref is never set. typescript
-   * says so.
+   * of `current`. The current value is immutable.
    */
   @js.native
-  trait ReactRef[T] extends js.Object {
-
+  trait ReactRef[T] extends js.Object:
     /** See react.syntax for syntax support on handling E|Null
      * e.g. myref.current.toNonNullOption.
      */
     val current: T | Null = js.native
-  }
 
-  object ReactRef {
-    implicit class RichReactRef[T](private val r: ReactRef[T]) extends AnyVal {
-
-      /** If needed to satisfy API constraints, convert to a ReactRef. */
-      def toMutableRef = r.asInstanceOf[MutableRef[T]]
-    }
-  }
+  extension [T](r: ReactRef[T])
+    /** If needed to satisfy API constraints, convert to a mutable ref whose current
+      * value can be changed.
+      */
+    def asMutableRef = r.asInstanceOf[MutableRef[T]]
 
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E | Null, Unit]
@@ -108,20 +100,19 @@ package object react extends react.React with When {
    * they need to check for the `null` value directly).
    *
    * Reconcile with ReactRef perhaps rename the member to something like `unsafe`.
+   * 
+   * @tparam T Ref type. Could be `T|Null` as well.
    */
-  trait MutableRef[T] extends js.Object {
+  trait MutableRef[T] extends js.Object:
     var current: T
-  }
 
-  object MutableRef {
-    implicit class RichMutableRef[T](private val r: MutableRef[T]) extends AnyVal {
+  extension [T](r: MutableRef[T])
+    /** If needed to satisfy API such as the ref associated with DOM
+     * elements, convert to a ReactRef. This is messy in typescript as well.
+     */
+    def asReactRef = r.asInstanceOf[ReactRef[T]]
 
-      /** If needed to satisfy API constraints, convert to a ReactRef. */
-      def toReactRef = r.asInstanceOf[ReactRef[T]]
-    }
-  }
-
-  /** Combine the callback and the createRef models. Also include the newer hooks model. */
+  /** Combine all possible variations of `Ref` models. */
   type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
 
   /* Like `refCB` but better named. */
@@ -129,6 +120,7 @@ package object react extends react.React with When {
     js.Any.fromFunction1(f).asInstanceOf[Ref[E]]
 
   /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
+  @deprecated("Use callbackAsRef")
   def refCB[E](f: E | Null => Unit): Ref[E] =
     js.Any.fromFunction1[E | Null, Unit](f).asInstanceOf[Ref[E]]
 
@@ -175,16 +167,16 @@ package object react extends react.React with When {
    */
   @deprecated("Use ReactJSProps", "0.1.0")
   trait ReactPropsJs extends js.Object {
-    var key: UndefOr[KeyType] = js.undefined
-    def ref[E]: UndefOr[RefCb[E]] = js.undefined
+    var key: js.UndefOr[KeyType] = js.undefined
+    def ref[E]: js.UndefOr[RefCb[E]] = js.undefined
   }
 
   /** Use this instead of ReactPropsJs. But! you should probably should be
    *  using `MaybeHasStrKey`
    */
   trait ReactJSProps extends js.Object {
-    var key: UndefOr[KeyType] = js.undefined
-    def ref[E]: UndefOr[RefCb[E]] = js.undefined
+    var key: js.UndefOr[KeyType] = js.undefined
+    def ref[E]: js.UndefOr[RefCb[E]] = js.undefined
   }
 
   /** Optional key but no ref. Key must be a string. */
@@ -222,7 +214,7 @@ package object react extends react.React with When {
     //def `type`: String = js.native
 
     /** Raw JS props. You don't normally access this. Don't use. */
-    def props: UndefOr[js.Object] = js.native
+    def props: js.UndefOr[js.Object] = js.native
   }
 
   /**
@@ -351,7 +343,7 @@ package object react extends react.React with When {
   /** Allocate an empty child array. It's not shared like `emptyChildrenVal` */
   def emptyChildren = js.Array[ReactNode]()
 
-  /** Make a callback. You don't need this but helps with type inference. There is
+  /** Make a callback. Helps with type inference. There is
    * some dedicated syntax support for `E|Null` handling.
    */
   def refCallback[E](f: E | Null => Unit): RefCb[E] = f

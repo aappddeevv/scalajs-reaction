@@ -141,10 +141,10 @@ object SuspenseTest {
     div(
       s"* h, s, r, f *: ",
       Fragment(
-        if (happyPress) "h" else null,
-        if (sadPress) "s" else null,
-        if (robotPress) "r" else null,
-        if (foxPress) "f" else null
+        when(happyPress)("h"),
+        when(sadPress)("s"),
+        when(robotPress)("r"),
+        when(foxPress)("f"),
       )
     )
   }
@@ -174,10 +174,11 @@ object SuspenseTest {
       "Created using a plain js function in scala",
       s"* h, s, r, f *: ",
       Fragment(
-        if (happyPress) "h" else null,
-        if (sadPress) "s" else null,
-        if (robotPress) "r" else null,
-        if (foxPress) "f" else null
+        when(happyPress)("h"),
+        when(sadPress)("s"),
+        when(robotPress)("r"),
+        // should pick up conversion
+        if (foxPress) "f" else nullNode
       )
     )
   }
@@ -235,19 +236,19 @@ object SuspenseTest {
     }
 
   // direct parent import
-  def SuspenseParent(props: SProps = null)(children: ReactNode*) =
+  def SuspenseParent(props: SProps )(children: ReactNode*) =
     createElement(SuspenseParentNS.SuspenseParentJS, props, children: _*)
 
   // lazy is called in the ts file
-  def LazySuspenseChild(props: SProps = null)(children: ReactNode*) =
+  def LazySuspenseChild(props: SProps)(children: ReactNode*) =
     createElement(SuspenseParentNS.SuspenseChildJS, props, children: _*)
 
   // child is imported directly
-  def SuspenseChild(props: SProps = null)(children: ReactNode*) =
+  def SuspenseChild(props: SProps)(children: ReactNode*) =
     createElement(SuspenseChildJS, props, children: _*)
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
-  def LazyChildViaReactLazy(props: SProps = null)(children: ReactNode*) =
+  def LazyChildViaReactLazy(props: SProps )(children: ReactNode*) =
     createElement(`lazy`(SuspenseParentNS.X), props, children: _*)
 
   def blah(): ReactNode =
@@ -259,7 +260,7 @@ object SuspenseTest {
       sfc4,
       sfc6,
       div("=====> js/ts suspense demo below, default load time is 7 seconds. SuspenseChild throws Promies in js"),
-      SuspenseParent()(SuspenseChild(spropsKey("ts"))(div("text for SuspenseChild from scalajs"))),
+      SuspenseParent(new {})(SuspenseChild(spropsKey("ts"))(div("text for SuspenseChild from scalajs"))),
       div("=====> scala.js suspense test 1: Imported a component defined by React.lazy(()=>import(..)) in js"),
       // uses scala.js import of React.Suspense
       sfc5(Sfc5Props(LazySuspenseChild(spropsKey("test1", 10000))(div("text for SuspenseChild from scalajs")))),

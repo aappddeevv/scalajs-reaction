@@ -29,8 +29,8 @@ import jshelpers.syntax.*
 /**
  * Create a tag from a list of attributes. This is a "factory" for tags as
  * react elements.
- * @deprecated Use `TagT`.
  */
+@deprecated("Use TagT")
 class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
   def apply(attrs: Attrs*)(children: ReactNode*): ReactDOMElement =
     react.createDOMElement(name, Attrs.concat(tagAttrs ++ attrs).toJs)(children: _*)
@@ -38,17 +38,18 @@ class Tag(name: String, tagAttrs: List[Attrs] = Nil) {
 
 /**
  * Create a tag that takes type non-native JS traits. This is a "factory" for
- * the standard html tags, which are typically lowercase.
+ * the standard html tags, which are typically lowercase. You can add "default"
+ * props when you create the factory via the constructor.
  */
 class TagT[P <: js.Object](name: String, tagAttrs: P = noProps[P]()) { self =>
 
   /** Properties and and maybe children. */
-  def apply(attrs: P)(children: ReactNode*): ReactDOMElement =
-    react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
+  def apply(attrs: P|Null)(children: ReactNode*): ReactDOMElement =
+    react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, if attrs != null then attrs.asJSDyn else js.Dynamic.literal()))(children: _*)
 
   /** Create an element by explicitly indicating the props. */
-  def withProps(attrs: P)(children: ReactNode*): ReactDOMElement =
-    react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, attrs.asDyn).asJsObj)(children: _*)
+  def withProps(attrs: P|Null)(children: ReactNode*): ReactDOMElement =
+    react.createDOMElement(name, mergeJSObjects(tagAttrs.asDyn, if attrs != null then attrs.asDyn else js.Dynamic.literal()))(children: _*)
 
   /** Only children, no props. */
   def apply(children: ReactNode*): ReactDOMElement =

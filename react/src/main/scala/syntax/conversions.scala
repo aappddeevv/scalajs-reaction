@@ -78,6 +78,8 @@ given undefOrAnyValToElement: Conversion[js.UndefOr[AnyVal], ReactNode] = _.map(
 given nullOrAnyValToElement: Conversion[AnyVal | Null, ReactNode] = 
   v => if (v == null) nullNode else v.asInstanceOf[ReactNode]
 
+given null2Node: Conversion[Null, ReactNode] = _.asInstanceOf[ReactNode]  
+
 //
 // Basic type conversions. No | type used to keep everything very specific.
 //
@@ -96,6 +98,15 @@ given ubyteToNode: Conversion[js.UndefOr[Byte], ReactNode] = _.asInstanceOf[Reac
 given booleanToNode: Conversion[Boolean, ReactNode] = _.asInstanceOf[ReactNode]
 given ubooleanToNode: Conversion[js.UndefOr[Boolean], ReactNode] = _.asInstanceOf[ReactNode]
 
+// UndefOr T | Null
+given undefNullStringToNode: Conversion[js.UndefOr[String|Null], ReactNode] = _.asInstanceOf[ReactNode]
+given undefNullIntToNode: Conversion[js.UndefOr[Int|Null], ReactNode] = _.asInstanceOf[ReactNode]
+given undefNullDoubleToNode: Conversion[js.UndefOr[Double|Null], ReactNode] = _.asInstanceOf[ReactNode]
+
+// T | Null
+given stringOrNullToElement: Conversion[String|Null, ReactNode] = _.asInstanceOf[ReactNode]
+
+
 /** Since null is a valid react node, convert an optional string to null. */
 given optionStringToElement: Conversion[Option[String], ReactNode] =
   n => n.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode)
@@ -107,11 +118,6 @@ given optionStringToUndefOrElement: Conversion[Option[String], js.UndefOr[ReactN
 /** Implicit conversion from Option[String] => js.UndefOr[String]. */
 given optionStringToUndefOr: Conversion[Option[String], js.UndefOr[String]] = _.orUndefined
 
-given undefNullStringToNode: Conversion[js.UndefOr[String|Null], ReactNode] = _.asInstanceOf[ReactNode]
-
-given undefNullIntToNode: Conversion[js.UndefOr[Int|Null], ReactNode] = _.asInstanceOf[ReactNode]
-
-given undefNullDoubleToNode: Conversion[js.UndefOr[Double|Null], ReactNode] = _.asInstanceOf[ReactNode]
 
 given optToElement: Conversion[Option[ReactNode], ReactNode] = _.getOrElse(nullNode)
 

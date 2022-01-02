@@ -24,12 +24,9 @@ package vdom
 
 // needed because I could not figure out the proper variance construct
 import scala.annotation.unchecked.{ uncheckedVariance => uv }
-
 import scala.scalajs.js
-
 import js.Dynamic.{ literal => lit }
 import js.annotation.JSName
-import js.|
 
 import org.scalajs.dom
 
@@ -53,6 +50,10 @@ trait Attributes extends js.Object {
 
 /** Add a ref callback. ReactJSProps does not carry a type. */
 trait ClassAttributes[E] extends Attributes {
+  /** Ref callback that can be any fo the legacy looking, callback flavor or
+   * hook flavored ref. If using hooks, you typically would use `useRefWithNull[E]`
+   * to obtain a ref value to pass into this attribute.
+   */
   var ref: js.UndefOr[Ref[E]] = js.undefined
 }
 
@@ -190,7 +191,7 @@ trait HTMLTagsX {
     children: ReactNode*
   ) = div(new DivProps { `key` = k; className = cn })(children: _*)
 
-  def divWithProps(props: DivProps) = div(props)()
+  def divWithProps(props: DivProps|Null) = div(props)()
 
   def divWithHTML(html: String) =
     div(new DivProps {

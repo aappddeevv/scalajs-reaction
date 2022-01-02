@@ -23,12 +23,10 @@ package ttg
 package examples
 package addressmanager
 
-import scala.concurrent.duration._
-
+import scala.concurrent.duration.*
 import scala.scalajs.js
-
-import js.JSConverters._
-import js.annotation._
+import js.JSConverters.*
+import js.annotation.*
 
 object fakedata {
 
@@ -54,14 +52,14 @@ object fakedata {
   }
 
   object addressesVM extends AddressesViewModel {
-    private var _activeId: Id    = null
-    private var _active: Address = null
+    private var _activeId: Id |Null   = null
+    private var _active: Address |Null= null
     def setActive(id: Id, a: Address): Unit = {
       _activeId = id
       _active = a
     }
-    def activeId: Id    = _activeId
-    def active: Address = _active
+    def activeId: Id|Null    = _activeId
+    def active: Address|Null = _active
   }
 
   val defaultAddresses = generateAddresses(500)

@@ -214,7 +214,7 @@ object app {
             }
             .recover {
               case NonFatal(e) =>
-                dispatch(FailedToGetCity(e.getMessage(), state.cityName))
+                dispatch(FailedToGetCity(e.getMessage().nn, state.cityName))
             }
         case None => dispatch(WeatherLoaded(emptyWeatherList))
       }

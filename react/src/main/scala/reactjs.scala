@@ -190,7 +190,10 @@ trait Hooks extends js.Object:
 
   def useMemo[T](value: js.Function0[T], dependencies: Dependencies | Unit): T = js.native
 
-  def useRef[T](initialValue: T): MutableRef[T] = js.native
+  /** Requires a cast when writing a facade since there are a few variations of ref values
+   * in react these days with 16.8+.
+   */
+  def useRef[T](initialValue: T|Null|Unit): js.Any = js.native
 
   // Uses Object.is for state comparisons!
   def useReducer[S, A](reducer: js.Function2[S, A, S], initialState: S): js.Tuple2[S, Dispatch[A]] = js.native

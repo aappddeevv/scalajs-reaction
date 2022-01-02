@@ -367,8 +367,28 @@ trait React:
       )
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
-  /** Do not include `Null` in your type parameter as it added to `MutableRef.current` automatically. */
-  def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
+  /** Use this version when you have the initial value when first called. 
+   * If you are using scala constructs for representing "unknown", use this
+   * hook e.g. `Option[String]`. You typically use this variant when
+   * you want to have "local vars" in your function component.
+  */
+  def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue).asInstanceOf[MutableRef[T]]
+
+  /** `useRef` variant when the initial value and subsequent values may be null. 
+   * You typically use this when you want to pass it along to a child component
+   * to obtain a link to a DOM element via the `ref` attribute. Since a `ReactRef` is returned, 
+   * it cannot be modified in its defining function component.
+  */
+  def useRefWithNull[T](initialValue: T|Null = null): ReactRef[T] = 
+      ReactJS.useRef[T](initialValue).asInstanceOf[ReactRef[T]]
+
+  /** `useRef` variant when the initial value and subsequent values may be undefined. 
+   * You could use this version when you want an "optional" local var in your function
+   * component but prefer `useRef[T]` to this one and use a scala Option if the value
+   * is used for scala based business logic.
+  */
+  def useRefWithUndef[T](initialValue: js.UndefOr[T] = js.undefined): MutableRef[js.UndefOr[T]] = 
+      ReactJS.useRef[js.UndefOr[T]](initialValue).asInstanceOf[MutableRef[js.UndefOr[T]]]
 
   /** Expose imperative functions in R to refs.
    * @tparam T Ref type

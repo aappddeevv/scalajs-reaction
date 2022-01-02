@@ -30,17 +30,17 @@ import react.*
 import react.syntax.*
 import react.conversions.given
 import jshelpers.syntax.*
-import vdom._
-import fabric._
-import fabric.components._
-import cytoscape._
+import vdom.*
+import fabric.*
+import fabric.components.*
+import cytoscape.*
 
 /**
  * Treat the graph and ref as instance vars in State since State in
  * reason-react is really just instance vars and the component definition is
  * really a closure around that so you should feel free to mutate it.
  */
-object Graph {
+object Graph:
 
   Cytoscape.use(Dagre)
   Cytoscape.use(Cola)
@@ -138,12 +138,13 @@ object Graph {
   def apply() = createElement(render, null)
 
   val render: ReactFC0 = () => {
-    val refR = useRef[Option[dom.html.Div]](None)
+    val refR = useRefWithNull[dom.html.Div]()
     var cyR  = useRef[Option[Graph]](None)
 
     useEffectMounting(() => {
       println(s"$Name: didMount, building graph")
-      cyR.current = refR.current.flatMap(g => Option(mkGraph(g)))
+      // this feels messy, need to explore the API surface more
+      cyR.current = refR.current.toNonNullOption.flatMap(g => Option(mkGraph(g.nn)))
       (() => {
         println(s"$Name: willUnmount")
         cyR.current.foreach(_.destroy())
@@ -166,8 +167,9 @@ object Graph {
         width = "100%"
         display = "block"
       }
-      ref = refCallback[dom.html.Div](el => refR.current = el.toNonNullOption)
+      ref = refR
     })()
   }
   render.displayName(Name)
-}
+  
+end Graph
