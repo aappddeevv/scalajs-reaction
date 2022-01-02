@@ -33,7 +33,7 @@ import scala.scalajs.js
  * when you want to delay a computation. Node creation processing is a
  * by-name parameter.
  */
-trait When {
+trait When:
 
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
@@ -54,9 +54,9 @@ trait When {
   // versus auto unwrapping. I'll keep flipping back and forth until
   // I have a stronger opinion.
 
-//   def whenUnwrap(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
-//     if (cond.getOrElse(false)) render else nullNode
-//
+  //   def whenUnwrap(cond: js.UndefOr[Boolean])(render: => ReactNode): ReactNode =
+  //     if (cond.getOrElse(false)) render else nullNode
+  //
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def whenUnwrap[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
     if (cond.getOrElse(false)) render else nullNode
@@ -73,4 +73,3 @@ trait When {
   def whenNotUnwrap[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
     if (!cond.getOrElse(false)) render else nullElement
 
-}

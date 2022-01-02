@@ -32,8 +32,8 @@ import rxjs._
 
 @js.native
 trait PartialApolloCurrentQueryResult extends js.Object {
-  val error: js.UndefOr[ApolloError] = js.undefined
-  val partial: js.UndefOr[ApolloError] = js.undefined
+  val error: js.UndefOr[ApolloError] = js.native
+  val partial: js.UndefOr[ApolloError] = js.native
 }
 
 trait FetchMoreOptions[T, TVars] extends js.Object {

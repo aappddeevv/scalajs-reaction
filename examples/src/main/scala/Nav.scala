@@ -25,23 +25,21 @@ package examples
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => jsobj }
-import js.JSConverters._
-import js.annotation._
-import react._
-import react.implicits._
-import vdom._
-import vdom.styling._
-import fabric._
-import fabric.components._
-import fabric.experiments._
-import fabric.styling._
-import cats._
-import cats.data._
-import cats.implicits._
+import js.JSConverters.*
+import js.annotation.*
+import react.*
+import react.syntax.*
+import vdom.*
+import vdom.styling.*
+import fabric.*
+import fabric.components.*
+import fabric.experiments.*
+import fabric.styling.*
+import react_router6.dom.*
 
-object Nav {
+object Nav:
 
-def makeItem(k: String, nm: String, nav: String, goto: String => Unit) =
+  def makeItem(k: String, nm: String, nav: String, goto: NavigateFunction) =
     new Sidebar.ItemProps {
       val key = k
       title = nm
@@ -68,19 +66,23 @@ def makeItem(k: String, nm: String, nav: String, goto: String => Unit) =
     ("mui", "Material UI", fix("mui"))
   )
 
-  trait Props extends js.Object {
-    var rootClassName: js.UndefOr[String] = js.undefined
-    var goto: String => Unit
-  }
+  trait Props extends js.Object:
+    var rootClassName: js.UndefOr[String] = js.undefined    
 
   val Name                = "Nav"
+
   def apply(props: Props) = render.elementWith(props)
+  def apply() = render.elementWith(new Props {})
+
   val render: ReactFC[Props] = props => {
+    val navigate = useNavigate()
     Sidebar(new Sidebar.Props {
       className = props.rootClassName
       val theme = Styling.getTheme() // needed else exception!
-      items = itemRoutes.map(p => makeItem(p._1, p._2, p._3, props.goto)).toJSArray
+      items = itemRoutes.map(p => makeItem(p._1, p._2, p._3, navigate)).toJSArray
     })
   }
+
   render.displayName(Name)
-}
+
+end Nav

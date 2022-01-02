@@ -20,210 +20,218 @@
  */
 
 package jshelpers
+package syntax
 
+import scala.annotation.targetName
 import scala.scalajs.js
-import js._
 
-/** Add Option-like methods to js.UndefOr. Note that js.Undef.orNull exists in scala.js 1.0 */
-trait UndefOrCommon[A] {
-  def a: UndefOr[A]
-
-  /** Tests for overall nullness which is different than `.isEmpty|.nonEmpty`. */
-  def isNull = a == null
-
-  /** This may override `UndefOr.isEmpty` but this checks for null as well. */
-  def isTotalEmpty = isNull || !a.isDefined
-
-  /** This could also be `_.toOption.filter(_ != null)` but below is slightly faster. */
-  def toNonNullOption =
-    if (a.isEmpty || a == null) None
-    else a.toOption
-
-  /** Calls toString. I'm not sure this is needed at all. */
-  def toStringJs = a.asInstanceOf[js.Any].toString()
-
-  /** Equivalent to !!someJSValue */
-  def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
-
-  /** Keep the value if its truthy, otherwise return undefined. */
-  def filterTruthy: js.UndefOr[A] =
-    a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
-
-  /** null => undefined, else the value remains. */
-  def filterNull: js.UndefOr[A] = a.filter(_ != null)
-
-  /** Changes what's inside but preserves UndefOr. */
-  def as[B]: js.UndefOr[B] = a.map(_.asInstanceOf[B])
-
-  /** Convert UndefOr[A] => A|Null */
-  def toNull: A | Null = if (as.isDefined) a.asInstanceOf[A | Null] else null
-
-  /** Same as `.getOrElse` just shorter. */
-  @inline def ??[B >: A](default: => B): B = a.getOrElse(default)
-
-  /** Same as `.getOrElse` just shorter. */
-  @inline def !?[B >: A](default: => B): B = a.getOrElse[B](default)
-
-  /** Uh-oh, thought it was `js.UndefOr[A]` but you need to say its a
-   * `js.UndefOr[A|Null]` because the docs were wrong :-).
-   */
-  @inline def toUndefOrNull: js.UndefOr[A | Null] = a.asInstanceOf[js.UndefOr[A | Null]]
-
-  /** Factor out the null along they way of the flatMap. */
-//   @inline def flatMapAbsorb[B](f: A => js.UndefOr[B|Null]): js.UndefOr[B] =
-//     a.flatMap{ v =>
-//        val x = f(v)
-//        if(x == null) js.undefined
-//        else x.asInstanceOf[js.UndefOr[B]]
-//     }
-}
-
-final case class JsUndefOrStringOps(val a: UndefOr[String]) extends UndefOrCommon[String] {
-
-  /** Return string's "zero" which is an empty string. */
-  @inline def orEmpty: String = a.getOrElse("")
-
-  /** Filter out empty string and null. Same as filterTruthy. */
-  @inline def filterEmpty = a.filter(str => str != "" && str != null)
-}
-
-// final case class JsUndefOrStringOrNullOps(val a: UndefOr[String|Null]) extends UndefOrCommon[String|Null] {
-//
-//   /** Return string's "zero" which is an empty string. */
-//   @inline def orEmpty: String = if(a == null) "" else a.getOrElse("").asInstanceOf[String]
-//
-//   /** Filter out empty string and null. Same as filterTruthy. */
-//   @inline def filterEmpty = a.filter(str => str != "" && str != null)
-// }
-
-final class JsUndefOrBooleanOps(val a: UndefOr[Boolean]) extends UndefOrCommon[Boolean] {
-
-  /** Get the value or return true. */
-  @inline def orTrue: Boolean = a.getOrElse(true)
-
-  /** Get the value or return false. */
-  @inline def orFalse: Boolean = a.getOrElse(false)
-
-  /** Flip the boolean if defined. */
-  @inline def flip: UndefOr[Boolean] = a.map(!_)
-}
-
-/** Handled js.UndefOr[T|Null] directly vs needing to flatmap into it. Don't forget that
- * scala.js has `anUndefOr.orNull` to extract the value or return null which is *not*
- * what the methods below do. Note that the input is really `T|Null|Unit`.
+/** Support for `js.UndefOr`.
+ * 
+ * @see https://github.com/scala-js/scala-js/blob/main/test-suite/js/src/test/scala/org/scalajs/testsuite/library/UnionTypeTest.scala
+ * 
  */
-final class JsUndefOrNullOps[T](val a: js.UndefOr[T | Null]) extends AnyVal {
-  @inline private def forceGet: T = a.asInstanceOf[T]
+object undefor:
+  /** Add Option-like methods to js.UndefOr. Note that js.Undef.orNull exists in scala.js 1.0 */
+  extension [A](_a: js.UndefOr[A])
+    /** Tests for overall nullness which is different than `.isEmpty|.nonEmpty`. */
+    def isNull: Boolean = _a == null
 
-  @inline def isDefined: Boolean = if (a.isDefined && a != null) true else false
-  @inline def isEmpty: Boolean = !isDefined
+    /** Like `UndefOr.isEmpty` but this checks for null and undefined as well. */
+    def isTotalEmpty: Boolean = isNull || !_a.isDefined
 
-  /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
-  @inline def absorbNull: js.UndefOr[T] = a.flatMap { value =>
-    if (value == null) js.undefined
-    else value.asInstanceOf[js.UndefOr[T]]
-  }
+    /** This could also be `_.toOption.filter(_ != null)` but below is slightly faster. */
+    @targetName("toNonNullOptionA")
+    def toNonNullOption =
+      if (_a.isEmpty || _a == null) None
+      else _a.toOption
 
-  /** Collapse everything at once. */
-  @inline def toNonNullOption: Option[T] =
-    a.fold(Option.empty[T])(value => if (value != null) Option(value.asInstanceOf[T]) else Option.empty[T])
+    /** Calls toString. I'm not sure this is needed at all. */
+    def toStringJs: String = _a.asInstanceOf[js.Any].toString()
 
-//   /** Not a true flatMap because the Null is factored out along the way. */
-//   @inline def flatMapAbsorb[B](f: T => js.UndefOr[B|Null]): js.UndefOr[B] =
-//     if(a.isDefined && a != null) f(forceGet) else js.undefined
+    // /** null => undefined, else the value remains. */
+    // def filterNull: js.UndefOr[A] = _a.filter(_ != null)
 
-  /** Flatten the UndefOr and Null to UndefOr only. */
-  @inline def flatten = absorbNull
+    /** Changes what's inside but preserves UndefOr. This should be `unsafeAs`. */
+    @targetName("asUndefOr")
+    def as[B]: js.UndefOr[B] = _a.asInstanceOf[js.UndefOr[B]] // _a.map(_.asInstanceOf[B])
 
-  /** T|Null may still have T not being truthy, so absorb null and non-truthiness => js.undefined. */
-  @inline def absorbNullKeepTruthy: js.UndefOr[T] = a flatMap { value =>
-    if (value == null) js.undefined
-    else new JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
-  }
+    /** Convert UndefOr[A] => A|Null. Much like stdlib `orNull` but keeps type signature. */
+    def toNull: A | Null = if (_a.isDefined) _a.asInstanceOf[A | Null] else null
 
-  /** Keep type signature, but filter out non-truthy values. */
-  @inline def filterTruthy =
-    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
-    else js.undefined
+    /** Same as `.getOrElse` just shorter. */
+    @targetName("getOrElseUndefOrNull2")
+    def ??[B >: A](default: => B): B = _a.getOrElse(default)
 
-  /** Absorb the `js.UndefOr` leaving `T|Null`. */
-  @inline def absorbUndef: T | Null =
-    if (a.isEmpty) null.asInstanceOf[T | Null] else a.asInstanceOf[T | Null]
+    /** To help with the "uh-oh." Thought it was `js.UndefOr[A]` but you need to say its a
+     * `js.UndefOr[A|Null]` because the docs were wrong :-).
+     */
+    @targetName("asUndefToUndefOrNull")
+    def asUndefOrNull: js.UndefOr[A | Null] = _a.asInstanceOf[js.UndefOr[A | Null]]
 
-  /** `flatten` but leave the UndefOr. Same as `absorbUndef`. */
-  @inline def flattenUndefOr = absorbUndef
+  end extension
 
-  /** Natural transformation. */
-  @inline def swap: js.UndefOr[T] | Null =
-    if (a.isDefined && a != null) a.asInstanceOf[js.UndefOr[T] | Null]
-    else ().asInstanceOf[js.UndefOr[T] | Null]
+  // extension [A <: JSAnyConversionSource](_a: js.UndefOr[A])
+  //   /** Equivalent to js `!!someJSValue`. */
+  //   @targetName("toTruthyUndefOrJSAny")
+  //   def toTruthy: Boolean = js.DynamicImplicits.truthValue(_a.asInstanceOf[js.Dynamic])
 
-  /** Undestands UndefOr and Null to do the orElse. */
-  @inline def getOrElse[B >: T](default: => T): T =
-    if (a.isEmpty || a == null) default else a.asInstanceOf[T]
+  //   // /** Keep the value if its truthy, otherwise return undefined. */
+  //   // @targetName("filterTruthyUndefOrJSAny")  
+  //   // def filterTruthy: js.UndefOr[A] =
+  //   //   _a.filter(v => js.DynamicImplicits.truthValue(v.asInstanceOf[js.Dynamic]))
+  // end extension
 
-  /** Alias for getOrElse. */
-  @inline def ??[B >: T](default: => T): T = getOrElse[B](default)
 
-  @inline def !?[B >: T](default: => T): T = getOrElse[B](default)
+  extension [T <: js.Any](a: js.UndefOr[T | Null])
+    // /** T|Null may still have T not being truthy, so absorb null and non-truthiness => js.undefined. */
+    // def absorbNullKeepTruthy: js.UndefOr[T] = a.flatMap { value =>
+    //   if (value == null) js.undefined
+    //   //else new JsUndefOrOps(a.asInstanceOf[js.UndefOr[T]]).filterTruthy
+    //   else a.asInstanceOf[js.UndefOr[T]].filterTruthy
+    // }
 
-  /** Alias for `.get` */
-  @inline def ! = forceGet
+    /** Keep type signature, but filter out non-truthy values to `js.undefined`. */
+    @targetName("filterTruthyUndefOrNull")
+    def filterTruthy: js.UndefOr[T|Null] =
+      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+      else js.undefined
+  end extension
 
-  /** May be undefined or null or something. Throws exception. */
-  @inline def get: T =
-    if (a == null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]")
-    else forceGet
+  /** Handle js.UndefOr[T|Null] directly versus needing to flatmap into it. Don't forget that
+   * scala.js has `anUndefOr.orNull` to extract the value or return null which is *not*
+   * what the methods below do. Note that the input is really `T|Null|Unit`.
+   */
+  extension [T](a: js.UndefOr[T | Null])
+    inline private def forceGet: T = a.asInstanceOf[T]
 
-  /** Only works with another js.UndefOr[T|Null] and takes into account null. */
-  @inline def orDeepElse(that: js.UndefOr[T | Null]) = if (a.isDefined && a != null) a else that
-}
+    /** Determine if is defined including the value not being null. */
+    @targetName("isDefinedUndefOrNull")
+    def isDefined: Boolean = if (!js.isUndefined(a) && a != null) true else false
 
-/** Note that js.UndefOr and js.| already have a `.orNull` method. */
-final class JsUndefOrOps[A](val a: UndefOr[A]) extends UndefOrCommon[A] {}
+    /** Convenience. */
+    @targetName("isEmptyUndefOrNull")
+    def isEmpty: Boolean = !isDefined
 
-final class JsUndefOrJsObject[A <: js.Object](private val a: js.UndefOr[A]) extends AnyVal {
+    //def isEmpty: Boolean = !a.asInstanceOf[js.UndefOr[T]].isDefined
 
-  /** Duplicate inner value if it exists. Saves you a `.map`. */
-  @inline def duplicate = a.map(value => js.Object.assign(js.Object(), value.asInstanceOf[js.Object]).asInstanceOf[A])
-}
+    /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
+    @targetName("undefAbsorbUndefOrNull")
+    def absorbNull: js.UndefOr[T] = 
+      if (a == null) js.undefined
+      else a.asInstanceOf[js.UndefOr[T]]
 
-final class UndefMap2[A, B](private val tuple: (js.UndefOr[A], js.UndefOr[B])) extends AnyVal {
-  @inline def mapX[T](f: (A, B) => T): js.UndefOr[T] =
-    if (tuple._1.isDefined && tuple._2.isDefined) js.defined(f(tuple._1.get, tuple._2.get))
-    else js.undefined
-}
+    /** Collapse everything at once. */
+    // @targetName("toNonNullOptionUndefOrNull")
+    // def toNonNullOption: Option[T] =
+    //   a.fold(Option.empty[T])(value => if (value != null) Option(value.asInstanceOf[T]) else Option.empty[T])
 
-final class UndefMap3[A, B, C](private val tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])) extends AnyVal {
-  @inline def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
-    if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined)
-      js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get))
-    else js.undefined
-}
+    // /** Flatten the UndefOr and Null to UndefOr only. */
+    // def flatten: js.UndefOr[T] = absorbNull
 
-final class UndefMap4[A, B, C, D](private val tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D]))
-    extends AnyVal {
-  @inline def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
-    if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined && tuple._4.isDefined)
-      js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get))
-    else js.undefined
-}
+    /** Absorb the `js.UndefOr` leaving `T|Null`. */
+    def absorbUndef: T | Null =
+      if (a.isEmpty) null.asInstanceOf[T | Null] else a.asInstanceOf[T | Null]
 
-trait JsUndefLowerOrderImplicits {
-  @inline implicit def jsUndefOrTuple2[A, B](a: (js.UndefOr[A], js.UndefOr[B])): UndefMap2[A,B] = new UndefMap2[A, B](a)
-  @inline implicit def jsUndefOrTuple3[A, B, C](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C])): UndefMap3[A,B,C] =
-    new UndefMap3[A, B, C](a)
-  @inline implicit def jsUndefOrTuple4[A, B, C, D](a: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D])): UndefMap4[A,B,C,D] =
-    new UndefMap4[A, B, C, D](a)
-}
+    /** `flatten` but leave the UndefOr. Same as `absorbUndef`. */
+    def flattenUndefOr: T | Null = absorbUndef
 
-trait JsUndefOrSyntax extends JsUndefLowerOrderImplicits {
+    /** Natural transformation. */
+    @targetName("swapUndefOrNull")
+    def swap: js.UndefOr[T] | Null =
+      if (a.isDefined && a != null) a.asInstanceOf[js.UndefOr[T] | Null]
+      else ().asInstanceOf[js.UndefOr[T] | Null]
 
-  @inline implicit def jsUndefOrOpsSyntax[A](a: js.UndefOr[A]): JsUndefOrOps[A] = new JsUndefOrOps(a)
-  @inline implicit def jsUndefOrStringOps(a: js.UndefOr[String]): JsUndefOrStringOps = new JsUndefOrStringOps(a)
-  //@inline implicit def jsUndefOrStringOrNullOps(a: js.UndefOr[String]) = new JsUndefOrStringOrNullOps(a)
-  //implicit def jsUndefOrAOrNullOps[A](a: UndefOr[String])   = JsUndefOrAOrNullOps(a)
-  @inline implicit def jsUndefOrNullOps[A](a: js.UndefOr[A | Null]): JsUndefOrNullOps[A] = new JsUndefOrNullOps[A](a)
-  @inline implicit def jsUndefOrBooleanOps(a: js.UndefOr[Boolean]): JsUndefOrBooleanOps = new JsUndefOrBooleanOps(a)
-  @inline implicit def jsUndefOrJsObject[A <: js.Object](a: js.UndefOr[A]): JsUndefOrJsObject[A] = new JsUndefOrJsObject[A](a)
-}
+    /** Undestands UndefOr and Null to do the orElse. */
+    @targetName("getOrElseUndefOrNull")
+    def getOrElse[B >: T](default: => T): T =
+      if (a.isEmpty || a == null) default else a.asInstanceOf[T]
+
+    /** Alias for getOrElse. */
+    @targetName("getOrElse1")
+    def ??[B >: T](default: => T): T = getOrElse[B](default)
+
+    /** May be undefined or null or something. Throws exception. */
+    @targetName("undefGet")
+    inline def undefGet: T =
+      if (a == null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]")
+      else forceGet
+
+    /** Only works with another js.UndefOr[T|Null] and takes into account null. */
+    def orDeepElse(that: js.UndefOr[T | Null]) = if (a.isDefined && a != null) a else that
+  end extension
+
+  extension [A <: js.Object](a: js.UndefOr[A])
+    /** Duplicate inner value if it exists. Saves you a `.map`. */
+    def duplicate = a.map(value => js.Object.assign(new js.Object{}, value.asInstanceOf[js.Object]).asInstanceOf[A])
+
+  extension [A, B](tuple: (js.UndefOr[A], js.UndefOr[B]))
+    @targetName("undefMapX2")
+    def mapX[T](f: (A, B) => T): js.UndefOr[T] =
+      if (tuple._1.isDefined && tuple._2.isDefined) js.defined(f(tuple._1.get, tuple._2.get))
+      else js.undefined
+
+  extension [A, B, C](tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C]))
+    @targetName("undefMapX3")
+    def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
+      if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined)
+        js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get))
+      else js.undefined
+
+  extension [A, B, C, D](tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D]))
+    @targetName("undefMapX4")
+    def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
+      if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined && tuple._4.isDefined)
+        js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get))
+      else js.undefined
+
+  type JSAnyConversionSourceBase = Double|String|Boolean|Int|Double|Float|Byte|Long|js.Object|js.Function|js.Dynamic
+  type JSAnyConversionSource = JSAnyConversionSourceBase | js.Array[JSAnyConversionSourceBase] | js.UndefOr[JSAnyConversionSourceBase]
+
+  /** Apply `js.DynamicImplicits.isTruthy` to some common js value types. */
+  extension (a: JSAnyConversionSource)
+    @targetName("toTruthyValues")
+    def toTruthy: Boolean = js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])
+  end extension
+
+  /** Convert any of the allowed source types `js.Any`. */
+  extension (a: js.UndefOr[JSAnyConversionSource])
+    /** Cast. */
+    def asJSAny: js.Any = a.asInstanceOf[js.Any]
+  end extension
+
+  /** Unsafely convert anything that is wrapped in a `js.UndefOr`. */
+  extension [A](a: js.UndefOr[A])
+    /** Unsafe cast. */
+    def unsafeAsJSAny: js.Any = a.asInstanceOf[js.Any]
+  end extension
+
+  extension (a: js.UndefOr[Boolean])
+    /** Get the value or return true. */
+    def orTrue: Boolean = a.getOrElse(true)
+
+    /** Get the value or return false. */
+    def orFalse: Boolean = a.getOrElse(false)
+
+    // /** Flip the boolean if defined. */
+    @targetName("flipUndefOrBoolean")
+    def flip: js.UndefOr[Boolean] = 
+      a match
+        case f: Boolean => !f
+        case _ => js.undefined
+  end extension
+
+
+  extension (a: js.UndefOr[String])
+    /** Return string's "zero" which is an empty string. */
+    def orEmpty: String = a.getOrElse("")
+
+    /** Filter out empty string and null. Same as filterTruthy. 
+      * What about "all spaces strings"?
+      */
+    @targetName("filterEmptyUndefOrString")
+    def filterEmpty: js.UndefOr[String] = 
+      a match
+        //case s: String => if s != "" && s != null then s else js.undefined
+        case s: String => if s != "" then s else js.undefined
+        case _ => js.undefined
+  end extension

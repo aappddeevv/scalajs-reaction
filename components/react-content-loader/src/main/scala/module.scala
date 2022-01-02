@@ -22,14 +22,13 @@
 package react_content_loader
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
 import org.scalajs.dom
-import react.vdom._
-import svgtags._
+import react.vdom.*
+import svgtags.*
 
 //
 @js.native

@@ -25,14 +25,9 @@ package components
 import scala.scalajs.js
 
 import js.annotation._
-import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object Details {
@@ -121,7 +116,7 @@ object Details {
     @JSImport("office-ui-fabric-react/lib/DetailsList", "DetailsRow")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
 
     @js.native
@@ -304,7 +299,7 @@ object Details {
     @JSImport("office-ui-fabric-react/lib/DetailsList", "DetailsList")
     object JS extends ReactJSComponent
 
-    def apply[T <: js.Object](props: Props[T] = null) =
+    def apply[T <: js.Object](props: Props[T]) =
       createElement0(JS, props)
 
     @js.native
@@ -362,7 +357,7 @@ object Details {
       var selectionMode: js.UndefOr[SelectionMode] = js.undefined
       var selectionPreservedOnEmptyClick: js.UndefOr[Boolean] = js.undefined
       var setKey: js.UndefOr[String] = js.undefined
-      var styles: js.UndefOr[IStyleFunctionOrObject[_ <: StyleProps, _ <: Styles]] = js.undefined
+      var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
       var usePageCache: js.UndefOr[Boolean] = js.undefined
     }
 
@@ -412,7 +407,7 @@ object Details {
     @JSImport("office-ui-fabric-react/lib/ShimmeredDetailsList", "ShimmeredDetailsList")
     object JS extends ReactJSComponent
 
-    def apply[T <: js.Object](props: Props[T] = null) =
+    def apply[T <: js.Object](props: Props[T]) =
       createElement0(JS, props)
 
     trait StyleProps extends List.StyleProps

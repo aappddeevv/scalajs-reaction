@@ -24,7 +24,6 @@ package components
 
 import scala.scalajs.js
 import js.annotation._
-import js.|
 import org.scalajs.dom
 import react._
 import vdom._
@@ -52,7 +51,7 @@ object List {
 //   def apply[T <: js.Object](props: Props[T] = null)(children: ReactNode*) =
 //     createElement(JS, props, children: _*)
 
-  def apply[T <: js.Object](props: Props[T] = null) = createElement(JS, props)
+  def apply[T <: js.Object](props: Props[T]) = createElement(JS, props)
 
   trait Props[T <: js.Object] extends ComponentRef[IList] {
     var className: js.UndefOr[String] = js.undefined

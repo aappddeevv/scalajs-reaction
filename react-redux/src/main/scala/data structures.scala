@@ -19,22 +19,39 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package jshelpers
+package react_redux
 
 import scala.scalajs.js
-import js.|
+import js.annotation.*
 
-/** Hmm...we could really tighten this up by doing |.merge and typing the picks. */
-final case class JsOrOps[A, B](o: A | B) {
-  def pickLeft = o.asInstanceOf[A]
-  def pickRight = o.asInstanceOf[B]
+/** Keys should be properties, values, js.Anys. Extend your Action trait from
+ * this trait to ensure it has a `type` property.
+ */
+trait Action extends js.Object:
+  val `type`: String
 
-//   def as[A](implicit ev: A <:< |[A,B]) = (o.merge: scala.Any) match {
-//     case a: A if o.instanceOf[A] => Left(a)
-//     case b: B if o.instanceOf[B] => Right(b)
-//   }
-}
+/**
+ * Create the store in javascript, import it as js.Any then you can set the
+ * store in these props.
+ */
+trait ProviderProps extends js.Object:
+  var store: js.UndefOr[js.Any] = js.undefined
 
-trait OrSyntax {
-  implicit def jsOrSyntax[A, B](a: A | B): JsOrOps[A,B] = new JsOrOps(a)
-}
+/**
+ * Client can obtain the state directly or dispatch an event directly
+ * off a store.
+ */
+@js.native
+trait Store[S, A <: Action] extends js.Object:
+  def getState(): S = js.native
+  val dispatch: Dispatch[A] = js.native
+  val subscribe: js.Function1[Listener, Unsubscriber] = js.native
+
+  /** Reducer replacement is untyped. */
+  val replaceReducer: js.Function1[js.Any, Unit] = js.native
+
+@js.native
+trait ReactReduxContextValue[S, A <: Action] extends js.Object:
+  val store: Store[S, A] = js.native
+  val storeState: S = js.native
+

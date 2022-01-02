@@ -33,39 +33,37 @@ import rxjs._
 @JSImport("apollo3/client/link/core/ApolloLink", "LinkError")
 class LinkError(
   message: js.UndefOr[String] = js.undefined,
-  val link: js.UndefOr[ApolloLink] = js.undefined
+  val link: js.UndefOr[ApolloLink[?]] = js.undefined
 ) extends js.Error {
   //val link: js.UndefOr[ApolloLink]
 }
 
 @js.native
 @JSImport("apollo3/client/link/core", "ApolloLink")
-class ApolloLink(request: js.UndefOr[RequestHandler[_]] = js.undefined) extends js.Object {
-
-  def request[T](operation: Operation, forward: js.UndefOr[NextLink[_]]): Observable[StandardFetchResult[T]] | Null =
+class ApolloLink[T](request: js.UndefOr[RequestHandler[T]] = js.undefined) extends js.Object {
+  def request[A](operation: Operation, forward: js.UndefOr[NextLink[A]]): Observable[StandardFetchResult[T]] | Null =
     js.native
-  def setOnError(fn: js.Function1[Any, Any]): ApolloLink = js.native
-
-  def concat(other: ApolloLink | RequestHandler[_]): ApolloLink = js.native
+  def setOnError(fn: js.Function1[Any, Any]): ApolloLink[T] = js.native
+  def concat(other: ApolloLink[T] | RequestHandler[T]): ApolloLink[T] = js.native
   def split(
     test: js.Function1[Operation, Boolean],
-    left: ApolloLink | RequestHandler[_],
-    right: js.UndefOr[ApolloLink | RequestHandler[_]] = js.undefined): ApolloLink = js.native
-  def empty(): ApolloLink = js.native
-  def from(links: js.Array[ApolloLink | RequestHandler[_]]): ApolloLink = js.native
-  def execute[T](link: ApolloLink, operation: GraphQLRequest): Observable[StandardFetchResult[T]] = js.native
+    left: ApolloLink[T] | RequestHandler[T],
+    right: js.UndefOr[ApolloLink[T] | RequestHandler[T]] = js.undefined): ApolloLink[T] = js.native
+  def empty(): ApolloLink[T] = js.native
+  def from(links: js.Array[ApolloLink[T] | RequestHandler[T]]): ApolloLink[T] = js.native
+  def execute(link: ApolloLink[T], operation: GraphQLRequest): Observable[StandardFetchResult[T]] = js.native
 }
 
 @js.native
 @JSImport("apollo3/client/link/core", "ApolloLink")
 object ApolloLink extends js.Object {
-  def empty(): ApolloLink = js.native
-  def from(links: js.Array[ApolloLink | RequestHandler[_]]): ApolloLink = js.native
-  def execute[T](link: ApolloLink, operation: GraphQLRequest): Observable[StandardFetchResult[T]] = js.native
-  def concat(first: ApolloLink | RequestHandler[_], second: ApolloLink | RequestHandler[_]): ApolloLink = js.native
-  def split(
+  def empty[T](): ApolloLink[T] = js.native
+  def from[T](links: js.Array[ApolloLink[T] | RequestHandler[T]]): ApolloLink[T] = js.native
+  def execute[T](link: ApolloLink[T], operation: GraphQLRequest): Observable[StandardFetchResult[T]] = js.native
+  def concat[T](first: ApolloLink[T] | RequestHandler[T], second: ApolloLink[T] | RequestHandler[T]): ApolloLink[T] = js.native
+  def split[T](
     test: js.Function1[Operation, Boolean],
-    left: ApolloLink | RequestHandler[_],
-    right: js.UndefOr[ApolloLink | RequestHandler[_]] = js.undefined): ApolloLink = js.native
+    left: ApolloLink[T] | RequestHandler[T],
+    right: js.UndefOr[ApolloLink[T] | RequestHandler[T]] = js.undefined): ApolloLink[T] = js.native
 
 }

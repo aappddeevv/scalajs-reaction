@@ -25,8 +25,6 @@ package components
 import scala.scalajs.js
 
 import js.annotation._
-import js.|
-
 import react._
 
 object Typography {
@@ -35,7 +33,7 @@ object Typography {
   @JSImport("@material-ui/core/Typography", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   @js.native

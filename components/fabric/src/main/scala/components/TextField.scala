@@ -36,7 +36,7 @@ object TextField {
   @JSImport("office-ui-fabric-react/lib/TextField", "TextField")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: js.UndefOr[Props] = js.undefined) = createElement0(JS, props)
 
   @js.native
   trait ITextField extends Focusable with ClassAttributes[dom.html.Input] {

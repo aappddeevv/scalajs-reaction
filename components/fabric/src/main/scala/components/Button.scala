@@ -23,17 +23,11 @@ package fabric
 package components
 
 import scala.scalajs.js
-
-import js.annotation._
-import js.|
-
+import js.annotation.*
 import org.scalajs.dom
-
-import react._
-
-import vdom._
-
-import fabric.styling._
+import react.*
+import vdom.*
+import fabric.styling.*
 
 object Button {
 
@@ -129,7 +123,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "DefaultButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+    def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
 
   }
@@ -139,7 +133,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "PrimaryButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
 
@@ -150,7 +144,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "ActionButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
 
@@ -161,7 +155,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "CommandBarButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
   }
@@ -171,7 +165,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "CommandButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
 
@@ -182,7 +176,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "CompoundButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
   }
@@ -192,7 +186,7 @@ object Button {
     @JSImport("office-ui-fabric-react/lib/Button", "MessageBarButton")
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
     def only(props: Props) = createElement0(JS, props)
   }

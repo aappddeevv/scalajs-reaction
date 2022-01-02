@@ -20,237 +20,228 @@
  */
 
 package jshelpers
+package syntax
 
+import scala.annotation.targetName
 import scala.scalajs.js
-import js.|
 
 /*
 String | Unit  => Option[String]: provides a string when Some and js.undefined when None
 x.fold[String | Unit](())(x => x)
  */
 
-/**
- * It is common in interop code to model a value as A or null but not undefined
- * even though null and undefined may both mean "absent value." See `|.merge`
- * Many of these methods are already on `js.|` but they appear to be left biased
- * as near as I can tell. I'm happy to delete these methods if that's not correct.
- *
- * Note that chaining many `js.|` together probably not work like you think and
- * sometimes its better to create a new target type then target implicits to
- * convert from each individual type (in the or) to the new target type. You
- * must model your type as `A|Null` for this implicit to be picked up.
- *
- * These methods exist to try and stop a conversion to `UndefOr` or `Option`
- * as part of null processing. Hey! Every bit counts!
- *
- * @todo Perhaps the force get methods should throw since `.orNull` exists
- * in the scalajs standard library now.
- */
-final class OrNullOps[A](private val a: A | Null) extends AnyVal { self =>
-  @inline private def forceGet: A = a.asInstanceOf[A]
-
-  /** Convert an A|Null to a well formed Option. Should we check for undefined?
-   * This method is not really needed here as `.toOption` is safe but
-   * we have this signature on other helpers so it shere for consistency.
+ object jsnull:
+  /**
+   * It is common in interop code to model a value as A or null but not undefined
+   * even though null and undefined may both mean "absent value." See `|.merge`
+   * Many of these methods are already on `js.|` but they appear to be left biased
+   * as near as I can tell. I'm happy to delete these methods if that's not correct.
+   *
+   * Note that chaining many `js.|` together probably not work like you think and
+   * sometimes its better to create a new target type then target implicits to
+   * convert from each individual type (in the or) to the new target type. You
+   * must model your type as `A|Null` for this implicit to be picked up.
+   *
+   * These methods exist to try and stop a conversion to `UndefOr` or `Option`
+   * as part of null processing. Hey! Every bit counts!
+   *
+   * @todo Perhaps the force get methods should throw since `.orNull` exists
+   * in the scalajs standard library now.
    */
-  @inline def toNonNullOption: Option[A] = Option(forceGet)
+  extension [A](a: A | Null)
+    private def forceGet: A = a.asInstanceOf[A]
 
-  /** Like `.toNonNullOption`. */
-  @inline def toOption: Option[A] = {
-    val g = forceGet
-    if (g != null) Option(g)
-    else None
-  }
+    /** Convert an A|Null to a well formed Option. Should we check for undefined?
+     * This method is not really needed here as `.toOption` is safe but
+     * we have this signature on other helpers so it shere for consistency.
+     */
+    // @targetName("toNonNullOptionOrNull")
+    // def toNonNullOption: Option[A] = Option(forceGet)
 
-  /** If Null, then false, else true. */
-  @inline def toTruthy: Boolean =
-    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
-    else false
-
-  /** Uh-oh, thought it was `A|Null` but you need to say its a
-   * `js.UndefOr[A|Null]` because the docs were wrong :-).
-   */
-  @inline def toUndefOrNull: js.UndefOr[A | Null] = js.defined(a)
-
-  /** null => undefined, otherwise A. */
-  @inline def toUndefOr: js.UndefOr[A] =
-    if (a == null) js.undefined
-    else js.defined(forceGet)
-
-  @inline def toTruthyUndefOr: js.UndefOr[A] =
-    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
-      js.defined(forceGet)
-    else js.undefined
-
-  @inline def toTruthyOption: Option[A] =
-    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
-      Option(forceGet)
-    else None
-
-  @inline def filterTruthy: A | Null =
-    if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
-    else null.asInstanceOf[A | Null]
-
-  /** Absorb the null and change A|Null => A. Value could still be null,
-   * which is valid in scala, but it will no longer by typed that way.
-   */
-  @inline def absorbNull: A = forceGet
-
-  /** Get the value or throw if its null. */
-  @inline def get = if (a == null) throw new NoSuchElementException("get T|Null") else forceGet
-
-  /** Same as get and absorbNull. */
-  //@inline def ? = forceGet
-
-  /** getOrElse but less typing. */
-  @inline def ??[B >: A](default: => B): B =
-    if (isEmpty) default else forceGet
-
-  /** getOrElse but less typing. */
-  @inline def !?[B >: A](default: => B) = getOrElse[B](default)
-
-  /** Experimental */
-  @inline def ???[B >: A](other: B | Null): B | Null =
-    if (a == null) other else a
-
-  /** Experimental */
-  @inline def ????[B >: A](next: A => B | Null): B | Null =
-    if (a != null) next(forceGet) else a
-
-  @inline def orElse[B >: A](other: B | Null): B | Null =
-    if (a == null) other else a
-
-  @inline final def collect[B](pf: PartialFunction[A, B]): B | Null =
-    if (a != null && pf.isDefinedAt(forceGet)) pf.apply(forceGet).asInstanceOf[B | Null]
-    else null.asInstanceOf[B | Null]
-
-  def contains[A1 >: A](elem: A1): Boolean = !isEmpty && forceGet == elem
-
-  @inline final def exists(p: A => Boolean): Boolean = !isEmpty && p(forceGet)
-
-  @inline final def forall(p: A => Boolean): Boolean = isEmpty || p(forceGet)
-
-  @inline def foreach[U](f: A => U): Unit = if (a != null) f(forceGet) else ()
-
-  @inline def isEmpty: Boolean = a == null
-
-  @inline def isDefined: Boolean = a != null
-
-  @inline def isNotDefined = !isDefined
-
-  @inline def knownSize: Int = if (isEmpty) 0 else 1
-
-  @inline final def getOrElse[B >: A](default: => B): B =
-    if (isEmpty) default else forceGet
-
-  @inline final def orNull[A1 >: A]: A1 =
-    if (a == null) null.asInstanceOf[A1] else forceGet.asInstanceOf[A1]
-
-  @inline def fold[B](ifNull: => B)(f: A => B) =
-    if (a == null) ifNull else f(forceGet)
-
-  def flatten[B](implicit ev: A <:< |[B, Null]): B | Null =
-    if (a == null) null.asInstanceOf[B | Null] else ev(forceGet)
-
-  /** Collapse A|Null => A but the value may be null! You are on your own.
-   * Should be called `unsafeMerge`.
-   */
-  @inline def merge: A = forceGet
-
-  @inline def orElse[B >: A](alternative: => B | Null): B | Null =
-    if (isEmpty) alternative else a
-
-  @inline def flatMap[B](f: A => B | Null): B | Null =
-    if (a != null) f(forceGet) else null.asInstanceOf[B | Null]
-
-  @inline def map[B](f: A => B): B | Null =
-    if (a != null) f(forceGet).asInstanceOf[B | Null] else null.asInstanceOf[B | Null]
-
-  @inline def filter(p: A => Boolean): A | Null =
-    if (isEmpty || p(forceGet)) a else null.asInstanceOf[A | Null]
-
-  @inline def withFilter(p: A => Boolean): OrNullOps.WithFilter[A] = new OrNullOps.WithFilter[A](a, p)
-
-  final def zip[A1 >: A, B](that: B | Null): (A1, B) | Null =
-    if (a == null || that == null)
-      null.asInstanceOf[(A1, B) | Null]
-    else
-      (forceGet, that.asInstanceOf[B]).asInstanceOf[(A1, B) | Null]
-
-  final def unzip[A1, A2](implicit asPair: A <:< (A1, A2)): (A1 | Null, A2 | Null) =
-    if (isEmpty)
-      (null.asInstanceOf[A1 | Null], null.asInstanceOf[A2 | Null])
-    else {
-      val e = asPair(forceGet)
-      (e._1.asInstanceOf[A1 | Null], e._2.asInstanceOf[A2 | Null])
+    /** Like `.toNonNullOption`. */
+    def toOption: Option[A] = {
+      val g = forceGet
+      if (g != null) Option(g)
+      else None
     }
 
-  def iterator: collection.Iterator[A] =
-    if (isEmpty) collection.Iterator.empty else collection.Iterator.single(forceGet)
+    /** If Null, then false, else true. */
+    @targetName("toTruthyOrNull")
+    def toTruthy: Boolean =
+      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
+      else false
 
-  def toList: List[A] = if (isEmpty) List() else new ::(forceGet, Nil)
+    /** Uh-oh, thought it was `A|Null` but you need to say its a
+     * `js.UndefOr[A|Null]` because the docs were wrong :-).
+     */
+    @targetName("nullToUndefOrNull")
+    def toUndefOrNull: js.UndefOr[A | Null] = js.defined(a)
 
-}
+    /** null => undefined, otherwise A. */
+    def toUndefOr: js.UndefOr[A] =
+      if (a == null) js.undefined
+      else js.defined(forceGet)
 
-object OrNullOps {
-  @inline implicit def localOrNullSyntax[A](a: A | Null): OrNullOps[A] = new OrNullOps[A](a)
+    def toTruthyUndefOr: js.UndefOr[A] =
+      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
+        js.defined(forceGet)
+      else js.undefined
 
-  class WithFilter[A](self: A | Null, p: A => Boolean) {
-    def localFilter(p: A => Boolean): A | Null =
-      if (self == null || p(self.asInstanceOf[A])) self else null.asInstanceOf[A | Null]
-    def map[B](f: A => B): B | Null = localFilter(p).map(f)
-    def flatMap[B](f: A => B | Null): B | Null = localFilter(p).flatMap(f)
-    def foreach[U](f: A => U): Unit = localFilter(p).foreach(f)
-    def withFilter(q: A => Boolean): WithFilter[A] = new WithFilter[A](self, x => p(x) && q(x))
-  }
-}
+    def toTruthyOption: Option[A] =
+      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
+        Option(forceGet)
+      else None
 
-final class Null2[A, B](private val tuple: (A | Null, B | Null)) extends AnyVal {
-  def mapX[T](f: (A, B) => T): T | Null =
-    if (tuple._1 != null && tuple._2 != null) f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B])
-    else null
-}
+    @targetName("filterTruthOrNull")
+    def filterTruthy: A | Null =
+      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+      else null.asInstanceOf[A | Null]
 
-final class Null3[A, B, C](private val tuple: (A | Null, B | Null, C | Null)) extends AnyVal {
-  def mapX[T](f: (A, B, C) => T): T | Null =
-    if (tuple._1 != null && tuple._2 != null && tuple._3 != null)
-      f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C])
-    else null
-}
+    /** Absorb the null and change A|Null => A. Value could still be null,
+     * which is valid in scala, but it will no longer by typed that way.
+     */
+    @targetName("nullAbsorbNull")
+    def absorbNull: A = forceGet
 
-final class Null4[A, B, C, D](private val tuple: (A | Null, B | Null, C | Null, D | Null)) extends AnyVal {
-  def mapX[T](f: (A, B, C, D) => T): T | Null =
-    if (tuple._1 != null && tuple._2 != null && tuple._3 != null &&
-        tuple._4 != null)
-      f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C], tuple._4.asInstanceOf[D])
-    else null
-}
+    /** Get the value or throw if its null. */
+    @targetName("nullGet")
+    def nullGet: A = 
+      if a == null then
+        throw new NoSuchElementException("get T|Null") 
+      else forceGet
 
-trait NullLowerOrderImplicits {
-  @inline implicit def NullTuple2[A, B](a: (A | Null, B | Null)): Null2[A,B] =
-    new Null2[A, B](a)
-  @inline implicit def NullTuple3[A, B, C](a: (A | Null, B | Null, C | Null)): Null3[A,B,C] =
-    new Null3[A, B, C](a)
-  @inline implicit def NullTuple4[A, B, C, D](a: (A | Null, B | Null, C | Null, D | Null)): Null4[A,B,C,D] =
-    new Null4[A, B, C, D](a)
-}
+    /** Same as get and absorbNull. */
+    //inline def ? = forceGet
 
-final class OrUndefOrNullOps[A](private val a: js.UndefOr[A] | Null) extends AnyVal { self =>
+    /** getOrElse but less typing. */
+    @targetName("getOrElseOrNull2")
+    def ??[B >: A](default: => B): B =
+      if (isEmpty) default else forceGet
 
-  /** Natural transformation. */
-  @inline def swap: js.UndefOr[A | Null] =
-    if (a == null || a == js.undefined) ().asInstanceOf[js.UndefOr[A | Null]]
-    else a.asInstanceOf[js.UndefOr[A | Null]]
-}
+    // /** getOrElse but less typing. */
+    // inline def !?[B >: A](default: => B): B = getOrElse[B](default)
 
-class OrNullStringOps(private val a: String | Null) extends AnyVal {
+    // /** Experimental */
+    // inline def ???[B >: A](other: B | Null): B | Null =
+    //   if (a == null) other else a
 
-  /** Return string's "zero" which is an empty string. Could be called orBlank. */
-  @inline def orEmpty: String = if (a == null) "" else a.asInstanceOf[String]
-}
+    // /** Experimental */
+    // inline def ????[B >: A](next: A => B | Null): B | Null =
+    //   if (a != null) next(forceGet) else a
 
-trait OrNullSyntax extends NullLowerOrderImplicits {
-  @inline implicit def orNullStringOps(a: String | Null): OrNullStringOps = new OrNullStringOps(a)
-  @inline implicit def orNullSyntax[A](a: A | Null): OrNullOps[A] = new OrNullOps[A](a)
-  @inline implicit def orUndefOrNullSyntax[A](a: js.UndefOr[A] | Null): JsUndefOrNullOps[A] = new JsUndefOrNullOps[A](a)
-}
+    def orElse[B >: A](other: B | Null): B | Null =
+      if (a == null) other else a
+
+    def collect[B](pf: PartialFunction[A, B]): B | Null =
+      if (a != null && pf.isDefinedAt(forceGet)) pf.apply(forceGet).asInstanceOf[B | Null]
+      else null.asInstanceOf[B | Null]
+
+    def contains[A1 >: A](elem: A1): Boolean = !isEmpty && forceGet == elem
+
+    def exists(p: A => Boolean): Boolean = !isEmpty && p(forceGet)
+
+    def forall(p: A => Boolean): Boolean = isEmpty || p(forceGet)
+
+    def foreach[U](f: A => U): Unit = if (a != null) f(forceGet) else ()
+
+    def isEmpty: Boolean = a == null
+
+    def isDefined: Boolean = a != null
+
+    def isNotDefined: Boolean = !isDefined
+    def knownSize: Int = if (isEmpty) 0 else 1
+
+    @targetName("nullGetOrElse")
+    def getOrElse[B >: A](default: => B): B =
+      if (isEmpty) default else forceGet
+
+    def orNull[A1 >: A]: A1 =
+      if (a == null) null.asInstanceOf[A1] else forceGet.asInstanceOf[A1]
+
+    def fold[B](ifNull: => B)(f: A => B): B =
+      if a == null then
+        ifNull 
+      else f(forceGet)
+
+    def flatten[B](implicit ev: A <:< |[B, Null]): B | Null =
+      if (a == null) null.asInstanceOf[B | Null] else ev(forceGet)
+
+    /** Collapse A|Null => A but the value may be null! You are on your own.
+     * Should be called `unsafeMerge`.
+     */
+    def merge: A = forceGet
+
+    def orElse[B >: A](alternative: => B | Null): B | Null =
+      if (isEmpty) alternative else a
+
+    def flatMap[B](f: A => B | Null): B | Null =
+      if (a != null) f(forceGet) else null.asInstanceOf[B | Null]
+
+    def map[B](f: A => B): B | Null =
+      if (a != null) f(forceGet).asInstanceOf[B | Null] else null.asInstanceOf[B | Null]
+
+    def filter(p: A => Boolean): A | Null =
+      if (isEmpty || p(forceGet)) a else null.asInstanceOf[A | Null]
+
+    def withFilter(p: A => Boolean): OrNull.WithFilter[A] = 
+      new OrNull.WithFilter[A](a, p)
+
+    def zip[A1 >: A, B](that: B | Null): (A1, B) | Null =
+      if (a == null || that == null)
+        null.asInstanceOf[(A1, B) | Null]
+      else
+        (forceGet, that.asInstanceOf[B]).asInstanceOf[(A1, B) | Null]
+
+    def unzip[A1, A2](implicit asPair: A <:< (A1, A2)): (A1 | Null, A2 | Null) =
+      if (isEmpty)
+        (null.asInstanceOf[A1 | Null], null.asInstanceOf[A2 | Null])
+      else {
+        val e = asPair(forceGet)
+        (e._1.asInstanceOf[A1 | Null], e._2.asInstanceOf[A2 | Null])
+      }
+
+    def iterator: collection.Iterator[A] =
+      if (isEmpty) collection.Iterator.empty else collection.Iterator.single(forceGet)
+
+    def toList: List[A] = if (isEmpty) List() else new ::(forceGet, Nil)
+
+  object OrNull:
+    class WithFilter[A](self: A | Null, p: A => Boolean):
+      def localFilter(p: A => Boolean): A | Null =
+        if (self == null || p(self.asInstanceOf[A])) self else null.asInstanceOf[A | Null]
+      def map[B](f: A => B): B | Null = localFilter(p).map(f)
+      def flatMap[B](f: A => B | Null): B | Null = localFilter(p).flatMap(f)
+      def foreach[U](f: A => U): Unit = localFilter(p).foreach(f)
+      def withFilter(q: A => Boolean): WithFilter[A] = new WithFilter[A](self, x => p(x) && q(x))
+
+  // extension [A, B](tuple: (A | Null, B | Null))
+  //   @targetName("nullMapX2")
+  //   def mapX[T](f: (A, B) => T): T | Null =
+  //     if (tuple._1 != null && tuple._2 != null) f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B])
+  //     else null
+
+  // extension [A, B, C](tuple: (A | Null, B | Null, C | Null))
+  //   @targetName("nullMapX3")
+  //   def mapX[T](f: (A, B, C) => T): T | Null =
+  //     if (tuple._1 != null && tuple._2 != null && tuple._3 != null)
+  //       f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C])
+  //     else null
+
+  // extension [A, B, C, D](tuple: (A | Null, B | Null, C | Null, D | Null))
+  //   @targetName("nullMapX4")
+  //   def mapX[T](f: (A, B, C, D) => T): T | Null =
+  //     if (tuple._1 != null && tuple._2 != null && tuple._3 != null &&
+  //         tuple._4 != null)
+  //       f(tuple._1.asInstanceOf[A], tuple._2.asInstanceOf[B], tuple._3.asInstanceOf[C], tuple._4.asInstanceOf[D])
+  //     else null
+
+  extension [A](a: js.UndefOr[A] | Null)
+    /** Swap `js.UndefOr[A|Null]` for `js.UndefOr[A]|Null`. */
+    @targetName("nullSwap")
+    def swap: js.UndefOr[A | Null] =
+      if (a == null || a == js.undefined) ().asInstanceOf[js.UndefOr[A | Null]]
+      else a.asInstanceOf[js.UndefOr[A | Null]]
+
+  extension (a: String | Null)
+    /** Return string's "zero" which is an empty string. Could be called orBlank. */
+    def orEmpty: String = if (a == null) "" else a.asInstanceOf[String]

@@ -20,36 +20,23 @@
  */
 
 package jshelpers
+package syntax
 
 import scala.scalajs.js
-import js.|
+import scala.annotation.targetName
 
-final class JSArrayOps[T](private val arr: js.Array[T]) extends AnyVal {
+object array:
+  extension [T](arr: js.Array[T])
+    /** Easier cast of elements. Would be nice to do some structural
+     * checking here but maybe not...
+     */
+    @targetName("asArray")
+    def as[B] = arr.asInstanceOf[js.Array[B]]
 
-  /** Easier cast of elements. Would be nice to do some structural
-   * checking here but maybe not...
-   */
-  def as[B] = arr.asInstanceOf[js.Array[B]]
-}
+  // extension [T, U, V](tuvs: js.Array[((T, U), V)])
+  //   def toTuple3: js.Array[(T,U,V)] = tuvs.map(p => (p._1._1, p._1._2, p._2))
 
-final class RichJSArrayTuple3[T, U, V](private val tuvs: js.Array[((T, U), V)]) extends AnyVal {
-  def toTuple3 = tuvs.map(tuv => (tuv._1._1, tuv._1._2, tuv._2))
-}
+  // extension [T, U, V, W](tuvs: js.Array[(((T, U), V), W)])
+  //   def toTuple4: js.Array[(T,U,V,W)] = tuvs.map(p => (p._1._1._1, p._1._1._2, p._1._2, p._2))
 
-final class RichJSArrayTuple4[T, U, V, W](private val tuvs: js.Array[(((T, U), V), W)]) extends AnyVal {
-  def toTuple4 = tuvs.map(tuv => (tuv._1._1._1, tuv._1._1._2, tuv._1._2, tuv._2))
-}
 
-/** @todo Use sbt-boilerplace to replacite the tuple functions. */
-trait LowerOrderJSArrayImplicits {
-//   @inline implicit def toTuple3[T,U,V](tuvs: js.Array[((T,U),V)]): js.Array[(T,U,V)] =
-//     tuvs.map(tuv => (tuv._1._1, tuv._1._2, tuv._2))
-  @inline implicit def mixedTupel3ToTuple[T, U, V](arr: js.Array[((T, U), V)]): RichJSArrayTuple3[T,U,V] = new RichJSArrayTuple3[T, U, V](arr)
-  @inline implicit def mixedTupel4ToTuple[T, U, V, W](arr: js.Array[(((T, U), V), W)]): RichJSArrayTuple4[T,U,V,W] =
-    new RichJSArrayTuple4[T, U, V, W](arr)
-}
-
-trait JSArraySyntax extends LowerOrderJSArrayImplicits {
-  @inline implicit def jsArrayOpsSyntax[T](arr: js.Array[T]): JSArrayOps[T] = new JSArrayOps[T](arr)
-
-}

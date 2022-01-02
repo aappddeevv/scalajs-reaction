@@ -22,14 +22,9 @@
 package react_big_calendar
 
 import scala.scalajs.js
-
 import js.annotation._
-import js.|
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
 
 // Don't forget...and it will be dead-code removed if you don't reference it elsewhere
@@ -51,7 +46,7 @@ object ReactBigCalendar {
     def globalizeLocalizer(globalizeInstance: js.Any): Localizer = js.native
   }
 
-  def apply[E <: js.Any](props: Props[E] = null)(children: ReactNode*) =
+  def apply[E <: js.Any](props: Props[E])(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   /**

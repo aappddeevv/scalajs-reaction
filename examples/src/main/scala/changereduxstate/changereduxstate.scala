@@ -24,15 +24,16 @@ package examples
 package changereduxstate
 
 import scala.scalajs.js
+import js.annotation.*
 
-import js.annotation._
-import js.|
-import react._
-import react.implicits._
-import vdom._
-import fabric._
-import fabric.components._
-import react_redux._
+import react.*
+import react.syntax.*
+import react.conversions.given
+import jshelpers.syntax.*
+import vdom.*
+import fabric.*
+import fabric.components.*
+import react_redux.*
 
 object styles {
   @js.native
@@ -50,7 +51,7 @@ object ChangeReduxState {
    * redux-react docs.
    */
   val render: ReactFC0 = () => {
-    val label_   = useSelector[GlobalAppState, String](_.view.label.flatMap(_.toUndefOr).getOrElse("no redux label"))
+    val label_   = useSelector[GlobalAppState, String](_.view.label.getOrElse("no redux label"))
     val dispatch = useDispatch[GlobalAppAction]()
 
     println(s"label from redux state: $label_")
@@ -61,7 +62,7 @@ object ChangeReduxState {
         label = "Redux Label in Global App State"
         description = "The label typed here is displayed elsewhere in the examples."
         className = cstyles.label.asString
-        onChangeInput = js.defined((_, v) => dispatch(ActionsNS.ViewActions.setLabel(v).asInstanceOf[GlobalAppAction]))
+        onChangeInput = js.defined((_, v) => dispatch(ActionsNS.ViewActions.setLabel(v.asJSAny).asInstanceOf[GlobalAppAction]))
         defaultValue = label_
       })
     )

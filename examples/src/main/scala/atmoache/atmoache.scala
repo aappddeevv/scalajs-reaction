@@ -31,12 +31,14 @@ import scala.scalajs.js
 import js.JSConverters._
 import js.annotation._
 import org.scalajs.dom
-import react._
-import implicits._
+import react.*
+import react.syntax.*
+import react.conversions.given
 import vdom._
 import fabric._
 import fabric.components._
 import util.control._
+import jshelpers.syntax.any.*
 
 object atmoacheNS extends js.Object
 
@@ -75,7 +77,7 @@ object Controls {
   val render: ReactFC[Props] = props => {
     val (state, setState) = useStateStrictDirect[State](None)
     div(new DivProps {
-      className = styles.controls.asString
+      className = styles.controls.asUndefString
     })(
       TextField(new TextField.Props {
         placeholder = "City Name (e.g. Boston, New York, or Los Angeles,US. See openweather.org)"
@@ -212,7 +214,7 @@ object app {
             }
             .recover {
               case NonFatal(e) =>
-                dispatch(FailedToGetCity(e.getMessage(), state.cityName))
+                dispatch(FailedToGetCity(e.getMessage().nn, state.cityName))
             }
         case None => dispatch(WeatherLoaded(emptyWeatherList))
       }

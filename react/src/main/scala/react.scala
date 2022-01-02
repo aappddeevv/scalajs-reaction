@@ -22,14 +22,12 @@
 package react
 
 import scala.scalajs.js
-
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
 import js._
-import js.|
 
 /**
- * Scala-side access to JSReact APIs. Some of these methods overlay the raw JS
+ * Scala-side access to js react APIs. Some of these methods overlay the raw JS
  * version to provide the convenience of using scala types as inputs and saving
  * a few conversion nits.
  *
@@ -39,7 +37,7 @@ import js.|
  * for those code bases that already have the js versions. Note that useCallback
  * returns a js function so it can be used as a dependency.
  */
-trait React {
+trait React:
 
   def createContext[T](defaultValue: T): ReactContext[T] =
     ReactJS.createContext(defaultValue, js.undefined)
@@ -62,7 +60,7 @@ trait React {
    *
    * @todo Seems like this is an expensive call. Can we do better?
    */
-  @inline def extractChildren(item: js.UndefOr[js.Object]): js.Array[ReactNode] =
+  @inline def extractChildren(item: js.UndefOr[js.Object]|Null): js.Array[ReactNode] =
     if (item == null) js.Array() // need this since could be a "defined" null
     else
       item.toOption
@@ -72,7 +70,7 @@ trait React {
   /** Create a DOM element using the string name e.g. "div". */
   def createDOMElement(
     tag: String,
-    props: js.Object | js.Dynamic
+    props: js.Object | js.Dynamic | Null
   )(
     children: ReactNode*
   ): ReactDOMElement =
@@ -81,14 +79,14 @@ trait React {
   /** Create an element with props and 0 children. */
   def createElement0(
     tag: ReactType,
-    props: js.Object | js.Dynamic
+    props: js.Object | js.Dynamic | Null | Unit
   ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object])
 
   /** Create an elemnt with 1 child only. */
   def createElement1(
     tag: ReactType,
-    props: js.Object | js.Dynamic,
+    props: js.Object | js.Dynamic | Null | Unit,
     child: ReactNode
   ): ReactElement =
     ReactJS.createElement(tag, props.asInstanceOf[js.Object], child)
@@ -96,7 +94,7 @@ trait React {
   /** Create an element with props and children. */
   def createElementN(
     tag: ReactType,
-    props: js.Object | js.Dynamic
+    props: js.Object | js.Dynamic | Null | Unit
   )(
     children: ReactNode*
   ): ReactElement =
@@ -109,22 +107,27 @@ trait React {
   /** Create an element with some props. Children can be in the props. */
   def createElement[P <: js.Object](
     component: ReactType,
-    props: P
+    props: P|Null
   ) =
     ReactJS.createElement(component, props)
 
   /** Create an element using the standard var args signature. */
-  def createElement[P <: js.Object](component: ReactType, props: P, children: ReactNode*): ReactElement =
+  def createElement[P <: js.Object](component: ReactType, props: P|Null, children: ReactNode*): ReactElement =
     ReactJS.createElement(component, props, children: _*)
 
   /** For creating quick ReactElements using js.Dynamic. Input is a scala function
    * taking a single props argument.
+   *s
    */
+  @deprecated
   def unsafeCreateElement(component: () => ReactNode) = {
     val jsc = js.Any.fromFunction0(component).asInstanceOf[ReactType]
     createElement0(jsc, null)
   }
 
+  /**
+   * @deprecated
+   */
   def unsafeCreateElement(component: js.Dynamic => ReactNode, props: js.Dynamic) = {
     val jsc = js.Any.fromFunction1(component).asInstanceOf[ReactType]
     createElement0(jsc, props)
@@ -364,8 +367,28 @@ trait React {
       )
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
 
-  /** Do not include `Null` in your type parameter as it added to `MutableRef.current` automatically. */
-  def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue)
+  /** Use this version when you have the initial value when first called. 
+   * If you are using scala constructs for representing "unknown", use this
+   * hook e.g. `Option[String]`. You typically use this variant when
+   * you want to have "local vars" in your function component.
+  */
+  def useRef[T](initialValue: T): MutableRef[T] = ReactJS.useRef[T](initialValue).asInstanceOf[MutableRef[T]]
+
+  /** `useRef` variant when the initial value and subsequent values may be null. 
+   * You typically use this when you want to pass it along to a child component
+   * to obtain a link to a DOM element via the `ref` attribute. Since a `ReactRef` is returned, 
+   * it cannot be modified in its defining function component.
+  */
+  def useRefWithNull[T](initialValue: T|Null = null): ReactRef[T] = 
+      ReactJS.useRef[T](initialValue).asInstanceOf[ReactRef[T]]
+
+  /** `useRef` variant when the initial value and subsequent values may be undefined. 
+   * You could use this version when you want an "optional" local var in your function
+   * component but prefer `useRef[T]` to this one and use a scala Option if the value
+   * is used for scala based business logic.
+  */
+  def useRefWithUndef[T](initialValue: js.UndefOr[T] = js.undefined): MutableRef[js.UndefOr[T]] = 
+      ReactJS.useRef[js.UndefOr[T]](initialValue).asInstanceOf[MutableRef[js.UndefOr[T]]]
 
   /** Expose imperative functions in R to refs.
    * @tparam T Ref type
@@ -436,18 +459,33 @@ trait React {
     def apply(fallback: => ReactNode /* | Null = null*/ )(children: ReactNode*) =
       ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback.asInstanceOf[js.Any]), children: _*)
   }
+  
+  opaque type RevealOrder = String
+  object RevealOrder:
+    val forwards: RevealOrder = "forwards"
+    val backwards: RevealOrder = "backwards"
+    val together: RevealOrder = "together"
+
+  opaque type Tail = String
+  object Tail:
+    val hidden: RevealOrder = "hidden"
+    val collapsed: RevealOrder = "collapsed"
 
   object SuspenseList {
+    trait Props extends js.Object:
+      def revealOrder: js.UndefOr[RevealOrder] = js.undefined
+      def tail: js.UndefOr[Tail] = js.undefined
+
     def apply(items: ReactNode*) =
       ReactJS.createElement(ReactJS.SuspenseList, null, items: _*)
+
+    def apply(props: Props|Null)(items: ReactNode*) =
+      ReactJS.createElement(ReactJS.SuspenseList, props, items: _*)      
   }
 
   val version = ReactJS.version
-}
+end React
 
-///** Primary entry point into the React API. */
-//@deprecated("Use main react object react e.g. react.createElement().", "0.1.0")
-//object React extends React
 
 /**
  * React's context object contains the consumer and provider "components".

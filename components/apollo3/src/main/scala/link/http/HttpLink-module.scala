@@ -51,6 +51,6 @@ trait HttpConfig extends js.Object {
 }
 @js.native
 @JSImport("@apollo/client/link/http/HttpLink", "HttpLink")
-class HttpLink(val options: HttpOptions) extends ApolloLink {
+class HttpLink[T](val options: HttpOptions) extends ApolloLink[T] {
   val requester: RequestHandler[Any] = js.native
 }

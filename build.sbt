@@ -7,9 +7,9 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 //bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap"),
 // https://github.com/xerial/sbt-sonatype
 lazy val sonatypeSettings = Seq(
-  publishTo := sonatypePublishToBundle.value
-  ,sonatypeCredentialHost := "s01.oss.sonatype.org"
-  ,sonatypeProfileName := "org.ttgoss"
+  publishTo := sonatypePublishToBundle.value,
+  sonatypeCredentialHost := "s01.oss.sonatype.org",
+  sonatypeProfileName := "org.ttgoss"
 )
 
 lazy val resolverSettings = Seq(
@@ -25,14 +25,18 @@ val commonScalacOptions = Seq(
   "UTF-8",
   "-feature",
   "-language:_",
+  "-language:implicitConversions",
   "-unchecked",
   //"-Ywarn-numeric-widen",
   //"-Ywarn-value-discard",
   //"-Ywarn-unused:imports,locals",
-  "-Xlint:infer-any",
-  "-Yrangepos",
-  "-Ymacro-annotations"
   //,"-Ywarn-dead-code"
+  "source",
+  "future",
+  "-Ysafe-init",
+  "-Yexplicit-nulls",
+  //"-language:unsafeNulls",
+  //"-language:strictEquality"
 )
 
 lazy val jsSettings = Seq(
@@ -40,8 +44,11 @@ lazy val jsSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "1.1.0"
-  )
+   ("org.scala-js" %%% "scalajs-dom" % "2.0.0"),
+  ),
+  // testing
+libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.10" % "test",
+testFrameworks += new TestFramework("utest.runner.Framework")
 )
 
 def buildinfo_settings(pkg: String) =
@@ -54,13 +61,12 @@ def buildinfo_settings(pkg: String) =
 lazy val compilerSettings = Seq(
   scalacOptions in (Compile, doc) ++= Seq("-groups"),
   scalacOptions ++= commonScalacOptions,
-  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.1" cross CrossVersion.full),
-  addCompilerPlugin(scalafixSemanticdb),
+  //addCompilerPlugin(scalafixSemanticdb),
   autoAPIMappings := true,
   autoCompilerPlugins := true
 )
 
-val catsVersion = "2.1.1"
+val catsVersion = "2.6.1"
 
 lazy val fpsettings = Seq(
   libraryDependencies ++= Seq(
@@ -79,7 +85,7 @@ def std_settings(p: String, d: String) =
 
 inThisBuild(
   List(
-    scalaVersion := "2.13.4",
+    scalaVersion := "3.1.0",
     publishMavenStyle := true,
     organization := "org.ttgoss.js",
     organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
@@ -90,19 +96,21 @@ inThisBuild(
       Developer("aappddeevv", "Devon Miller", "aappddeevv@gmail.com", url("https://aappddeevv.github.io"))
     ),
     scmInfo := Some(
-      ScmInfo(url("https://github.com/aappddeevv/scalajs-reaction"), "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
+      ScmInfo(
+        url("https://github.com/aappddeevv/scalajs-reaction"),
+        "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
     ),
     scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
     //,scalafmtOnCompile := true,
     // should come from sbt-dynver
     //version := "0.1.0-M7"
-    ,dynverSonatypeSnapshots := true
-    ,dynverSeparator := "-"
-    //, semanticdbVersion := "4.4.0"
-    ,addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.6" cross CrossVersion.full)
+    ,
+    dynverSonatypeSnapshots := true,
+    dynverSeparator := "-"
+    //semanticdbVersion := "4.4.0",
+    //addCompilerPlugin("org.scalameta" % "semanticdb-scalac" % "4.4.25" cross CrossVersion.full)
   )
 )
-
 
 lazy val root = project
   .in(file("."))
@@ -114,7 +122,7 @@ lazy val root = project
     `apollo-server`,
     bootstrap,
     dataloader,
-    dataValidationJS,
+    //dataValidationJS,
     express,
     fabric,
     `fabric-experiments`,
@@ -242,7 +250,7 @@ lazy val `react-router-dom6` = project
   .in(file("components/react-router-dom6"))
   .settings(std_settings("react-router-dom6", "react-router-dom v6"))
   .settings(buildinfo_settings("react_router6.dom"))
-  .dependsOn(react, vdom )
+  .dependsOn(react, vdom)
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
 
 lazy val `react-navigation` = project
@@ -381,7 +389,7 @@ lazy val `react-macros` = project
       "org.scala-lang" % "scala-reflect" % scalaVersion.value,
     )
   )
-*/
+ */
 
 lazy val `prop-types` = project
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
@@ -414,12 +422,12 @@ lazy val helmet = project
   .settings(std_settings("helmet", "react-helmet"))
   .settings(buildinfo_settings("helmet"))
 
-lazy val apollo = project
-  .in(file("components/apollo"))
-  .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom)
-  .settings(std_settings("apollo", "Combination of apollo-boost, graphql, react-apollo"))
-  .settings(buildinfo_settings("apollo"))
+// lazy val apollo = project
+//   .in(file("components/apollo"))
+//   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
+//   .dependsOn(react, vdom)
+//   .settings(std_settings("apollo", "Combination of apollo-boost, graphql, react-apollo"))
+//   .settings(buildinfo_settings("apollo"))
 
 lazy val apollo3 = project
   .in(file("components/apollo3"))
@@ -431,7 +439,7 @@ lazy val apollo3 = project
 lazy val fabric = project
   .in(file("components/fabric"))
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
-  .dependsOn(react, vdom)//, /*`react-macros`*/)
+  .dependsOn(react, vdom) //, /*`react-macros`*/)
   .settings(std_settings("fabric", "microsoft office-ui-fabric facade."))
   .settings(buildinfo_settings("fabric"))
 
@@ -547,13 +555,10 @@ lazy val examples = project
     `fabric-experiments`,
     `react-redux`,
     `react-dom`,
-    //forms,
     formik,
     bootstrap,
     mui,
     `react-big-calendar`,
-    //`react-router-dom5`,
-    dataValidationJS,
     `react-router-dom6`,
     recoil
   )
@@ -571,7 +576,7 @@ lazy val docs = project
     //scalacOptions -= -"Yno-imports",
     //scalacOptions -= "-Ydata-warnings",
     ,
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples) -- inProjects(apollo),
+    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples),// -- inProjects(apollo),
     target in (ScalaUnidoc, unidoc) := (baseDirectory in LocalRootProject).value / "website" / "scalajs-reaction" / "static" / "api",
     cleanFiles += (target in (ScalaUnidoc, unidoc)).value
   )

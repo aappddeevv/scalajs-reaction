@@ -25,15 +25,13 @@ trait AllInstances extends JSPromiseInstances
 //with ToLocaleStringInstances
 
 /** Instances with everything but all so it can be subclassed elsewhere. */
-trait Instances {
+trait InstancesTrait:
   object jspromise extends JSPromiseInstances
   //object anyval extends ToLocaleStringInstances
-}
 
 /** Instances is the wrong concept here as these are not typeclass
  * instances--but close enough as they are not syntax extensions "'element'
  * converters" would be better similiar to `JSConverters` in scala.js.
  */
-object instances extends Instances {
+object instances extends InstancesTrait:
   object all extends AllInstances
-}

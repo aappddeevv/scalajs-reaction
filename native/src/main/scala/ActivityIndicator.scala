@@ -25,7 +25,6 @@ package native
 import scala.scalajs.js
 
 import js.annotation.JSImport
-import js.|
 
 object ActivityIndicator {
 
@@ -33,7 +32,7 @@ object ActivityIndicator {
   @JSImport("react-native", "ActivityIndicator")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   trait Props extends View.Props {
     var animating: js.UndefOr[Boolean] = js.undefined

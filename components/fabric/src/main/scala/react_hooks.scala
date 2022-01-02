@@ -19,6 +19,51 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package fabric
+package fluentui
+package react_hooks
 
-package object react_hooks extends api
+import scala.scalajs.js
+import js.annotation._
+
+@js.native
+trait BooleanCallbacks extends js.Object {
+  def setTrue(): Unit = js.native
+  def setFalse(): Unit = js.native
+  def toggle(): Unit = js.native
+}
+
+@js.native @JSImport("@uifabric/react-hooks", "useBoolean")
+def useBoolean(initialValue: Boolean): js.Tuple2[Boolean, BooleanCallbacks] = js.native
+
+@js.native @JSImport("@uifabric/react-hooks", "useConst")
+def useConstStrict[T](initialValue: T): T = js.native
+
+@js.native @JSImport("@uifabric/react-hooks", "useConst")
+def useConst[T](initialValue: js.Function0[T]): T = js.native
+
+// @js.native @JSImport("@uifabric/react-hooks", "useConstCallback")
+// def useConstCallback[T](cb: js.Function0[T]) = js.native
+
+// @js.native @JSImport("@uifabric/react-hooks", "useConstCallback")
+// def useConstCallback[A1, T](cb: js.Function1[A1, T]) = js.native
+
+// @js.native @JSImport("@uifabric/react-hooks", "useConstCallback")
+// def useConstCallback[A1, A2, T](cb: js.Function2[A1, A2, T]) = js.native
+
+// @js.native @JSImport("@uifabric/react-hooks", "useConstCallback")
+// def useConstCallback[A1, A2, A3, T](cb: js.Function3[A1, A2, A3, T]) = js.native
+
+// @js.native @JSImport("@uifabric/react-hooks", "useConstCallback")
+// def useConstCallback[A1, A2, A3, A4, T](cb: js.Function4[A1, A2, A3, A4, T]) = js.native
+
+@js.native @JSImport("@uifabric/react-hooks", "useId")
+def useId(prefix: js.UndefOr[String] = js.undefined, providedId: js.UndefOr[String] = js.undefined): String = js.native
+
+@js.native @JSImport("@uifabric/react-hooks", "usePrevious")
+def usePrevious[A](prefix: js.UndefOr[A] = js.undefined): js.UndefOr[A] = js.native
+
+@js.native @JSImport("@uifabric/react-hooks", "useForceUpdate")
+def useForceUpdate(): js.Function0[Unit] = js.native
+
+// ....more...
+

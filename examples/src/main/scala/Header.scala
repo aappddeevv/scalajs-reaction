@@ -24,26 +24,25 @@ package examples
 
 import scala.scalajs.js
 import react._
-import react.implicits._
+import react.syntax.*
+import react.conversions.given
 import vdom._
 import fabric._
 import fabric.components._
 
 /** Render into a portal to see if it works. */
-object Header {
+object Header:
 
-  val hstyle = new StyleAttr {
+  val hstyle = new StyleAttr:
     lineHeight = "40px"
     backgroundColor = "darkgray"
     color = "white"
     textAlign = "center"
     fontSize = "18px"
     height = 48
-  }
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var rootClassName: js.UndefOr[String] = js.undefined
-  }
 
   val Name = "Header"
   
@@ -54,7 +53,7 @@ object Header {
 
   val render: ReactFC[Props] = props => {
     div(new DivProps {
-      className = props.rootClassName
+      className = fabric.utilities.css("ttg-Header", props.rootClassName)
       style = hstyle
     })(
       a(new AProps {
@@ -64,4 +63,4 @@ object Header {
     )
   }
   render.displayName(Name)
-}
+end Header

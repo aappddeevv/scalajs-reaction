@@ -20,10 +20,7 @@
  */
 
 import scala.scalajs.js
-
-import js.JSConverters._
-import js.UndefOr
-import js.|
+import js.JSConverters.*
 
 /**
  * A scala.js react facaded in the spirit of ReasonReact.
@@ -35,12 +32,14 @@ package object react extends react.React with When {
 
   /** General purpose type that grabs AnyVal and some js types. Using just js.Any is not ergonomic. */
   type AllType =
-    Boolean | Byte | Short | Float | String | Long | Double | Int | js.Any /*js.Object*/ | js.Dictionary[_] | js.Symbol | js.Array[
-      scala.Any] | Null | Unit
+    Boolean | Byte | Short | Float | String | Long | Double | Int | 
+    js.Any | 
+    js.Object |
+    js.Dictionary[?] | 
+    js.Symbol | 
+    js.Array[scala.Any] | Null | Unit
 
-  /** Hook dependencies data structure. Should this be scala.Any?
-   * The docs suggest otherwise.
-   */
+  /** Hook dependencies data structure. Hooks require a list of objects that when changed, re-runs the evaluation process. */
   type Dependencies = js.Array[AllType]
 
   /** Empty array which is different than undefinedDependencies. Typically
@@ -48,7 +47,7 @@ package object react extends react.React with When {
    */
   val emptyDependencies: Dependencies = js.Array()
 
-  /** Undefined array typically indicates per render hook computation. Typically *not* what you want. */
+  /** Undefined array typically indicates per render. Typically *not* what you want. */
   val undefinedDependencies: js.UndefOr[Dependencies] = js.undefined
 
   /** Create a dependencies array. With no args, its a zero-length array.
@@ -66,35 +65,29 @@ package object react extends react.React with When {
   def unsafeDeps(values: scala.Any*): Dependencies =
     values.toJSArray.asInstanceOf[Dependencies]
 
-  /** Noop for effect callback. */
+  /** Noop for `useEffect`-like callbacks. */
   val noCleanUp = () => ()
 
   /**
-   * Object returned from `createRef()`. It's typically either js component or a
+   * Non-mutable ref. Object returned from `createRef()` and some variants of `useRef` hook. 
+   It's typically either js component or a
    * DOM element, both of which are js.Objects. You only use this type with the
    * `React.createRef()` machinery. Use this instead of a string or ref
    * callback. Introduced in 16.3. `useRef` uses a slightly different flavor
-   * of `current`.
-   *
-   * @todo Validate a null value is present if the ref is never set. typescript
-   * says so.
+   * of `current`. The current value is immutable.
    */
   @js.native
-  trait ReactRef[T] extends js.Object {
-
+  trait ReactRef[T] extends js.Object:
     /** See react.syntax for syntax support on handling E|Null
      * e.g. myref.current.toNonNullOption.
      */
     val current: T | Null = js.native
-  }
 
-  object ReactRef {
-    implicit class RichReactRef[T](private val r: ReactRef[T]) extends AnyVal {
-
-      /** If needed to satisfy API constraints, convert to a ReactRef. */
-      def toMutableRef = r.asInstanceOf[MutableRef[T]]
-    }
-  }
+  extension [T](r: ReactRef[T])
+    /** If needed to satisfy API constraints, convert to a mutable ref whose current
+      * value can be changed.
+      */
+    def asMutableRef = r.asInstanceOf[MutableRef[T]]
 
   /** Callback for react ref with settable E. */
   type RefCb[E] = js.Function1[E | Null, Unit]
@@ -107,20 +100,19 @@ package object react extends react.React with When {
    * they need to check for the `null` value directly).
    *
    * Reconcile with ReactRef perhaps rename the member to something like `unsafe`.
+   * 
+   * @tparam T Ref type. Could be `T|Null` as well.
    */
-  trait MutableRef[T] extends js.Object {
+  trait MutableRef[T] extends js.Object:
     var current: T
-  }
 
-  object MutableRef {
-    implicit class RichMutableRef[T](private val r: MutableRef[T]) extends AnyVal {
+  extension [T](r: MutableRef[T])
+    /** If needed to satisfy API such as the ref associated with DOM
+     * elements, convert to a ReactRef. This is messy in typescript as well.
+     */
+    def asReactRef = r.asInstanceOf[ReactRef[T]]
 
-      /** If needed to satisfy API constraints, convert to a ReactRef. */
-      def toReactRef = r.asInstanceOf[ReactRef[T]]
-    }
-  }
-
-  /** Combine the callback and the createRef models. Also include the newer hooks model. */
+  /** Combine all possible variations of `Ref` models. */
   type Ref[E] = RefCb[E] | ReactRef[E] | MutableRef[E]
 
   /* Like `refCB` but better named. */
@@ -128,6 +120,7 @@ package object react extends react.React with When {
     js.Any.fromFunction1(f).asInstanceOf[Ref[E]]
 
   /** Make Ref[E] from callback. See syntax for dealing with E|Null. */
+  @deprecated("Use callbackAsRef")
   def refCB[E](f: E | Null => Unit): Ref[E] =
     js.Any.fromFunction1[E | Null, Unit](f).asInstanceOf[Ref[E]]
 
@@ -174,16 +167,16 @@ package object react extends react.React with When {
    */
   @deprecated("Use ReactJSProps", "0.1.0")
   trait ReactPropsJs extends js.Object {
-    var key: UndefOr[KeyType] = js.undefined
-    def ref[E]: UndefOr[RefCb[E]] = js.undefined
+    var key: js.UndefOr[KeyType] = js.undefined
+    def ref[E]: js.UndefOr[RefCb[E]] = js.undefined
   }
 
   /** Use this instead of ReactPropsJs. But! you should probably should be
    *  using `MaybeHasStrKey`
    */
   trait ReactJSProps extends js.Object {
-    var key: UndefOr[KeyType] = js.undefined
-    def ref[E]: UndefOr[RefCb[E]] = js.undefined
+    var key: js.UndefOr[KeyType] = js.undefined
+    def ref[E]: js.UndefOr[RefCb[E]] = js.undefined
   }
 
   /** Optional key but no ref. Key must be a string. */
@@ -221,11 +214,11 @@ package object react extends react.React with When {
     //def `type`: String = js.native
 
     /** Raw JS props. You don't normally access this. Don't use. */
-    def props: UndefOr[js.Object] = js.native
+    def props: js.UndefOr[js.Object] = js.native
   }
 
   /**
-   * A js-object that is returned from create-react-class. In reactjs a react
+   * A js-object that is returned from create-react-class. In reactjs, a react
    * class is a js object created using the "class" construct. This should
    * really be ReactJSComponent but we keep this slightly different for those
    * who care about such things.
@@ -241,9 +234,12 @@ package object react extends react.React with When {
   type ScalaJSFunctionComponent = js.Function0[ReactNode]
 
   /** Pure JS functions defined in scala are also components. */
-  type ScalaJSFunctionComponent1 = js.Function1[_ <: js.Object, ReactNode]
+  type ScalaJSFunctionComponent1 = js.Function1[? <: js.Object, ReactNode]
 
-  type ScalaJSFunctionComponent1WithRef = js.Function2[_ <: js.Object, _ <: js.Any, ReactNode]
+  type ScalaJSFunctionComponent1WithRef = js.Function2[? <: js.Object, ? <: js.Any, ReactNode]
+
+  /** Some "primitive" types can also be converted. */
+  type PrimitiveConvertibleToNode = String|Int|Long|Float|Double|Byte
 
   /** Something that can be used in `ReactJS.createElement()`. Given an object of
    * this type, you must call `createElement` on it to create the element
@@ -251,11 +247,26 @@ package object react extends react.React with When {
    * this type to represent it.
    */
   type ReactType =
-    ReactClass | String | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_]| ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | 
+    PrimitiveConvertibleToNode | 
+    ReactJSComponent | 
+    ReactJSFunctionComponent | 
+    ReactJSLazyComponent1[_]| 
+    ReactJSLazyComponent | 
+    ScalaJSFunctionComponent | 
+    ScalaJSFunctionComponent1 | 
+    ScalaJSFunctionComponent1WithRef
 
   /** Component type that can be used in HOCs. */
   type ReactComponentType =
-    ReactClass | ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent | ScalaJSFunctionComponent | ScalaJSFunctionComponent1 | ScalaJSFunctionComponent1WithRef
+    ReactClass | 
+    ReactJSComponent | 
+    ReactJSFunctionComponent | 
+    ReactJSLazyComponent1[_] | 
+    ReactJSLazyComponent | 
+    ScalaJSFunctionComponent | 
+    ScalaJSFunctionComponent1 | 
+    ScalaJSFunctionComponent1WithRef
 
   /**
    * This type is used only as a target for imported javascript authored components to
@@ -296,10 +307,10 @@ package object react extends react.React with When {
    */
   type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent
 
-  ///** The type of `() => import("somecomponent")` which is used exclusively for
-  // * the argument to React.lazy.
-  // */
-  //type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
+  /** The type of `() => import("somecomponent")` which is used exclusively for
+  * the argument to React.lazy.
+  */
+  type DynamicImportThunk = js.Function0[js.Promise[DynamicImport]]
 
   /** Alias for internal use.
    * @deprecated
@@ -332,7 +343,7 @@ package object react extends react.React with When {
   /** Allocate an empty child array. It's not shared like `emptyChildrenVal` */
   def emptyChildren = js.Array[ReactNode]()
 
-  /** Make a callback. You don't need this but helps with type inference. There is
+  /** Make a callback. Helps with type inference. There is
    * some dedicated syntax support for `E|Null` handling.
    */
   def refCallback[E](f: E | Null => Unit): RefCb[E] = f
@@ -403,12 +414,12 @@ package object react extends react.React with When {
     return element.asInstanceOf[ReactElement]
   }
 
-  /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
-   * support makes this easier so you don't have to use this function.
-   */
-  def toSafeOption[T <: js.Any](t: js.Any): Option[T] =
-    if (js.isUndefined(t) || t == null) None
-    else Option(t.asInstanceOf[T])
+  // /** Return None if undefined or null -> None, otherwise return a Some.  Syntax
+  //  * support makes this easier so you don't have to use this function.
+  //  */
+  // def toSafeOption[T <: js.Any](t: js.Any): Option[T] =
+  //   if (js.isUndefined(t) || t == null) None
+  //   else Option(t.asInstanceOf[T])
 
   /** Shorted version of `js.defined(blah)` */
   @inline def jsdef[A](a: A) = js.defined(a)
@@ -427,7 +438,7 @@ package object react extends react.React with When {
    *  in particular. This code is from
    *  https://stackoverflow.com/questions/38126349/how-to-deeply-compare-two-js-like-objects-in-scala-js.
    */
-  def jsEqual(a: js.Any, b: js.Any): Boolean =
+  def jsEqual(a: js.Any|Null, b: js.Any|Null): Boolean =
     (a, b) match {
       case (null, null)                     => true
       case (a: js.Array[_], b: js.Array[_]) =>
@@ -452,7 +463,12 @@ package object react extends react.React with When {
    */
   type ReactElementTuple[P <: js.Object] = (js.Function1[P, ReactNode], P)
 
-  /** A type used to drive type inference when declaring your component. */
+  /** A type used to drive type inference when declaring your component.
+   * Generally, your render methods should be declared using this type
+   * so that the function is automatically converted to a js function.
+   * 
+   * Use this pattern, `val render: ReactFC[Props] = props => { ... }`.
+   */
   type ReactFC[P <: js.Object] = js.Function1[P, ReactNode]
 
   /** Memo a function component. */

@@ -55,7 +55,7 @@ trait KeyAndRef extends js.Object {
   var ref: js.UndefOr[Ref[js.Any]] = js.undefined
 }
 
-/** Adds a componentRef member. */
+/** Adds a componentRef member with variants. */
 trait ComponentRef[T] extends js.Object {
   @JSName("componentRef")
   var componentRefCallback: js.UndefOr[RefCb[T]] = js.undefined
@@ -258,10 +258,10 @@ object CheckboxVisibility {
 
 @js.native
 trait IDropHintDetails extends js.Object {
-  var originX: js.UndefOr[Double] = js.undefined
-  var startX: js.UndefOr[Double] = js.undefined
-  var endX: js.UndefOr[Double] = js.undefined
-  var dropHintElementRef: js.UndefOr[dom.html.Element] = js.undefined
+  var originX: js.UndefOr[Double] = js.native
+  var startX: js.UndefOr[Double] = js.native
+  var endX: js.UndefOr[Double] = js.native
+  var dropHintElementRef: js.UndefOr[dom.html.Element] = js.native
 }
 
 @js.native
@@ -324,7 +324,7 @@ trait IContextualMenuItemBase extends WithIconProps {
   var secondaryText: js.UndefOr[String] = js.undefined
   var itemType: js.UndefOr[ContextualMenuItemType] = js.undefined
   // iconProps
-  var onRenderIcon: js.UndefOr[IRenderFunction[_ <: IContextualMenuItemBase]] = js.undefined
+  var onRenderIcon: js.UndefOr[IRenderFunction[IContextualMenuItemBase]] = js.undefined
   var submenuIconProps: js.UndefOr[Icon.Props | js.Dynamic] = js.undefined
   var disabled: js.UndefOr[Boolean] = js.undefined
   var primaryDisabled: js.UndefOr[Boolean] = js.undefined

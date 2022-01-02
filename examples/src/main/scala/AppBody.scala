@@ -25,57 +25,53 @@ package examples
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit, global => g }
-import js.JSConverters._
-import js.annotation._
-import js.|
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
-import fabric._
-import fabric.merge_styles._
-import fabric.styling._
+import react.*
+import react.syntax.*
+import vdom.*
+import fabric.*
+import fabric.merge_styles.*
+import fabric.styling.*
+import react_router6.dom.Outlet
 
 object AppBody {
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var rootClassName: js.UndefOr[String]                              = js.undefined
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
-    val nav: ReactNode
-    val content: ReactNode
-  }
 
   val Name                = "AppBody"
   def apply(props: Props) = render.elementWith(props)
+  def apply() = render.elementWith(new Props {} )
 
   val render: ReactFC[Props] = props => {
     val cn = getClassNames(new StyleProps {
       className = props.rootClassName
     }, props.styles)
+    org.scalajs.dom.console.log("cn", cn)
     divWithClassname(
       cn.root,
-      divWithClassname(cn.nav, props.nav),
-      divWithClassname(cn.content, props.content)
+      Nav(new { rootClassName = cn.nav}),
+      divWithClassname(cn.content, Outlet())
     )
   }
   render.displayName(Name)
 
   @js.native
-  trait ClassNames extends IClassNamesTag {
+  trait ClassNames extends IClassNamesTag:
     val root: String    = js.native
     val nav: String     = js.native
     val content: String = js.native
-  }
 
-  trait Styles extends IStyleSetTag {
+  trait Styles extends IStyleSetTag:
     var root: js.UndefOr[IStyle]    = js.undefined
     var nav: js.UndefOr[IStyle]     = js.undefined
     var content: js.UndefOr[IStyle] = js.undefined
-  }
 
-  trait StyleProps extends js.Object {
+  trait StyleProps extends js.Object:
     var className: js.UndefOr[String] = js.undefined
-  }
 
   val getStyles = stylingFunction[StyleProps, Styles] { props =>
     new Styles {
@@ -84,6 +80,7 @@ object AppBody {
         new IRawStyle {
           display = "flex"
           flexWrap = "nowrap"
+          overflowY = "auto"
           alignItems = "stretch"
           height = "calc(100% - 48px)" // subtract off header height
         },
@@ -99,13 +96,7 @@ object AppBody {
     }
   }
 
-  // this causes an error, not sure why
-  // val getClassNames1 =
-  //   getClassNamesFunction[StyleProps, Styles, ClassNames](
-  //     (p, s) => mergeStyleSets(concatStyleSetsWithProps[StyleProps, ClassNames](p, getStyles, s)
-  //     ))
-
-  import merge_styles._
+  import merge_styles.*
   val getClassNames: GetClassNamesFn[StyleProps, Styles, ClassNames] =
     (p, s) => mergeStyleSets(concatStyleSetsWithProps(p, getStyles, s))
 

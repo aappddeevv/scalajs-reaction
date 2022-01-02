@@ -43,7 +43,7 @@ object Sidebar {
   @JSImport("@uifabric/experiments/lib/Sidebar", "Sidebar")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   trait PropsBase extends HTMLAttributes[dom.html.Div] with ComponentRef[ISidebar] {
     var collapsible: js.UndefOr[Boolean] = js.undefined

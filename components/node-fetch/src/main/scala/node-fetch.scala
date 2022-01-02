@@ -7,13 +7,11 @@ import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 
 
 @js.native
-@JSImport("node-fetch", JSImport.Namespace)
-object fetch extends js.Object {
-  def apply(
+@JSImport("node-fetch", "fetch")
+def fetch(
       info: RequestInfo,
-      init: RequestInit = null
+      init: js.UndefOr[RequestInit] = js.undefined
   ): js.Promise[Response] = js.native
-}
 
 @js.native
 @JSImport("node-fetch", "Request")
@@ -56,7 +54,7 @@ trait RequestInit extends js.Object {
 
 @js.native
 @JSImport("node-fetch", "Response")
-class Response(content: BodyInit = null, init: ResponseInit = null) extends Body {
+class Response(content: js.UndefOr[BodyInit]=js.undefined, init: js.UndefOr[ResponseInit] = js.undefined) extends Body {
   def `type`: ResponseType = js.native
   def url: String = js.native
   def ok: Boolean = js.native
@@ -67,29 +65,25 @@ class Response(content: BodyInit = null, init: ResponseInit = null) extends Body
   //override def clone(): Response = js.native
 }
 
-trait ResponseInit extends js.Object {
+trait ResponseInit extends js.Object:
   var status: Int
   var statusText: ByteString
   var headers: HeadersInit
-}
 
-object ResponseInit {
+object ResponseInit:
   def apply(
       _status: Int = 200,
       _statusText: ByteString = "OK",
       _headers: HeadersInit = js.Dictionary[String]()
-  ): ResponseInit = {
-    new ResponseInit {
+  ): ResponseInit =
+    new ResponseInit:
       var status = _status
       var statusText = _statusText
       var headers = _headers
-    }
-  }
-}
 
 @js.native
 @JSImport("node-fetch", "Body")
-class Body() extends js.Object {
+class Body() extends js.Object:
   def bodyUsed: Boolean = js.native
   def arrayBuffer(): js.Promise[ArrayBuffer] = js.native
   //def blob(): js.Promise[Blob] = js.native
@@ -99,7 +93,6 @@ class Body() extends js.Object {
   def textConverted(): js.Promise[String] = js.native
   def size(): Int = js.native
   val timeout: Double = js.native
-}
 
 @js.native
 @JSImport("node-fetch", "Headers")
@@ -115,24 +108,18 @@ class Headers(map: HeadersInit = js.Array[js.Array[String]]()) extends js.Iterab
   def has(name: ByteString): Boolean = js.native
 }
 
-@js.native
-sealed trait ReferrerPolicy extends js.Any
-
-object ReferrerPolicy {
-  val empty = "".asInstanceOf[ReferrerPolicy]
-  val `no-referrer` = "no-referrer".asInstanceOf[ReferrerPolicy]
-  val `no-referrer-when-downgrade` =
-    "no-referrer-when-downgrade".asInstanceOf[ReferrerPolicy]
-  val `origin-only` = "origin-only".asInstanceOf[ReferrerPolicy]
-  val `origin-when-cross-origin` =
-    "origin-when-cross-origin".asInstanceOf[ReferrerPolicy]
-  val `unsafe-url` = "unsafe-url".asInstanceOf[ReferrerPolicy]
-}
+opaque type ReferrerPolicy = String
+object ReferrerPolicy:
+  val empty: ReferrerPolicy = ""
+  val `no-referrer`: ReferrerPolicy = "no-referrer"
+  val `no-referrer-when-downgrade`: ReferrerPolicy = "no-referrer-when-downgrade"
+  val `origin-only`: ReferrerPolicy = "origin-only"
+  val `origin-when-cross-origin`: ReferrerPolicy = "origin-when-cross-origin"
+  val `unsafe-url`: ReferrerPolicy = "unsafe-url"
 
 @js.native
 trait HttpMethod extends js.Any
-
-object HttpMethod {
+object HttpMethod:
   val GET = "GET".asInstanceOf[HttpMethod]
   val POST = "POST".asInstanceOf[HttpMethod]
   val PUT = "PUT".asInstanceOf[HttpMethod]
@@ -141,13 +128,11 @@ object HttpMethod {
   val QUERY = "QUERY".asInstanceOf[HttpMethod]
   val HEAD = "HEAD".asInstanceOf[HttpMethod]
   val OPTIONS = "OPTIONS".asInstanceOf[HttpMethod]
-}
 
 // RequestContext
 @js.native
 sealed trait RequestType extends js.Any
-
-object RequestType {
+object RequestType:
   val empty = "".asInstanceOf[RequestType]
   val audio = "audio".asInstanceOf[RequestType]
   val font = "font".asInstanceOf[RequestType]
@@ -156,76 +141,61 @@ object RequestType {
   val style = "style".asInstanceOf[RequestType]
   val track = "track".asInstanceOf[RequestType]
   val video = "video".asInstanceOf[RequestType]
-}
 
 @js.native
 sealed trait RequestDestination extends js.Any
-
-object RequestDestination {
+object RequestDestination:
   val empty = "".asInstanceOf[RequestDestination]
   val document = "document".asInstanceOf[RequestDestination]
   val sharedworker = "sharedworker".asInstanceOf[RequestDestination]
   val subresource = "subresource".asInstanceOf[RequestDestination]
   val unknown = "unknown".asInstanceOf[RequestDestination]
   val worker = "worker".asInstanceOf[RequestDestination]
-}
 
 @js.native
 sealed trait RequestMode extends js.Any
-
-object RequestMode {
+object RequestMode:
   val navigate = "navigate".asInstanceOf[RequestMode]
   val `same-origin` = "same-origin".asInstanceOf[RequestMode]
   val `no-cors` = "no-cors".asInstanceOf[RequestMode]
   val cors = "cors".asInstanceOf[RequestMode]
-}
 
 @js.native
 sealed trait RequestCredentials extends js.Any
-
-object RequestCredentials {
+object RequestCredentials:
   val omit = "omit".asInstanceOf[RequestCredentials]
   val `same-origin` = "same-origin".asInstanceOf[RequestCredentials]
   val include = "include".asInstanceOf[RequestCredentials]
-}
 
 @js.native
 sealed trait RequestCache extends js.Any
-
-object RequestCache {
+object RequestCache:
   val default = "default".asInstanceOf[RequestCache]
   val `no-store` = "no-store".asInstanceOf[RequestCache]
   val reload = "reload".asInstanceOf[RequestCache]
   val `no-cache` = "no-cache".asInstanceOf[RequestCache]
   val `force-cache` = "force-cache".asInstanceOf[RequestCache]
   val `only-if-cached` = "only-if-cached".asInstanceOf[RequestCache]
-}
 
 @js.native
 sealed trait RequestRedirect extends js.Any
-
-object RequestRedirect {
+object RequestRedirect:
   val follow = "follow".asInstanceOf[RequestRedirect]
   val error = "error".asInstanceOf[RequestRedirect]
   val manual = "manual".asInstanceOf[RequestRedirect]
-}
 
-@js.native
-sealed trait ResponseType extends js.Any
-
-object ResponseType {
-  val basic = "basic".asInstanceOf[ResponseType]
-  val cors = "cors".asInstanceOf[ResponseType]
-  val default = "default".asInstanceOf[ResponseType]
-  val error = "error".asInstanceOf[ResponseType]
-  val opaque = "opaque".asInstanceOf[ResponseType]
-  val opaqueredirect = "opaqueredirect".asInstanceOf[ResponseType]
-}
+opaque type ResponseType = String
+object ResponseType:
+  val basic: ResponseType = "basic"
+  val cors: ResponseType = "cors"
+  val default: ResponseType = "default"
+  val error: ResponseType = "error"
+  val opaque: ResponseType = "opaque"
+  val opaqueredirect: ResponseType = "opaqueredirect"
 
 @js.native
 @JSImport("node-fetch", "FetchError")
-class FetchError extends js.Error {
+class FetchError extends js.Error:
   val `type`: String = js.native
   val code: js.UndefOr[String] = js.native
   val errno: js.UndefOr[String] = js.native
-}

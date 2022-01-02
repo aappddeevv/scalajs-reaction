@@ -23,23 +23,18 @@ package fabric
 package components
 
 import scala.scalajs.js
-
-import js.annotation._
-
+import js.annotation.*
 import org.scalajs.dom
-
-import react._
-
-import vdom._
-
-import fabric.styling._
+import react.*
+import vdom.*
+import fabric.styling.*
 
 object Toggle {
   @js.native
   @JSImport("office-ui-fabric-react/lib/Toggle", "Toggle")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: js.UndefOr[Props]=js.undefined) = createElement0(JS, props)
 
   @js.native
   trait IToggle extends Focusable

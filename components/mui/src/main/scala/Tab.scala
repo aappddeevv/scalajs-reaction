@@ -23,13 +23,9 @@ package mui
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom._
-
 import react._
-
 import vdom._
 
 object Tab {
@@ -38,8 +34,7 @@ object Tab {
   @JSImport("@material-ui/core/Tab", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) =
-    createElement0(JS, props)
+  def apply(props: Props) = createElement0(JS, props)
 
   @js.native
   sealed trait TextColor extends js.Any

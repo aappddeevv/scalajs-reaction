@@ -22,11 +22,8 @@
 package mui
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import react._
-
 import jss._
 
 @js.native
@@ -54,15 +51,13 @@ object styles extends js.Object {
 
 object StylesProvider {
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var disableGeneration: js.UndefOr[Boolean] = js.undefined
     var injectFirst: js.UndefOr[Boolean] = js.undefined
     @JSName("jss")
     var _jss: js.UndefOr[JSS] = js.undefined
     // generateClassName...
-  }
 
   // not being null causes an error, why?
-  def apply(props: Props = null)(child: ReactNode) =
-    createElementN(styles.StylesProvider, props)(child)
+  def apply(props: Props)(child: ReactNode) = createElementN(styles.StylesProvider, props)(child)
 }

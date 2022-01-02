@@ -22,11 +22,10 @@
 package react_teleporter
 
 import react._
-import react.implicits._
+import react.syntax.*
 import scala.scalajs.js
 import org.scalajs.dom
-import js.annotation._
-import js.|
+import js.annotation.*
 
 /**
  * @tparam TC Props passed to the source but defined in target.
@@ -54,7 +53,7 @@ object TeleporterSource {
   implicit class RichTeleporterSource[TC <: js.Object](private val s: TeleporterSource[TC]) extends AnyVal {
     //def apply(props: TC, children: ReactNode*) = createElement(s, props, children:_*)
     def apply(children: ReactNode*) = createElement(s, null, children: _*)
-    def multiple(children: ReactNode*) = createElement(s, new SourceProps { multiple = true }, children: _*)
+    def multiple(children: ReactNode*) = createElement(s, new SourceProps { this.multiple = true }, children: _*)
   }
 }
 

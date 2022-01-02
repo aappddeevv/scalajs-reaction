@@ -26,29 +26,30 @@ import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit }
 import js.JSConverters._
-import js.annotation._
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
-import fabric._
-import fabric.components._
-import fabric.styling._
-import Styling._
-import bootstrap._
-import cats._
-import cats.implicits._
-import mui._
-import react_big_calendar._
-import react_redux._
+import react.*
+import react.syntax.*
+import react.conversions.given
+import vdom.*
+import fabric.*
+import fabric.components.*
+import fabric.styling.*
+import Styling.*
+import bootstrap.*
+import cats.*
+import cats.implicits.*
+import mui.*
+import react_big_calendar.*
+import react_redux.*
 //import fabric.styles._
 
 object Pages {
 
-  import JSAppImports._
-  import addressmanager._
-  import graphs._
-  import todo._
+  import JSAppImports.*
+  import addressmanager.*
+  import graphs.*
+  import todo.*
 
   //   className = estyles.scrollme.asString
   def page(n: ReactNode*) =
@@ -98,7 +99,7 @@ object Pages {
       div(12),
       div(12.0),
       div(true), // this will not display anything
-      div(null), // this will not display anything
+      div(nullNode), // this will not display anything
       div("this is a helloworld string"),
       helloworld.SuspenseTest.blah(),
       helloworld.EqualityTest.doit()

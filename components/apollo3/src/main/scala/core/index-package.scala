@@ -38,7 +38,7 @@ package object core
 
   @js.native
   @JSImport("@apollo/client/core/ObservableQuery", "hasError")
-  def hasError(storeValue: QueryStoreValue, policy: ErrorPolicy = ErrorPolicy.none): QueryStoreValue = js.native
+  def hasError(storeValue: QueryStoreValue, policy: ErrorPolicy = "none"): QueryStoreValue = js.native
 
   @js.native
   @JSImport("@apollo/client/core/networkStatus", "isNetworkRequestInFlight")

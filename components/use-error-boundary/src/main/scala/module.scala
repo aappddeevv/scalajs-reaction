@@ -22,11 +22,10 @@
 package use_error_boundary
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
 
 //
 @js.native

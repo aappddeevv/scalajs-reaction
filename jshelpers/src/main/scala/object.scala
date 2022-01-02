@@ -20,77 +20,79 @@
  */
 
 package jshelpers
+package syntax
 
 import scala.scalajs.js
-import js.|
+import scala.annotation.targetName
 
-/** The "combine" methods are shallow, mutable merges, this may not be what you want. */
-final class JsObjectOps[A <: js.Object](private val o: A) extends AnyVal {
-  @inline def asDict[B] = o.asInstanceOf[js.Dictionary[B]]
-  @inline def asAnyDict = o.asInstanceOf[js.Dictionary[js.Any]]
-  @inline def asDyn = o.asInstanceOf[js.Dynamic]
-  @inline def asUndefOr: js.UndefOr[A] = js.defined(o)
+object jsobject:
+  /** The "combine" methods are shallow, mutable merges, this may not be what you want. */
+  extension [A <: js.Object](o: A)
+    // def asDict[B]: js.Dictionary[B] = o.asInstanceOf[js.Dictionary[B]]
+    // def asAnyDict: js.Dictionary[js.Any] = o.asInstanceOf[js.Dictionary[js.Any]]
+    // def asDyn: js.Dynamic = o.asInstanceOf[js.Dynamic]
+    // def asJSDyn: js.Dynamic = o.asInstanceOf[js.Dynamic]
+    // def asUndefOr: js.UndefOr[A] = js.defined(o)
 
-  /** Shallow merge.
-   */
-  @inline def combine(that: A | Unit*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
+    // def toTruthy: Boolean = js.DynamicImplicits.truthValue(o.asInstanceOf[js.Dynamic])
 
-  /** Combine with a js.Dynamic explicitly. */
-  @inline def combineDynamic(that: js.Dynamic*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
+    /** Shallow merge with a similar object. */
+    def combine(that: A | Unit*): A =
+      js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
-  /** Combine with a generic js object or undefined. */
-  @inline def combineGeneric(that: js.Object | Unit*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
+    /** Combine with a js.Dynamic explicitly. */
+    def combineDynamic(that: js.Dynamic*): A =
+      js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
-  /** Combine with something!?! */
-  @inline def unsafeCombine(that: js.Any*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
+    /** Combine with a generic js object or undefined. */
+    def combineGeneric(that: js.Object | Unit*): A =
+      js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
-  /** Combine with a generic js object and cast. */
-  @inline def combineGenericTo[B](that: js.Object | Unit*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[B]
+    /** Combine with something!?! */
+    def unsafeCombine(that: js.Any*): A =
+      js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[A]
 
-  /** Combine with a dynamic and cast. */
-  @inline def combineDynamicTo[B](that: js.Dynamic*) =
-    js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[B]
+    /** Combine with a generic js object and cast. */
+    def combineGenericTo[B](that: js.Object | Unit*): B =
+      js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[B]
 
-  /** `.asInstanceOf[T]` but shorter. Very dangerous! */
-  @inline def as[T] = o.asInstanceOf[T]
+    /** Combine with a dynamic and cast. */
+    def combineDynamicTo[B](that: js.Dynamic*): B =
+      js.Object.assign(o, that.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[B]
 
-  /** Duplicate using `js.Object.assign` */
-  @inline def duplicate = js.Object.assign(new js.Object, o).asInstanceOf[A]
+    /** `.asInstanceOf[T]` but shorter. Very dangerous! */
+    @targetName("asJSObject")
+    def as[T]: T = o.asInstanceOf[T]
 
-  /** Duplicate then combineDynamic */
-  @inline def duplicateCombine(that: js.Dynamic) =
-    js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[A]
+    /** Duplicate using `js.Object.assign` */
+    @targetName("duplicateJSObject")
+    def duplicate: A = js.Object.assign(new js.Object{}, o).asInstanceOf[A]
 
-  /** Duplicate then combineDynamic then cast :-). */
-  @inline def duplicateCombineTo[B](that: js.Dynamic*) =
-    js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[B]
-}
+    /** Duplicate then combineDynamic */
+    def duplicateCombine(that: js.Dynamic): A =
+      js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[A]
 
-/** Dictionary casts. */
-final class JsDictionaryOps[T <: js.Any](private val self: js.Dictionary[T]) extends AnyVal {
-  @inline def asJsObj = self.asInstanceOf[js.Object]
-  @inline def asDyn = self.asInstanceOf[js.Dynamic]
-  @inline def asUndefOr = js.defined(self)
+    /** Duplicate then combineDynamic then cast :-). */
+    def duplicateCombineTo[B](that: js.Dynamic*): B =
+      js.Object.assign(new js.Object, o, that.asInstanceOf[js.Object]).asInstanceOf[B]
+  end extension
 
-  /** `.asInstanceOf[T]` but shorter. Very dangerous! */
-  @inline def as[B <: js.Object] = self.asInstanceOf[B]
+  /** Dictionary casts. */
+  extension [T <: js.Any](self: js.Dictionary[T])
+    // def asJsObj = self.asInstanceOf[js.Object]
+    // def asDyn = self.asInstanceOf[js.Dynamic]
+    def asUndefOr = js.defined(self)
 
-  /** Duplicate. */
-  @inline def duplicate =
-    js.Object
-      .assign(
-        new js.Object,
-        self.asInstanceOf[js.Object]
-      )
-      .asInstanceOf[js.Dictionary[T]]
-}
+    /** `.asInstanceOf[T]` but shorter. Very dangerous! */
+    @targetName("asJSDictionary")
+    def as[B <: js.Object]: B = self.asInstanceOf[B]
 
-trait JsObjectSyntax {
-  @inline implicit def jsObjectOpsSyntax[A <: js.Object](a: A): JsObjectOps[A] = new JsObjectOps(a)
-  @inline implicit def jsDictionaryOpsSyntax[T <: js.Any](a: js.Dictionary[T]): JsDictionaryOps[T] = new JsDictionaryOps[T](a)
-}
+    /** Duplicate. */
+    def duplicate: js.Dictionary[T] =
+      js.Object
+        .assign(
+          new js.Object,
+          self.asInstanceOf[js.Object]
+        )
+        .asInstanceOf[js.Dictionary[T]]
+  end extension

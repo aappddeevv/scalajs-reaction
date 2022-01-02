@@ -23,61 +23,47 @@ package ttg
 package examples
 
 import scala.scalajs.js
-
-import js.JSConverters._
+import js.JSConverters.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
-import vdom.styling._
-import cats._
-import cats.implicits._
-import react_router5.dom._
-import react_router5.dom.hooks._
+import react.*
+import react.conversions.given
+import react.syntax.*
+import vdom.*
+import vdom.styling.*
+import cats.*
+import cats.implicits.*
+import react_router6.dom.*
 
-object Routes {
+object Routes:
 
-  val render: ReactFC0 = () => {
-    val history = useHistory[js.Any]()
-    def body(bodyContent: ReactNode): ReactNode =
-      AppBody(new AppBody.Props {
-        val nav = Nav(new Nav.Props {
-          var goto = { arg =>
-            println(s"Request to navigate to $arg")
-            history.push(s"/$arg")
-          }
-        }) //c.navigate(_, router.Redirect.Push) })
-        val content = bodyContent
-      })
-
-    body(
-      Switch(
-        Route.withExactPath("/", Redirect.to("/readme")),
-        Route.withPath("/readme", Pages.readme(readmetext)),
-        Route.withPath("/addresses", Pages.addressPage(addressmanager.fakedata.addressDAO)),
-        Route.withPath("/todo", Pages.todoPage()),
-        Route.withPath("/helloworld", Pages.helloWorldPage()),
-        Route.withPath("/changeredux", Pages.changeReduxStatePage()),
-        Route.withPath("/labelandchild", Pages.labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld())),
-        Route.withPath("/tagtest", Pages.tagTest()),
-        Route.withPath("/pressure", Pages.pressurePage()),
-        Route.withPath("/graph", Pages.graphPage()),
-        Route.withPath("/calendar", Pages.calendarPage()),
-        Route.withPath("/bootstrap", Pages.bootstrapPage()),
-        Route.withPath("/mui", Pages.materialUIPage()),
-        Route.always(Redirect.to("/readme"))
-      )
-    )
+  val render: ReactFC0 = () => {    
+    val readme = Pages.readme(readmetext)    
+    react_router6.dom.Routes(
+      Route.root(AppBody())(
+        Route.index(readme),
+        Route.withPath("addresses", Pages.addressPage(addressmanager.fakedata.addressDAO)),
+        Route.withPath("todo", Pages.todoPage()),
+        Route.withPath("helloworld", Pages.helloWorldPage()),
+        Route.withPath("changeredux", Pages.changeReduxStatePage()),
+        Route.withPath("labelandchild", Pages.labelAndChild("Typescript Wrapping Scala.js", helloworld.HelloWorld())),
+        Route.withPath("tagtest", Pages.tagTest()),
+        Route.withPath("pressure", Pages.pressurePage()),
+        Route.withPath("graph", Pages.graphPage()),
+        Route.withPath("calendar", Pages.calendarPage()),
+        Route.withPath("bootstrap", Pages.bootstrapPage()),
+        Route.withPath("mui", Pages.materialUIPage()),
+        Route.always(readme)
+    ))
   }
   render.displayName("Routes")
-}
+end Routes
 
-object Application {
+object Application:
 
   val baseUrl =
-    dom.document.location.origin.asString + BuildSettings.routePrefix.getOrElse("")
+    dom.document.location.origin.getOrElse("") + BuildSettings.routePrefix.getOrElse("")
   val nsegments =
-    BuildSettings.routePrefix.map(_.split("/").filterNot(_.isEmpty).length).getOrElse(0)
+    BuildSettings.routePrefix.map(_.split("/").nn.filterNot(_.nn.isEmpty).length).getOrElse(0)
 
   dom.console.log("baseURL", baseUrl, "nsegments to strip", nsegments)
 
@@ -86,17 +72,18 @@ object Application {
   def apply() = render()
 
   val render: ReactFC0 = () => {
-    div(new DivProps {
-      className = "ttg-App"
-      style = new StyleAttr {
-        display = "flex"
-        flexDirection = "column"
-        alignItems = "stretch"
-        height = "100%"
-      }
-    })(
-      Header(),
-      HashRouter.withBasename(BuildSettings.routePrefix getOrElse "", Routes.render)
-    )
+    HashRouter.withBasename(BuildSettings.routePrefix getOrElse "",
+      div(new DivProps {
+        className = "ttg-App"
+        style = new StyleAttr {
+          display = "flex"
+          flexDirection = "column"
+          alignItems = "stretch"
+          height = "100%"
+        }
+      })(
+        Header(),
+        Routes.render
+      ))
   }
-}
+end Application

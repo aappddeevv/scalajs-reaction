@@ -26,19 +26,20 @@ package addressmanager
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit }
-import js.JSConverters._
-import js.annotation._
-import js.|
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import react.extras._
-import vdom._
-import fabric._
-import fabric.components._
-import fabric.utilities._
-import ReactContentLoaderComponents._
-import react_redux._
+import react.*
+import react.syntax.*
+import react.conversions.given
+import jshelpers.syntax.*
+import react.extras.*
+import vdom.*
+import fabric.*
+import fabric.components.*
+import fabric.utilities.*
+import ReactContentLoaderComponents.*
+import react_redux.*
 
 object styles {
   @js.native
@@ -48,11 +49,10 @@ object styles {
 
 import styles._
 
-object AddressManager {
-  trait Props extends js.Object {
+object AddressManager:
+  trait Props extends js.Object:
     val dao: AddressDAO
     val className: js.UndefOr[String] = js.undefined
-  }
 
   val Name = "AddressManager"
 
@@ -76,7 +76,7 @@ object AddressManager {
           text = "Incr Footer Height (CSS Var)"
           onClick = IContextualMenuItem.OnClick(() => {
             val pattern    = "([0-9]+)px".r
-            val pattern(h) = vdom.styling.getCSSVar("--footer").trim
+            val pattern(h) = vdom.styling.getCSSVar("--footer").trim.nn
             val hint       = h.toInt
             val newHeight  = if (hint > 300) 80 else hint + 10
             // This is really as side effect that should force a re-render.
@@ -161,14 +161,14 @@ object AddressManager {
 
   val render: ReactFC[Props] = props => {
     // redux hooks
-    val label = useSelector[GlobalAppState, js.UndefOr[String]](_.view.label.flatMap(_.toUndefOr))
+    val label = useSelector[GlobalAppState, js.UndefOr[String]](_.view.label)
     val lastActiveAddressId =
       useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.lastActiveAddressId.toUndefOr)
     val activeId  = useSelector[GlobalAppState, js.UndefOr[Id]](_.addressManager.activeId.toUndefOr)
     val active    = useSelector[GlobalAppState, js.UndefOr[Address]](_.addressManager.active.toUndefOr)
     val dispatchG = useDispatch[GlobalAppAction]()
     val setActive = useCallback2[Id | Null, Address | Null, Unit](dispatchG)((id, addr) =>
-        dispatchG(ActionsNS.AddressManagerActions.setActive(id.asJsAny, addr.asJsAny).asInstanceOf[GlobalAppAction])
+        dispatchG(ActionsNS.AddressManagerActions.setActive(id.nn, addr.nn).asInstanceOf[GlobalAppAction])
     )
 
     val sref = useExpensiveRef[ISelection[Address]]{
@@ -228,9 +228,10 @@ object AddressManager {
       divWithClassname(
         amstyles.footer.asString,
         addressStuff._2,
-        Label("Redux sourced label: " + label.getOrElse[String]("<no redux label provided>"))
+        Label("Redux sourced label: " + label.getOrElse("<no redux label provided>"))
       )
     )
   }
   render.displayName(Name)
-}
+
+end AddressManager

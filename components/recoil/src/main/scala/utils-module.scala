@@ -105,7 +105,7 @@ trait utils_module extends js.Object {
   // @JSName("waitForAll")
   // def waitForAllD(args: js.Dictionary[RecoilValueReadOnly[_]]): js.Dictionary[Loadable[_]] = js.native
 
-  def nowait(value: RecoilValue[_]): Loadable[Any] = js.native
+  def nowait(value: RecoilValue[Any]): Loadable[Any] = js.native
 }
 
 @js.native
@@ -145,5 +145,5 @@ trait utils_exports {
   def waitForAll[F[_]](args: F[RecoilValueReadOnly[_]])(implicit ev: JSF[F]) =
     utils_module.waitForNoneF[ev.JS](args)
 
-  def nowait(value: RecoilValue[_]) = utils_module.nowait(value)
+  def nowait(value: RecoilValue[Any]) = utils_module.nowait(value)
 }

@@ -34,8 +34,8 @@ object Panel {
   @JSImport("office-ui-fabric-react/lib/Panel", "Panel")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(children: ReactNode*) = createElementN(JS, ())(children: _*)
 
   @js.native
   trait IPanel extends js.Object {

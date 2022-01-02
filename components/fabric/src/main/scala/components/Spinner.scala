@@ -35,7 +35,7 @@ object Spinner {
   @JSImport("office-ui-fabric-react/lib/Spinner", "Spinner")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) = createElement0(JS, props)
+  def apply(props: js.UndefOr[Props] = js.undefined) = createElement0(JS, props)
 
   @js.native
   trait ISpinner extends js.Object

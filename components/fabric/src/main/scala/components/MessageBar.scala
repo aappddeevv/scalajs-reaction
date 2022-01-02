@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object MessageBar {
@@ -39,8 +34,7 @@ object MessageBar {
   @JSImport("office-ui-fabric-react/lib/MessageBar", "MessageBar")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
 
   trait IMessageBar extends js.Object
 

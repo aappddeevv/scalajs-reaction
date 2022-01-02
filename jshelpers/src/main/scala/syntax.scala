@@ -20,34 +20,13 @@
  */
 
 package jshelpers
+package syntax
 
-import scala.scalajs.js
-import js._
-
-trait AllSyntax
-    extends JsDynamicSyntax
-    with JsObjectSyntax
-    with JsAnySyntax
-    with OrNullSyntax
-    with ScalaMappedSyntax
-    with OptionSyntax
-    with JsUndefOrSyntax
-    with MiscOrSyntax
-    with JSPromiseSyntax
-    with OrSyntax
-    with JSArraySyntax
-
-object syntax {
-  object all extends AllSyntax
-  object jsdynamic extends JsDynamicSyntax
-  object jsundefor extends JsUndefOrSyntax
-  object jsobject extends JsObjectSyntax
-  object jsany extends JsAnySyntax
-  object scalaany extends ScalaMappedSyntax
-  object ornull extends OrNullSyntax
-  object option extends OptionSyntax
-  object miscor extends MiscOrSyntax
-  object jspromise extends JSPromiseSyntax
-  object or extends OrSyntax
-  object jsarray extends JSArraySyntax
-}
+export jshelpers.syntax.undefor.*
+export jshelpers.syntax.any.*
+export jshelpers.syntax.array.*
+export jshelpers.syntax.option.*
+export jshelpers.syntax.jsnull.*
+export jshelpers.syntax.misc.*   
+export jshelpers.syntax.dynamic.*
+export jshelpers.syntax.jsobject.*

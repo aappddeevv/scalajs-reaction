@@ -151,20 +151,19 @@ object DurationInit {
     val _locale = locale
     val _numberingSystem = numberingSystem
     val _conversionAccuracy = conversionAccuracy
-    new DurationInit {
-      days = _days
-      months = _months
-      quarters = _quarters
-      years = _years
-      weeks = _weeks
-      hours = _hours
-      minutes = _minutes
-      seconds = _seconds
-      milliseconds = _milliseconds
-      locale = _locale
-      numberingSystem = _numberingSystem
-      conversionAccuracy = _conversionAccuracy
-    }
+    new DurationInit:
+      this.days = _days
+      this.months = _months
+      this.quarters = _quarters
+      this.years = _years
+      this.weeks = _weeks
+      this.hours = _hours
+      this.minutes = _minutes
+      this.seconds = _seconds
+      this.milliseconds = _milliseconds
+      this.locale = _locale
+      this.numberingSystem = _numberingSystem
+      this.conversionAccuracy = _conversionAccuracy  
   }
 }
 
@@ -283,19 +282,19 @@ object DateTimeUnits {
     val _minute = minute
     val _second = second
     val _millisecond = millisecond
-    new DateTimeUnits {
-      year = _year
-      month = _month
-      day = _day
-      ordinal = _ordinal
-      weekYear = _weekYear
-      weekNumber = _weekNumber
-      weekday = _weekday
-      hour = _hour
-      minute = _minute
-      second = _second
-      millisecond = _millisecond
-    }
+    new DateTimeUnits:
+      this.year = _year
+      this.month = _month
+      this.day = _day
+      this.ordinal = _ordinal
+      this.weekYear = _weekYear
+      this.weekNumber = _weekNumber
+      this.weekday = _weekday
+      this.hour = _hour
+      this.minute = _minute
+      this.second = _second
+      this.millisecond = _millisecond
+    
   }
 }
 
@@ -335,23 +334,38 @@ object DateTimeInit {
     locale: js.UndefOr[String] = js.undefined,
     numberingSystem: js.UndefOr[String] = js.undefined,
     outputCalendar: js.UndefOr[String] = js.undefined,
-  ) = new DateTimeInit {
-    this.year = year
-    this.month = month
-    this.day = day
-    this.ordinal = ordinal
-    this.weekYear = weekYear
-    this.weekNumber = weekNumber
-    this.weekday = weekday
-    this.hour = hour
-    this.minute = minute
-    this.second = second
-    this.millisecond = millisecond
-    this.zone = zone
-    this.locale = locale
-    this.numberingSystem = numberingSystem
-    this.outputCalendar = outputCalendar
-  }
+  ) = 
+    val _year = year
+    val _month = month
+    val _day = day
+    val _ordinal = ordinal
+    val _weekYear = weekYear
+    val _weekNumber = weekNumber
+    val _weekday = weekday
+    val _hour = hour
+    val _minute = minute
+    val _second = second
+    val _millisecond = millisecond
+    val _zone = zone
+    val _locale = locale
+    val _numberingSystem = numberingSystem
+    val _outputCalendar = outputCalendar
+    new DateTimeInit:
+      this.year = _year
+      this.month = _month
+      this.day = _day
+      this.ordinal = _ordinal
+      this.weekYear = _weekYear
+      this.weekNumber = _weekNumber
+      this.weekday = _weekday
+      this.hour = _hour
+      this.minute = _minute
+      this.second = _second
+      this.millisecond = _millisecond
+      this.zone = _zone
+      this.locale = _locale
+      this.numberingSystem = _numberingSystem
+      this.outputCalendar = _outputCalendar
 }
 
 trait ToISODateOptions extends js.Object {
@@ -376,7 +390,7 @@ object ZoneOptions {
   def apply(keepLocalTime: js.UndefOr[Boolean] = js.undefined) = {
     val _keepLocalTime = keepLocalTime
     new ZoneOptions {
-      keepLocalTime = _keepLocalTime
+      this.keepLocalTime = _keepLocalTime
     }
   }
 }

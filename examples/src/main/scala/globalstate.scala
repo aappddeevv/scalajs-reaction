@@ -34,8 +34,8 @@ trait GlobalAppAction extends react_redux.Action {
 /** JS definition in view.ts. These have UndefOr but they are never undefined.
  */
 trait ViewState extends js.Object {
-  val label: js.UndefOr[String | Null]
-  val selectedTabKey: js.UndefOr[String | Null]
+  val label: js.UndefOr[String]
+  val selectedTabKey: js.UndefOr[String]
 }
 
 /** JS definition in .ts. Notice no UndefOr just "| Null". */

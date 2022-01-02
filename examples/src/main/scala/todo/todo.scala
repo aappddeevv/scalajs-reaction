@@ -28,10 +28,10 @@ import scala.scalajs.js
 import js.Dynamic.{ literal => lit, global => g }
 import js.JSConverters._
 import js.annotation._
-import js.|
 import org.scalajs.dom
-import react._
-import react.implicits._
+import react.*
+import react.syntax.*
+import react.conversions.given
 import vdom._
 import fabric._
 import fabric.components._
@@ -39,18 +39,17 @@ import fabric.styling._
 
 import react_dom._
 
-case class ToDo(id: Int, name: String, added: js.Date = null, completed: Boolean = false)
+case class ToDo(id: Int, name: String, added: js.Date|Null = null, completed: Boolean = false)
 
 object ToDoItem {
   val Name = "ToDoItem"
 
-  trait Props extends js.Object {
+  trait Props extends js.Object:
     var todo: ToDo
     var remove: () => Unit
     var rootClassname: js.UndefOr[String]  = js.undefined
     var titleClassname: js.UndefOr[String] = js.undefined
     var key: js.UndefOr[String]            = js.undefined
-  }
 
   def apply(props: Props) = render.elementWith(props)
 
@@ -168,7 +167,7 @@ object ToDos {
   def apply(props: Props) = render.elementWith(props)
 
   val render: ReactFC[Props] = props => {
-    val ifield = useRef[TextField.ITextField](null)
+    val ifield = useRefWithNull[TextField.ITextField](null)
     useEffectMounting { () =>
       println("ToDo: subscriptions: called during mount")
       () => println("ToDo: subscriptions: unmounted")

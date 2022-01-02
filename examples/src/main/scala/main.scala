@@ -25,21 +25,22 @@ package examples
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit }
-import js.JSConverters._
-import js.annotation._
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
-import react._
-import react.implicits._
-import vdom._
-import fabric._
-import fabric.components._
-import fabric.styling._
-import Pages._
-import Styling._
-import addressmanager.fakedata._
-import mui._
-import react_redux._
-import styles._
+import react.*
+import syntax.*
+import conversions.given
+import vdom.*
+import fabric.*
+import fabric.components.*
+import fabric.styling.*
+import Pages.*
+import Styling.*
+import addressmanager.fakedata.*
+import mui.*
+import react_redux.*
+import styles.*
 
 @js.native
 @JSImport("Examples/examples.css", JSImport.Namespace)
@@ -48,6 +49,7 @@ private object componentStyles extends js.Object
 object styles {
   val estyles = componentStyles.asInstanceOf[js.Dynamic]
 }
+
 object Contexts {
   type ConsoleLog = js.Function1[js.Any, Unit]
   val logger     = js.Dynamic.global.console.log.asInstanceOf[ConsoleLog]
@@ -83,7 +85,7 @@ object Main {
   def App(): Unit = {
     println("Running scalajs-reaction demo app")
     // use append so we can read/change the CSS in the browser debugger
-    Stylesheet.getInstance.setConfig(new IStylesheetConfig {
+    Stylesheet.getInstance().setConfig(new IStylesheetConfig {
       injectionMode = InjectionMode.appendChild
     })
     fabric.icons.initializeIcons()

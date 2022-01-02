@@ -24,11 +24,11 @@ package client3
 package core
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
+import jshelpers.syntax.*
 
-import graphql._
-import client3.link._
+import graphql.*
+import client3.link.*
 
 trait UpdateQueryOptionsSD[SubscriptionData] extends js.Object {
   val data: SubscriptionData
@@ -80,11 +80,11 @@ object QueryOptions {
   ) =
     js.Dynamic
       .literal(
-        "query" -> query,
-        "fetchPolicy" -> fetchPolicy,
-        "errorPolicy" -> errorPolicy,
-        "variables" -> variables.asInstanceOf[js.Any],
-        "context" -> context.asInstanceOf[js.Any]
+        "query" -> query.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "variables" -> variables.unsafeAsJSAny,
+        "context" -> context.unsafeAsJSAny
       )
       .asInstanceOf[QueryOptions[TVars]]
 }
@@ -146,15 +146,15 @@ object MutationOptions {
   ) =
     js.Dynamic
       .literal(
-        "mutation" -> mutation,
-        "context" -> context,
-        "fetchPolicy" -> fetchPolicy,
-        "errorPolicy" -> errorPolicy,
-        "variables" -> variables.asInstanceOf[js.Any],
-        "update" -> update,
-        "awaitRefetchQueries" -> awaitRefetchQueries,
-        "updateQueries" -> updateQueries,
-        "optimisticResponse" -> optimisticResponse.asInstanceOf[js.Any],
+        "mutation" -> mutation.asJSAny,
+        "context" -> context.asJSAny,
+        "fetchPolicy" -> fetchPolicy.asJSAny,
+        "errorPolicy" -> errorPolicy.asJSAny,
+        "variables" -> variables.unsafeAsJSAny,
+        "update" -> update.asJSAny,
+        "awaitRefetchQueries" -> awaitRefetchQueries.asJSAny,
+        "updateQueries" -> updateQueries.unsafeAsJSAny,
+        "optimisticResponse" -> optimisticResponse.unsafeAsJSAny
       )
       .asInstanceOf[MutationOptions[T, TVars]]
 }

@@ -62,10 +62,10 @@ trait GraphQLError extends js.Error {
   val locations: js.UndefOr[js.Array[SourceLocation]] = js.native
   val path: js.UndefOr[js.Array[String | Int]] = js.native
   val nodes: js.UndefOr[js.Array[ASTNode]] = js.native
-  val source: js.UndefOr[Source] = js.undefined
-  val positions: js.UndefOr[Int] = js.undefined
-  val originalError: js.UndefOr[js.Error | Null] = js.undefined
-  val extensions: js.UndefOr[js.Dictionary[js.Any]] = js.undefined
+  val source: js.UndefOr[Source] = js.native
+  val positions: js.UndefOr[Int] = js.native
+  val originalError: js.UndefOr[js.Error | Null] = js.native
+  val extensions: js.UndefOr[js.Dictionary[js.Any]] = js.native
 }
 
 @js.native

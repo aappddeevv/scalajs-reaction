@@ -1,5 +1,5 @@
 val scalaJSVersion =
-  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.5.1")
+  Option(System.getenv("SCALAJS_VERSION")).getOrElse("1.8.0")
 
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1")
 addSbtPlugin("org.scala-js"                      % "sbt-scalajs"      % scalaJSVersion)

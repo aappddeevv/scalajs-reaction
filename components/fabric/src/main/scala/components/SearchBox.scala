@@ -23,15 +23,10 @@ package fabric
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom
-
 import react._
-
 import vdom._
-
 import fabric.styling._
 
 object SearchBox {
@@ -39,7 +34,7 @@ object SearchBox {
   @JSImport("office-ui-fabric-react/lib/SearchBox", "SearchBox")
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null) =
+  def apply(props: js.UndefOr[Props] = js.undefined) =
     createElement0(JS, props)
 
   @js.native

@@ -42,7 +42,7 @@ trait ApolloClientOptions[Shape] extends js.Object {
   var uri: js.UndefOr[String | UriFunction] = js.undefined
   var credentials: js.UndefOr[String] = js.undefined
   var headers: js.UndefOr[js.Object | js.Dictionary[String]] = js.undefined
-  var link: js.UndefOr[ApolloLink] = js.undefined
+  var link: js.UndefOr[ApolloLink[?]] = js.undefined
   val cache: ApolloCache[Shape]
   var ssrForceFetchDelay: js.UndefOr[Int] = js.undefined
   var ssrMode: js.UndefOr[Boolean] = js.undefined
@@ -60,7 +60,7 @@ trait ApolloClientOptions[Shape] extends js.Object {
 @JSImport("@apollo/client", "ApolloClient")
 class ApolloClient[Shape](options: ApolloClientOptions[Shape]) extends DataProxy {
 
-  val link: ApolloLink = js.native
+  val link: ApolloLink[?] = js.native
   val cache: ApolloCache[Shape] = js.native
   val disableNetworkFetches: Boolean = js.native
   val version: String = js.native
@@ -93,5 +93,5 @@ class ApolloClient[Shape](options: ApolloClientOptions[Shape]) extends DataProxy
   // def setResolvers(resolvers: Resolvers | Resolvers[]): Unit = js.native
   // def getResolvers(): Resolvers = js.native
   // def setLocalStateFragmentMatcher(fragmentMatcher: FragmentMatcher): Unit = js.native
-  def setLink(newLink: ApolloLink): Unit = js.native
+  def setLink(newLink: ApolloLink[?]): Unit = js.native
 }

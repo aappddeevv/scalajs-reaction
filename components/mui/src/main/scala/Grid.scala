@@ -23,9 +23,7 @@ package mui
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import react._
 
 object Grid {
@@ -34,7 +32,7 @@ object Grid {
   @JSImport("@material-ui/core/Grid", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   @js.native

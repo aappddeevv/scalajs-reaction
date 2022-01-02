@@ -31,7 +31,7 @@ object VirtualizedList {
   @JSImport("react-native", "VirtualizedList")
   object JS extends ReactJSComponent
 
-  def apply[T](props: Props[T] = null) =
+  def apply[T](props: Props[T]) =
     createElement0(JS, props)
 
   trait Props[T] extends ScrollView.Props {

@@ -48,22 +48,22 @@ object BootstrapNS extends js.Object {
 
 object components {
 
-  def Button(props: IButtonProps = null)(children: ReactNode*) =
+  def Button(props: IButtonProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.Button, props)(children: _*)
-  def ButtonToolbar(props: IButtonToolbarProps = null)(children: ReactNode*) =
+  def ButtonToolbar(props: IButtonToolbarProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
-  def ButtonGroup(props: IButtonGroupProps = null)(children: ReactNode*) =
+  def ButtonGroup(props: IButtonGroupProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
-  def ToggleButtonGroup(props: IToggleButtonGroupProps = null)(children: ReactNode*) =
+  def ToggleButtonGroup(props: IToggleButtonGroupProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
-  def ToggleButton(props: IToggleButtonProps = null)(children: ReactNode*) =
+  def ToggleButton(props: IToggleButtonProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
 
-  def FormControl(props: IFormControlProps = null)(children: ReactNode*) =
+  def FormControl(props: IFormControlProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.FormControl, props)(children: _*)
-  def FormLabel(props: IFormLabelProps = null)(children: ReactNode*) =
+  def FormLabel(props: IFormLabelProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.FormLabel, props)(children: _*)
-  def FormGroup(props: IFormGroupProps = null)(children: ReactNode*) =
+  def FormGroup(props: IFormGroupProps|Null = null)(children: ReactNode*) =
     createElementN(BootstrapNS.FormGroup, props)(children: _*)
 
   //def HelpBlock(props: IHelpBlockProps=null)(children: ReactNode*) =

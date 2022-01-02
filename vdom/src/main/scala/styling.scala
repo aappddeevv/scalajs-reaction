@@ -62,8 +62,8 @@ object styling {
    * `document.getElementById`. You can use the psuedo-selector name of `:root`
    * for the HTML element.
    */
-  @inline def getCSSVar(vname: String, el: dom.Element = dom.document.documentElement): String =
-    dom.window.getComputedStyle(el, null).getPropertyValue(vname)
+  @inline def getCSSVar(vname: String, el: dom.Element = dom.document.documentElement, elt: String|Null = null): String =
+    dom.window.getComputedStyle(el, null.asInstanceOf[String]).getPropertyValue(vname)
 
   /**
    * Set CSS variable on the :root element. Cache the computed style if you

@@ -23,13 +23,9 @@ package mui
 package components
 
 import scala.scalajs.js
-
 import js.annotation._
-
 import org.scalajs.dom._
-
 import react._
-
 import vdom._
 
 object Card {
@@ -38,7 +34,7 @@ object Card {
   @JSImport("@material-ui/core/Card", JSImport.Default)
   object JS extends ReactJSComponent
 
-  def apply(props: Props = null)(children: ReactNode*) =
+  def apply(props: Props)(children: ReactNode*) =
     createElementN(JS, props)(children: _*)
 
   trait Props extends js.Object {
@@ -57,7 +53,7 @@ object Card {
     @JSImport("@material-ui/core/CardMedia", JSImport.Default)
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
 
     trait Props extends js.Object {
@@ -76,7 +72,7 @@ object Card {
     @JSImport("@material-ui/core/CardHeader", JSImport.Default)
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
 
     trait Props extends js.Object {
@@ -100,7 +96,7 @@ object Card {
     @JSImport("@material-ui/core/CardContent", JSImport.Default)
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
 
     trait Props extends js.Object {
@@ -117,7 +113,7 @@ object Card {
     @JSImport("@material-ui/core/CardActions", JSImport.Default)
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
 
     trait Props extends js.Object {
@@ -134,7 +130,7 @@ object Card {
     @JSImport("@material-ui/core/CardActionArea", JSImport.Default)
     object JS extends ReactJSComponent
 
-    def apply(props: Props = null)(children: ReactNode*) =
+    def apply(props: Props)(children: ReactNode*) =
       createElementN(JS, props)(children: _*)
 
     trait Props extends js.Object {
