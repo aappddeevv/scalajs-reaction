@@ -4,14 +4,6 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 //Global / semanticdbVersion := "4.4.0"
 //sonatypeLogLevel := "trace"
 
-//bintrayPackageLabels := Seq("scala.js", "react", "fabric", "react-native", "office", "material-ui", "bootstrap"),
-// https://github.com/xerial/sbt-sonatype
-lazy val sonatypeSettings = Seq(
-  publishTo := sonatypePublishToBundle.value,
-  sonatypeCredentialHost := "s01.oss.sonatype.org",
-  sonatypeProfileName := "org.ttgoss"
-)
-
 lazy val resolverSettings = Seq(
   resolvers ++= Seq(
     Resolver.sonatypeRepo("releases"),
@@ -74,25 +66,11 @@ lazy val fpsettings = Seq(
   )
 )
 
-def std_settings(p: String, d: String) =
-  Seq(
-    name := p,
-    description := d,
-    libraryDependencies ++= Seq(
-      //"org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
-    ),
-  ) ++ resolverSettings ++ compilerSettings ++ jsSettings ++ sonatypeSettings
-
-inThisBuild(
-  List(
-    scalaVersion := "3.1.0",
-    publishMavenStyle := true,
-    organization := "org.ttgoss.js",
-    organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
-    startYear := Some(2018),
-    licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-    homepage := Some(url("https://github.com/aappddeevv/scalajs-reaction")),
-    developers := List(
+// https://github.com/xerial/sbt-sonatype
+lazy val publishSettings = Seq(
+  licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
+  homepage := Some(url("https://github.com/aappddeevv/scalajs-reaction")),
+   developers := List(
       Developer("aappddeevv", "Devon Miller", "aappddeevv@gmail.com", url("https://aappddeevv.github.io"))
     ),
     scmInfo := Some(
@@ -100,11 +78,46 @@ inThisBuild(
         url("https://github.com/aappddeevv/scalajs-reaction"),
         "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
     ),
-    scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2"
+  publishArtifact in Test := false,
+  // https://www.scala-sbt.org/1.x/docs/Publishing.html#Publishing
+  // should go to snapshots if isSnapshot.value is true
+  // nedeed to make sbt-sonatype: publishSigned work
+  publishTo := sonatypePublishToBundle.value,
+  sonatypeCredentialHost := "s01.oss.sonatype.org",
+  sonatypeProfileName := "org.ttgoss",
+  publishMavenStyle := true,
+  useGpg := true,
+  credentials ++= (for {
+    keyid <- sys.env.get("GPG_KEY")
+  } yield Credentials("GnuPG Key ID", "gpg", keyid, "ignored")).toSeq,
+  credentials ++= (for {
+    username <- sys.env.get("SONATYPE_USERNAME")
+    password <- sys.env.get("SONATYPE_PASSWORD")
+  } yield Credentials("Sonatype Nexus Repository Manager", "s1.oss.sonatype.org", username, password)).toSeq,
+  // Following 2 lines need to get around https://github.com/sbt/sbt/issues/4275, may not be
+  // publishConfiguration := publishConfiguration.value.withOverwrite(true),
+  // publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
+)
+
+def std_settings(p: String, d: String) =
+  Seq(
+    name := p,
+    description := d,
+    libraryDependencies ++= Seq(
+      //"org.scalatest" %%% "scalatest" % "3.2.0-M2" % Test
+    ),
+  ) ++ resolverSettings ++ compilerSettings ++ jsSettings ++ publishSettings
+
+inThisBuild(
+  List(
+    scalaVersion := "3.1.0",  
+    organization := "org.ttgoss.js",
+    organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
+    startYear := Some(2018),
+    scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2",
     //,scalafmtOnCompile := true,
     // should come from sbt-dynver
-    //version := "0.1.0-M7"
-    ,
+    //version := "0.1.0-M7"    
     dynverSonatypeSnapshots := true,
     dynverSeparator := "-"
     //semanticdbVersion := "4.4.0",
@@ -115,7 +128,6 @@ inThisBuild(
 lazy val root = project
   .in(file("."))
   .settings(skip in publish := true)
-  .settings(sonatypeSettings)
   .aggregate(
     //apollo,
     apollo3,
