@@ -1,7 +1,7 @@
 <p align="center"><img width="200" src="./logo.svg"/></p>
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
 
-![Maven Central](https://img.shields.io/maven-central/v/org.scala-lang/scala3-compiler_3?versionSuffix=3.1.0)
+![scalajs-reaction](https://img.shields.io/maven-central/v/org.ttgoss.js/react_sjs1_3?versionPrefix=1.0.0-RC1) ![scala](https://img.shields.io/maven-central/v/org.scala-lang/scala3-compiler_3?versionSuffix=3.1.0)
 
 scalajs reaction focuses on scala3 and easier integration into the js world.
 
