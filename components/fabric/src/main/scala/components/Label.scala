@@ -29,7 +29,7 @@ import react.*
 import vdom.*
 import fabric.styling.*
 
-object Label {
+object Label:
   @js.native
   @JSImport("office-ui-fabric-react/lib/Label", "Label")
   object JS extends ReactJSComponent
@@ -50,10 +50,11 @@ object Label {
       with ComponentRef[js.Any]
       with Disabled
       with Theme
-      with ReactJSProps {
+      with MaybeHasStrKey
+      with ReactJSProps:
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
+    //var key: js.UndefOr[react.KeyType] = js.undefined
     var required: js.UndefOr[Boolean] = js.undefined
-  }
 
   trait StyleProps extends js.Object:
     var className: js.UndefOr[String] = js.undefined
@@ -63,4 +64,4 @@ object Label {
 
   trait Styles extends IStyleSetTag:
     var root: js.UndefOr[IStyle] = js.undefined
-}
+

@@ -88,7 +88,7 @@ object dynamic:
     
     /** Uses truthiness to determine None, you may not want this. */
     def toOption[T <: js.Object]: Option[T] =
-      if (js.DynamicImplicits.truthValue(jsdyn)) Some(jsdyn.asInstanceOf[T])
+      if js.DynamicImplicits.truthValue(jsdyn) then Some(jsdyn.asInstanceOf[T])
       else None
 
     // /** Null and undefined => None, otherwise Some. The safest conversion. */

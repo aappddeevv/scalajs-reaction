@@ -46,3 +46,4 @@ scalajs-reaction-docs
 /*.yml
 .vscode
 .ipy*
+metals.sbt

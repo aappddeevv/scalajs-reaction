@@ -44,10 +44,14 @@ package object react extends react.React with When {
 
   /** Empty array which is different than undefinedDependencies. Typically
    * indicates mount/unmount hook processing. `=== []`
+   * 
+   * Use `useEffectMounting` instead.
    */
   val emptyDependencies: Dependencies = js.Array()
 
-  /** Undefined array typically indicates per render. Typically *not* what you want. */
+  /** Undefined array typically indicates per render. Typically *not* what you want. 
+   * Use `useEffectEveryRender` instead.
+  */
   val undefinedDependencies: js.UndefOr[Dependencies] = js.undefined
 
   /** Create a dependencies array. With no args, its a zero-length array.
@@ -58,7 +62,7 @@ package object react extends react.React with When {
   def deps(values: AllType*): Dependencies = values.toJSArray
 
   /** Escape hatch. Create a dependencies array from *any* list of scala
-   * objects. Make sure you think about each value type in the list of
+   * values. Make sure you think about each value type in the list of
    * dependencies. Use this inference helper to remind you to think about the
    * types and scala-js interop.
    */
@@ -66,7 +70,7 @@ package object react extends react.React with When {
     values.toJSArray.asInstanceOf[Dependencies]
 
   /** Noop for `useEffect`-like callbacks. */
-  val noCleanUp = () => ()
+  val noCleanUp: js.Function0[Unit] = () => ()
 
   /**
    * Non-mutable ref. Object returned from `createRef()` and some variants of `useRef` hook. 
@@ -159,11 +163,9 @@ package object react extends react.React with When {
   /** Very un-ergonomic, but this is what FB has. */
   type KeyType = String | Int
 
-  /** Use these to mix into your traits to ensure you have a a key and ref to
-   * set. For example, add this to a Props class so that you can specify a key
-   * when you create it.  These are not special or used for tags, you can not
-   * use this trait and just define the key and/or ref in your Props trait
-   * directly.
+  /** Use these to mix into your prop traits to ensure you have a a key and ref to
+   * set. For example, add this as a supertrait to a Props class so that you can specify a key
+   * when you create it.
    */
   @deprecated("Use ReactJSProps", "0.1.0")
   trait ReactPropsJs extends js.Object {
@@ -171,8 +173,9 @@ package object react extends react.React with When {
     def ref[E]: js.UndefOr[RefCb[E]] = js.undefined
   }
 
-  /** Use this instead of ReactPropsJs. But! you should probably should be
-   *  using `MaybeHasStrKey`
+  /** You should probably should be using `MaybeHasStrKey` but generally
+   * use this supertrait to allow callers to specify key and ref values
+   * and have them typed.
    */
   trait ReactJSProps extends js.Object {
     var key: js.UndefOr[KeyType] = js.undefined
@@ -184,7 +187,9 @@ package object react extends react.React with When {
     var key: js.UndefOr[String] = js.undefined
   }
 
-  /** Known to contain a key. */
+  /** Known to contain a key. You can force callers to incuded a key
+   * using this supertrait so it has very limited use.
+  */
   trait HasKey extends js.Object {
     val key: KeyType
   }
@@ -205,9 +210,9 @@ package object react extends react.React with When {
   // }
 
   /**
-   * A standard HTML element that has been created using createElement.
-   * Props are optional of course.  We use this tag it to show that it came
-   * from the standard DOM components vs a custom one.
+   * A standard HTML element that has been created using `createElement`.
+   * Props are optional of course.  We use this tag it to show that it is
+   * associated from the standard DOM tagset.
    */
   @js.native
   trait ReactDOMElement extends ReactElement {
@@ -280,17 +285,20 @@ package object react extends react.React with When {
 
   /**
    * This type is used only as a target for imported javascript authored components to
-   * "tag" a component type or created via other js-interop mechanisms such as
-   * redux integration. By using a separate type, you must use then
-   * scalajs-react's API to create an element. You can use this to annotate a
-   * js function react component as well e.g. () => ReactNode.
+   * "tag" a component declare in scala-js land. By using a separate type, you must use the
+   * this library's API to create an element. Use can this to annotate a
+   * js function react component as well e.g. () => ReactNode if the specifi nature
+   * of the component is not important.
+   * 
+   * Typical use is `@JSImport("some-lib", "BlahView") @js.native val BlahView: ReactJSComponent`
+   * where `BlahView` is a JS react component in js library `some-lib`.
    */
   @js.native
   trait ReactJSComponent extends js.Object
 
-  /** Import type target from js land that are functions and imported as such. May or may
-   * not make a difference to have this typed separately. You could also import
-   * it as a jsFunctionN object.
+  /** Import type target from js land that are functions and it is important to import 
+   * them as such. May or may not make a difference to have this typed separately.
+   * You could also import it as a jsFunctionN object.
    */
   @js.native
   trait ReactJSFunctionComponent extends js.Object
@@ -421,7 +429,7 @@ package object react extends react.React with When {
   //   if (js.isUndefined(t) || t == null) None
   //   else Option(t.asInstanceOf[T])
 
-  /** Shorted version of `js.defined(blah)` */
+  /** Short version of `js.defined(blah)` */
   @inline def jsdef[A](a: A) = js.defined(a)
 
   /** Short version of `js.undefined`. */
@@ -491,7 +499,10 @@ package object react extends react.React with When {
   /** A component that takes a ref as the second argument. */
   type RectFCWithRef[P <: js.Object, T <: js.Any] = js.Function2[P, ReactRef[T], ReactNode]
 
-  /** A type used to drive type inference when declaring your component. */
+  /** A type used to drive type inference when declaring your component. 
+   * 
+   * Use this pattern, `val render: ReactFC0 = () => { ... }`. 
+   */
   type ReactFC0 = js.Function0[ReactNode]
 
   /** Type inference hepler. */
@@ -518,6 +529,9 @@ package object react extends react.React with When {
   /** Type inference helper. */
   val nullDate = null.asInstanceOf[js.Date]
 
-  /** Empty array. Freshly allocated! */
+  /** Empty array. Freshly allocated!
+   * 
+   * @todo Add `()` to communicate it is side effecting.
+   */
   def emptyArray[T] = js.Array[T]()
 }

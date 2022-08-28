@@ -30,6 +30,11 @@ object any:
   import scala.scalajs.js
   import scala.language.unsafeNulls
   
+  /** Totally unsafe. */
+  extension (a: scala.Any)
+    /** Totally unsafe, use at your own risk! */
+    def unsafeAsJsAny = a.asInstanceOf[js.Any]
+
   /** All of these are unsafe. */
   extension [T <: js.Any](a: T)
     /** Convert T => T|Null. */
@@ -100,13 +105,13 @@ object any:
     /** If value is null or undefined be undefined, otherwise defined. Could be called "filterNull". */
     def toNonNullUndefOr: js.UndefOr[T] =
       // we keep this so that it works when needed
-      if (a == null || js.isUndefined(a)) js.undefined
+      if a == null || js.isUndefined(a) then js.undefined
       else js.defined(a)
 
     /** If value is null or undefined be None, else Some. */
     def toNonNullOption: Option[T] =
       // also defined in react package, repeated here
-      if (js.isUndefined(a) || a == null) None
+      if js.isUndefined(a) || a == null then None
       else Option(a)
 
     /** Equivalent `!!x` for some javascript value x. */
@@ -128,7 +133,7 @@ object any:
      * }}}
      */
     def toTruthyUndefOr: js.UndefOr[T] =
-      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) js.defined(a)
+      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then js.defined(a)
       else js.undefined
   end extension
 

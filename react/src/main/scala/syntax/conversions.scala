@@ -76,7 +76,7 @@ given anyValToElement: Conversion[AnyVal, ReactNode] = _.asInstanceOf[ReactNode]
 given undefOrAnyValToElement: Conversion[js.UndefOr[AnyVal], ReactNode] = _.map(_.asInstanceOf[ReactNode]).getOrElse(nullNode)
 
 given nullOrAnyValToElement: Conversion[AnyVal | Null, ReactNode] = 
-  v => if (v == null) nullNode else v.asInstanceOf[ReactNode]
+  v => if v == null then nullNode else v.asInstanceOf[ReactNode]
 
 given null2Node: Conversion[Null, ReactNode] = _.asInstanceOf[ReactNode]  
 

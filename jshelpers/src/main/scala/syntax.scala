@@ -30,3 +30,4 @@ export jshelpers.syntax.jsnull.*
 export jshelpers.syntax.misc.*   
 export jshelpers.syntax.dynamic.*
 export jshelpers.syntax.jsobject.*
+export jshelpers.syntax.promise.*

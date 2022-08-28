@@ -21,12 +21,12 @@
 
 package jshelpers
 
-trait AllInstances extends JSPromiseInstances
+trait AllInstances extends syntax.JSPromiseInstances
 //with ToLocaleStringInstances
 
 /** Instances with everything but all so it can be subclassed elsewhere. */
 trait InstancesTrait:
-  object jspromise extends JSPromiseInstances
+  object jspromise extends syntax.JSPromiseInstances
   //object anyval extends ToLocaleStringInstances
 
 /** Instances is the wrong concept here as these are not typeclass

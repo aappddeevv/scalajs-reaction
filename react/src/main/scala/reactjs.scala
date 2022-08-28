@@ -22,7 +22,7 @@
 package react
 
 import scala.scalajs.js
-import js.annotation._
+import js.annotation.*
 
 @js.native
 trait Children extends js.Object:
@@ -40,7 +40,7 @@ trait TransitionConfig extends js.Object:
 trait DeferredValueConfig extends js.Object:
   var timeoutMs: js.UndefOr[Int] = js.undefined
 
-/** Concurrent features targeted at v18, I recall. */
+/** Concurrent features targeted at v18+. */
 @js.native
 trait Concurrent extends js.Object:
   def useTransition(config: TransitionConfig): js.Tuple2[js.Function1[js.Function0[Unit], Unit], Boolean] = js.native
@@ -54,13 +54,14 @@ trait Concurrent extends js.Object:
     source: MutableSource[S],
     getSnapshot: js.Function1[S, A],
     subscribe: js.Function2[S, js.Function0[Unit], js.Function0[Unit]]): A = js.native
+end Concurrent
 
 /** Opaque type. */
 @js.native
 trait MutableSource[T] extends js.Object
 
 @js.native
-trait ReactJS extends js.Object with Concurrent:
+trait ReactJS extends js.Object:
 
   val Children: Children = js.native
 
@@ -125,7 +126,9 @@ object DynamicImport:
   def apply(f: js.Function1[_ <: js.Object, ReactNode]) = new DynamicImport { val `default` = f }
 
 /** Magnet pattern to create a friendly arg converter for effect hooks. As much
- * as possible these need to be casts vs allocations.
+ * as possible these need to be casts vs allocations and ideally these need to be
+ * stable values so that react change detection does not rerun the hook. It
+ * is better to declare the effect functions as `val`s of js functions.
  */
 @js.native
 trait EffectArg extends js.Object
@@ -139,31 +142,28 @@ object EffectArg:
 
   /** Convert a scala EffectCallbackArg to js using a proxy approach.
    * Use a general return of A vs unit to be more friendly. Requires
-   * 2 scala => js function conversions. Ugh!
+   * 2 scala => js function conversions. Ugh! Discards callback value.
    */
-  @inline def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () =>
+  inline private def convertEffectCallbackArg[A](arg: () => (() => A)): js.Any = { () =>
     val rthunk = arg()
     js.Any.fromFunction0 { () => rthunk(); () }
   }: js.Function0[js.Function0[Unit]]
 
-  /** No final callback.
-   *
-   *  @todo Not sure inner definition is needed.
-   */
-  @inline implicit def fromThunkJS[U](f: js.Function0[U]): EffectArg =
-    js.Any.fromFunction0[Unit] { () => f(); () }.asInstanceOf[EffectArg]
+  /** Return value from callback is discarded. */
+  given fromThunkJS: Conversion[js.Function0[?], EffectArg] =
+    f => js.Any.fromFunction0[Unit] { () => f(); () }.asInstanceOf[EffectArg]
 
-  /** No final callback. */
-  @inline implicit def fromThunk[U](f: () => U): EffectArg =
-    js.Any.fromFunction0[Unit] { () => f(); () }.asInstanceOf[EffectArg]
+  /** Return value from callback is discarded. */
+  given fromThunk: Conversion[() => ?, EffectArg] =
+    f => js.Any.fromFunction0[Unit] { () => f(); () }.asInstanceOf[EffectArg]    
 
-  /** Return value from the callback is discarded. */
-  @inline implicit def fromThunkCbA[A](f: () => (() => A)): EffectArg =
-    convertEffectCallbackArg(f).asInstanceOf[EffectArg]
+  /** Return value from callback is a react callback whose value is discarded. */
+  given fromThunkCbA: Conversion[() => (() => ?), EffectArg] =
+    convertEffectCallbackArg(_).asInstanceOf[EffectArg]
 
-  /** Return value form the callback is discarded. */
-  @inline implicit def fromThunkCbJS[A](f: () => js.Function0[A]): EffectArg =
-    ((() => { val rthunk = f(); js.Any.fromFunction0 { () => rthunk(); () } }): js.Function0[js.Function0[Unit]])
+  /** Return value from callback is a react callback whose value is discarded. */
+  given fromThunkCbJS: Conversion[() => js.Function0[?], EffectArg] =
+    f => ((() => { val rthunk = f(); js.Any.fromFunction0 { () => rthunk(); () } }): js.Function0[js.Function0[Unit]])
       .asInstanceOf[EffectArg]
 
 @js.native
@@ -218,7 +218,7 @@ trait Hooks extends js.Object:
  */
 @js.native
 @JSImport("react", JSImport.Namespace)
-private[react] object ReactJS extends ReactJS with Hooks
+private[react] object ReactJS extends ReactJS with Hooks with Concurrent
 
 /** The module "object" that you import when you use react. */
 @js.native

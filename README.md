@@ -1,21 +1,23 @@
 <p align="center"><img width="200" src="./logo.svg"/></p>
 <p align="center"><i>Use react hooks and scala.js to catch the best user experience.</i></p>
 
-![scalajs-reaction](https://img.shields.io/maven-central/v/org.ttgoss.js/react_sjs1_3?versionPrefix=1.0.0-RC1) ![scala](https://img.shields.io/maven-central/v/org.scala-lang/scala3-compiler_3?versionSuffix=3.1.0)
+scalajs-reaction: ![scalajs-reaction](https://img.shields.io/maven-central/v/org.ttgoss.js/react_sjs1_3?versionPrefix=1.0.0-RC1), scala: ![scala](https://img.shields.io/maven-central/v/org.scala-lang/scala3-compiler_3?versionSuffix=3.1.0)
 
-scalajs reaction focuses on scala3 and easier integration into the js world.
+scalajs reaction focuses on scala3 and interop with the react js world.
 
 Use react version 18+ and/or the experimental to ensure that all hooks defined in this library are included in the underlying js source. Use the latest react-native.
 
 Get started with the [docs](http://aappddeevv.github.io/scalajs-reaction)
 
-Tiny example to declare a react component:
+Here's how easy it is to declare a function component.
 
 ```scala
 val HelloWorld: ReactFC0 = () => div("hello world")
 ```
 
 # What is scalajs-reaction?
+
+An interop library with reactjs and the react ecosystem.
 
 This library is small and focuses on simple js function components and hooks. Hooks are described on the
 [react](https://reactjs.org/docs/hooks-reference.html) page.
@@ -35,14 +37,14 @@ scalajs-reaction emphasizes:
 
 `scalajs-reaction` allows you to build your entire interface in scalajs-reaction. As long as your front-end solution
 can manage the model of
-scala.js's output, you should consider scalajs-reaction for your solution. By providing a thin veneer over standard scala functions and hooks, it eschews abstractions and avoids getting in your way.
+compiler scala.js's output, you should consider scalajs-reaction for your solution. By providing a thin veneer over standard scala functions and hooks, it eschews abstractions and avoids getting in your way.
 
 - [Demo (WIP)](http://aappddeevv.github.io/scalajs-reaction/demo/index.html).
 - [Live Coding](https://www.youtube.com/watch?v=7on-oT2Naco): Uses the old API but still helpful.
 
-The react-native use-case for scala.js may actually be more
+The react-native use-case for scala.js may be more
 compelling than for web applications.
-Support is provided for the experimental, concurrent API.
+Support is provided for the experimental, reactjs concurrent API.
 
 A g8 template is available. Use `sbt new aappddeevv/scalajs-reaction-app.g8` (in transition to scala3) to create a new project.
 
@@ -166,7 +168,7 @@ react function components are not pure functions and can never be pure functions
 like a "context" that is established for some part of the DOM that also returns HTML builder
 instructions each time it is called. If you come
 from the java Spring world, think of it as a bean factory that knows how to emit render instructions.
-It is better to think of react components not as a function but as an object.
+It is better to think of react function components as an object and not as a function.
 
 # Usage
 
@@ -292,8 +294,8 @@ complicated. You are likely only to use one set of react libraries
 per application so you should not encounter any package namespace
 collisions.
 
-In many cases, the full package label has been dramatically shortened
-to make it easier to import the content you need. The package names
+In many cases, the full package label has been shortened
+to make it easier to import the content. The package names
 closely mirror the javascript libraries themselves.
 
 You will most likely also need DOM bindings. Here's a link to the api

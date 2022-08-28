@@ -43,7 +43,7 @@ def renderToElementWithId(
   )(htmlel => Right(ReactDOMJS.render(el, htmlel, cb.orUndefined.map(js.Any.fromFunction0(_)))))
 }
 
-/* Render into an elemen given by its id. Prefer this over `renderToElementWithId`. */
+/* Render into an element given by its id. Prefer this over `renderToElementWithId`. */
 def renderToElement(id: String, cb: Option[() => Unit] = None): Either[String, ReactNode => Unit] =
   Option(dom.document.getElementById(id))
     .fold[Either[String, ReactNode => Unit]](

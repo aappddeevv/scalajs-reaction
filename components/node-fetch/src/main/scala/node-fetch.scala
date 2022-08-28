@@ -1,10 +1,8 @@
 package node_fetch
 
 import scala.scalajs.js
-import js.|
-import scala.scalajs.js.annotation._
+import scala.scalajs.js.annotation.*
 import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
-
 
 @js.native
 @JSImport("node-fetch", "fetch")

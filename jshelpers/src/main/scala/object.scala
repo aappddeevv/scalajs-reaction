@@ -29,7 +29,8 @@ object jsobject:
   /** The "combine" methods are shallow, mutable merges, this may not be what you want. */
   extension [A <: js.Object](o: A)
     // def asDict[B]: js.Dictionary[B] = o.asInstanceOf[js.Dictionary[B]]
-    // def asAnyDict: js.Dictionary[js.Any] = o.asInstanceOf[js.Dictionary[js.Any]]
+    /** Any js.Object is also a dictionary. */
+    def asAnyDict: js.Dictionary[js.Any] = o.asInstanceOf[js.Dictionary[js.Any]]
     // def asDyn: js.Dynamic = o.asInstanceOf[js.Dynamic]
     // def asJSDyn: js.Dynamic = o.asInstanceOf[js.Dynamic]
     // def asUndefOr: js.UndefOr[A] = js.defined(o)

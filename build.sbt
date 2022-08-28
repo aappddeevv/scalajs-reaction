@@ -6,7 +6,7 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 
 lazy val resolverSettings = Seq(
   resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
+    //Resolver.sonatypeRepo("releases"),
     //Resolver.jcenterRepo
   )
 )
@@ -23,8 +23,11 @@ val commonScalacOptions = Seq(
   //"-Ywarn-value-discard",
   //"-Ywarn-unused:imports,locals",
   //,"-Ywarn-dead-code"
-  "source",
-  "future",
+  "-indent",
+  "-source",
+  "3.1",
+  "-new-syntax",
+  "-explain",
   "-Ysafe-init",
   "-Yexplicit-nulls",
   //"-language:unsafeNulls",
@@ -36,7 +39,7 @@ lazy val jsSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-   ("org.scala-js" %%% "scalajs-dom" % "2.0.0"),
+   ("org.scala-js" %%% "scalajs-dom" % "2.2.0"),
   ),
   // testing
 libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.10" % "test",
@@ -51,9 +54,9 @@ def buildinfo_settings(pkg: String) =
   )
 
 lazy val compilerSettings = Seq(
-  scalacOptions in (Compile, doc) ++= Seq("-groups"),
+  // not sure what this does anymore so removed it
+  //(doc / Compile / scalacOptions) ++= Seq("-groups"),
   scalacOptions ++= commonScalacOptions,
-  //addCompilerPlugin(scalafixSemanticdb),
   autoAPIMappings := true,
   autoCompilerPlugins := true
 )
@@ -78,7 +81,7 @@ lazy val publishSettings = Seq(
         url("https://github.com/aappddeevv/scalajs-reaction"),
         "scm:git:git@github.com:aappddeevv/scalajs-reaction.git")
     ),
-  publishArtifact in Test := false,
+  Test / publishArtifact := false,
   // https://www.scala-sbt.org/1.x/docs/Publishing.html#Publishing
   // should go to snapshots if isSnapshot.value is true
   // nedeed to make sbt-sonatype: publishSigned work
@@ -86,7 +89,7 @@ lazy val publishSettings = Seq(
   sonatypeCredentialHost := "s01.oss.sonatype.org",
   sonatypeProfileName := "org.ttgoss",
   publishMavenStyle := true,
-  useGpg := true,
+  //useGpg := true,
   credentials ++= (for {
     keyid <- sys.env.get("GPG_KEY")
   } yield Credentials("GnuPG Key ID", "gpg", keyid, "ignored")).toSeq,
@@ -110,11 +113,11 @@ def std_settings(p: String, d: String) =
 
 inThisBuild(
   List(
-    scalaVersion := "3.1.0",  
+    scalaVersion := "3.1.3",  
     organization := "org.ttgoss.js",
     organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
     startYear := Some(2018),
-    scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2",
+    //scalafixDependencies += "com.nequissimus" %% "sort-imports" % "0.3.2",
     //,scalafmtOnCompile := true,
     // should come from sbt-dynver
     //version := "0.1.0-M7"    
@@ -127,7 +130,7 @@ inThisBuild(
 
 lazy val root = project
   .in(file("."))
-  .settings(skip in publish := true)
+  .settings(publish / skip := true)
   .aggregate(
     //apollo,
     apollo3,
@@ -555,7 +558,7 @@ lazy val examples = project
   .settings(fpsettings)
   .settings(std_settings("examples", "Example web application"))
   .settings(
-    skip in publish := true,
+    publish / skip := true,
     // Watch non-scala assets.
     watchSources += baseDirectory.value / "examples/src/main/assets",
     libraryDependencies ++= Seq(
@@ -576,21 +579,22 @@ lazy val examples = project
   )
   .enablePlugins(ScalaJSPlugin, BuildInfoPlugin)
   .settings(buildinfo_settings("ttg.examples"))
-  .settings(artifactPath.in(Compile, fastOptJS) := crossTarget.in(Compile, fastOptJS).value / "Scala.js")
-  .settings(artifactPath.in(Compile, fullOptJS) := crossTarget.in(Compile, fullOptJS).value / "Scala.js")
+  .settings(Compile / fastOptJS / artifactPath := (Compile / fastOptJS / crossTarget).value / "Scala.js")
+  //.settings(Compile / fullOptJS / artifactPath := crossTarget.in(Compile, fullOptJS).value / "Scala.js")
+  .settings(Compile / fullOptJS / artifactPath := (Compile / fullOptJS / crossTarget).value / "Scala.js")
 
 lazy val docs = project
   .in(file("scalajs-reaction-docs"))
   .settings(std_settings("scalajs-reaction-docs", "docs fake project"))
   .settings(
-    skip.in(publish) := true
+    publish / skip := true
     //,mdocVariables := Map("VERSION" -> version.value)
     //scalacOptions -= -"Yno-imports",
     //scalacOptions -= "-Ydata-warnings",
     ,
-    unidocProjectFilter in (ScalaUnidoc, unidoc) := inAnyProject -- inProjects(examples),// -- inProjects(apollo),
-    target in (ScalaUnidoc, unidoc) := (baseDirectory in LocalRootProject).value / "website" / "scalajs-reaction" / "static" / "api",
-    cleanFiles += (target in (ScalaUnidoc, unidoc)).value
+    ScalaUnidoc / unidoc / unidocProjectFilter := inAnyProject -- inProjects(examples),// -- inProjects(apollo),
+    ScalaUnidoc / unidoc / target := (LocalRootProject / baseDirectory).value / "website" / "scalajs-reaction" / "static" / "api",
+    cleanFiles += (ScalaUnidoc / unidoc / target).value
   )
   .enablePlugins(ScalaJSPlugin, ScalaUnidocPlugin)
   // keep this list in sync with root, or filter the dependencies directly from root...
@@ -653,19 +657,19 @@ addCommandAlias("check", "all scalafmtSbtCheck scalafmtCheck")
 
 val npmBuild = taskKey[Unit]("fullOptJS then webpack")
 npmBuild := {
-  (fullOptJS in (examples, Compile)).value
+  (examples / Compile / fullOptJS).value
   "npm run examples" !
 }
 
 val npmBuildFast = taskKey[Unit]("fastOptJS then webpack")
 npmBuildFast := {
-  (fastOptJS in (examples, Compile)).value
+  (examples / Compile / fastOptJS).value
   "npm run examples:dev" !
 }
 
 val npmRunDemo = taskKey[Unit]("fastOptJS then run webpack server")
 npmRunDemo := {
-  (fastOptJS in (examples, Compile)).value
+  (examples / Compile / fastOptJS).value
   "npm run examples:dev:start" !
 }
 

@@ -20,8 +20,8 @@
  */
 
 package jshelpers
+package syntax
 
-import scala.reflect.ClassTag
 import scala.scalajs.js
 import scala.annotation.targetName
 
@@ -52,7 +52,7 @@ object promise:
     def map[B](f: A => B): js.Promise[B] = jsThen[B](f)
 
     /** Cast to S otherwise throw a ClassCastException. */
-    def mapTo[S](implicit tag: ClassTag[S]): js.Promise[S] =
+    def mapTo[S](implicit tag: scala.reflect.ClassTag[S]): js.Promise[S] =
       self.`then`[S]((a: A) => tag.runtimeClass.cast(a).asInstanceOf[RVAL[S]], js.undefined).asInstanceOf[js.Promise[S]]
 
     /** flatMap */
@@ -128,7 +128,7 @@ object promise:
     /** Not sure this is semantically right... */
     def collect[S](pf: PartialFunction[A, S]): js.Promise[S] = {
       val onf: RESOLVE[A, S] = (a: A) => {
-        if (pf.isDefinedAt(a)) js.Promise.resolve[S](pf.apply(a))
+        if pf.isDefinedAt(a) then js.Promise.resolve[S](pf.apply(a))
         else js.Promise.reject(new NoSuchElementException())
       }
       self.`then`[S](onf, js.undefined).asInstanceOf[js.Promise[S]]
@@ -138,7 +138,7 @@ object promise:
      * return failure from this.
      */
     def fallbackTo[U >: A](that: js.Promise[U]): js.Promise[U] =
-      if (self == that) self.asInstanceOf[js.Promise[U]]
+      if self == that then self.asInstanceOf[js.Promise[U]]
       else {
         val onf: RESOLVE[A, U] = (a: A) => a
         val onr: REJECTED[U] = (erra: scala.Any) => {
@@ -194,7 +194,7 @@ object promise:
     def filter(p: A => Boolean): js.Promise[A] = {
       val onf = js.Any.fromFunction1 { (a: A) =>
         val result = p(a)
-        if (result) JSPromiseCreators[A](a)
+        if result then JSPromiseCreators[A](a)
         else JSPromiseCreators.fail(new NoSuchElementException())
       }.asInstanceOf[RESOLVE[A, A]]
       self.`then`[A](onf, js.undefined).asInstanceOf[js.Promise[A]]
@@ -210,7 +210,7 @@ object promise:
     def recover[U >: A](pf: PartialFunction[scala.Any, U]): js.Promise[U] = {
       val onf = ().asInstanceOf[RESOLVE[A, U]]
       val onr = js.Any
-        .fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
+        .fromFunction1((any: Any) => if pf.isDefinedAt(any) then pf.apply(any) else js.Promise.reject(any))
         .asInstanceOf[REJECTED[U]]
       self.`then`[U](onf, onr).asInstanceOf[js.Promise[U]]
     }
@@ -219,7 +219,11 @@ object promise:
     def recoverWith[U >: A](pf: PartialFunction[scala.Any, js.Thenable[U]]): js.Promise[U] = {
       val onf = ().asInstanceOf[RESOLVE[A, U]]
       val onr = js.Any
-        .fromFunction1((any: Any) => if (pf.isDefinedAt(any)) pf.apply(any) else js.Promise.reject(any))
+        .fromFunction1((any: Any) => 
+            if pf.isDefinedAt(any) then 
+              pf.apply(any) 
+            else 
+              js.Promise.reject(any))
         .asInstanceOf[REJECTED[U]]
       self.`then`[U](onf, onr).asInstanceOf[js.Promise[U]]
     }

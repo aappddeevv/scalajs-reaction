@@ -42,7 +42,7 @@ object undefor:
     /** This could also be `_.toOption.filter(_ != null)` but below is slightly faster. */
     @targetName("toNonNullOptionA")
     def toNonNullOption =
-      if (_a.isEmpty || _a == null) None
+      if _a.isEmpty || _a == null then None
       else _a.toOption
 
     /** Calls toString. I'm not sure this is needed at all. */
@@ -56,7 +56,7 @@ object undefor:
     def as[B]: js.UndefOr[B] = _a.asInstanceOf[js.UndefOr[B]] // _a.map(_.asInstanceOf[B])
 
     /** Convert UndefOr[A] => A|Null. Much like stdlib `orNull` but keeps type signature. */
-    def toNull: A | Null = if (_a.isDefined) _a.asInstanceOf[A | Null] else null
+    def toNull: A | Null = if _a.isDefined then _a.asInstanceOf[A | Null] else null
 
     /** Same as `.getOrElse` just shorter. */
     @targetName("getOrElseUndefOrNull2")
@@ -93,7 +93,7 @@ object undefor:
     /** Keep type signature, but filter out non-truthy values to `js.undefined`. */
     @targetName("filterTruthyUndefOrNull")
     def filterTruthy: js.UndefOr[T|Null] =
-      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then a
       else js.undefined
   end extension
 
@@ -106,7 +106,7 @@ object undefor:
 
     /** Determine if is defined including the value not being null. */
     @targetName("isDefinedUndefOrNull")
-    def isDefined: Boolean = if (!js.isUndefined(a) && a != null) true else false
+    def isDefined: Boolean = if !js.isUndefined(a) && a != null then true else false
 
     /** Convenience. */
     @targetName("isEmptyUndefOrNull")
@@ -117,7 +117,7 @@ object undefor:
     /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
     @targetName("undefAbsorbUndefOrNull")
     def absorbNull: js.UndefOr[T] = 
-      if (a == null) js.undefined
+      if a == null then js.undefined
       else a.asInstanceOf[js.UndefOr[T]]
 
     /** Collapse everything at once. */
@@ -130,7 +130,7 @@ object undefor:
 
     /** Absorb the `js.UndefOr` leaving `T|Null`. */
     def absorbUndef: T | Null =
-      if (a.isEmpty) null.asInstanceOf[T | Null] else a.asInstanceOf[T | Null]
+      if a.isEmpty then null.asInstanceOf[T | Null] else a.asInstanceOf[T | Null]
 
     /** `flatten` but leave the UndefOr. Same as `absorbUndef`. */
     def flattenUndefOr: T | Null = absorbUndef
@@ -138,13 +138,13 @@ object undefor:
     /** Natural transformation. */
     @targetName("swapUndefOrNull")
     def swap: js.UndefOr[T] | Null =
-      if (a.isDefined && a != null) a.asInstanceOf[js.UndefOr[T] | Null]
+      if a.isDefined && a != null then a.asInstanceOf[js.UndefOr[T] | Null]
       else ().asInstanceOf[js.UndefOr[T] | Null]
 
     /** Undestands UndefOr and Null to do the orElse. */
     @targetName("getOrElseUndefOrNull")
     def getOrElse[B >: T](default: => T): T =
-      if (a.isEmpty || a == null) default else a.asInstanceOf[T]
+      if a.isEmpty || a == null then default else a.asInstanceOf[T]
 
     /** Alias for getOrElse. */
     @targetName("getOrElse1")
@@ -153,11 +153,11 @@ object undefor:
     /** May be undefined or null or something. Throws exception. */
     @targetName("undefGet")
     inline def undefGet: T =
-      if (a == null || a.isEmpty) throw new NoSuchElementException("get on UndefOr[T|Null]")
+      if a == null || a.isEmpty then throw new NoSuchElementException("get on UndefOr[T|Null]")
       else forceGet
 
     /** Only works with another js.UndefOr[T|Null] and takes into account null. */
-    def orDeepElse(that: js.UndefOr[T | Null]) = if (a.isDefined && a != null) a else that
+    def orDeepElse(that: js.UndefOr[T | Null]) = if a.isDefined && a != null then a else that
   end extension
 
   extension [A <: js.Object](a: js.UndefOr[A])
@@ -167,20 +167,20 @@ object undefor:
   extension [A, B](tuple: (js.UndefOr[A], js.UndefOr[B]))
     @targetName("undefMapX2")
     def mapX[T](f: (A, B) => T): js.UndefOr[T] =
-      if (tuple._1.isDefined && tuple._2.isDefined) js.defined(f(tuple._1.get, tuple._2.get))
+      if tuple._1.isDefined && tuple._2.isDefined then js.defined(f(tuple._1.get, tuple._2.get))
       else js.undefined
 
   extension [A, B, C](tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C]))
     @targetName("undefMapX3")
     def mapX[T](f: (A, B, C) => T): js.UndefOr[T] =
-      if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined)
+      if tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined then
         js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get))
       else js.undefined
 
   extension [A, B, C, D](tuple: (js.UndefOr[A], js.UndefOr[B], js.UndefOr[C], js.UndefOr[D]))
     @targetName("undefMapX4")
     def mapX[T](f: (A, B, C, D) => T): js.UndefOr[T] =
-      if (tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined && tuple._4.isDefined)
+      if tuple._1.isDefined && tuple._2.isDefined && tuple._3.isDefined && tuple._4.isDefined then
         js.defined(f(tuple._1.get, tuple._2.get, tuple._3.get, tuple._4.get))
       else js.undefined
 

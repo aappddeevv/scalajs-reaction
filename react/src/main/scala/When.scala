@@ -37,17 +37,17 @@ trait When:
 
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def when(cond: Boolean)(render: => ReactNode): ReactNode =
-    if (cond) render else nullElement
+    if cond then render else nullElement
 
   /** Render something if notcond or return a null element. Render is by name. Could also use fold. */
   def whenNot(cond: Boolean)(render: => ReactNode): ReactNode =
-    if (!cond) render else nullElement
+    if !cond then render else nullElement
 
   def when[T](cond: js.UndefOr[T])(render: => ReactNode): ReactNode =
-    if (cond.isDefined) render else nullElement
+    if cond.isDefined then render else nullElement
 
   def whenNot[T](cond: js.UndefOr[T])(render: => ReactNode): ReactNode =
-    if (cond.isEmpty) render else nullElement
+    if cond.isEmpty then render else nullElement
 
   // Had the Unwrap variants with the name when/whenNot but am trying this
   // api so you could have a wrapped Boolean but only test its wrappiness
@@ -59,17 +59,17 @@ trait When:
   //
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def whenUnwrap[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (cond.getOrElse(false)) render else nullNode
+    if cond.getOrElse(false) then render else nullNode
 
   /** Render something or return a null element. Render is by name. Could just use fold. */
   def whenUnwrap[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (cond.getOrElse(false)) render else nullNode
+    if cond.getOrElse(false) then render else nullNode
 
   /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
   def whenNotUnwrap[T <: Boolean](cond: js.UndefOr[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (!cond.getOrElse(false)) render else nullElement
+    if !cond.getOrElse(false) then render else nullElement
 
   /** Render something if not cond or return a null element. Render is by name. Could also use fold. */
   def whenNotUnwrap[T <: Boolean](cond: Option[T])(render: => ReactNode)(implicit ev: T =:= Boolean): ReactNode =
-    if (!cond.getOrElse(false)) render else nullElement
+    if !cond.getOrElse(false) then render else nullElement
 

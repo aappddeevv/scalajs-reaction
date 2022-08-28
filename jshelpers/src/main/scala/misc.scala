@@ -23,7 +23,6 @@ package jshelpers
 package syntax
 
 import scala.scalajs.js
-import js.|
 
 object misc:
   /**

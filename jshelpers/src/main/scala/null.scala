@@ -30,7 +30,7 @@ String | Unit  => Option[String]: provides a string when Some and js.undefined w
 x.fold[String | Unit](())(x => x)
  */
 
- object jsnull:
+object jsnull:
   /**
    * It is common in interop code to model a value as A or null but not undefined
    * even though null and undefined may both mean "absent value." See `|.merge`
@@ -61,14 +61,14 @@ x.fold[String | Unit](())(x => x)
     /** Like `.toNonNullOption`. */
     def toOption: Option[A] = {
       val g = forceGet
-      if (g != null) Option(g)
+      if g != null then Option(g)
       else None
     }
 
     /** If Null, then false, else true. */
     @targetName("toTruthyOrNull")
     def toTruthy: Boolean =
-      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) true
+      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then true
       else false
 
     /** Uh-oh, thought it was `A|Null` but you need to say its a
@@ -79,22 +79,22 @@ x.fold[String | Unit](())(x => x)
 
     /** null => undefined, otherwise A. */
     def toUndefOr: js.UndefOr[A] =
-      if (a == null) js.undefined
+      if a == null then js.undefined
       else js.defined(forceGet)
 
     def toTruthyUndefOr: js.UndefOr[A] =
-      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
+      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then
         js.defined(forceGet)
       else js.undefined
 
     def toTruthyOption: Option[A] =
-      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]))
+      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then
         Option(forceGet)
       else None
 
     @targetName("filterTruthOrNull")
     def filterTruthy: A | Null =
-      if (js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic])) a
+      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then a
       else null.asInstanceOf[A | Null]
 
     /** Absorb the null and change A|Null => A. Value could still be null,
@@ -116,7 +116,7 @@ x.fold[String | Unit](())(x => x)
     /** getOrElse but less typing. */
     @targetName("getOrElseOrNull2")
     def ??[B >: A](default: => B): B =
-      if (isEmpty) default else forceGet
+      if isEmpty then default else forceGet
 
     // /** getOrElse but less typing. */
     // inline def !?[B >: A](default: => B): B = getOrElse[B](default)
@@ -130,10 +130,10 @@ x.fold[String | Unit](())(x => x)
     //   if (a != null) next(forceGet) else a
 
     def orElse[B >: A](other: B | Null): B | Null =
-      if (a == null) other else a
+      if a == null then other else a
 
     def collect[B](pf: PartialFunction[A, B]): B | Null =
-      if (a != null && pf.isDefinedAt(forceGet)) pf.apply(forceGet).asInstanceOf[B | Null]
+      if a != null && pf.isDefinedAt(forceGet) then pf.apply(forceGet).asInstanceOf[B | Null]
       else null.asInstanceOf[B | Null]
 
     def contains[A1 >: A](elem: A1): Boolean = !isEmpty && forceGet == elem
@@ -142,21 +142,21 @@ x.fold[String | Unit](())(x => x)
 
     def forall(p: A => Boolean): Boolean = isEmpty || p(forceGet)
 
-    def foreach[U](f: A => U): Unit = if (a != null) f(forceGet) else ()
+    def foreach[U](f: A => U): Unit = if a != null then f(forceGet) else ()
 
     def isEmpty: Boolean = a == null
 
     def isDefined: Boolean = a != null
 
     def isNotDefined: Boolean = !isDefined
-    def knownSize: Int = if (isEmpty) 0 else 1
+    def knownSize: Int = if isEmpty then 0 else 1
 
     @targetName("nullGetOrElse")
     def getOrElse[B >: A](default: => B): B =
-      if (isEmpty) default else forceGet
+      if isEmpty then default else forceGet
 
     def orNull[A1 >: A]: A1 =
-      if (a == null) null.asInstanceOf[A1] else forceGet.asInstanceOf[A1]
+      if a == null then null.asInstanceOf[A1] else forceGet.asInstanceOf[A1]
 
     def fold[B](ifNull: => B)(f: A => B): B =
       if a == null then
@@ -164,7 +164,7 @@ x.fold[String | Unit](())(x => x)
       else f(forceGet)
 
     def flatten[B](implicit ev: A <:< |[B, Null]): B | Null =
-      if (a == null) null.asInstanceOf[B | Null] else ev(forceGet)
+      if a == null then null.asInstanceOf[B | Null] else ev(forceGet)
 
     /** Collapse A|Null => A but the value may be null! You are on your own.
      * Should be called `unsafeMerge`.
@@ -172,28 +172,28 @@ x.fold[String | Unit](())(x => x)
     def merge: A = forceGet
 
     def orElse[B >: A](alternative: => B | Null): B | Null =
-      if (isEmpty) alternative else a
+      if isEmpty then alternative else a
 
     def flatMap[B](f: A => B | Null): B | Null =
-      if (a != null) f(forceGet) else null.asInstanceOf[B | Null]
+      if a != null then f(forceGet) else null.asInstanceOf[B | Null]
 
     def map[B](f: A => B): B | Null =
-      if (a != null) f(forceGet).asInstanceOf[B | Null] else null.asInstanceOf[B | Null]
+      if a != null then f(forceGet).asInstanceOf[B | Null] else null.asInstanceOf[B | Null]
 
     def filter(p: A => Boolean): A | Null =
-      if (isEmpty || p(forceGet)) a else null.asInstanceOf[A | Null]
+      if isEmpty || p(forceGet) then a else null.asInstanceOf[A | Null]
 
     def withFilter(p: A => Boolean): OrNull.WithFilter[A] = 
       new OrNull.WithFilter[A](a, p)
 
     def zip[A1 >: A, B](that: B | Null): (A1, B) | Null =
-      if (a == null || that == null)
+      if a == null || that == null then
         null.asInstanceOf[(A1, B) | Null]
       else
         (forceGet, that.asInstanceOf[B]).asInstanceOf[(A1, B) | Null]
 
     def unzip[A1, A2](implicit asPair: A <:< (A1, A2)): (A1 | Null, A2 | Null) =
-      if (isEmpty)
+      if isEmpty then
         (null.asInstanceOf[A1 | Null], null.asInstanceOf[A2 | Null])
       else {
         val e = asPair(forceGet)
@@ -201,14 +201,14 @@ x.fold[String | Unit](())(x => x)
       }
 
     def iterator: collection.Iterator[A] =
-      if (isEmpty) collection.Iterator.empty else collection.Iterator.single(forceGet)
+      if isEmpty then collection.Iterator.empty else collection.Iterator.single(forceGet)
 
-    def toList: List[A] = if (isEmpty) List() else new ::(forceGet, Nil)
+    def toList: List[A] = if isEmpty then List() else new ::(forceGet, Nil)
 
   object OrNull:
     class WithFilter[A](self: A | Null, p: A => Boolean):
       def localFilter(p: A => Boolean): A | Null =
-        if (self == null || p(self.asInstanceOf[A])) self else null.asInstanceOf[A | Null]
+        if self == null || p(self.asInstanceOf[A]) then self else null.asInstanceOf[A | Null]
       def map[B](f: A => B): B | Null = localFilter(p).map(f)
       def flatMap[B](f: A => B | Null): B | Null = localFilter(p).flatMap(f)
       def foreach[U](f: A => U): Unit = localFilter(p).foreach(f)
@@ -239,9 +239,11 @@ x.fold[String | Unit](())(x => x)
     /** Swap `js.UndefOr[A|Null]` for `js.UndefOr[A]|Null`. */
     @targetName("nullSwap")
     def swap: js.UndefOr[A | Null] =
-      if (a == null || a == js.undefined) ().asInstanceOf[js.UndefOr[A | Null]]
+      if a == null || a == js.undefined then ().asInstanceOf[js.UndefOr[A | Null]]
       else a.asInstanceOf[js.UndefOr[A | Null]]
 
   extension (a: String | Null)
     /** Return string's "zero" which is an empty string. Could be called orBlank. */
-    def orEmpty: String = if (a == null) "" else a.asInstanceOf[String]
+    def orEmpty: String = if a == null then "" else a.asInstanceOf[String]
+    
+end jsnull

@@ -61,7 +61,7 @@ trait React:
    * @todo Seems like this is an expensive call. Can we do better?
    */
   @inline def extractChildren(item: js.UndefOr[js.Object]|Null): js.Array[ReactNode] =
-    if (item == null) js.Array() // need this since could be a "defined" null
+    if item == null then js.Array() // need this since could be a "defined" null
     else
       item.toOption
         .flatMap(_.asInstanceOf[js.Dictionary[js.Array[ReactNode]]].get("children"))
@@ -126,8 +126,9 @@ trait React:
   }
 
   /**
-   * @deprecated
+   *
    */
+  @deprecated
   def unsafeCreateElement(component: js.Dynamic => ReactNode, props: js.Dynamic) = {
     val jsc = js.Any.fromFunction1(component).asInstanceOf[ReactType]
     createElement0(jsc, props)
@@ -199,7 +200,12 @@ trait React:
   ): (S, Dispatch[A]) = ReactJS.useReducer(reducer, initialArg, init)
 
   /** Effect is always run on render, which is probably too much. */
+  @deprecated("Use useEffectEveryRender")
   def useEffectAlways(didUpdate: EffectArg) =
+    ReactJS.useEffect(didUpdate, undefinedDependencies)
+
+  /** Effect is always run on render, which is probably too much. */    
+  def useEffectEveryRender(didUpdate: EffectArg) =
     ReactJS.useEffect(didUpdate, undefinedDependencies)
 
   /** Effect is run when dependencies change. */
@@ -209,15 +215,17 @@ trait React:
   // def useEffect(didUpdate: EffectArg, dependencies: js.UndefOr[Dependencies]) =
   //   ReactJS.useEffect(didUpdate, dependencies)
 
-  /** Effect is run when dependencies change. */
+  /** Effect is run when dependencies change. Unlike the JS version, the dependencies
+   * come first.
+  */
   def useEffect(dependencies: AllType*)(didUpdate: EffectArg) =
     ReactJS.useEffect(
       didUpdate,
-      if (dependencies.length == 0) undefinedDependencies
+      if dependencies.length == 0 then undefinedDependencies
       else dependencies.toJSArray
     )
 
-  /** Effect is run at mount/unmount time with an implied `[]` per the react docs. */
+  /** Effect is run at mount/unmount time via `useEffect` with an implied `[]` per the react docs. */
   def useEffectMounting(didUpdate: EffectArg) =
     ReactJS.useEffect(didUpdate, emptyDependencies)
 
@@ -240,7 +248,7 @@ trait React:
   def useMemo[T](dependencies: AllType*)(value: js.Function0[T]): T =
     ReactJS.useMemo[T](
       value,
-      if (dependencies.length == 0) undefinedDependencies
+      if dependencies.length == 0 then undefinedDependencies
       else dependencies.toJSArray
     )
 
@@ -255,12 +263,17 @@ trait React:
   ): Unit =
     ReactJS.useDebugValue[T](value, js.Any.fromFunction1[T, String](format))
 
+  // 
+  // The useCallback functions have a few varieties. Only callbacks up to arity 5
+  // are included here so if you need higher arity, write your own.
+  //
+
   def useCallbackMounting[T](callback: js.Function0[T]): js.Function0[T] =
     ReactJS.useCallback(callback, emptyDependencies).asInstanceOf[js.Function0[T]]
   def useCallbackA[T](dependencies: Dependencies | Unit)(callback: js.Function0[T]): js.Function0[T] =
     ReactJS.useCallback(callback, dependencies).asInstanceOf[js.Function0[T]]
   def useCallback[T](dependencies: AllType*)(callback: js.Function0[T]): js.Function0[T] =
-    if (dependencies.length == 0) ReactJS.useCallback(callback).asInstanceOf[js.Function0[T]]
+    if dependencies.length == 0 then ReactJS.useCallback(callback).asInstanceOf[js.Function0[T]]
     else ReactJS.useCallback(callback, dependencies.toJSArray).asInstanceOf[js.Function0[T]]
 
   def useCallbackMounting1[A1, T](callback: js.Function1[A1, T]): js.Function1[A1, T] =
@@ -271,7 +284,7 @@ trait React:
     ReactJS
       .useCallback(
         callback,
-        if (dependencies.length == 0) undefinedDependencies
+        if dependencies.length == 0 then undefinedDependencies
         else dependencies.toJSArray)
       .asInstanceOf[js.Function1[A1, T]]
 
@@ -283,7 +296,7 @@ trait React:
     ReactJS
       .useCallback(
         callback,
-        if (dependencies.length == 0) undefinedDependencies
+        if dependencies.length == 0 then undefinedDependencies
         else dependencies.toJSArray)
       .asInstanceOf[js.Function2[A1, A2, T]]
   def useCallback2A[A1, A2, T](dependencies: Dependencies)(callback: js.Function2[A1, A2, T]): js.Function2[A1, A2, T] =
@@ -305,7 +318,7 @@ trait React:
     ReactJS
       .useCallback(
         js.Any.fromFunction3[A1, A2, A3, T](callback),
-        if (dependencies.length == 0) undefinedDependencies
+        if dependencies.length == 0 then undefinedDependencies
         else dependencies.toJSArray
       )
       .asInstanceOf[js.Function3[A1, A2, A3, T]]
@@ -333,7 +346,7 @@ trait React:
     ReactJS
       .useCallback(
         js.Any.fromFunction4[A1, A2, A3, A4, T](callback),
-        if (dependencies.length == 0) undefinedDependencies
+        if dependencies.length == 0 then undefinedDependencies
         else dependencies.toJSArray
       )
       .asInstanceOf[js.Function4[A1, A2, A3, A4, T]]
@@ -362,7 +375,7 @@ trait React:
     ReactJS
       .useCallback(
         js.Any.fromFunction5[A1, A2, A3, A4, A5, T](callback),
-        if (dependencies.length == 0) undefinedDependencies
+        if dependencies.length == 0 then undefinedDependencies
         else dependencies.toJSArray
       )
       .asInstanceOf[js.Function5[A1, A2, A3, A4, A5, T]]
