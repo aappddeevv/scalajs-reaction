@@ -82,7 +82,8 @@ object undefor:
   // end extension
 
 
-  extension [T <: js.Any](a: js.UndefOr[T | Null])
+  /** Comman case of managing Null and truthy values. */
+  extension [T <: js.Any | String](a: js.UndefOr[T | Null])
     // /** T|Null may still have T not being truthy, so absorb null and non-truthiness => js.undefined. */
     // def absorbNullKeepTruthy: js.UndefOr[T] = a.flatMap { value =>
     //   if (value == null) js.undefined
@@ -90,16 +91,18 @@ object undefor:
     //   else a.asInstanceOf[js.UndefOr[T]].filterTruthy
     // }
 
-    /** Keep type signature, but filter out non-truthy values to `js.undefined`. */
+    /** Drop the `Null` and filter  non-truthy values to `js.undefined`. */
     @targetName("filterTruthyUndefOrNull")
-    def filterTruthy: js.UndefOr[T|Null] =
-      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then a
+    def filterTruthy: js.UndefOr[T] =
+      if a == null || js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then a.asInstanceOf[js.UndefOr[T]]
       else js.undefined
   end extension
 
   /** Handle js.UndefOr[T|Null] directly versus needing to flatmap into it. Don't forget that
    * scala.js has `anUndefOr.orNull` to extract the value or return null which is *not*
    * what the methods below do. Note that the input is really `T|Null|Unit`.
+   * 
+   * Note that `T` is not constrained to be a string or js value.
    */
   extension [T](a: js.UndefOr[T | Null])
     inline private def forceGet: T = a.asInstanceOf[T]
@@ -138,13 +141,13 @@ object undefor:
     /** Natural transformation. */
     @targetName("swapUndefOrNull")
     def swap: js.UndefOr[T] | Null =
-      if a.isDefined && a != null then a.asInstanceOf[js.UndefOr[T] | Null]
+      if a != null && a.isDefined then a.asInstanceOf[js.UndefOr[T] | Null]
       else ().asInstanceOf[js.UndefOr[T] | Null]
 
     /** Undestands UndefOr and Null to do the orElse. */
     @targetName("getOrElseUndefOrNull")
     def getOrElse[B >: T](default: => T): T =
-      if a.isEmpty || a == null then default else a.asInstanceOf[T]
+      if a == null || a.isEmpty then default else a.asInstanceOf[T]
 
     /** Alias for getOrElse. */
     @targetName("getOrElse1")
@@ -235,3 +238,5 @@ object undefor:
         case s: String => if s != "" then s else js.undefined
         case _ => js.undefined
   end extension
+
+end undefor

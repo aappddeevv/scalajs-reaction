@@ -26,7 +26,8 @@ export jshelpers.syntax.undefor.*
 export jshelpers.syntax.any.*
 export jshelpers.syntax.array.*
 export jshelpers.syntax.option.*
-export jshelpers.syntax.jsnull.*
+// not exported by default because behavior dramatically affected by -Yexplicit-nulls
+//export jshelpers.syntax.jsnull.*
 export jshelpers.syntax.misc.*   
 export jshelpers.syntax.dynamic.*
 export jshelpers.syntax.jsobject.*

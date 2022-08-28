@@ -26,8 +26,7 @@
 package lodash
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
+import js.annotation.*
 
 type JSAnyArray = js.Array[js.Any]
 

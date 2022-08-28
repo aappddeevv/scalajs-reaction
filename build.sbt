@@ -32,6 +32,7 @@ val commonScalacOptions = Seq(
   "-Yexplicit-nulls",
   //"-language:unsafeNulls",
   //"-language:strictEquality"
+  //"-groups"
 )
 
 lazy val jsSettings = Seq(

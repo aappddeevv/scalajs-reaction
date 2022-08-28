@@ -32,15 +32,11 @@ x.fold[String | Unit](())(x => x)
 
 object jsnull:
   /**
-   * It is common in interop code to model a value as A or null but not undefined
-   * even though null and undefined may both mean "absent value." See `|.merge`
-   * Many of these methods are already on `js.|` but they appear to be left biased
-   * as near as I can tell. I'm happy to delete these methods if that's not correct.
-   *
-   * Note that chaining many `js.|` together probably not work like you think and
-   * sometimes its better to create a new target type then target implicits to
-   * convert from each individual type (in the or) to the new target type. You
-   * must model your type as `A|Null` for this implicit to be picked up.
+   * These extensions are best used when `-Yexplicit-nulls` is used during 
+   * compilation because other wise `Null` is a bottom type on all ref-types
+   * versus being a direct subtype of Any. If the compiler option is not used
+   * then these extensions may be picked up and override `scala-js` ops
+   * methods and cause hard-to-diagnose syntax errors.
    *
    * These methods exist to try and stop a conversion to `UndefOr` or `Option`
    * as part of null processing. Hey! Every bit counts!

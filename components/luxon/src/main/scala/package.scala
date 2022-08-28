@@ -19,20 +19,17 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import scala.scalajs.js.|
+package luxon
 
-package object luxon {
-  import Ordering.Double.TotalOrdering
-  import luxon._
+import Ordering.Double.TotalOrdering
 
-  /** Use this when you need an ordering or set as an implicit val
-   *  so it is automatically picked up sorting functions.
-   */
-  val dateOrdering = Ordering.by((item: DateTime) => item.valueOf().asInstanceOf[Double])
-  
-  type CalendarSystem = String
-  type NumberingSystem = String
+/** Use this when you need an ordering or set as an given val
+ *  so it is automatically picked up sorting functions.
+ */
+val dateOrdering = Ordering.by((item: DateTime) => item.valueOf().asInstanceOf[Double])
 
-  type DurationUnit2 =
-    "year" | "years" | "quarter" | "quarters" | "month" | "months" | "week" | "weeks" | "day" | "days" | "hour" | "hours" | "minute" | "minutes" | "second" | "seconds" | "millisecond" | "millisecons"
-}
+type CalendarSystem = String
+type NumberingSystem = String
+
+type DurationUnit2 =
+  "year" | "years" | "quarter" | "quarters" | "month" | "months" | "week" | "weeks" | "day" | "days" | "hour" | "hours" | "minute" | "minutes" | "second" | "seconds" | "millisecond" | "millisecons"

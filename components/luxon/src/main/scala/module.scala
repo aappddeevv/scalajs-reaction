@@ -22,9 +22,7 @@
 package luxon
 
 import scala.scalajs.js
-import js.|
-import js.annotation._
-import react._
+import js.annotation.*
 
 trait LocaleInfo extends js.Object {}
 

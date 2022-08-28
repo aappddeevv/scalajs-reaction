@@ -35,6 +35,9 @@ object any:
     /** Totally unsafe, use at your own risk! */
     def unsafeAsJsAny = a.asInstanceOf[js.Any]
 
+    /** Use this one, not the lowercase one. */
+    //def unsafeAsJSAny = a.asInstanceOf[js.Any]
+
   /** All of these are unsafe. */
   extension [T <: js.Any](a: T)
     /** Convert T => T|Null. */
