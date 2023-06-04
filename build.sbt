@@ -25,7 +25,7 @@ val commonScalacOptions = Seq(
   //,"-Ywarn-dead-code"
   "-indent",
   "-source",
-  "3.1",
+  "3.3",
   "-new-syntax",
   "-explain",
   "-Ysafe-init",
@@ -114,7 +114,7 @@ def std_settings(p: String, d: String) =
 
 inThisBuild(
   List(
-    scalaVersion := "3.1.3",  
+    scalaVersion := "3.3.0",  
     organization := "org.ttgoss.js",
     organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
     startYear := Some(2018),

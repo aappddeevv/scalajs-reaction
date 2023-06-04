@@ -1,15 +1,15 @@
 package jshelpers  
 
 import scala.scalajs.js
-import utest._
+import utest.*
 
 import jshelpers.syntax.*
-
 
 object UndefBooleanTests extends TestSuite:
 
   val tests = Tests {
     test("undef") {      
+      import jshelpers.syntax.jsnull.*
       () ==> js.undefined
       val x: js.UndefOr[Int|Null] = js.undefined
       x ==> js.undefined
@@ -50,9 +50,10 @@ object UndefStringTests extends TestSuite:
       assert(!vundef.filterEmpty.isDefined)
     }
   }
-
+  
 object UndefTests extends TestSuite:
-  import scala.language.unsafeNulls
+  //import scala.language.unsafeNulls
+  import jshelpers.syntax.jsnull.*
   val tests = Tests {
     test("basics") { 
       val v: js.UndefOr[Int] = null.asInstanceOf[js.UndefOr[Int]]
@@ -70,7 +71,7 @@ object UndefTests extends TestSuite:
       val v2: js.UndefOr[Int|Null] = v.toUndefOrNull
       val v3: Int | Null =  v.toNull
       val v4: js.UndefOr[Int | Null] = js.defined(null)
-      assert(!v4.isEmpty)
+      assert(v4.isEmpty)
     }
     test("istotalEmpty") {
       val v: js.UndefOr[Int] = 10
@@ -83,7 +84,7 @@ object UndefTests extends TestSuite:
     test("toTruthy") {
       (js.defined("blah"):js.UndefOr[String]).toTruthy ==> true
       (js.defined(""):js.UndefOr[String]).toTruthy ==> false
-      (js.defined(null):js.UndefOr[String]).toTruthy ==> false
+      (null.asInstanceOf[js.UndefOr[String]]).toTruthy ==> false
       (js.defined(0):js.UndefOr[Int]).toTruthy ==> false
       (js.defined(1):js.UndefOr[Int]).toTruthy ==> true
     }

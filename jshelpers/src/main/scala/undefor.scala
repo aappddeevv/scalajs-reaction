@@ -36,7 +36,9 @@ object undefor:
     /** Tests for overall nullness which is different than `.isEmpty|.nonEmpty`. */
     def isNull: Boolean = _a == null
 
-    /** Like `UndefOr.isEmpty` but this checks for null and undefined as well. */
+    /** Like `UndefOr.isEmpty` but this checks for null and undefined as well. 
+     * This is the closest semantically to js `!!`.
+    */
     def isTotalEmpty: Boolean = isNull || !_a.isDefined
 
     /** This could also be `_.toOption.filter(_ != null)` but below is slightly faster. */

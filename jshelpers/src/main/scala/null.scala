@@ -36,7 +36,8 @@ object jsnull:
    * compilation because other wise `Null` is a bottom type on all ref-types
    * versus being a direct subtype of Any. If the compiler option is not used
    * then these extensions may be picked up and override `scala-js` ops
-   * methods and cause hard-to-diagnose syntax errors.
+   * methods and cause hard-to-diagnose syntax errors. This package typically
+   * must be imported separately from the other syntax packages.
    *
    * These methods exist to try and stop a conversion to `UndefOr` or `Option`
    * as part of null processing. Hey! Every bit counts!
@@ -54,8 +55,9 @@ object jsnull:
     // @targetName("toNonNullOptionOrNull")
     // def toNonNullOption: Option[A] = Option(forceGet)
 
-    /** Like `.toNonNullOption`. */
-    def toOption: Option[A] = {
+    /** Convert to `Option[A]` but takes into account possible null value. */
+    @targetName("nullToNonNullOption")
+    def toOptionFilterNull: Option[A] = {
       val g = forceGet
       if g != null then Option(g)
       else None
@@ -143,6 +145,9 @@ object jsnull:
     def isEmpty: Boolean = a == null
 
     def isDefined: Boolean = a != null
+
+    def isNull: Boolean = a == null
+    def isNotNull: Boolean = !isNull
 
     def isNotDefined: Boolean = !isDefined
     def knownSize: Int = if isEmpty then 0 else 1
@@ -234,12 +239,13 @@ object jsnull:
   extension [A](a: js.UndefOr[A] | Null)
     /** Swap `js.UndefOr[A|Null]` for `js.UndefOr[A]|Null`. */
     @targetName("nullSwap")
-    def swap: js.UndefOr[A | Null] =
+    inline def swap: js.UndefOr[A | Null] =
       if a == null || a == js.undefined then ().asInstanceOf[js.UndefOr[A | Null]]
       else a.asInstanceOf[js.UndefOr[A | Null]]
 
   extension (a: String | Null)
     /** Return string's "zero" which is an empty string. Could be called orBlank. */
-    def orEmpty: String = if a == null then "" else a.asInstanceOf[String]
+    @targetName("nullOrEmpty")
+    inline def orEmpty: String = if a == null then "" else a.asInstanceOf[String]
     
 end jsnull

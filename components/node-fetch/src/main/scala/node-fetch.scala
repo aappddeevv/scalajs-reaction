@@ -5,7 +5,7 @@ import scala.scalajs.js.annotation.*
 import scala.scalajs.js.typedarray.{ArrayBuffer, Uint8Array}
 
 @js.native
-@JSImport("node-fetch", "fetch")
+@JSImport("node-fetch", JSImport.Default)
 def fetch(
       info: RequestInfo,
       init: js.UndefOr[RequestInit] = js.undefined
