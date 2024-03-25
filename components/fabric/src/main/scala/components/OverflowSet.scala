@@ -33,8 +33,8 @@ object OverflowSet {
   @JSImport("office-ui-fabric-react/lib/OverflowSet", "OverflowSet")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
-  def apply(children: ReactNode*) = createElementN(JS, ())(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children*)
+  def apply(children: ReactNode*) = createElementN(JS, ())(children*)
 
   @js.native
   trait IOveflowSet extends js.Object {

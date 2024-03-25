@@ -25,19 +25,19 @@ package addressmanager
 
 import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
-import js.JSConverters._
-import js.annotation._
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
 import react.*
 import react.syntax.*
 import jshelpers.syntax.*
 import react.conversions.given
-import vdom._
-import fabric._
-import fabric.components._
-import ReactContentLoaderComponents._
-import react_redux._
-import styles._
+import vdom.*
+import fabric.*
+import fabric.components.*
+import ReactContentLoaderComponents.*
+import react_redux.*
+import styles.*
 
 /** The detail display is driven by the parent and *not* by the global redux
  * state although it could be hooked directly up to redux.
@@ -57,7 +57,7 @@ object AddressDetail:
   val render: ReactFC[Props] = props => {
     //val log = React.useContext[ConsoleLog](Contexts.logContext)
     //log(props.address.getOrElse("<no detail address provided>"))
-    div(new DivProps { className = amstyles.detail.asString })(
+    div(new DivProps { className = amstyles.detail})(
       Label(s"""Name: ${props.address.flatMap(_.name.toOption).getOrElse("")}"""),
       Label(s"""City: ${props.address.flatMap(_.city.toOption).getOrElse("")}"""),
       Label(s"""State/Province: ${props.address

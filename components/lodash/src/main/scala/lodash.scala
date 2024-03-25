@@ -64,7 +64,7 @@ def intersection[T](lhs: js.Array[T]*): js.Array[T] = js.native
 // brutal to rewrite the args
 def intersectionBy[T](thunk: js.Function1[T, T] | String, arr: js.Array[T]*) =
   intersectionBy_UNSAFE(
-    Seq(arr.asInstanceOf[js.Any], thunk.asInstanceOf[js.Any]): _*
+    Seq(arr.asInstanceOf[js.Any], thunk.asInstanceOf[js.Any])*
   )
 
 @js.native

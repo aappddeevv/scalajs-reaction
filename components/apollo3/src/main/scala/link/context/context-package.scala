@@ -29,5 +29,5 @@ import js.|
 import js.annotation._
 
 trait context_module {
-  type ContextSetter[C] = js.Function2[GraphQLRequest, C, js.Promise[_] | Any]
+  type ContextSetter[C] = js.Function2[GraphQLRequest, C, js.Promise[?] | Any]
 }

@@ -61,7 +61,7 @@ end Routes
 object Application:
 
   val baseUrl =
-    dom.document.location.origin.getOrElse("") + BuildSettings.routePrefix.getOrElse("")
+    dom.document.location.origin + BuildSettings.routePrefix.getOrElse("")
   val nsegments =
     BuildSettings.routePrefix.map(_.split("/").nn.filterNot(_.nn.isEmpty).length).getOrElse(0)
 

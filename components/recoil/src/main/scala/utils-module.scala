@@ -83,11 +83,11 @@ trait utils_module extends js.Object {
   // there is no way in js to restrict F with a context bounds since that adds an argument.
 
   @JSName("waitForNone")
-  def waitForNoneF[F[_]](args: F[RecoilValueReadOnly[_]]): F[Loadable[_]] = js.native
+  def waitForNoneF[F[_]](args: F[RecoilValueReadOnly[?]]): F[Loadable[?]] = js.native
   @JSName("waitForAny")
-  def waitForAnyF[F[_]](args: F[RecoilValueReadOnly[_]]): F[Loadable[_]] = js.native
+  def waitForAnyF[F[_]](args: F[RecoilValueReadOnly[?]]): F[Loadable[?]] = js.native
   @JSName("waitForAll")
-  def waitForAllF[F[_]](args: F[RecoilValueReadOnly[_]]): F[Loadable[_]] = js.native
+  def waitForAllF[F[_]](args: F[RecoilValueReadOnly[?]]): F[Loadable[?]] = js.native
 
   // // wait array version
   // @JSName("waitForNone")
@@ -138,11 +138,11 @@ trait utils_exports {
   def constSelector[T <: SerializableParameter](constant: T) = utils_module.constSelector[T](constant)
   def errorSelector[T](message: String) = utils_module.errorSelector[T](message)
 
-  def waitForNone[F[_]](args: F[RecoilValueReadOnly[_]])(implicit ev: JSF[F]) =
+  def waitForNone[F[_]](args: F[RecoilValueReadOnly[?]])(implicit ev: JSF[F]) =
     utils_module.waitForNoneF[ev.JS](args)
-  def waitForAny[F[_]](args: F[RecoilValueReadOnly[_]])(implicit ev: JSF[F]) =
+  def waitForAny[F[_]](args: F[RecoilValueReadOnly[?]])(implicit ev: JSF[F]) =
     utils_module.waitForNoneF[ev.JS](args)
-  def waitForAll[F[_]](args: F[RecoilValueReadOnly[_]])(implicit ev: JSF[F]) =
+  def waitForAll[F[_]](args: F[RecoilValueReadOnly[?]])(implicit ev: JSF[F]) =
     utils_module.waitForNoneF[ev.JS](args)
 
   def nowait(value: RecoilValue[Any]) = utils_module.nowait(value)

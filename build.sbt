@@ -23,16 +23,17 @@ val commonScalacOptions = Seq(
   //"-Ywarn-value-discard",
   //"-Ywarn-unused:imports,locals",
   //,"-Ywarn-dead-code"
-  "-indent",
-  "-source",
-  "3.3",
+  //"-source",
+  //"3.4",
   "-new-syntax",
   "-explain",
   "-Ysafe-init",
-  "-Yexplicit-nulls",
+  "-Yexplicit-nulls"
   //"-language:unsafeNulls",
   //"-language:strictEquality"
   //"-groups"
+  ,"-rewrite"
+  ,"-source:3.4-migration"
 )
 
 lazy val jsSettings = Seq(
@@ -40,7 +41,7 @@ lazy val jsSettings = Seq(
   scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) },
   scalaModuleInfo ~= (_.map(_.withOverrideScalaVersion(true))),
   libraryDependencies ++= Seq(
-   ("org.scala-js" %%% "scalajs-dom" % "2.2.0"),
+   ("org.scala-js" %%% "scalajs-dom" % "2.8.0"),
   ),
   // testing
 libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.10" % "test",
@@ -114,7 +115,7 @@ def std_settings(p: String, d: String) =
 
 inThisBuild(
   List(
-    scalaVersion := "3.3.0",  
+    scalaVersion := "3.4.0",  
     organization := "org.ttgoss.js",
     organizationName := "The Trapelo Group (TTG) Open Source Software (TTGOSS)",
     startYear := Some(2018),

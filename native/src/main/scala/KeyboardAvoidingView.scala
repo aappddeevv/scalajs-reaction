@@ -32,7 +32,7 @@ object KeyboardAvoidingView {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends View.Props {
     var keyboardVerticalOffset: js.UndefOr[Double] = js.undefined

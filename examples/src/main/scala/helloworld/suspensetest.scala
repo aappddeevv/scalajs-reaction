@@ -115,10 +115,10 @@ object SuspenseTest {
     val (keyPressed, setKeyPressed) = useStateStrictDirect[Boolean](false)
 
     val downHandler: js.Function1[js.Dynamic, Unit] =
-      p => if (p.key.asString == targetKey) setKeyPressed(true)
+      p => if p.key.asString == targetKey then setKeyPressed(true)
 
     val upHandler: js.Function1[js.Dynamic, Unit] =
-      p => if (p.key.asString == targetKey) setKeyPressed(false)
+      p => if p.key.asString == targetKey then setKeyPressed(false)
 
     useEffectMounting(() => {
       dom.window.addEventListener("keydown", downHandler)
@@ -178,7 +178,7 @@ object SuspenseTest {
         when(sadPress)("s"),
         when(robotPress)("r"),
         // should pick up conversion
-        if (foxPress) "f" else nullNode
+        if foxPress then "f" else nullNode
       )
     )
   }
@@ -237,19 +237,19 @@ object SuspenseTest {
 
   // direct parent import
   def SuspenseParent(props: SProps )(children: ReactNode*) =
-    createElement(SuspenseParentNS.SuspenseParentJS, props, children: _*)
+    createElement(SuspenseParentNS.SuspenseParentJS, props, children*)
 
   // lazy is called in the ts file
   def LazySuspenseChild(props: SProps)(children: ReactNode*) =
-    createElement(SuspenseParentNS.SuspenseChildJS, props, children: _*)
+    createElement(SuspenseParentNS.SuspenseChildJS, props, children*)
 
   // child is imported directly
   def SuspenseChild(props: SProps)(children: ReactNode*) =
-    createElement(SuspenseChildJS, props, children: _*)
+    createElement(SuspenseChildJS, props, children*)
 
   // the arguments to lazy() are imported so we can run lazy in scala.js
   def LazyChildViaReactLazy(props: SProps )(children: ReactNode*) =
-    createElement(`lazy`(SuspenseParentNS.X), props, children: _*)
+    createElement(`lazy`(SuspenseParentNS.X), props, children*)
 
   def blah(): ReactNode =
     Fragment(

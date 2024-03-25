@@ -91,7 +91,7 @@ trait HTMLTagsX {
   final lazy val aside = tagt[AsideProps]("aside")
 
   def asideWithClass(cn: String)(children: ReactNode*) =
-    aside(new AsideProps { className = cn })(children: _*)
+    aside(new AsideProps { className = cn })(children*)
 
   trait AudioProps extends AudioHTMLAttributes[dom.html.Audio] with ClassAttributes[dom.html.Audio]
   final lazy val audio = tagt[AudioProps]("audio")
@@ -178,18 +178,18 @@ trait HTMLTagsX {
   def divWithClassname(
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = div(new DivProps { className = cn })(children: _*)
+  ) = div(new DivProps { className = cn })(children*)
 
   def divWithClass(
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = div(new DivProps { className = cn })(children: _*)
+  ) = div(new DivProps { className = cn })(children*)
 
   def divWithKeyAndClass(
     k: String,
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = div(new DivProps { `key` = k; className = cn })(children: _*)
+  ) = div(new DivProps { `key` = k; className = cn })(children*)
 
   def divWithProps(props: DivProps|Null) = div(props)()
 
@@ -277,41 +277,41 @@ trait HTMLTagsX {
       new TagT[InputProps]("input", lit("type" -> `type`).asInstanceOf[InputProps])
 
     /** Not supported? */
-    lazy val button = this withType "button"
+    lazy val button = this `withType` "button"
 
     /** Not supported? */
-    lazy val checkbox = this withType "checkbox"
-    lazy val color = this withType "color"
-    lazy val date = this withType "date"
-    lazy val datetime = this withType "datetime"
-    lazy val datetimeLocal = this withType "datetime-local"
-    lazy val email = this withType "email"
-    lazy val file = this withType "file"
+    lazy val checkbox = this `withType` "checkbox"
+    lazy val color = this `withType` "color"
+    lazy val date = this `withType` "date"
+    lazy val datetime = this `withType` "datetime"
+    lazy val datetimeLocal = this `withType` "datetime-local"
+    lazy val email = this `withType` "email"
+    lazy val file = this `withType` "file"
 
     /** Not supported? */
-    lazy val hidden = this withType "hidden"
+    lazy val hidden = this `withType` "hidden"
 
     /** Not supported? */
-    lazy val image = this withType "image"
-    lazy val month = this withType "month"
-    lazy val number = this withType "number"
-    lazy val password = this withType "password"
+    lazy val image = this `withType` "image"
+    lazy val month = this `withType` "month"
+    lazy val number = this `withType` "number"
+    lazy val password = this `withType` "password"
 
     /** Not supported? */
-    lazy val radio = this withType "radio"
-    lazy val range = this withType "range"
+    lazy val radio = this `withType` "radio"
+    lazy val range = this `withType` "range"
 
     /** Not supported? */
-    lazy val reset = this withType "reset"
-    lazy val search = this withType "search"
+    lazy val reset = this `withType` "reset"
+    lazy val search = this `withType` "search"
 
     /** Not supported? */
-    lazy val submit = this withType "submit"
-    lazy val tel = this withType "tel"
-    lazy val text = this withType "text"
-    lazy val time = this withType "time"
-    lazy val url = this withType "url"
-    lazy val week = this withType "week"
+    lazy val submit = this `withType` "submit"
+    lazy val tel = this `withType` "tel"
+    lazy val text = this `withType` "text"
+    lazy val time = this `withType` "time"
+    lazy val url = this `withType` "url"
+    lazy val week = this `withType` "week"
   }
 
   trait InsProps extends InsHTMLAttributes[dom.html.Mod] with ClassAttributes[dom.html.Mod]
@@ -340,7 +340,7 @@ trait HTMLTagsX {
 
   /** Common scenario to have a main method with no attributes. */
   def mainWith(cn: String, children: ReactNode*) =
-    main(new MainProps { className = cn })(children: _*)
+    main(new MainProps { className = cn })(children*)
 
   trait MapProps extends MapHTMLAttributes[dom.html.Map] with ClassAttributes[dom.html.Map]
   final lazy val map = tagt[MapProps]("map")
@@ -440,7 +440,7 @@ trait HTMLTagsX {
   def spanWithClassname(
     cn: js.UndefOr[String],
     children: ReactNode*
-  ) = span(new SpanProps { className = cn })(children: _*)
+  ) = span(new SpanProps { className = cn })(children*)
 
   type StrongProps = ElementAttributesOnly
   final lazy val strong = tagt[StrongProps]("strong")

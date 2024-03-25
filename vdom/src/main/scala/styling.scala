@@ -28,17 +28,16 @@ import js.|
 
 import org.scalajs.dom
 
-object styling {
+object styling:
 
   /** Merge styles left to right. Right takes higher precedence. */
-  @inline def merge(styles: StyleAttr*): StyleAttr = {
+  @inline def merge(styles: StyleAttr*): StyleAttr =
     val result = js.Dictionary.empty[String]
-    for (source <- styles) {
-      for ((key, value) <- source.asInstanceOf[js.Dictionary[String]])
+    for source <- styles do {
+      for (key, value) <- source.asInstanceOf[js.Dictionary[String]] do
         result(key) = value
     }
     result.asInstanceOf[StyleAttr]
-  }
 
   /**
    * Add a single style prop but it returns a dictionary since it can't be a
@@ -76,9 +75,8 @@ object styling {
     priority: Option[String] = None
   ): Unit =
     dom.document.documentElement.asInstanceOf[dom.html.Element].style.setProperty(vname, value)
-}
 
-trait RawFontStyle extends js.Object {
+trait RawFontStyle extends js.Object:
   var font: js.UndefOr[String] = js.undefined
   var fontFamily: js.UndefOr[String] = js.undefined
   var fontSize: js.UndefOr[String | Double] = js.undefined
@@ -87,25 +85,22 @@ trait RawFontStyle extends js.Object {
   var fontStyle: js.UndefOr[String | Double] = js.undefined
   var fontVariant: js.UndefOr[String | Double] = js.undefined
   var fontWeight: js.UndefOr[String | Double] = js.undefined
-}
 
-trait FontFace extends RawFontStyle {
+trait FontFace extends RawFontStyle:
   var src: js.UndefOr[String] = js.undefined
   var unicodeRange: js.UndefOr[String] = js.undefined
   var fontFeatureSetting: js.UndefOr[String] = js.undefined
-}
 
 @js.native
 abstract trait BoxSizing extends js.Any
-object BoxSizing {
+object BoxSizing:
   val borderBox = "border-box".asInstanceOf[BoxSizing]
   val contentBox = "content-box".asInstanceOf[BoxSizing]
-}
 
 /** No safe/unsafe. */
 @js.native
 abstract trait JustifyContent extends js.Any
-object JustifyContent {
+object JustifyContent:
   val flexStart = "flex-start".asInstanceOf[JustifyContent]
   val flexEnd = "flex-end".asInstanceOf[JustifyContent]
   val center = "center".asInstanceOf[JustifyContent]
@@ -116,7 +111,6 @@ object JustifyContent {
   val end = "end".asInstanceOf[JustifyContent]
   val left = "left".asInstanceOf[JustifyContent]
   val right = "right".asInstanceOf[JustifyContent]
-}
 
 @js.native
 abstract trait AlignItems extends js.Any
@@ -126,7 +120,7 @@ object AlignItems {}
  * Use to create a mildly useful style object. It won't typecheck the values themselves but
  * it will check the field themselves to ensure they are valid.
  */
-trait RawStyleBase extends RawFontStyle {
+trait RawStyleBase extends RawFontStyle:
   var azimuth: js.UndefOr[String] = js.undefined
   var background: js.UndefOr[String] = js.undefined
   var backgroundAttachment: js.UndefOr[String] = js.undefined
@@ -544,7 +538,6 @@ trait RawStyleBase extends RawFontStyle {
   var rubyAlign: js.UndefOr[String] = js.undefined
   var rubyMerge: js.UndefOr[String] = js.undefined
   var rubyPosition: js.UndefOr[String] = js.undefined
-}
 
 /**
  * A style trait that can provide some protection that the

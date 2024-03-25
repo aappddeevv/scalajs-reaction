@@ -90,7 +90,7 @@ object module extends js.Object {
   def toQuery(matchers: js.UndefOr[MediaQueryAllQueryable] = js.undefined): String = js.native
   val Context: ReactContext[MediaQueryAllQueryable] = js.native
   def useMediaQuery(
-    settings: MediaQueryAllQueryable with HasQuery,
+    settings: MediaQueryAllQueryable & HasQuery,
     device: js.UndefOr[MediaQueryMatchers] = js.undefined,
     cb: js.UndefOr[js.Function1[Boolean, Unit]] = js.undefined): Boolean = js.native
 }
@@ -111,5 +111,5 @@ object MediaQuery {
   }
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 }

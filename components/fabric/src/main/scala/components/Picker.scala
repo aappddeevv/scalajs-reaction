@@ -145,7 +145,7 @@ object Picker {
       @JSImport("office-ui-fabric-react/lib", "TagItem")
       object JS extends ReactJSComponent
 
-      def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+      def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 
       trait Props extends Picker.Item.Props[ITag] {
         var enableTagFocusInDisabledPicker: js.UndefOr[String] = js.undefined

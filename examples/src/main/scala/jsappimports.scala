@@ -25,11 +25,11 @@ package examples
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit }
-import js.JSConverters._
-import js.annotation._
-import react._
+import js.JSConverters.*
+import js.annotation.*
+import react.*
 import react.syntax.*
-import react_redux._
+import react_redux.*
 
 trait LabelAndChildProps extends js.Object:
   var label: js.UndefOr[String]     = js.undefined
@@ -42,7 +42,7 @@ object LabelAndChildNS extends js.Object:
 
 object JSAppImports:
   def LabelAndChild(props: LabelAndChildProps)(children: ReactNode*) =
-    createElement(LabelAndChildNS.LabelAndChild, props, children: _*)
+    createElement(LabelAndChildNS.LabelAndChild, props, children*)
 
 trait StoreState extends js.Object {}
 
@@ -140,4 +140,4 @@ class ReactContentLoaderOptions(
 
 object ReactContentLoaderComponents:
   def BulletList(props: ReactContentLoaderOptions)(children: ReactNode*) =
-    createElement(ReactContentLoader.List, props, children: _*)
+    createElement(ReactContentLoader.List, props, children*)

@@ -34,7 +34,7 @@ import react.vdom._
  * type converters into scope so you can use some "type inference driving"
  * functions to create your style parts.
  */
-package object styling {
+package object styling:
 
   type IRawStyleBase = RawStyleBase
 
@@ -55,11 +55,11 @@ package object styling {
 
     /** Create a selector set of styles. */
     def apply(selects: (String, IStyle)*): ISelectorSet =
-      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String, js.Any)]]: _*)
+      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String, js.Any)]]*)
 
     /** Create a selector set out of any values. Experts only! */
     def any(selects: (String, js.Any)*): ISelectorSet =
-      js.Dictionary[js.Any](selects: _*)
+      js.Dictionary[js.Any](selects*)
 
     /** Create an undefined selector set. */
     def apply(): js.UndefOr[ISelectorSet] = js.undefined
@@ -75,11 +75,11 @@ package object styling {
 
     /** Create a selector set of styles. */
     def apply(selects: (String, IStyle)*): ISelectorSet =
-      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String, js.Any)]]: _*)
+      js.Dictionary[js.Any](selects.asInstanceOf[Seq[(String, js.Any)]]*)
 
     /** Create a selector set out of any values. Experts only! */
     def any(selects: (String, js.Any)*): ISelectorSet =
-      js.Dictionary[js.Any](selects: _*)
+      js.Dictionary[js.Any](selects*)
 
     /** Create an undefined selector set. */
     def apply(): js.UndefOr[ISelectorSet] = js.undefined
@@ -94,7 +94,7 @@ package object styling {
   trait IRawStyleArray extends js.Array[IStyle]
 
   private[styling] trait MakeStyles {
-    def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles: _*).asInstanceOf[IStyle]
+    def apply(styles: IStyle*): IStyle = js.Array[IStyle](styles*).asInstanceOf[IStyle]
     def apply(): IStyle = js.Array[IStyle]().asInstanceOf[IStyle]
   }
 
@@ -151,7 +151,7 @@ package object styling {
 
     /** Create an IStyleSet from pairs. Useful for mergeStyleSets */
     @inline def apply(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
-      js.Dictionary[IStyle](stylePairs: _*)
+      js.Dictionary[IStyle](stylePairs*)
 
     /** Same as `apply` but cast to your final T type. Tyically T is the component's
      * specific `Styles` trait.  You should not really need this function
@@ -159,7 +159,7 @@ package object styling {
      * that trait but if you prefer the "list of pairs" model, use this.
      */
     @inline def make(stylePairs: (String, IStyle)*): IStyleSet = // was IStyleBase|IRawStyleArray
-      js.Dictionary[IStyle](stylePairs: _*)
+      js.Dictionary[IStyle](stylePairs*)
 
     /** Assume that a IStyleSetTag is a IStyleSet. */
     @inline def assume(o: IStyleSetTag): IStyleSet = o.asInstanceOf[IStyleSet]
@@ -257,16 +257,16 @@ package object styling {
   @deprecated("Use concatStyleSetsWithProps")
   def resolve[SP <: js.Any, SS <: IStyleSetTag](props: SP, styles: js.UndefOr[IStyleFunctionOrObject[SP, SS]]*): SS = {
     val x = js.Array[IStyleSet]()
-    for (s <- styles) {
+    for s <- styles do {
       s.foreach { style =>
         x.push(
-          if (js.typeOf(style.asInstanceOf[js.Object]) == "function")
+          if js.typeOf(style.asInstanceOf[js.Object]) == "function" then
             s.asInstanceOf[js.Function1[SP, IStyleSet]](props)
           else style.asInstanceOf[IStyleSet]
         )
       }
     }
-    Styling.concatStyleSets[SS](x.toSeq: _*)
+    Styling.concatStyleSets[SS](x.toSeq*)
   }
 
   //
@@ -319,4 +319,3 @@ package object styling {
   implicit def jsUndefOrJsObject2IStyleSet[T <: js.Object](u: js.UndefOr[T]): IStyleSet =
     u.asInstanceOf[IStyleSet]
   implicit def iStyleSetTagToIStyleSet[SS <: IStyleSetTag](s: SS): IStyleSet = s.asInstanceOf[IStyleSet]
-}

@@ -28,7 +28,7 @@ import js.annotation._
 import js.|
 
 trait ObservableQuery_module {
-  type ApolloCurrentQueryResult[T] = ApolloQueryResult[T] with PartialApolloCurrentQueryResult
+  type ApolloCurrentQueryResult[T] = ApolloQueryResult[T] & PartialApolloCurrentQueryResult
 
   // missing && networkError
 

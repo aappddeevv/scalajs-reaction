@@ -39,7 +39,7 @@ object fakedata {
     private val addresses    = defaultAddresses.jsSlice(0)
     override val fetch = (id: Id) => {
       fetchCounter = fetchCounter + 1
-      if (fetchCounter % failMod == 0) js.Promise.reject("Fetch failed (as specified in failMod)")
+      if fetchCounter % failMod == 0 then js.Promise.reject("Fetch failed (as specified in failMod)")
       delayPromise(scala.util.Random.nextInt(delayMaxMillis).millis)(addresses)
     }
     override val add = address => {

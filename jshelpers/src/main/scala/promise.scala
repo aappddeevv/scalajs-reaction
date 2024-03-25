@@ -291,57 +291,57 @@ object promise:
   extension [A, B](tuple: (js.Thenable[A], js.Thenable[B]))
     @targetName("parMapX2")
     def parMapX[T](thunk: (A, B) => T) =
-      (for {
+      (for
         valueA <- tuple._1
         valueB <- tuple._2
-      } yield thunk(valueA, valueB)).asInstanceOf[js.Promise[T]]
+      yield thunk(valueA, valueB)).asInstanceOf[js.Promise[T]]
 
     @targetName("parFlatMapX2")
     def parFlatMapX[T](thunk: (A, B) => js.Thenable[T]) =
-      (for {
+      (for
         valueA <- tuple._1
         valueB <- tuple._2
         d <- thunk(valueA, valueB)
-      } yield d).asInstanceOf[js.Promise[T]]
+      yield d).asInstanceOf[js.Promise[T]]
 
 
   extension [A, B, C](tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C]))
     @targetName("parMapX3")
     def parMapX[T](thunk: (A, B, C) => T) =
-      (for {
+      (for
         valueA <- tuple._1
         valueB <- tuple._2
         valueC <- tuple._3
-      } yield thunk(valueA, valueB, valueC)).asInstanceOf[js.Promise[T]]
+      yield thunk(valueA, valueB, valueC)).asInstanceOf[js.Promise[T]]
 
     @targetName("parFlatMapX3")
     def parFlatMapX[T](thunk: (A, B, C) => js.Thenable[T]) =
-      (for {
+      (for
         valueA <- tuple._1
         valueB <- tuple._2
         valueC <- tuple._3
         d <- thunk(valueA, valueB, valueC)
-      } yield d).asInstanceOf[js.Promise[T]]
+      yield d).asInstanceOf[js.Promise[T]]
 
   extension [A, B, C, D](tuple: (js.Thenable[A], js.Thenable[B], js.Thenable[C], js.Thenable[D]))
     @targetName("parMapX4")
     def parMapX[T](thunk: (A, B, C, D) => T) =
-      (for {
+      (for
         valueA <- tuple._1
         valueB <- tuple._2
         valueC <- tuple._3
         valueD <- tuple._4
-      } yield thunk(valueA, valueB, valueC, valueD)).asInstanceOf[js.Promise[T]]
+      yield thunk(valueA, valueB, valueC, valueD)).asInstanceOf[js.Promise[T]]
 
     @targetName("parFlatMapX4")
     def parFlatMapX[T](thunk: (A, B, C, D) => js.Thenable[T]) =
-      (for {
+      (for
         valueA <- tuple._1
         valueB <- tuple._2
         valueC <- tuple._3
         valueD <- tuple._4
         d <- thunk(valueA, valueB, valueC, valueD)
-      } yield d).asInstanceOf[js.Promise[T]]
+      yield d).asInstanceOf[js.Promise[T]]
       
   extension [A](arr: js.Array[js.Thenable[A]])
     /** `js.Promise.all` only takes js.Promise arrays. This takes an array of `js.Thenable[_]`s. */

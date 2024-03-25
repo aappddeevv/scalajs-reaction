@@ -38,7 +38,7 @@ import react_redux.*
 object styles {
   @js.native
   @JSImport("Examples/changereduxstate/changereduxstate.css", JSImport.Namespace)
-  val cstyles: js.Object with js.Dynamic = js.native
+  val cstyles: js.Object & js.Dynamic = js.native
 }
 import styles._
 

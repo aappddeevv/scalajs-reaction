@@ -35,7 +35,7 @@ object Fabric {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends HTMLAttributes[dom.html.Div] with Theme {
     var componentRef: js.UndefOr[js.Function0[Unit]] = js.undefined

@@ -36,7 +36,7 @@ object Layer {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Styles extends IStyleSetTag with Theme {
     var root: js.UndefOr[IStyle] = js.undefined

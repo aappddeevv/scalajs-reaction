@@ -37,7 +37,7 @@ package object styling {
   //type RecursiveArray[T] = js.Array[T | js.Array[T]]
 
   // tagged T
-  type RegisteredStyleSet[T] = T with StyleSet with Registered
+  type RegisteredStyleSet[T] = T & StyleSet & Registered
   // tagged T, does this make sense?, I don't think so...needs to opaque
   //type RegisteredStyle[T] = T
 

@@ -29,14 +29,14 @@ import react._
 import vdom._
 import fabric.styling._
 
-object ScrollablePane {
+object ScrollablePane:
 
   @js.native
   @JSImport("office-ui-fabric-react/lib/ScrollablePane", "ScrollablePane")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
-  def apply(children: ReactNode*) = createElementN(JS, null)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children*)
+  def apply(children: ReactNode*) = createElementN(JS, null)(children*)
 
   @js.native
   trait IScrollablePane extends js.Object {
@@ -71,4 +71,4 @@ object ScrollablePane {
     var auto = "auto".asInstanceOf[Visibility]
     var always = "always".asInstanceOf[Visibility]
   }
-}
+

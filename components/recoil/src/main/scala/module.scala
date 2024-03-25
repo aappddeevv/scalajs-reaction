@@ -69,8 +69,8 @@ object RecoilRoot {
     var initializeState: js.UndefOr[js.Function1[SetOptions, Unit]] = js.undefined
   }
 
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
-  def apply(children: ReactNode*) = createElement(JS, null, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
+  def apply(children: ReactNode*) = createElement(JS, null, children*)
 }
 
 trait AtomOptions[T] extends js.Object {
@@ -111,7 +111,7 @@ trait ReadWriteAccessors extends ReadOnlyAccessors {
   def set[A](atom: RecoilState[A], newValue: A | DefaultValue | js.Function1[A, A | DefaultValue]): Unit = js.native
   @JSName("set")
   def update[A](atom: RecoilState[A], newValue: A | DefaultValue | js.Function1[A, A | DefaultValue]): Unit = js.native
-  def reset(atom: RecoilState[_]): Unit = js.native
+  def reset(atom: RecoilState[?]): Unit = js.native
 }
 
 trait ReadOnlySelectorOptions[T] extends js.Object {
@@ -227,7 +227,7 @@ trait CallbackInterface extends js.Object {
   val snapshot: Snapshot = js.native
   def gotoSnapshot(snapshot: Snapshot): Unit = js.native
   def set[A](value: RecoilState[A], valOrUpdater: SetValOrUpdater[A]): Unit = js.native
-  def reset(value: RecoilState[_]): Unit = js.native
+  def reset(value: RecoilState[?]): Unit = js.native
 }
 
 @js.native
@@ -269,7 +269,7 @@ trait hooks {
       .useRecoilCallback_UNTYPED[T](f, emptyDependencies)
       .asInstanceOf[js.Function1[CallbackInterface, js.Function0[T]]]
   def useRecoilCallback[T](deps: AllType*)(f: js.Function1[CallbackInterface, Return[T]]) =
-    if (deps.length == 0)
+    if deps.length == 0 then
       module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[CallbackInterface, js.Function0[T]]]
     else
       module
@@ -283,7 +283,7 @@ trait hooks {
       .useRecoilCallback_UNTYPED[T](f, emptyDependencies)
       .asInstanceOf[js.Function1[CallbackInterface, js.Function1[A1, T]]]
   def useRecoilCallback1[A1, T](deps: AllType*)(f: js.Function2[CallbackInterface, A1, Return[T]]) =
-    if (deps.length == 0)
+    if deps.length == 0 then
       module.useRecoilCallback_UNTYPED[T](f).asInstanceOf[js.Function1[CallbackInterface, js.Function1[A1, T]]]
     else
       module

@@ -53,11 +53,11 @@ package object core
   implicit class GQLHelper(private val sc: StringContext) extends AnyVal {
 
     /** If gql is not well-formed, this may thrown an error that is hard to determine its location. */
-    def gql(args: Any*) = gql_raw(sc.parts.toJSArray, args.map(_.asInstanceOf[js.Any]): _*)
+    def gql(args: Any*) = gql_raw(sc.parts.toJSArray, args.map(_.asInstanceOf[js.Any])*)
 
     /** Return either. Using this makes using the hook less ergonomic. */
     def safe_gql(args: Any*): Either[js.JavaScriptException, DocumentNode] =
-      try Right(gql_raw(sc.parts.toJSArray, args.map(_.asInstanceOf[js.Any]): _*))
+      try Right(gql_raw(sc.parts.toJSArray, args.map(_.asInstanceOf[js.Any])*))
       catch { case e: js.JavaScriptException => Left(e) }
   }
 }

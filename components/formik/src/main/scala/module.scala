@@ -200,7 +200,7 @@ object FastField {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   trait Props extends js.Object {}
 }
@@ -211,7 +211,7 @@ object Field {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   trait Props extends js.Object {}
 
@@ -229,7 +229,7 @@ object FieldArray {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   trait Props extends js.Object {}
 }
@@ -240,7 +240,7 @@ object Form:
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   trait Props extends js.Object {}
 

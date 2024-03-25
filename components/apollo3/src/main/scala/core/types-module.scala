@@ -54,7 +54,7 @@ trait ApolloQueryResult[T] extends js.Object {
 }
 
 trait MutationQueryReducerOptions[T] extends js.Object {
-  val mutationResult: FetchResult[T, _, _]
+  val mutationResult: FetchResult[T, ?, ?]
   var queryName: js.UndefOr[String] = js.undefined
   val queryVariables: js.Object | js.Dictionary[Any] | js.Dynamic
 }
@@ -117,7 +117,7 @@ trait MutationBaseOptions[T, TVars] extends js.Object {
   var optimisticResponse: js.UndefOr[T | js.Function1[TVars, T]] = js.undefined
   var updateQueries: js.UndefOr[MutationQueryReducersMap[T]] = js.undefined
   var refetchQueries
-    : js.UndefOr[RefetchQueryDescription | js.Function1[FetchResult[T, _, _], RefetchQueryDescription]] = js.undefined
+    : js.UndefOr[RefetchQueryDescription | js.Function1[FetchResult[T, ?, ?], RefetchQueryDescription]] = js.undefined
   var awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined
   var update: js.UndefOr[MutationUpdaterFn[T]] = js.undefined
   var errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined

@@ -36,7 +36,7 @@ object Image {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   def only(props: Props) = createElement0(JS, props)
 

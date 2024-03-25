@@ -34,7 +34,7 @@ object Picker {
   }
 
   def apply[T](props: Props[T])(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait IOS extends View.Props {
     var itemStyle: js.UndefOr[ViewStyle] = js.undefined

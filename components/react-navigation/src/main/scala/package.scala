@@ -33,7 +33,7 @@ package object react_navigation {
   /** Create routes using easier syntax. */
   object routes {
     def apply(pairs: (String, RouteSpecType)*): RouteConfigs =
-      js.Dictionary[RouteSpecType](pairs: _*)
+      js.Dictionary[RouteSpecType](pairs*)
   }
 
   // what's the func arg?

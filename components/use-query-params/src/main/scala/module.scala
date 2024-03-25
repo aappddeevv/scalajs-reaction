@@ -96,7 +96,7 @@ object QueryParamProvider {
   }
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   def apply(router: ReactJSComponent, children: ReactNode) =
     createElementN(JS, new Props { ReactRouterRoute = router })(children)

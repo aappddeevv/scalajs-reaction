@@ -35,10 +35,10 @@ object Label:
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   def apply(children: ReactNode*) =
-    createElementN(JS, null)(children: _*)
+    createElementN(JS, null)(children*)
 
   def keyAndText(k: String, text: String) =
     createElement(JS, new Props {
@@ -50,11 +50,14 @@ object Label:
       with ComponentRef[js.Any]
       with Disabled
       with Theme
-      with MaybeHasStrKey
+      //with MaybeHasStrKey
       with ReactJSProps:
     var styles: js.UndefOr[IStyleFunctionOrObject[StyleProps, Styles]] = js.undefined
     //var key: js.UndefOr[react.KeyType] = js.undefined
     var required: js.UndefOr[Boolean] = js.undefined
+    // @JSName("key")
+    // var key2: js.UndefOr[react.KeyType] = js.undefined    
+    // override var key: js.UndefOr[react.KeyType] = js.undefined
 
   trait StyleProps extends js.Object:
     var className: js.UndefOr[String] = js.undefined

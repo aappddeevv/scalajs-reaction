@@ -34,28 +34,25 @@ import fabric.styling.{ IStyleFunctionOrObject, IStyleSetTag }
  * You must ensure you ask for styles and theme to make this trait valid.
  */
 @js.native
-trait StandardSettings[SP <: js.Object, S <: IStyleSetTag] extends js.Object {
+trait StandardSettings[SP <: js.Object, S <: IStyleSetTag] extends js.Object:
   def styles: js.UndefOr[IStyleFunctionOrObject[SP, S]] = js.native
   val theme: js.UndefOr[ITheme] = js.native
-}
 
 /** StandardSettings but theme is known to be returned and not undefined. */
 @js.native
-trait StandardSettingsWithTheme[SP <: js.Object, S <: IStyleSetTag] extends js.Object {
+trait StandardSettingsWithTheme[SP <: js.Object, S <: IStyleSetTag] extends js.Object:
   def styles: js.UndefOr[IStyleFunctionOrObject[SP, S]] = js.native
   val theme: ITheme = js.native
-}
+
 @js.native
-trait ICustomizations extends js.Object {
+trait ICustomizations extends js.Object:
   val settings: Settings = js.native
   val scopedSettings: js.Dictionary[js.Object] = js.native
   val inCustomizerContext: js.UndefOr[Boolean] = js.native
-}
 
 @js.native
-trait CustomizerContext extends js.Object {
+trait CustomizerContext extends js.Object:
   val customizations: ICustomizations
-}
 
 /** In js, this is a class with all static methods */
 // @js.native
@@ -64,7 +61,7 @@ trait CustomizerContext extends js.Object {
 
 @js.native
 @JSImport("@uifabric/utilities/lib/customizations/Customizations", "Customizations")
-object Customizations extends js.Object {
+object Customizations extends js.Object:
   def reset(): Unit = js.native
 
   /** T is something like `StandardSettings` */
@@ -85,24 +82,22 @@ object Customizations extends js.Object {
   def observe(cb: js.Function0[Unit]): Unit = js.native
   def unobserve(cb: js.Function0[Unit]): Unit = js.native
 
-}
 
-object Customizer {
+object Customizer:
   @js.native
   @JSImport("@uifabric/utilities/lib/customizations/Customizer", "Customizer")
   object JS extends ReactJSComponent
 
-  def apply(props: Props | ICustomizations)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(props: Props | ICustomizations)(children: ReactNode*) = createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var settings: js.UndefOr[Settings | SettingsFunction] = js.undefined
     var scopedSettings: js.UndefOr[Settings | SettingsFunction] = js.undefined
     var contextTransform: js.UndefOr[js.Function1[CustomizerContext, CustomizerContext]] = js.undefined
   }
-}
 
 @js.native
-trait customizer_base extends js.Object {
+trait customizer_base extends js.Object:
   def mergeSettings(
     old: Settings | SettingsFunction,
     more: js.UndefOr[Settings | SettingsFunction] = js.native
@@ -116,4 +111,4 @@ trait customizer_base extends js.Object {
     parent: CustomizerContext
   ): CustomizerContext = js.native
   val CustomizerContext: ReactContext[CustomizerContext] = js.native
-}
+

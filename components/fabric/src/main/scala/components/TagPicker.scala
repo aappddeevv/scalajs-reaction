@@ -34,7 +34,7 @@ object TagPicker {
   object JS extends ReactJSComponent
 
   def apply(props: js.UndefOr[Props] = js.undefined)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait ITag extends js.Object {
     var key: String

@@ -33,7 +33,7 @@ package object native {
 
   /** For use in Platform.select */
   def choices[T](items: (String, T)*): js.Dictionary[T] =
-    js.Dictionary[T](items: _*)
+    js.Dictionary[T](items*)
 
   type AnimatedValue = Value
   type AnimatedValueXY = ValueXY

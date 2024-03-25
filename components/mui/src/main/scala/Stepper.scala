@@ -34,7 +34,7 @@ object Stepper {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   @js.native
   sealed trait Orientation extends js.Any
@@ -66,7 +66,7 @@ object StepLabel {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var StepIconComponent: js.UndefOr[js.Any] = js.undefined
@@ -94,7 +94,7 @@ object Step {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var active: js.UndefOr[Boolean] = js.undefined
@@ -119,7 +119,7 @@ object StepContent {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var TransitionComponent: js.UndefOr[js.Any] = js.undefined
@@ -145,7 +145,7 @@ object StepButton {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var TouchRippleProps: js.UndefOr[js.Object] = js.undefined
@@ -194,7 +194,7 @@ object StepConnecter {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var active: js.UndefOr[Boolean] = js.undefined
@@ -217,7 +217,7 @@ object StepIcon {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var active: js.UndefOr[Boolean] = js.undefined

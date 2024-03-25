@@ -34,7 +34,7 @@ object Link {
   @JSImport("office-ui-fabric-react/lib/Link", "Link")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children*)
 
   trait StyleProps extends js.Object {
     var className: js.UndefOr[String] = js.undefined

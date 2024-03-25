@@ -33,9 +33,9 @@ import client3.cache._
 import rxjs._
 
 trait DefaultOptions extends js.Object {
-  var watchQuery: js.UndefOr[WatchQueryOptions[_]] = js.undefined
-  var query: js.UndefOr[QueryOptions[_]] = js.undefined
-  var mutate: js.UndefOr[MutationOptions[_, _]] = js.undefined
+  var watchQuery: js.UndefOr[WatchQueryOptions[?]] = js.undefined
+  var query: js.UndefOr[QueryOptions[?]] = js.undefined
+  var mutate: js.UndefOr[MutationOptions[?, ?]] = js.undefined
 }
 
 trait ApolloClientOptions[Shape] extends js.Object {

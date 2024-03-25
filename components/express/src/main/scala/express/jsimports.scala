@@ -79,7 +79,7 @@ trait Response extends Renderer with HasLocals with HasApp {
   def sendFile(
     path: String,
     options: js.Object,
-    cb: js.Function2[Request, Response, js.Function1[_ <: js.Any, Unit]]
+    cb: js.Function2[Request, Response, js.Function1[? <: js.Any, Unit]]
   ): Unit = js.native
 }
 

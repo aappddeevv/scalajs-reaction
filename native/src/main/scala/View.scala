@@ -34,7 +34,7 @@ object View {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait IOS extends js.Object {
     var accessibilityViewIsModel: js.UndefOr[Boolean] = js.undefined
@@ -58,7 +58,7 @@ object View {
     var testID: js.UndefOr[String] = js.undefined
   }
 
-  def stylelist(s: StyleProp[ViewStyle]*) = styling.stylelist[ViewStyle](s: _*)
+  def stylelist(s: StyleProp[ViewStyle]*) = styling.stylelist[ViewStyle](s*)
 }
 
 trait Insets extends js.Object {

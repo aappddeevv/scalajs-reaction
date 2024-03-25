@@ -33,7 +33,7 @@ object AppBar {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   @js.native
   sealed trait Color extends js.Any

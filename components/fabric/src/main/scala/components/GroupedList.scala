@@ -68,17 +68,17 @@ object GroupedList {
     var groups: js.UndefOr[js.Array[IGroup]] = js.undefined
 
     var focusZoneProps: js.UndefOr[FocusZone.Props] = js.undefined
-    var listProps: js.UndefOr[List.Props[_ <: js.Object]] = js.undefined
-    var rootListProps: js.UndefOr[List.Props[_ <: js.Object]] = js.undefined
+    var listProps: js.UndefOr[List.Props[? <: js.Object]] = js.undefined
+    var rootListProps: js.UndefOr[List.Props[? <: js.Object]] = js.undefined
     var onRenderCell: js.UndefOr[js.Function3[Int, js.Any, Int, ReactNode]] =
       js.undefined //(nestingDepth?: number, item?: any, index?: number) => React.ReactNode;
     var role: js.UndefOr[String] = js.undefined
-    var selection: js.UndefOr[ISelection[_ <: js.Object]] = js.undefined
+    var selection: js.UndefOr[ISelection[? <: js.Object]] = js.undefined
     var selectionMode: js.UndefOr[SelectionMode] = js.undefined
     var viewport: js.UndefOr[fabric.utilities.IViewport] = js.undefined
     var onGroupExpandStateChanged: js.UndefOr[js.Function1[Boolean, Unit]] = js.undefined
     var usePageCache: js.UndefOr[Boolean] = js.undefined
-    var onShouldVirtualize: js.UndefOr[js.Function1[List.Props[_ <: js.Object], Boolean]] = js.undefined
+    var onShouldVirtualize: js.UndefOr[js.Function1[List.Props[? <: js.Object], Boolean]] = js.undefined
     var getGroupHeight: js.UndefOr[js.Function2[IGroup, Int, Int]] = js.undefined
   }
 

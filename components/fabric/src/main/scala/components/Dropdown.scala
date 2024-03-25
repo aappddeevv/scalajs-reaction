@@ -68,7 +68,7 @@ object Dropdown {
   }
 
   trait Props extends PropsInit {
-    val options: js.Array[IDropdownOption] | js.Array[_ <: js.Dynamic]
+    val options: js.Array[IDropdownOption] | js.Array[? <: js.Dynamic]
   }
 
   def OnChange(

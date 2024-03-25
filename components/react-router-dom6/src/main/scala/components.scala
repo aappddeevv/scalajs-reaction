@@ -37,13 +37,13 @@ object MemoryRouter:
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   def apply(children: ReactNode*) =
-    createElement(JS, null, children: _*)
+    createElement(JS, null, children*)
 
   trait Props extends js.Object:
-    var initialEntries: js.UndefOr[js.Array[InitialEntry[_]]] = js.undefined
+    var initialEntries: js.UndefOr[js.Array[InitialEntry[?]]] = js.undefined
     var initialIndex: js.UndefOr[Int] = js.undefined
     var timeout: js.UndefOr[Int] = js.undefined
 
@@ -53,7 +53,7 @@ object Navigate:
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   def to(to: To) =
     createElement(
@@ -107,7 +107,7 @@ object Route:
   def apply(props: Props) = createElement(JS, props)
 
   /** Use `Route` children. */
-  def nested(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def nested(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 
   /** Non-specialized version. */
   def apply(path: String, element: ReactNode) =
@@ -118,7 +118,7 @@ object Route:
 
   /** Children should be `Route` nodes. `element` should use `Outlet` to show selected child. */
   def nested(path: String, element: ReactNode)(children: ReactNode*) =
-    createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element), children: _*)
+    createElement(JS, js.Dynamic.literal("path" -> path, "element" -> element), children*)
 
   /** Path is `*`. Use last in `Route` stack. */
   def always(element: ReactNode) =
@@ -134,11 +134,11 @@ object Route:
 
   /** Use `slash asterisk` as the path. `element` should use `Outlet`. */
   def indexNested(element: ReactNode)(children: ReactNode*) =
-    createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children: _*)
+    createElement(JS, js.Dynamic.literal("path" -> "/*", "element" -> element), children*)
 
   /** Path = `/`. */
   def root(child: ReactNode)(children: ReactNode*) =
-    createElement(JS, js.Dynamic.literal("path" -> "/", "element" -> child.asInstanceOf[js.Any]), children: _*)
+    createElement(JS, js.Dynamic.literal("path" -> "/", "element" -> child.asInstanceOf[js.Any]), children*)
 
   /** Alias for `apply`. */
   def withPath(p: String | js.Array[String], child: ReactNode) =
@@ -146,7 +146,7 @@ object Route:
 
   /** Use this as a parent for `Route` components and the matched route will be embedded in the element's `Outlet` position. */
   def layout(element: ReactNode)(children: ReactNode*) =
-    createElement(JS, js.Dynamic.literal("element" -> element.asInstanceOf[js.Any]), children:_*)
+    createElement(JS, js.Dynamic.literal("element" -> element.asInstanceOf[js.Any]), children*)
 
   trait Props extends MaybeHasStrKey:
     var caseSensitive: js.UndefOr[Boolean] = js.undefined
@@ -161,15 +161,15 @@ object Router:
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   def apply(children: ReactNode*) =
-    createElement(JS, null, children: _*)
+    createElement(JS, null, children*)
 
   trait Props extends js.Object:
     var action: js.UndefOr[Action] = js.undefined
-    val location: Location[_]
-    val navigator: Navigator[_]
+    val location: Location[?]
+    val navigator: Navigator[?]
     var pending: js.UndefOr[Boolean] = js.undefined
     var static: js.UndefOr[Boolean] = js.undefined
 end Router
@@ -180,10 +180,10 @@ object Routes:
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElement(JS, props, children: _*)
+    createElement(JS, props, children*)
 
   def apply(children: ReactNode*) =
-    createElement(JS, null, children: _*)
+    createElement(JS, null, children*)
 
 
   trait Props extends js.Object:
@@ -195,11 +195,11 @@ object BrowserRouter:
   @JSImport("react-router-dom", "BrowserRouter")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
-  def apply(children: ReactNode*) = createElement(JS, null, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
+  def apply(children: ReactNode*) = createElement(JS, null, children*)
 
   def basename(bname: js.UndefOr[String], children: ReactNode*) =
-    createElement(JS, new Props { this.basename = bname }, children: _*)
+    createElement(JS, new Props { this.basename = bname }, children*)
 
   trait Props extends js.Object:
     var window: js.UndefOr[sdom.Window] = js.undefined
@@ -230,7 +230,7 @@ object Link:
   @JSImport("react-router-dom", "Link")
   object JS extends ReactJSComponent
 
-  def apply[P <: Props](props: P)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply[P <: Props](props: P)(children: ReactNode*) = createElement(JS, props, children*)
   def apply[P <: Props](props: P) = createElement0(JS, props)
 
   // should drop href according react-router-dom docs because its
@@ -274,7 +274,7 @@ object StaticRouter:
   @JSImport("react-router-dom", "StaticRouter")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 
   trait Props extends js.Object:
-    var location: js.UndefOr[LocationInit[_]] = js.undefined
+    var location: js.UndefOr[LocationInit[?]] = js.undefined

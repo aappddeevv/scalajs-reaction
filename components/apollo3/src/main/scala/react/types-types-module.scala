@@ -40,7 +40,7 @@ trait ApolloContextValue extends js.Object {
 }
 
 trait CommonOptions extends js.Object {
-  var client: js.UndefOr[ApolloClient[_]] = js.undefined
+  var client: js.UndefOr[ApolloClient[?]] = js.undefined
 }
 
 trait BaseQueryOptions[T, TVars] extends js.Object {
@@ -49,7 +49,7 @@ trait BaseQueryOptions[T, TVars] extends js.Object {
   var fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined
   var errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined
   var pollInterval: js.UndefOr[Int] = js.undefined
-  var client: js.UndefOr[ApolloClient[_]] = js.undefined
+  var client: js.UndefOr[ApolloClient[?]] = js.undefined
   var notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined
   var context: js.UndefOr[Context] = js.undefined
   var partialRefetch: js.UndefOr[Boolean] = js.undefined
@@ -74,7 +74,7 @@ trait ObservableQueryFields[T, TVars] extends PartialObservableQuery[T, TVars] {
 
 @js.native
 trait QueryResult[T, TVars] extends ObservableQueryFields[T, TVars] {
-  val client: ApolloClient[_] = js.native
+  val client: ApolloClient[?] = js.native
   var data: js.UndefOr[T] = js.native
   var error: js.UndefOr[ApolloError] = js.native
   var loading: Boolean = js.native
@@ -85,7 +85,7 @@ trait QueryResult[T, TVars] extends ObservableQueryFields[T, TVars] {
 }
 
 object QueryResult {
-  implicit final class RichQueryResult private[QueryResult] (private val qr: QueryResult[_, _]) extends AnyVal {
+  implicit final class RichQueryResult private[QueryResult] (private val qr: QueryResult[?, ?]) extends AnyVal {
     def successfullyLoaded =
       !qr.loading &&
         qr.error.isEmpty &&
@@ -111,7 +111,7 @@ trait LazyQueryHookOptions[T, TVars] extends PartialQueryFunctionOptions[T, TVar
 }
 
 trait QueryPreviousData[T, TVars] {
-  var client: js.UndefOr[ApolloClient[_]] = js.undefined
+  var client: js.UndefOr[ApolloClient[?]] = js.undefined
   var query: js.UndefOr[DocumentNode] = js.undefined
   var observableQueryOptions: js.UndefOr[js.Object | js.Dynamic] = js.undefined
   var result: js.UndefOr[QueryResult[T, TVars] | Null] = js.undefined
@@ -169,7 +169,7 @@ trait MutationResult[T] extends js.Object {
   val error: js.UndefOr[ApolloError] = js.native
   val loading: Boolean = js.native
   val called: Boolean = js.native
-  val client: js.UndefOr[ApolloClient[_]] = js.native
+  val client: js.UndefOr[ApolloClient[?]] = js.native
 }
 
 trait MutationHookOptions[T, TVars] extends BaseMutationOptions[T, TVars] {
@@ -183,7 +183,7 @@ trait MutationDataOptions[T, TVars] extends BaseMutationOptions[T, TVars] {
 /* Subscription types */
 
 trait OnSubscriptionDataOptions[T] extends js.Object {
-  val client: ApolloClient[_]
+  val client: ApolloClient[?]
   val subscriptionData: SubscriptionResult[T]
 }
 

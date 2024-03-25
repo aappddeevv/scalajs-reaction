@@ -26,20 +26,20 @@ package addressmanager
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit }
-import js.JSConverters._
-import js.annotation._
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
 import react.*
 import react.syntax.*
 import jshelpers.syntax.*
-import vdom._
-import fabric._
-import fabric.components._
-import ReactContentLoaderComponents._
-import react_redux._
-import styles._
+import vdom.*
+import fabric.*
+import fabric.components.*
+import ReactContentLoaderComponents.*
+import react_redux.*
+import styles.*
 
-object AddressList {
+object AddressList:
   
   val icolumns = js.Array[IColumn](
     new IColumn {
@@ -72,7 +72,7 @@ object AddressList {
   val render: ReactFC[Props] = props => {
     val listopts = new Details.Shimmered.Props[Address] {
       val items = props.addresses.toJSArray
-      className = amstyles.list.asString
+      className = amstyles.list
       selectionPreservedOnEmptyClick = true
       columns = icolumns
       getKey = getAddressKeyJS
@@ -87,10 +87,10 @@ object AddressList {
       onShouldVirtualize = shouldVirtualize
     }
     div.merge(lit("data-is-scrollable" -> true))(new DivProps {
-      className = amstyles.master.asString
+      className = amstyles.master
     })(
       ScrollablePane(Details.Shimmered[Address](listopts))
     )
   }
   render.displayName(Name)
-}
+

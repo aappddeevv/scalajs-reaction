@@ -35,7 +35,7 @@ object Card {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait Props extends js.Object {
     var className: js.UndefOr[String] = js.undefined
@@ -54,7 +54,7 @@ object Card {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElementN(JS, props)(children*)
 
     trait Props extends js.Object {
       var className: js.UndefOr[String] = js.undefined
@@ -73,7 +73,7 @@ object Card {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElementN(JS, props)(children*)
 
     trait Props extends js.Object {
       var action: js.UndefOr[ReactNode] = js.undefined
@@ -97,7 +97,7 @@ object Card {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElementN(JS, props)(children*)
 
     trait Props extends js.Object {
       var className: js.UndefOr[String] = js.undefined
@@ -114,7 +114,7 @@ object Card {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElementN(JS, props)(children*)
 
     trait Props extends js.Object {
       var className: js.UndefOr[String] = js.undefined
@@ -131,7 +131,7 @@ object Card {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElementN(JS, props)(children*)
 
     trait Props extends js.Object {
       var TouchRippleProps: js.UndefOr[js.Object] = js.undefined

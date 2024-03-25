@@ -34,7 +34,7 @@ object ScrollView {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait IOS extends js.Object {
     var alwaysBounceVertical: js.UndefOr[Boolean] = js.undefined
@@ -90,7 +90,7 @@ object ScrollView {
     var style: js.UndefOr[StyleProp[ViewStyle]] = js.undefined
   }
 
-  def stylelist(s: StyleProp[ViewStyle]*) = styling.stylelist(s: _*)
+  def stylelist(s: StyleProp[ViewStyle]*) = styling.stylelist(s*)
 }
 
 trait BoundingBox extends js.Object {

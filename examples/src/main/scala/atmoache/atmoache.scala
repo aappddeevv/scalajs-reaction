@@ -28,16 +28,16 @@ package atmoache
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.scalajs.js
-import js.JSConverters._
-import js.annotation._
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
 import react.*
 import react.syntax.*
 import react.conversions.given
-import vdom._
-import fabric._
-import fabric.components._
-import util.control._
+import vdom.*
+import fabric.*
+import fabric.components.*
+import util.control.*
 import jshelpers.syntax.any.*
 
 object atmoacheNS extends js.Object
@@ -45,7 +45,7 @@ object atmoacheNS extends js.Object
 object CStyles {
  @js.native
  @JSImport("Examples/atmoache/styles.css", JSImport.Namespace)
- val styles: js.Object with js.Dynamic = js.native
+ val styles: js.Object & js.Dynamic = js.native
 }
 import CStyles._
 
@@ -84,7 +84,7 @@ object Controls {
         autoFocus = true
         // We just need change events but not track each change
         defaultValue = props.cityName.getOrElse[String]("")
-        onKeyPress = js.defined(e => if (e.which == dom.ext.KeyCode.Enter) props.onCitySet(state))
+        onKeyPress = js.defined(e => if e.which == dom.ext.KeyCode.Enter then props.onCitySet(state))
         onChange = TextField.OnChangeInput((_, v: js.UndefOr[String]) => setState(v.toOption))
       }),
       Button.Primary(new Button.Props {

@@ -35,17 +35,17 @@ case class AttrValue(value: js.Any)
  */
 case class AttrName(value: String) {
   def :=(value: AttrValue): Attr = Attr(this, value)
-  def -->(value: js.Function0[_]): Attr =
+  def -->(value: js.Function0[?]): Attr =
     Attr(this, AttrValue(value: js.Function))
-  def ==>[T](value: js.Function1[T, _]): Attr = Attr(this, AttrValue(value))
+  def ==>[T](value: js.Function1[T, ?]): Attr = Attr(this, AttrValue(value))
 
   def :=?[A](value: Option[A])(implicit toAttrValue: A => AttrValue): Attrs =
     value.fold(Attrs.zero)(a => Attrs(this := toAttrValue(a)))
 
-  def -->?[F](value: Option[F])(implicit toJSFunction: F => js.Function0[_]): Attrs =
+  def -->?[F](value: Option[F])(implicit toJSFunction: F => js.Function0[?]): Attrs =
     value.fold(Attrs.zero)(f => Attrs(this --> toJSFunction(f)))
 
-  def ==>?[T, FT](value: Option[FT])(implicit toJsFunction: FT => js.Function1[T, _]): Attrs =
+  def ==>?[T, FT](value: Option[FT])(implicit toJsFunction: FT => js.Function1[T, ?]): Attrs =
     value.fold(Attrs.zero)(ft => Attrs(this ==> toJsFunction(ft)))
 }
 
@@ -63,7 +63,7 @@ class Attrs(private val attrs: Seq[Attr]) {
     js.Dictionary(
         attrs
           .filter(a => !js.isUndefined(a.value.value))
-          .map(a => a.name.value -> a.value.value): _*
+          .map(a => a.name.value -> a.value.value)*
       )
       .asInstanceOf[js.Object]
 }
@@ -86,11 +86,11 @@ object Attrs {
   def zero: Attrs = Attrs()
 
   def append(a: Attrs, b: Attrs): Attrs =
-    Attrs(a.attrs ++: b.attrs: _*)
+    Attrs(a.attrs ++: b.attrs*)
 
   /** Lazy create a new list from existing lists. */
   def concat(as: Seq[Attrs]): Attrs =
-    Attrs(as.flatMap(_.attrs): _*)
+    Attrs(as.flatMap(_.attrs)*)
 
   implicit def attrToAttrs(attr: Attr): Attrs = Attrs(attr)
 }
@@ -113,7 +113,7 @@ trait AttributeListSyntax extends AttributeListLowerOrderPriorityImplicits {
 
   @inline implicit final class optionalMarkupOps(flag: Boolean) {
     def ?=(attr: Attr): Attrs =
-      if (flag)
+      if flag then
         attr
       else
         Attrs.zero

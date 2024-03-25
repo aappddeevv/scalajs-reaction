@@ -23,8 +23,8 @@ package react
 
 import scala.scalajs.js
 import js.Dynamic.{ literal => lit }
-import js.JSConverters._
-import js._
+import js.JSConverters.*
+import js.*
 
 /**
  * Scala-side access to js react APIs. Some of these methods overlay the raw JS
@@ -74,7 +74,7 @@ trait React:
   )(
     children: ReactNode*
   ): ReactDOMElement =
-    ReactJS.createElement(tag, props.asInstanceOf[js.Object], children: _*).asInstanceOf[ReactDOMElement]
+    ReactJS.createElement(tag, props.asInstanceOf[js.Object], children*).asInstanceOf[ReactDOMElement]
 
   /** Create an element with props and 0 children. */
   def createElement0(
@@ -98,11 +98,11 @@ trait React:
   )(
     children: ReactNode*
   ): ReactElement =
-    ReactJS.createElement(tag, props.asInstanceOf[js.Object], children: _*)
+    ReactJS.createElement(tag, props.asInstanceOf[js.Object], children*)
 
   /** Create an element without props but with children as a separate parameter. */
   def createElementN(tag: ReactType)(children: ReactNode*): ReactElement =
-    ReactJS.createElement(tag, js.undefined, children: _*)
+    ReactJS.createElement(tag, js.undefined, children*)
 
   /** Create an element with some props. Children can be in the props. */
   def createElement[P <: js.Object](
@@ -113,7 +113,7 @@ trait React:
 
   /** Create an element using the standard var args signature. */
   def createElement[P <: js.Object](component: ReactType, props: P|Null, children: ReactNode*): ReactElement =
-    ReactJS.createElement(component, props, children: _*)
+    ReactJS.createElement(component, props, children*)
 
   /** For creating quick ReactElements using js.Dynamic. Input is a scala function
    * taking a single props argument.
@@ -450,11 +450,11 @@ trait React:
   /** Create a React.fragment element. */
   object Fragment {
     def apply(key: String)(children: ReactNode*) =
-      createElement(ReactJS.Fragment, js.Dynamic.literal("key" -> key), children: _*)
+      createElement(ReactJS.Fragment, js.Dynamic.literal("key" -> key), children*)
 
     /** Preferred creation function. */
     def apply(children: ReactNode*) =
-      createElement(ReactJS.Fragment, null, children: _*)
+      createElement(ReactJS.Fragment, null, children*)
   }
 
   /** Strict element. Wraps your root component typically. */
@@ -462,7 +462,7 @@ trait React:
 
     /** Wrap some children with a Strict component. */
     def apply(children: ReactNode*): ReactNode =
-      ReactJS.createElement(ReactJS.StrictMode, null, children: _*)
+      ReactJS.createElement(ReactJS.StrictMode, null, children*)
   }
 
   /** Catch a thrown js.Promise from the child. Show fallback until the promise is
@@ -470,7 +470,7 @@ trait React:
    */
   object Suspense {
     def apply(fallback: => ReactNode /* | Null = null*/ )(children: ReactNode*) =
-      ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback.asInstanceOf[js.Any]), children: _*)
+      ReactJS.createElement(ReactJS.Suspense, lit("fallback" -> fallback.asInstanceOf[js.Any]), children*)
   }
   
   opaque type RevealOrder = String
@@ -490,10 +490,10 @@ trait React:
       def tail: js.UndefOr[Tail] = js.undefined
 
     def apply(items: ReactNode*) =
-      ReactJS.createElement(ReactJS.SuspenseList, null, items: _*)
+      ReactJS.createElement(ReactJS.SuspenseList, null, items*)
 
     def apply(props: Props|Null)(items: ReactNode*) =
-      ReactJS.createElement(ReactJS.SuspenseList, props, items: _*)      
+      ReactJS.createElement(ReactJS.SuspenseList, props, items*)      
   }
 
   val version = ReactJS.version

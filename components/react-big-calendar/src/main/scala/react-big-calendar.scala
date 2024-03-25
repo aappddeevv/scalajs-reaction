@@ -47,7 +47,7 @@ object ReactBigCalendar {
   }
 
   def apply[E <: js.Any](props: Props[E])(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   /**
    * @tparam E Event object type

@@ -32,7 +32,10 @@ import org.scalajs.dom
 import react.*
 import react.syntax.*
 import react.conversions.given
-import jshelpers.syntax.*
+import jshelpers.syntax.{jsnull,dynamic,undefor}
+import jsnull.*
+import dynamic.*
+import undefor.*
 import react.extras.*
 import vdom.*
 import fabric.*
@@ -40,14 +43,17 @@ import fabric.components.*
 import fabric.utilities.*
 import ReactContentLoaderComponents.*
 import react_redux.*
+import jshelpers.syntax.any.unsafeAsJsAny
 
-object styles {
-  @js.native
-  @JSImport("Examples/addressmanager/addressmanager.css", JSImport.Namespace)
-  val amstyles: js.Object with js.Dynamic = js.native
-}
-
-import styles._
+@js.native
+@JSImport("Examples/addressmanager/addressmanager.css", JSImport.Namespace)
+object amstyles extends js.Object:
+  val component: js.UndefOr[String] = js.native
+  val masterAndDetail: js.UndefOr[String] = js.native
+  val footer: js.UndefOr[String] = js.native
+  val detail: js.UndefOr[String] = js.native
+  val master: js.UndefOr[String] = js.native
+  val list: js.UndefOr[String] = js.native
 
 object AddressManager:
   trait Props extends js.Object:
@@ -76,9 +82,9 @@ object AddressManager:
           text = "Incr Footer Height (CSS Var)"
           onClick = IContextualMenuItem.OnClick(() => {
             val pattern    = "([0-9]+)px".r
-            val pattern(h) = vdom.styling.getCSSVar("--footer").trim.nn
+            val pattern(h) = vdom.styling.getCSSVar("--footer").trim.nn: @unchecked
             val hint       = h.toInt
-            val newHeight  = if (hint > 300) 80 else hint + 10
+            val newHeight  = if hint > 300 then 80 else hint + 10
             // This is really as side effect that should force a re-render.
             // So I should really call into the reducer, but I'm lazy.
             vdom.styling.setCSSVar("--footer", s"${newHeight}px")
@@ -87,7 +93,7 @@ object AddressManager:
         }
       )
       farItems = js.Array(
-        if (isFetching)
+        if isFetching then
           new IContextualMenuItem {
             val key = "refresh"
             text = "Fetching..."
@@ -198,12 +204,12 @@ object AddressManager:
     }
 
     val ifx_ = lastActiveAddressId.map { id =>
-      fetchState.data.indexWhere(_.customeraddressid.map(_ == id).getOrElse(false))
-    }.toOption
+      fetchState.data.indexWhere(_.customeraddressid.map(_ == id).nn)
+    }.toOptionFilterNull
 
     val addressStuff = useMemo(active)(() => {
       val t = active.toNonNullOption
-      val footer = amstyles.selectDynamic("footer").asInstanceOf[js.UndefOr[String]]
+      val footer = amstyles.footer
       (AddressDetail(t), AddressSummary(footer.toOption, t))
     })
 
@@ -216,7 +222,7 @@ object AddressManager:
       cx(amstyles.component, props.className.getOrElse(null)),
       commandBar,
       divWithClassname(
-        amstyles.masterAndDetail.asString,
+        amstyles.masterAndDetail,
         AddressList(new AddressList.Props {
           var sel       = sref()
           var addresses = fetchState.data
@@ -226,7 +232,7 @@ object AddressManager:
         addressStuff._1
       ),
       divWithClassname(
-        amstyles.footer.asString,
+        amstyles.footer,
         addressStuff._2,
         Label("Redux sourced label: " + label.getOrElse("<no redux label provided>"))
       )

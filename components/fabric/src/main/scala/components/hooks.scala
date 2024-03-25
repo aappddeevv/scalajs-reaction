@@ -55,8 +55,8 @@ trait UseCustomizableHooks {
     val inCustomizerContext = useRef[Boolean](false)
     val cb = useCallbackMounting(() => update(!_))
     useEffect(inCustomizerContext) { () =>
-      if (!inCustomizerContext.current) Customizations.observe(cb)
-      () => if (!inCustomizerContext.current) Customizations.unobserve(cb)
+      if !inCustomizerContext.current then Customizations.observe(cb)
+      () => if !inCustomizerContext.current then Customizations.unobserve(cb)
     }
     val context = useContext[CustomizerContext](fabric.utilities.module.CustomizerContext)
     inCustomizerContext.current = context.customizations.inCustomizerContext.getOrElse(false).asInstanceOf[Boolean]

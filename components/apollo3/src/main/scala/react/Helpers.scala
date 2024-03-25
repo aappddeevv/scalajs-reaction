@@ -60,8 +60,8 @@ trait ApolloClientOptionsMaker[T, TVars] {
         "metadata" -> metadata.asJSAny,
         "fetchPolicy" -> fetchPolicy.asJSAny
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDynamic("variables")(unsafeVariables.unsafeAsJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDynamic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[QueryOptions[TVars]]
   }
 }
@@ -80,7 +80,7 @@ trait OptionsMaker[T, TVars] extends ApolloClientOptionsMaker[T, TVars] {
     fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
     pollInterval: js.UndefOr[Int] = js.undefined,
-    client: js.UndefOr[ApolloClient[_]] = js.undefined,
+    client: js.UndefOr[ApolloClient[?]] = js.undefined,
     notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined,
     context: js.UndefOr[js.Object] = js.undefined,
     partialRefetch: js.UndefOr[Boolean] = js.undefined,
@@ -104,8 +104,8 @@ trait OptionsMaker[T, TVars] extends ApolloClientOptionsMaker[T, TVars] {
         "returnPartialData" -> returnPartialData.asJSAny,
         "skip" -> skip.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[QueryHookOptions[T, TVars]]
   }
 }
@@ -149,7 +149,7 @@ case class UseLazyQuery[T, TVars]() extends ApolloClientOptionsMaker[T, TVars] {
     fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
     pollInterval: js.UndefOr[Int] = js.undefined,
-    client: js.UndefOr[ApolloClient[_]] = js.undefined,
+    client: js.UndefOr[ApolloClient[?]] = js.undefined,
     notifyOnNetworkStatusChange: js.UndefOr[Boolean] = js.undefined,
     context: js.UndefOr[js.Object] = js.undefined,
     partialRefetch: js.UndefOr[Boolean] = js.undefined,
@@ -173,8 +173,8 @@ case class UseLazyQuery[T, TVars]() extends ApolloClientOptionsMaker[T, TVars] {
         "returnPartialData" -> returnPartialData.asJSAny,
         "skip" -> skip.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[LazyQueryHookOptions[T, TVars]]
   }
 
@@ -188,8 +188,8 @@ case class UseLazyQuery[T, TVars]() extends ApolloClientOptionsMaker[T, TVars] {
       .literal(
         "context" -> context.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[QueryLazyOptions[TVars]]
   }
 }
@@ -215,7 +215,7 @@ case class UseMutation[T, TVars]() {
   def makeOptions(
     // refetchQueries ???
     awaitRefetchQueries: js.UndefOr[Boolean] = js.undefined,
-    client: js.UndefOr[ApolloClient[_]] = js.undefined,
+    client: js.UndefOr[ApolloClient[?]] = js.undefined,
     context: js.UndefOr[js.Object] = js.undefined,
     errorPolicy: js.UndefOr[ErrorPolicy] = js.undefined,
     fetchPolicy: js.UndefOr[WatchQueryFetchPolicy] = js.undefined,
@@ -242,8 +242,8 @@ case class UseMutation[T, TVars]() {
         "onError" -> onError.asJSAny,
         "update" -> update.asJSAny,
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[MutationHookOptions[T, TVars]]
   }
 
@@ -270,11 +270,11 @@ case class UseMutation[T, TVars]() {
         "refetchQueries" -> refetchQueriesByName.asJSAny,
         "awaitRefetchQueries" -> awaitRefetchQueries.asJSAny,
       )
-    if (optimisticResponseStrict.isDefined)
+    if optimisticResponseStrict.isDefined then
       __obj.updateDynamic("optimisticResponse")(optimisticResponseStrict.unsafeAsJSAny)
-    if (optimisticResponse.isDefined) __obj.updateDynamic("optimisticResponse")(optimisticResponse.unsafeAsJSAny)
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
+    if optimisticResponse.isDefined then __obj.updateDynamic("optimisticResponse")(optimisticResponse.unsafeAsJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDyanmic("variables")(unsafeVariables.unsafeAsJSAny)
     __obj.asInstanceOf[MutationFunctionOptions[T, TVars]]
   }
 
@@ -306,8 +306,8 @@ case class UseMutation[T, TVars]() {
         "updateQueries" -> updateQueries.unsafeAsJSAny,
         "optimisticResponse" -> optimisticResponse.unsafeAsJSAny
       )
-    if (variables.isDefined) __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
-    if (unsafeVariables.isDefined) __obj.updateDyanmic("variables")(unsafeVariables.asJSAny)
+    if variables.isDefined then __obj.updateDynamic("variables")(variables.unsafeAsJSAny)
+    if unsafeVariables.isDefined then __obj.updateDyanmic("variables")(unsafeVariables.asJSAny)
     __obj.asInstanceOf[MutationOptions[T, TVars]]
   }
 }

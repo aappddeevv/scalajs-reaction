@@ -85,7 +85,7 @@ object BrowserView {
   @js.native
   @JSImport("react-device-detect", "BrowserView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object MobileView {
@@ -93,7 +93,7 @@ object MobileView {
   @js.native
   @JSImport("react-device-detect", "MobileView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object Android {
@@ -101,7 +101,7 @@ object Android {
   @js.native
   @JSImport("react-device-detect", "Android")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object IEView {
@@ -109,7 +109,7 @@ object IEView {
   @js.native
   @JSImport("react-device-detect", "IEView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object IOSView {
@@ -117,7 +117,7 @@ object IOSView {
   @js.native
   @JSImport("react-device-detect", "IOSView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object TabletView {
@@ -125,7 +125,7 @@ object TabletView {
   @js.native
   @JSImport("react-device-detect", "TabletView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object WinPhoneView {
@@ -133,7 +133,7 @@ object WinPhoneView {
   @js.native
   @JSImport("react-device-detect", "WinPhoneView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object MobileOnlyView {
@@ -141,7 +141,7 @@ object MobileOnlyView {
   @js.native
   @JSImport("react-device-detect", "MobileOnlyView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object SmartTVView {
@@ -149,7 +149,7 @@ object SmartTVView {
   @js.native
   @JSImport("react-device-detect", "SmartTVView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object WearableView {
@@ -157,7 +157,7 @@ object WearableView {
   @js.native
   @JSImport("react-device-detect", "WearableView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object CustomView {
@@ -165,7 +165,7 @@ object CustomView {
   @js.native
   @JSImport("react-device-detect", "CustomView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }
 
 object ConsoleView {
@@ -173,5 +173,5 @@ object ConsoleView {
   @js.native
   @JSImport("react-device-detect", "ConsoleView")
   object JS extends ReactJSComponent
-  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElement(JS, props, children*)
 }

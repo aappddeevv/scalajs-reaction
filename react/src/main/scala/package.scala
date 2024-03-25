@@ -184,14 +184,14 @@ package object react extends react.React with When {
 
   /** Optional key but no ref. Key must be a string. */
   trait MaybeHasStrKey extends js.Object {
-    var key: js.UndefOr[String] = js.undefined
+    def key: js.UndefOr[String] = js.undefined
   }
 
   /** Known to contain a key. You can force callers to incuded a key
    * using this supertrait so it has very limited use.
   */
   trait HasKey extends js.Object {
-    val key: KeyType
+    def key: KeyType
   }
 
   /** With key but key is known to be a String which is the common scenario. */
@@ -256,7 +256,7 @@ package object react extends react.React with When {
     PrimitiveConvertibleToNode | 
     ReactJSComponent | 
     ReactJSFunctionComponent | 
-    ReactJSLazyComponent1[_]| 
+    ReactJSLazyComponent1[?]| 
     ReactJSLazyComponent | 
     ScalaJSFunctionComponent | 
     ScalaJSFunctionComponent1 | 
@@ -267,7 +267,7 @@ package object react extends react.React with When {
     ReactClass | 
     ReactJSComponent | 
     ReactJSFunctionComponent | 
-    ReactJSLazyComponent1[_] | 
+    ReactJSLazyComponent1[?] | 
     ReactJSLazyComponent | 
     ScalaJSFunctionComponent | 
     ScalaJSFunctionComponent1 | 
@@ -313,7 +313,7 @@ package object react extends react.React with When {
    * processed to be allowed to be used as Components in this facade. Keep in
    * sync with `ReactType`.
    */
-  type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[_] | ReactJSLazyComponent
+  type ImportedJSComponent = ReactJSComponent | ReactJSFunctionComponent | ReactJSLazyComponent1[?] | ReactJSLazyComponent
 
   /** The type of `() => import("somecomponent")` which is used exclusively for
   * the argument to React.lazy.
@@ -383,7 +383,7 @@ package object react extends react.React with When {
    * https://stackoverflow.com/questions/36561209/is-it-possible-to-combine-two-js-dynamic-objects
    */
   def mergeJSObjects(objs: js.Dynamic*): js.Dynamic =
-    js.Object.assign(js.Dynamic.literal(), objs.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[js.Dynamic]
+    js.Object.assign(js.Dynamic.literal(), objs.asInstanceOf[Seq[js.Object]]*).asInstanceOf[js.Dynamic]
   // // not js.Any? maybe keep js or scala values in here....
   // val result = js.Dictionary.empty[Any]
   // for (source <- objs) {
@@ -401,7 +401,7 @@ package object react extends react.React with When {
    * js.Object.assign here?
    */
   def merge[T <: js.Object](objs: js.UndefOr[js.Object] | js.Dynamic | js.Object | Null*): T =
-    js.Object.assign(js.Dynamic.literal(), objs.asInstanceOf[Seq[js.Object]]: _*).asInstanceOf[T]
+    js.Object.assign(js.Dynamic.literal(), objs.asInstanceOf[Seq[js.Object]]*).asInstanceOf[T]
   //objs.toJSArray.asInstanceOf[js.Array[js.Object]]:_*).asInstanceOf[T]
   // val result = js.Dictionary.empty[Any]
   // for (source <- objs) {
@@ -452,7 +452,7 @@ package object react extends react.React with When {
       case (a: js.Array[_], b: js.Array[_]) =>
         // compare length and each individual item
         a.length == b.length &&
-          a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual _).tupled)
+          a.asInstanceOf[js.Array[js.Any]].zip(b.asInstanceOf[js.Array[js.Any]]).forall((jsEqual).tupled)
       case _
           if a != null && a.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] &&
             b != null && b.asInstanceOf[js.Dynamic].constructor == js.constructorOf[js.Object] =>

@@ -59,11 +59,11 @@ trait StyleSet extends js.Object
 
 /** Apply the StyleSet tag to an object or a list of pairs. */
 object StyleSet {
-  def apply[T <: js.Object](obj: js.Object): T with StyleSet =
-    obj.asInstanceOf[T with StyleSet]
+  def apply[T <: js.Object](obj: js.Object): T & StyleSet =
+    obj.asInstanceOf[T & StyleSet]
 
-  def apply[T <: js.Object](stylePairs: (String, Style)*): T with StyleSet =
-    js.Dictionary[Style](stylePairs: _*).asInstanceOf[T with StyleSet]
+  def apply[T <: js.Object](stylePairs: (String, Style)*): T & StyleSet =
+    js.Dictionary[Style](stylePairs*).asInstanceOf[T & StyleSet]
 }
 
 /** Drive type inference when combining styles for a component's style property. */

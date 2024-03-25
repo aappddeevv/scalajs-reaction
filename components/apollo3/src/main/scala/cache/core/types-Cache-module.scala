@@ -61,7 +61,7 @@ object Cache {
 
   trait ModifyOptions {
     var id: js.UndefOr[String] = js.undefined
-    val fields: Modifiers | Modifier[_]
+    val fields: Modifiers | Modifier[?]
     var optimistic: js.UndefOr[js.Object | js.Dynamic] = js.undefined
     var broadcast: js.UndefOr[Boolean] = js.undefined
   }

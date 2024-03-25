@@ -496,7 +496,7 @@ trait ISelectableDroppableTextProps[I <: ISelectableOption, T <: dom.html.Elemen
     extends ISelectableDroppableTextPropsInit[I, T] {
 
   /** Any ??? needs to have key & text, use structural type? ISelectableOption?? */
-  val options: js.Array[I] | js.Array[_ <: js.Dynamic]
+  val options: js.Array[I] | js.Array[? <: js.Dynamic]
 }
 
 @js.native

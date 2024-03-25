@@ -49,22 +49,22 @@ object BootstrapNS extends js.Object {
 object components {
 
   def Button(props: IButtonProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.Button, props)(children: _*)
+    createElementN(BootstrapNS.Button, props)(children*)
   def ButtonToolbar(props: IButtonToolbarProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
+    createElementN(BootstrapNS.ButtonToolbar, props)(children*)
   def ButtonGroup(props: IButtonGroupProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
+    createElementN(BootstrapNS.ButtonToolbar, props)(children*)
   def ToggleButtonGroup(props: IToggleButtonGroupProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
+    createElementN(BootstrapNS.ButtonToolbar, props)(children*)
   def ToggleButton(props: IToggleButtonProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.ButtonToolbar, props)(children: _*)
+    createElementN(BootstrapNS.ButtonToolbar, props)(children*)
 
   def FormControl(props: IFormControlProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.FormControl, props)(children: _*)
+    createElementN(BootstrapNS.FormControl, props)(children*)
   def FormLabel(props: IFormLabelProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.FormLabel, props)(children: _*)
+    createElementN(BootstrapNS.FormLabel, props)(children*)
   def FormGroup(props: IFormGroupProps|Null = null)(children: ReactNode*) =
-    createElementN(BootstrapNS.FormGroup, props)(children: _*)
+    createElementN(BootstrapNS.FormGroup, props)(children*)
 
   //def HelpBlock(props: IHelpBlockProps=null)(children: ReactNode*) =
   //  createElement(BootstrapNS.HelpBlock, props, children: _*)

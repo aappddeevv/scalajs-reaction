@@ -22,6 +22,8 @@
 package jshelpers
 package syntax
 
+/** Importing this package is really deprecated because there can be so much conflict. */
+
 export jshelpers.syntax.undefor.*
 export jshelpers.syntax.any.*
 export jshelpers.syntax.array.*

@@ -54,8 +54,8 @@ object CommandBar {
     var componentRef: js.UndefOr[ICommandBar => Unit] = js.undefined
     var isSearchBoxVisble: js.UndefOr[Boolean] = js.undefined
     var searchBoxPlaceholderText: js.UndefOr[String] = js.undefined
-    var farItems: js.UndefOr[js.Array[_ >: ItemProps]] = js.undefined
-    var overflowItems: js.UndefOr[js.Array[_ >: ItemProps]] = js.undefined
+    var farItems: js.UndefOr[js.Array[? >: ItemProps]] = js.undefined
+    var overflowItems: js.UndefOr[js.Array[? >: ItemProps]] = js.undefined
     var overflowButtonProps: js.UndefOr[Button.Props] = js.undefined
     var shiftOnReduce: js.UndefOr[Boolean] = js.undefined
     var onReduceData: js.UndefOr[js.Function1[Data, js.UndefOr[Data]]] = js.undefined
@@ -65,7 +65,7 @@ object CommandBar {
   }
 
   trait PropsInit extends PropsBase {
-    var items: js.UndefOr[js.Array[_ >: ItemProps]] = js.undefined
+    var items: js.UndefOr[js.Array[? >: ItemProps]] = js.undefined
   }
 
   object PropsInit {
@@ -78,7 +78,7 @@ object CommandBar {
   trait Props extends PropsBase {
 
     /** Required in the end, but made optional so you can create props then merge. */
-    val items: js.Array[_ >: ItemProps]
+    val items: js.Array[? >: ItemProps]
   }
 
   trait ItemPropsInit extends IContextualMenuItemInit {

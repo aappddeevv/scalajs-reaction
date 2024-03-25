@@ -34,10 +34,10 @@ object ApolloProvider:
   @JSImport("@apollo/client/react", "ApolloProvider")
   object JS extends r.ReactJSComponent
 
-  def apply(props: Props, children: r.ReactNode*) = r.createElement(JS, props, children: _*)
-  def apply(client: ApolloClient[_])(children: r.ReactNode*) =
+  def apply(props: Props, children: r.ReactNode*) = r.createElement(JS, props, children*)
+  def apply(client: ApolloClient[?])(children: r.ReactNode*) =
     r.createElement(JS, js.Dynamic.literal("client" -> client, "children" -> children))
 
   trait Props extends js.Object:
-    val client: ApolloClient[_]
+    val client: ApolloClient[?]
     var children: js.UndefOr[r.ReactNode | js.Array[r.ReactNode] | Null] = js.undefined

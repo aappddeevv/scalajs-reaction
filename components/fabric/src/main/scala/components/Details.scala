@@ -43,7 +43,7 @@ object Details {
     js.Any.fromFunction3(f).asInstanceOf[OnActiveItemChanged[T]]
 
   type OnColumnHeaderClick = js.Function2[ReactMouseEvent[dom.html.Element], IColumn, Unit]
-  type OnItemInvoked[T <: js.Object] = js.Function3[T, Int, ReactEvent[_], Unit]
+  type OnItemInvoked[T <: js.Object] = js.Function3[T, Int, ReactEvent[?], Unit]
 
   @js.native
   sealed trait LayoutMode extends js.Any
@@ -117,7 +117,7 @@ object Details {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElementN(JS, props)(children: _*)
+      createElementN(JS, props)(children*)
 
     @js.native
     trait IDetailsRow extends js.Object

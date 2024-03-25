@@ -40,10 +40,10 @@ object Separator {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   def apply(children: ReactNode*) =
-    createElementN(JS, null)(children: _*)
+    createElementN(JS, null)(children*)
 
   @js.native
   trait ISeparator extends js.Object

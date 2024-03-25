@@ -26,16 +26,16 @@ package todo
 import scala.scalajs.js
 
 import js.Dynamic.{ literal => lit, global => g }
-import js.JSConverters._
-import js.annotation._
+import js.JSConverters.*
+import js.annotation.*
 import org.scalajs.dom
 import react.*
 import react.syntax.*
 import react.conversions.given
-import vdom._
-import fabric._
-import fabric.components._
-import fabric.styling._
+import vdom.*
+import fabric.*
+import fabric.components.*
+import fabric.styling.*
 
 import react_dom._
 
@@ -177,7 +177,7 @@ object ToDos {
       useReducer[State, Action](reducer, State(props.todos, None))
     // if the input is added as a todo or todo remove, reset focus
     useEffect(state.todos.length) { () =>
-      if(ifield.current != null) ifield.current.focus()
+      if ifield.current != null then ifield.current.focus()
     }
 
     val cn = getClassNames(new StyleProps { className = props.className }, props.styles)
@@ -196,7 +196,7 @@ object ToDos {
           value = state.input.getOrElse[String]("")
           autoFocus = true
           onKeyPress = js.defined { e =>
-            if (e.which == dom.ext.KeyCode.Enter) addit(state.input, dispatch)
+            if e.which == dom.ext.KeyCode.Enter then addit(state.input, dispatch)
           }
         }),
         Button.Primary(new Button.Props {
@@ -208,7 +208,7 @@ object ToDos {
           // ReactEvent[dom.html.Input] to be more specifci
           // ReactKeyboardEvent[_] to be more specific
           // ReactKeyboardEvent[dom.html.Input] to be more specific
-          onClick = js.defined((e: ReactEvent[_]) => addit(state.input, dispatch))
+          onClick = js.defined((e: ReactEvent[?]) => addit(state.input, dispatch))
         })()
       ),
       ToDoList(new ToDoList.Props {

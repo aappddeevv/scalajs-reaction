@@ -39,9 +39,9 @@ object TextField {
   object JS extends ReactJSComponent
 
   def apply(props: js.UndefOr[Props] = js.undefined)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
-  def apply(children: ReactNode*) = createElementN(JS)(children: _*)    
+  def apply(children: ReactNode*) = createElementN(JS)(children*)    
 
   @js.native
   sealed trait Margin extends js.Any

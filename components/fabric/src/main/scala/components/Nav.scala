@@ -35,7 +35,7 @@ object Nav {
   @JSImport("office-ui-fabric-react/lib/Nav", "Nav")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children*)
   def apply(props: Props) = createElement0(JS, props)
 
   @js.native

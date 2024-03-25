@@ -106,7 +106,7 @@ object Title:
 
   def apply(text: String): Title =
     val _text = text
-    Title.apply(text = _text)
+    Title(text = _text, font = js.undefined)
 
 /*@jsenrich */
 trait DataTitle extends js.Object {
@@ -1080,8 +1080,8 @@ trait PlotData extends js.Object {
 }
 
 trait PlotDataInit extends PlotData with TraceInit {
-  var x: js.UndefOr[js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]] = js.undefined
-  var y: js.UndefOr[js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]] = js.undefined
+  var x: js.UndefOr[js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[?, ?]] = js.undefined
+  var y: js.UndefOr[js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[?, ?]] = js.undefined
 }
 
 object PlotDataInit {
@@ -1093,8 +1093,8 @@ object PlotDataInit {
 trait Data extends PlotData with Trace {}
 
 trait BarTrace extends Data {
-  val x: js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]
-  val y: js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[_, _]
+  val x: js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[?, ?]
+  val y: js.Array[Datum] | js.Array[js.Array[Datum]] | js.typedarray.TypedArray[?, ?]
   var x0: js.UndefOr[Datum] = js.undefined
   var y0: js.UndefOr[Datum] = js.undefined
   var ids: js.UndefOr[js.Array[String]] = js.undefined

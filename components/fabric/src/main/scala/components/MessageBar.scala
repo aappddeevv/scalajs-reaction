@@ -34,7 +34,7 @@ object MessageBar {
   @JSImport("office-ui-fabric-react/lib/MessageBar", "MessageBar")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children*)
 
   trait IMessageBar extends js.Object
 

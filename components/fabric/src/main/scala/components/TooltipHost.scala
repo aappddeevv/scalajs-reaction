@@ -37,7 +37,7 @@ object Tooltip {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   @js.native
   trait ITooltip extends js.Object
@@ -115,7 +115,7 @@ object Tooltip {
     object JS extends ReactJSComponent
 
     def apply(props: Props)(children: ReactNode*) =
-      createElement(JS, props, children: _*)
+      createElement(JS, props, children*)
 
     def apply(props: js.UndefOr[Props]) = createElement(JS, props.asInstanceOf[js.Object])
 

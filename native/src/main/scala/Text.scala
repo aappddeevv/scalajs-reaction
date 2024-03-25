@@ -34,7 +34,7 @@ object Text {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   trait IOS extends js.Object {
     var adjustsFontTSizeToFit: js.UndefOr[Boolean] = js.undefined
@@ -61,7 +61,7 @@ object Text {
     var nativeID: js.UndefOr[String] = js.undefined
   }
 
-  def stylelist(s: StyleProp[TextStyle]*) = styling.stylelist[TextStyle](s: _*)
+  def stylelist(s: StyleProp[TextStyle]*) = styling.stylelist[TextStyle](s*)
 }
 
 @js.native

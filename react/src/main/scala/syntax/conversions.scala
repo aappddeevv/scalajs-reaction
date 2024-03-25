@@ -83,8 +83,8 @@ given null2Node: Conversion[Null, ReactNode] = _.asInstanceOf[ReactNode]
 //
 // Basic type conversions. No | type used to keep everything very specific.
 //
-given stringToElement: Conversion[String, ReactNode] = _.asInstanceOf[ReactNode]
-given stringToUndefOrNode: Conversion[js.UndefOr[String], ReactNode] = _.getOrElse(null).asInstanceOf[ReactNode]
+//given stringToElement: Conversion[String, ReactNode] = _.asInstanceOf[ReactNode]
+//given stringToUndefOrNode: Conversion[js.UndefOr[String], ReactNode] = _.getOrElse(null).asInstanceOf[ReactNode]
 given intToNode: Conversion[Int, ReactNode] = _.asInstanceOf[ReactNode]
 given uintToNode: Conversion[js.UndefOr[Int], ReactNode] = _.asInstanceOf[ReactNode]
 given longToNode: Conversion[Long, ReactNode] = _.asInstanceOf[ReactNode]
@@ -134,7 +134,7 @@ given undefOrReactNodeArrayToReactNode: Conversion[js.UndefOr[js.Array[ReactNode
 /** Convert scala.AnyVal into a react node. */
 given optionAnyValToNull: Conversion[Option[scala.AnyVal], ReactNode] = _.getOrElse(null).asInstanceOf[ReactNode]
 
-given eitherRightAnyToNode[T <: scala.Any](using cvt: T => ReactNode): Conversion[Either[_, T], ReactNode] =
+given eitherRightAnyToNode[T <: scala.Any](using cvt: T => ReactNode): Conversion[Either[?, T], ReactNode] =
   _.fold(_ => nullNode, v => cvt(v))
 
 given eitherRightReactNodeToNode: Conversion[Either[?, ReactNode], ReactNode] = _.fold(_ => nullNode, n => n)

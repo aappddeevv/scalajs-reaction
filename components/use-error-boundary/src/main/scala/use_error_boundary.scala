@@ -26,11 +26,11 @@ package object use_error_boundary {
 
   implicit class RichReactJSComponentErrorBoundary(private val el: ReactJSComponentErrorBoundary) extends AnyVal {
     def apply(props: Props)(children: ReactNode) = createElementN(el, props)(children)
-    def apply(children: ReactNode*) = createElement(el, null, children: _*)
+    def apply(children: ReactNode*) = createElement(el, null, children*)
     def apply(fallback: js.Function1[scala.Any, ReactNode])(children: ReactNode*) =
       createElement(el, new Props {
         renderError = fallback
-      }, children: _*)
+      }, children*)
   }
 
   def useErrorBoundary() = module.useErrorBoundary()

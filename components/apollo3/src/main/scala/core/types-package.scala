@@ -45,7 +45,7 @@ trait types_module {
 
   type RefetchQueryDescription = js.Array[String | PureQueryOptions]
 
-  type MutationUpdaterFn[T] = js.Function2[ApolloCache[T], FetchResult[T, _, _], Unit]
+  type MutationUpdaterFn[T] = js.Function2[ApolloCache[T], FetchResult[T, ?, ?], Unit]
 
   type MutationQueryReducersMap[T] = js.Dictionary[MutationQueryReducer[T]]
 

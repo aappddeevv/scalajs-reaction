@@ -33,8 +33,8 @@ object MarqueeSelection {
   @JSImport("office-ui-fabric-react/lib/MarqueeeSelection", "MarqueeSelection")
   object JS extends ReactJSComponent
 
-  def apply[T <: js.Object](props: Props[T])(children: ReactNode*) = createElementN(JS, props)(children: _*)
-  def apply(children: ReactNode*) = createElementN(JS, ())(children: _*)
+  def apply[T <: js.Object](props: Props[T])(children: ReactNode*) = createElementN(JS, props)(children*)
+  def apply(children: ReactNode*) = createElementN(JS, ())(children*)
 
   @js.native
   trait IMarqueeSelection extends js.Object

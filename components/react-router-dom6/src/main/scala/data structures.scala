@@ -147,7 +147,7 @@ trait RouteSpecElement extends js.Object:
 trait RouteSpecRouteTo extends js.Object:
   val path: String
   // not sure this is right, some docs list redirectTo:
-  val location: js.UndefOr[Location[_] | String] = js.undefined
+  val location: js.UndefOr[Location[?] | String] = js.undefined
 
 @js.native
 trait UnblockingTx extends js.Object
@@ -171,10 +171,10 @@ trait NavigateFunction extends js.Object:
   def toPath(to: Path): Unit = js.native
 
   @JSName("apply")
-  def toPieces(to: PathPieces, options: NavigateOptions[_]): Unit = js.native
+  def toPieces(to: PathPieces, options: NavigateOptions[?]): Unit = js.native
 
   @JSName("apply")
-  def toPath(to: String, options: NavigateOptions[_]): Unit = js.native
+  def toPath(to: String, options: NavigateOptions[?]): Unit = js.native
 
 trait PathPatternParts:
   val path: String

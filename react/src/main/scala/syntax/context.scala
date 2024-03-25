@@ -33,7 +33,7 @@ object context:
   extension [T](ctx: ReactContext[T])
     /** Provide a context value with a list of children. */
     def provide(value: T)(children: ReactNode*) =
-      ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), children: _*)
+      ReactJS.createElement(ctx.Provider, literal("value" -> value.asInstanceOf[js.Any]), children*)
 
     /** Proivde a context value with a single child. */
     def provide1(value: T, child: ReactNode) =

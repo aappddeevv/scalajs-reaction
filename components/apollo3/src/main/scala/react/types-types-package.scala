@@ -51,7 +51,7 @@ trait types_module {
   type QueryTuple[T, TVars] =
     js.Tuple2[js.Function1[QueryLazyOptions[TVars], Unit], LazyQueryResult[T, TVars]]
 
-  type UnexecutedLazyResult = UnexecutedLazyFields with AbsentLazyResultFields
+  type UnexecutedLazyResult = UnexecutedLazyFields & AbsentLazyResultFields
 
   type LazyQueryResult[T, TVars] = UnexecutedLazyResult | QueryResult[T, TVars]
 

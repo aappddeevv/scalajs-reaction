@@ -33,7 +33,7 @@ object Grid {
   object JS extends ReactJSComponent
 
   def apply(props: Props)(children: ReactNode*) =
-    createElementN(JS, props)(children: _*)
+    createElementN(JS, props)(children*)
 
   @js.native
   sealed trait AlignContent extends js.Any

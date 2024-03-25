@@ -86,7 +86,7 @@ object dao {
   def fetch(cityName: String, ndays: Int = 7, units: Option[String] = Some("imperial")): Future[Result] = {
     val url =
       s"""https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=${units.getOrElse("imperial")}&appid=4b80108eceb046e99b71d8018873bb0b"""
-    if (cache.contains(url))
+    if cache.contains(url) then
       Future.successful(Right(cache(url)))
     else
       Fetch
@@ -98,7 +98,7 @@ object dao {
         }
         .flatMap { r =>
           js.Dynamic.global.console.log("response", r)
-          if (r.status == 200)
+          if r.status == 200 then
             r.json()
               .toFuture
               .recover {
@@ -121,7 +121,7 @@ object dao {
                   }
                 cache.put(url, list.toSeq) // add to cache
                 Right(list.toSeq)
-              } else if (r.status == 404)
+              } else if r.status == 404 then
             Future.successful(Left(s"City not found."))
           else
             Future.successful(Left(s"Unexpected return status ${r.status}."))

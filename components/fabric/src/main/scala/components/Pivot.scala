@@ -35,8 +35,8 @@ object Pivot {
   @JSImport("office-ui-fabric-react/lib/Pivot", "Pivot")
   object JS extends ReactJSComponent
 
-  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children: _*)
-  def apply(children: ReactNode*) = createElementN(JS, null)(children: _*)
+  def apply(props: Props)(children: ReactNode*) = createElementN(JS, props)(children*)
+  def apply(children: ReactNode*) = createElementN(JS, null)(children*)
 
   @js.native
   trait IPivot extends Focusable
