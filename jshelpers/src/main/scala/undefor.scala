@@ -110,19 +110,19 @@ object undefor:
     inline private def forceGet: T = a.asInstanceOf[T]
 
     /** Determine if is defined including the value not being null. */
-    @targetName("isDefinedUndefOrNull")
-    def isDefined: Boolean = if !js.isUndefined(a) && a != null then true else false
+    // @targetName("isDefinedUndefOrNull")
+    // def isDefined: Boolean = if !js.isUndefined(a) && a != null then true else false
 
-    /** Convenience. */
-    @targetName("isEmptyUndefOrNull")
-    def isEmpty: Boolean = !isDefined
+    // /** Convenience. */
+    // @targetName("isEmptyUndefOrNull")
+    // def isEmpty: Boolean = !isDefined
 
     //def isEmpty: Boolean = !a.asInstanceOf[js.UndefOr[T]].isDefined
 
     /** Treat null as undefined and change type from `js.UndefOr[T|Null]` to `js.UndefOr[T]`. */
     @targetName("undefAbsorbUndefOrNull")
     def absorbNull: js.UndefOr[T] = 
-      if a == null then js.undefined
+      if js.isUndefined(a) || a == null then js.undefined
       else a.asInstanceOf[js.UndefOr[T]]
 
     /** Collapse everything at once. */
@@ -146,7 +146,7 @@ object undefor:
       if a != null && a.isDefined then a.asInstanceOf[js.UndefOr[T] | Null]
       else ().asInstanceOf[js.UndefOr[T] | Null]
 
-    /** Undestands UndefOr and Null to do the orElse. */
+    /** Understands UndefOr and Null to do the orElse. */
     @targetName("getOrElseUndefOrNull")
     def getOrElse[B >: T](default: => T): T =
       if a == null || a.isEmpty then default else a.asInstanceOf[T]

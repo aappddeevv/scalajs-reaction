@@ -22,7 +22,6 @@
 package mssql
 
 import scala.scalajs.js
-import js.|
 import js.annotation._
 
 /** Node event emmitter. */
@@ -161,7 +160,9 @@ trait BaseResult extends js.Object {
 /** No type constraints on the recordsets, use with care. */
 @js.native
 trait Result extends BaseResult {
+  /** The default recordset returned. */
   def recordset[T]: RecordSet[T] = js.native
+  /** Could have more than one recordset returned, access them in the array. */
   def recordsets[T]: js.Array[RecordSet[T]] = js.native
 }
 
