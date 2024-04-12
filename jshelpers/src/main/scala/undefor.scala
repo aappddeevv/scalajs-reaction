@@ -110,12 +110,12 @@ object undefor:
     inline private def forceGet: T = a.asInstanceOf[T]
 
     /** Determine if is defined including the value not being null. */
-    // @targetName("isDefinedUndefOrNull")
-    // def isDefined: Boolean = if !js.isUndefined(a) && a != null then true else false
+    @targetName("isDefinedUndefOrNull")
+    def isDefined: Boolean = if !js.isUndefined(a) && a != null then true else false
 
     // /** Convenience. */
-    // @targetName("isEmptyUndefOrNull")
-    // def isEmpty: Boolean = !isDefined
+    @targetName("isEmptyUndefOrNull")
+    def isEmpty: Boolean = !isDefined
 
     //def isEmpty: Boolean = !a.asInstanceOf[js.UndefOr[T]].isDefined
 

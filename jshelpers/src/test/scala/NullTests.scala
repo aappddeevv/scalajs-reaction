@@ -4,7 +4,6 @@ import scala.scalajs.js
 import utest.*
 
 import jshelpers.syntax.jsnull.*
-//import scala.language.unsafeNulls
 
 object NullTests extends TestSuite:
 
@@ -18,6 +17,19 @@ object NullTests extends TestSuite:
       val y: String | Null = null
       val x: String = ""
       assert(y.isEmpty && x.nn.isEmpty)
+    }
+    test("plain UndefOr[T|Null].isEmpty, no syntax imports") {
+      val z: js.UndefOr[String | Null] = js.undefined
+      //println(s"blah: $z")
+      assert(js.isUndefined(z))
+      //assert(z.isEmpty)
+    }
+    test("absorbNull") {
+      val y: String | Null = null
+      val x: String | Null = "blah"
+      assert(x.absorbNull == "blah")
+      // will not compile, under -Yexplicit-nulls
+      //assert(y.absorbNull == null)
     }
   }
   

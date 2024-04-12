@@ -44,7 +44,7 @@ lazy val jsSettings = Seq(
    ("org.scala-js" %%% "scalajs-dom" % "2.8.0"),
   ),
   // testing
-libraryDependencies += "com.lihaoyi" %%% "utest" % "0.7.10" % "test",
+libraryDependencies += "com.lihaoyi" %%% "utest" % "0.8.1" % "test",
 testFrameworks += new TestFramework("utest.runner.Framework")
 )
 

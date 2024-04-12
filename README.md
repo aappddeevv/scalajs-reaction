@@ -301,6 +301,13 @@ closely mirror the javascript libraries themselves.
 You will most likely also need DOM bindings. Here's a link to the api
 for org.scala-js scalajs-dom bindings: [![javadoc](https://javadoc.io/badge2/org.scala-js/scalajs-dom_sjs1_3/javadoc.svg)](https://javadoc.io/doc/org.scala-js/scalajs-dom_sjs1_3).
 
+# jshelpers 
+
+Package `jshelpers` is available to help with strange types. Review the docs for extra syntaxt that you can use.
+
+Generally, if you model your data such as `js.UndefOr[A|Null]` then you will want to turn on
+`-Xexplicit-nulls` so that the `Null` type becomes explicit and not inferred.
+
 # Documentation
 
 Client:

@@ -240,7 +240,7 @@ object jsnull:
     /** Swap `js.UndefOr[A|Null]` for `js.UndefOr[A]|Null`. */
     @targetName("nullSwap")
     inline def swap: js.UndefOr[A | Null] =
-      if a == null || a == js.undefined then ().asInstanceOf[js.UndefOr[A | Null]]
+      if a == null || js.isUndefined(a) then ().asInstanceOf[js.UndefOr[A | Null]]
       else a.asInstanceOf[js.UndefOr[A | Null]]
 
   extension (a: String | Null)

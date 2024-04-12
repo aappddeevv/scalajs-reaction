@@ -3,7 +3,7 @@ package jshelpers
 import scala.scalajs.js
 import utest.*
 
-import jshelpers.syntax.*
+import jshelpers.syntax.undefor.*
 
 object UndefBooleanTests extends TestSuite:
 
@@ -52,8 +52,6 @@ object UndefStringTests extends TestSuite:
   }
   
 object UndefTests extends TestSuite:
-  //import scala.language.unsafeNulls
-  import jshelpers.syntax.jsnull.*
   val tests = Tests {
     test("basics") { 
       val v: js.UndefOr[Int] = null.asInstanceOf[js.UndefOr[Int]]
@@ -66,6 +64,7 @@ object UndefTests extends TestSuite:
       vundef.toTruthy ==> false
     }
     test("null") { 
+      import jshelpers.syntax.jsnull.*
       val v: js.UndefOr[Int] = 10
       // just needs to compile
       val v2: js.UndefOr[Int|Null] = v.toUndefOrNull
@@ -87,6 +86,18 @@ object UndefTests extends TestSuite:
       (null.asInstanceOf[js.UndefOr[String]]).toTruthy ==> false
       (js.defined(0):js.UndefOr[Int]).toTruthy ==> false
       (js.defined(1):js.UndefOr[Int]).toTruthy ==> true
+    }
+    test("js.Undefor[T|Null].absorbNull, requires import jshelpers.syntax.undefor.*") {      
+      val y: js.UndefOr[String | Null] = null
+      val x: js.UndefOr[String | Null] = "blah"
+      val z: js.UndefOr[String | Null] = js.undefined
+      assert(!z.absorbNull.isDefined && !z.isDefined && z.isEmpty && y.isEmpty && x.absorbNull == "blah")
+    }
+    test("toNonNullOption") {
+      val v: js.UndefOr[Int] = 10
+      val vundef: js.UndefOr[Int] = js.undefined
+      v.toNonNullOption ==> Some(10)
+      vundef.toNonNullOption ==> None
     }
   }  
 
