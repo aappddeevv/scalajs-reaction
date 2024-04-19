@@ -22,7 +22,7 @@
 package mssql
 
 import scala.scalajs.js
-import js.annotation._
+import js.annotation.*
 
 /** Node event emmitter. */
 @js.native

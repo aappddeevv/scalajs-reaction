@@ -66,7 +66,7 @@ object jsnull:
     /** If Null, then false, else true. */
     @targetName("toTruthyOrNull")
     def toTruthy: Boolean =
-      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then true
+      if a != null && js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then true
       else false
 
     /** Uh-oh, thought it was `A|Null` but you need to say its a
@@ -81,18 +81,18 @@ object jsnull:
       else js.defined(forceGet)
 
     def toTruthyUndefOr: js.UndefOr[A] =
-      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then
+      if a != null && js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then
         js.defined(forceGet)
       else js.undefined
 
     def toTruthyOption: Option[A] =
-      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then
+      if a != null && js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then
         Option(forceGet)
       else None
 
     @targetName("filterTruthOrNull")
     def filterTruthy: A | Null =
-      if js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then a
+      if a != null && js.DynamicImplicits.truthValue(a.asInstanceOf[js.Dynamic]) then a
       else null.asInstanceOf[A | Null]
 
     /** Absorb the null and change A|Null => A. Value could still be null,
